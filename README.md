@@ -1,16 +1,68 @@
-# React + Vite
+# Anytrail — Landing
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Marketing landing page for **Anytrail**, which builds AI sales agents for businesses. Our first agent replies to customers 24/7 and becomes an expert in a business in one click — answering questions and recommending the right next step, day or night.
 
-Currently, two official plugins are available:
+Built with **React** + **Vite**, deployed on **Vercel**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech stack
 
-## React Compiler
+- [React 19](https://react.dev/)
+- [Vite](https://vite.dev/) (build tooling + dev server with HMR)
+- Plain CSS with CSS custom properties (no UI framework)
+- Fonts: Funnel Display / Funnel Sans (headings & body), Montserrat (logo wordmark)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Getting started
 
-## Expanding the ESLint configuration
+```bash
+npm install      # install dependencies
+npm run dev      # start the dev server (http://localhost:5173)
+npm run build    # production build → dist/
+npm run preview  # preview the production build locally
+npm run lint     # run ESLint
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project structure
+
+```
+public/                 Static assets served as-is
+  anytrail-mark.png     Logo "A" mark (also the favicon)
+  hero.jpg              Hero image (optimized)
+  robots.txt
+src/
+  components/
+    Navbar.jsx / .css   Fixed top navbar: logo + "Join waitlist" CTA
+    Hero.jsx   / .css   Hero: title → image → description + CTA
+  App.jsx               Page composition
+  index.css             Global styles + design tokens (CSS variables)
+  main.jsx              React entry point
+index.html              HTML shell, fonts, SEO/social meta, LCP preload
+vercel.json             Vercel config: SPA rewrite, cache & security headers
+```
+
+## Design tokens
+
+Theme values live as CSS custom properties in [`src/index.css`](src/index.css):
+
+- `--page-bg` — page background (`#fefdf6`)
+- `--display` / `--sans` — font stacks
+- `--btn-bg` / `--btn-text` — button colors (black on light)
+- `--text`, `--nav-text` — text colors
+
+## Deployment
+
+Hosted on Vercel. The repo is auto-detected as a Vite app; [`vercel.json`](vercel.json) adds:
+
+- SPA fallback rewrite to `index.html`
+- Long-lived immutable caching for hashed `/assets/*`, shorter `stale-while-revalidate` for images/fonts
+- Baseline security headers
+
+Deploy via the Vercel Git integration (push to `main`) or the CLI:
+
+```bash
+vercel          # preview deployment
+vercel --prod   # production deployment
+```
+
+> **Note:** After the production domain is live, update the `og:image` / `twitter:image`
+> paths in [`index.html`](index.html) from `/hero.jpg` to the absolute URL
+> (`https://<your-domain>/hero.jpg`) so social link previews render correctly.

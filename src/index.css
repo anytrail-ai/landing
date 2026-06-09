@@ -1,0 +1,38 @@
+:root {
+  --sans: 'Funnel Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --display: 'Funnel Display', 'Funnel Sans', system-ui, sans-serif;
+
+  /* Palette */
+  --page-bg: #fefdf6;
+  --text: #111827;
+
+  /* Navbar */
+  --nav-text: #111827;
+  --nav-text-hover: #000000;
+  --btn-bg: #000000;
+  --btn-bg-hover: #1f1f1f;
+  --btn-text: #ffffff;
+
+  font: 16px/1.5 var(--sans);
+  color: var(--text);
+  background: var(--page-bg);
+  color-scheme: light;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--page-bg);
+}
+
+#root {
+  min-height: 100vh;
+}

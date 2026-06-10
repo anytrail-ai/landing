@@ -1,10 +1,13 @@
 import './Hero.css'
+import { DEMO_URL } from '../config'
 
 function Hero() {
   return (
     <section className="hero">
       <h1 className="hero__title">
-        Turn your business into an expert AI agent — in one click.
+        Big-company sales intelligence.
+        <br />
+        Built for your business.
       </h1>
 
       <div className="hero__media">
@@ -22,13 +25,13 @@ function Hero() {
 
       <div className="hero__content">
         <p className="hero__subtitle">
-          Anytrail builds AI sales agents that reply to your customers 24/7. One
-          click makes the agent an expert in everything you sell — answering
-          questions and recommending the right next step, day or night.
+          Anytrail learns from your sales history, finds the patterns big
+          competitors hire data teams to spot, and turns them into ads, emails,
+          and replies — automatically.
         </p>
         <div className="hero__actions">
-          <a className="hero__cta" href="#waitlist">
-            Join waitlist
+          <a className="hero__cta" href={DEMO_URL}>
+            Book a demo
           </a>
         </div>
       </div>

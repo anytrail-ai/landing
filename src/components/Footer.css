@@ -1,0 +1,28 @@
+.footer {
+  padding: var(--space-12) 16px;
+  border-top: 1px solid var(--border);
+}
+
+.footer__inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.footer__logo {
+  font-family: 'Montserrat', var(--sans);
+  font-weight: 300;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+  color: var(--text-strong);
+}
+
+.footer__tagline {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-faint);
+}

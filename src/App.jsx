@@ -1,5 +1,12 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import TheGap from './components/TheGap'
+import Learn from './components/Learn'
+import Act from './components/Act'
+import Respond from './components/Respond'
+import PlugsInto from './components/PlugsInto'
+import ClosingCTA from './components/ClosingCTA'
+import Footer from './components/Footer'
 import './App.css'
 
 function App() {
@@ -8,7 +15,14 @@ function App() {
       <Navbar />
       <main>
         <Hero />
+        <TheGap />
+        <Learn />
+        <Act />
+        <Respond />
+        <PlugsInto />
+        <ClosingCTA />
       </main>
+      <Footer />
     </>
   )
 }

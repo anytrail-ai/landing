@@ -30,11 +30,25 @@ public/                 Static assets served as-is
   robots.txt
 src/
   components/
-    Navbar.jsx / .css   Fixed top navbar: logo + "Join waitlist" CTA
-    Hero.jsx   / .css   Hero: title → image → description + CTA
-  App.jsx               Page composition
-  index.css             Global styles + design tokens (CSS variables)
-  main.jsx              React entry point
+    Navbar.jsx / .css      Fixed top navbar: logo + "Book a demo" CTA
+    Hero.jsx   / .css      Hero: title → image → description + CTA
+    Section.jsx / .css     Shared section wrapper (label + h2 + body)
+    MockCard.jsx / .css    Shared white-card chrome for product mockups
+    TheGap.jsx / .css      "The loop" copy section
+    Learn.jsx  / .css      Learn pillar — uses PatternsDashboard
+    Act.jsx    / .css      Act pillar — uses CampaignDraft
+    Respond.jsx / .css     Respond pillar — uses WhatsAppConversation
+    PlugsInto.jsx / .css   Integrations rows
+    ClosingCTA.jsx / .css  Centered final CTA
+    Footer.jsx / .css      Minimal footer
+    mockups/
+      PatternsDashboard.jsx / .css     Patterns dashboard mockup
+      CampaignDraft.jsx / .css         Campaign draft mockup
+      WhatsAppConversation.jsx / .css  WhatsApp conversation mockup
+  config.js               DEMO_URL constant (single source of truth for the demo CTA)
+  App.jsx                 Page composition
+  index.css               Global styles + design tokens (CSS variables)
+  main.jsx                React entry point
 index.html              HTML shell, fonts, SEO/social meta, LCP preload
 vercel.json             Vercel config: SPA rewrite, cache & security headers
 ```
@@ -44,9 +58,13 @@ vercel.json             Vercel config: SPA rewrite, cache & security headers
 Theme values live as CSS custom properties in [`src/index.css`](src/index.css):
 
 - `--page-bg` — page background (`#fefdf6`)
+- `--surface`, `--surface-muted`, `--border` — white card chrome on cream
 - `--display` / `--sans` — font stacks
 - `--btn-bg` / `--btn-text` — button colors (black on light)
-- `--text`, `--nav-text` — text colors
+- `--text-strong`, `--text-muted`, `--text-faint` — three-step text scale
+- `--accent`, `--accent-soft` — single moss-green accent for "active signal" inside mockups
+- `--space-1` … `--space-32` — numeric spacing scale
+- `--section-pad-y`, `--section-pad-y-mobile`, `--content-max` — section rhythm
 
 ## Deployment
 

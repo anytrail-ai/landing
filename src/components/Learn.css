@@ -1,0 +1,7 @@
+.learn .section__body {
+  max-width: none;
+}
+
+.learn .section__body p {
+  max-width: 620px;
+}

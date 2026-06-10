@@ -1,0 +1,7 @@
+.act .section__body {
+  max-width: none;
+}
+
+.act .section__body p {
+  max-width: 620px;
+}

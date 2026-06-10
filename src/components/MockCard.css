@@ -1,0 +1,56 @@
+.mockcard {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: var(--sans);
+}
+
+.mockcard__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1;
+  color: var(--text-strong);
+}
+
+.mockcard__header-title {
+  margin-right: auto;
+  font-weight: 500;
+}
+
+.mockcard__header-meta {
+  color: var(--text-faint);
+}
+
+.mockcard__body {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.mockcard__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border);
+  background: var(--surface-muted);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 700px) {
+  .mockcard__header,
+  .mockcard__body,
+  .mockcard__footer {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+}

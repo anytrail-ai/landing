@@ -4,6 +4,7 @@ import TheGap from './components/TheGap'
 import Learn from './components/Learn'
 import Act from './components/Act'
 import Respond from './components/Respond'
+import PlugsInto from './components/PlugsInto'
 import Footer from './components/Footer'
 import './App.css'
 
@@ -17,6 +18,7 @@ function App() {
         <Learn />
         <Act />
         <Respond />
+        <PlugsInto />
       </main>
       <Footer />
     </>

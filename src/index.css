@@ -2,9 +2,20 @@
   --sans: 'Funnel Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
   --display: 'Funnel Display', 'Funnel Sans', system-ui, sans-serif;
 
-  /* Palette */
+  /* Palette — page */
   --page-bg: #fefdf6;
+
+  /* Surfaces */
+  --surface: #ffffff;
+  --surface-muted: #f6f4ea;
+  --border: #e7e2d1;
+  --border-strong: #1f1f1f;
+
+  /* Text scale */
   --text: #111827;
+  --text-strong: #111827;
+  --text-muted: #6b7280;
+  --text-faint: #9ca3af;
 
   /* Navbar */
   --nav-text: #111827;
@@ -12,6 +23,27 @@
   --btn-bg: #000000;
   --btn-bg-hover: #1f1f1f;
   --btn-text: #ffffff;
+
+  /* Accent — single accent for "active signal" inside mockups */
+  --accent: #2f6f4f;
+  --accent-soft: #e8f0eb;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* Section rhythm */
+  --section-pad-y: 96px;
+  --section-pad-y-mobile: 64px;
+  --content-max: 929px;
 
   font: 16px/1.5 var(--sans);
   color: var(--text);

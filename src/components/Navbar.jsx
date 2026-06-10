@@ -1,9 +1,19 @@
+import { useEffect, useState } from 'react'
 import './Navbar.css'
 import { DEMO_URL } from '../config'
 
 function Navbar() {
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <header className="navbar">
+    <header className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
         <a className="navbar__logo" href="/" aria-label="Anytrail home">
           <img

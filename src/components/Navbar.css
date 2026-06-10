@@ -15,9 +15,33 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 38px;
-  padding: 0 4px 0 8px;
+  height: 52px;
+  padding: 0 8px 0 12px;
   pointer-events: auto;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  box-shadow: none;
+  transition:
+    background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Scrolled: translucent liquid-glass pill */
+.navbar--scrolled .navbar__inner {
+  padding: 0 10px 0 18px;
+  background-color: rgba(254, 253, 246, 0.7);
+  border-color: rgba(231, 226, 209, 0.85);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    rgba(255, 255, 255, 0.12) 0 -0.66px 3.3px -0.17px,
+    rgba(255, 255, 255, 0.23) 0 -2.5px 12.6px -0.33px,
+    rgba(255, 255, 255, 0.72) 0 -11px 55px -0.5px,
+    rgba(17, 24, 39, 0.06) 0 2px 12px;
 }
 
 /* Logo */
@@ -38,14 +62,14 @@
 
 .navbar__logo-mark {
   display: block;
-  height: 22px;
+  height: 28px;
   width: auto;
 }
 
 .navbar__logo-text {
   font-family: 'Montserrat', var(--sans);
   font-weight: 300;
-  font-size: 16px;
+  font-size: 19px;
   letter-spacing: 0.01em;
   line-height: 1;
   color: var(--nav-text-hover);
@@ -53,13 +77,13 @@
 
 /* CTA button */
 .navbar__cta {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1;
   color: var(--btn-text);
   background-color: var(--btn-bg);
   text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 9px 16px;
+  border-radius: 999px;
   transition: background-color 0.2s ease-out;
 }
 

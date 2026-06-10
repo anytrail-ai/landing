@@ -1,4 +1,5 @@
 import './Navbar.css'
+import { DEMO_URL } from '../config'
 
 function Navbar() {
   return (
@@ -15,8 +16,8 @@ function Navbar() {
           <span className="navbar__logo-text">anytrail</span>
         </a>
 
-        <a className="navbar__cta" href="#waitlist">
-          Join waitlist
+        <a className="navbar__cta" href={DEMO_URL}>
+          Book a demo
         </a>
       </div>
     </header>

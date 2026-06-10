@@ -21,6 +21,7 @@ function PlugsInto() {
     <Section
       label="PLUGS INTO WHAT YOU ALREADY USE"
       className="plugsinto"
+      wide
     >
       <p>
         Anytrail reads from your ERP or CRM, runs campaigns through your ad

@@ -51,3 +51,11 @@
     padding: var(--section-pad-y-mobile) 16px;
   }
 }
+
+.section--wide .section__body {
+  max-width: none;
+}
+
+.section--wide .section__body p {
+  max-width: 620px;
+}

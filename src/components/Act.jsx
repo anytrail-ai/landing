@@ -8,6 +8,7 @@ function Act() {
       label="ACT"
       title="Then it ships the campaign for you."
       className="act"
+      wide
     >
       <p>
         Anytrail's agents segment your customers, write the ads, and launch the

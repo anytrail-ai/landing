@@ -8,6 +8,7 @@ function Respond() {
       label="RESPOND"
       title="And answers every customer who replies."
       className="respond"
+      wide
     >
       <p>
         The same agent that runs the campaign handles the replies — on

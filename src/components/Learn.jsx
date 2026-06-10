@@ -8,6 +8,7 @@ function Learn() {
       label="LEARN"
       title="We read your sales history and find the patterns hiding inside it."
       className="learn"
+      wide
     >
       <p>
         Connect your ERP or CRM. Within minutes, Anytrail trains a model on

@@ -34,10 +34,6 @@
   font-weight: 500;
 }
 
-.pattern--active .pattern__name {
-  color: var(--text-strong);
-}
-
 .pattern__arrow {
   color: var(--text-faint);
 }

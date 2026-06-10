@@ -5,6 +5,7 @@ import Learn from './components/Learn'
 import Act from './components/Act'
 import Respond from './components/Respond'
 import PlugsInto from './components/PlugsInto'
+import ClosingCTA from './components/ClosingCTA'
 import Footer from './components/Footer'
 import './App.css'
 
@@ -19,6 +20,7 @@ function App() {
         <Act />
         <Respond />
         <PlugsInto />
+        <ClosingCTA />
       </main>
       <Footer />
     </>

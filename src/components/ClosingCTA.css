@@ -1,15 +1,47 @@
 .closingcta {
   padding: var(--section-pad-y) 16px;
-  text-align: center;
+}
+
+.closingcta__card {
+  position: relative;
+  max-width: 929px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+}
+
+.closingcta__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+}
+
+.closingcta__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(17, 24, 39, 0.55),
+    rgba(17, 24, 39, 0.75)
+  );
 }
 
 .closingcta__inner {
-  max-width: 620px;
-  margin: 0 auto;
+  position: relative;
+  max-width: 560px;
+  padding: var(--space-16) var(--space-6);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-4);
+  text-align: center;
 }
 
 .closingcta__title {
@@ -19,7 +51,7 @@
   font-size: 30px;
   line-height: 36px;
   letter-spacing: -0.6px;
-  color: var(--text-strong);
+  color: #ffffff;
 }
 
 .closingcta__body {
@@ -27,29 +59,43 @@
   font-family: var(--sans);
   font-size: 15px;
   line-height: 22.5px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .closingcta__cta {
   display: inline-flex;
   align-items: center;
   margin-top: var(--space-2);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1;
-  color: var(--btn-text);
-  background-color: var(--btn-bg);
+  color: var(--text-strong);
+  background-color: #ffffff;
   text-decoration: none;
-  padding: 6px 12px;
+  padding: 10px 16px;
   border-radius: 6px;
   transition: background-color 0.2s ease-out;
 }
 
 .closingcta__cta:hover {
-  background-color: var(--btn-bg-hover);
+  background-color: var(--surface-muted);
+}
+
+.closingcta__cta:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
 }
 
 @media (max-width: 700px) {
   .closingcta {
     padding: var(--section-pad-y-mobile) 16px;
+  }
+
+  .closingcta__inner {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .closingcta__title {
+    font-size: 26px;
+    line-height: 32px;
   }
 }

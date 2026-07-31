@@ -75,6 +75,49 @@
   color: var(--nav-text-hover);
 }
 
+/* Right-side actions: language toggle + CTA */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.navbar__lang-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--text-faint);
+  padding: 7px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease-out, background-color 0.2s ease-out;
+}
+
+.navbar__lang-btn:hover {
+  color: var(--nav-text-hover);
+}
+
+.navbar__lang-btn--active {
+  color: var(--nav-text-hover);
+  background-color: rgba(17, 24, 39, 0.06);
+}
+
+.navbar__lang-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 /* CTA button */
 .navbar__cta {
   font-size: 15px;

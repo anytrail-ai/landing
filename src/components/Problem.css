@@ -1,0 +1,40 @@
+.problem__grid {
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.problem__card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.problem__card-title {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-strong);
+}
+
+.problem__card-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 700px) {
+  .problem__grid {
+    grid-template-columns: 1fr;
+  }
+}

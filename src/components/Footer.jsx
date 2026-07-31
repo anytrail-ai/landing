@@ -1,13 +1,14 @@
 import './Footer.css'
+import { useLanguage } from '../i18n/useLanguage'
 
 function Footer() {
+  const { copy } = useLanguage()
+
   return (
     <footer className="footer">
       <div className="footer__inner">
         <span className="footer__logo">anytrail</span>
-        <p className="footer__tagline">
-          Big-company sales intelligence, for any SMB. © 2026 Anytrail
-        </p>
+        <p className="footer__tagline">{copy.footer.tagline}</p>
       </div>
     </footer>
   )

@@ -1,29 +1,28 @@
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
-import TheGap from './components/TheGap'
-import Learn from './components/Learn'
-import Act from './components/Act'
-import Respond from './components/Respond'
-import PlugsInto from './components/PlugsInto'
+import Problem from './components/Problem'
+import HowItWorks from './components/HowItWorks'
+import Different from './components/Different'
+import Proof from './components/Proof'
 import ClosingCTA from './components/ClosingCTA'
 import Footer from './components/Footer'
+import { LanguageProvider } from './i18n/LanguageContext'
 import './App.css'
 
 function App() {
   return (
-    <>
+    <LanguageProvider>
       <Navbar />
       <main>
         <Hero />
-        <TheGap />
-        <Learn />
-        <Act />
-        <Respond />
-        <PlugsInto />
+        <Problem />
+        <HowItWorks />
+        <Different />
+        <Proof />
         <ClosingCTA />
       </main>
       <Footer />
-    </>
+    </LanguageProvider>
   )
 }
 

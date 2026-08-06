@@ -50,20 +50,15 @@ function jsonLd(lang) {
       '@id': `${SITE}/#website`,
       url: `${SITE}/`,
       name: 'Anytrail',
+      description,
       publisher: { '@id': `${SITE}/#organization` },
       inLanguage: LANGS,
     },
-    {
-      '@type': 'SoftwareApplication',
-      '@id': `${SITE}/#software`,
-      name: 'Anytrail',
-      url: `${SITE}/`,
-      applicationCategory: 'BusinessApplication',
-      operatingSystem: 'Web',
-      description,
-      publisher: { '@id': `${SITE}/#organization` },
-    },
   ]
+  // No SoftwareApplication node: Google requires one of offers,
+  // aggregateRating, or review on that type, and we have no verified pricing
+  // or ratings to cite. Semrush flagged the incomplete node as a markup error
+  // (issue 45). Add it back only alongside real offer data.
   // Escape '<' so the payload can never terminate the surrounding <script>.
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })
     .replace(/</g, '\\u003c')

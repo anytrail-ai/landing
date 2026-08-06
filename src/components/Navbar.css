@@ -92,6 +92,8 @@
   appearance: none;
   border: none;
   background: transparent;
+  display: inline-block;
+  text-decoration: none;
   font-family: var(--sans);
   font-size: 12px;
   font-weight: 500;

@@ -8,11 +8,7 @@ function Proof() {
 
   return (
     <Section label={c.label} title={c.title} className="proof">
-      <p>
-        {c.p1a}
-        <strong>HIDROREY</strong>
-        {c.p1b}
-      </p>
+      <p>{c.p1}</p>
       <p>{c.p2}</p>
     </Section>
   )

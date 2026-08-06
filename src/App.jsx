@@ -9,9 +9,9 @@ import Footer from './components/Footer'
 import { LanguageProvider } from './i18n/LanguageContext'
 import './App.css'
 
-function App() {
+function App({ lang = 'en' }) {
   return (
-    <LanguageProvider>
+    <LanguageProvider lang={lang}>
       <Navbar />
       <main>
         <Hero />

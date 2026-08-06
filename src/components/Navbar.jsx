@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import './Navbar.css'
 import { DEMO_URL } from '../config'
 import { useLanguage } from '../i18n/useLanguage'
-
-const LANGS = ['en', 'es']
+import { LANGS, LANG_PATH } from '../i18n/copy'
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
-  const { lang, setLang, copy } = useLanguage()
+  const { lang, copy } = useLanguage()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -19,7 +18,11 @@ function Navbar() {
   return (
     <header className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
-        <a className="navbar__logo" href="/" aria-label="Anytrail home">
+        <a
+          className="navbar__logo"
+          href={LANG_PATH[lang]}
+          aria-label="Anytrail home"
+        >
           <img
             className="navbar__logo-mark"
             src="/anytrail-mark.png"
@@ -31,25 +34,22 @@ function Navbar() {
         </a>
 
         <div className="navbar__actions">
-          <div
-            className="navbar__lang"
-            role="group"
-            aria-label="Language / Idioma"
-          >
+          {/* Real links, not state: each language is its own indexable URL. */}
+          <nav className="navbar__lang" aria-label="Language / Idioma">
             {LANGS.map((l) => (
-              <button
+              <a
                 key={l}
-                type="button"
                 className={`navbar__lang-btn${
                   lang === l ? ' navbar__lang-btn--active' : ''
                 }`}
-                aria-pressed={lang === l}
-                onClick={() => setLang(l)}
+                href={LANG_PATH[l]}
+                hrefLang={l}
+                aria-current={lang === l ? 'true' : undefined}
               >
                 {l.toUpperCase()}
-              </button>
+              </a>
             ))}
-          </div>
+          </nav>
 
           <a className="navbar__cta" href={DEMO_URL}>
             {copy.navbar.cta}

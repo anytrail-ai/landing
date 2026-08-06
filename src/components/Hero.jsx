@@ -1,5 +1,6 @@
 import './Hero.css'
-import { DEMO_URL } from '../config'
+import DemoLink from './DemoLink'
+import WhatsAppLink from './WhatsAppLink'
 import InboundConversation from './mockups/InboundConversation'
 import { useLanguage } from '../i18n/useLanguage'
 
@@ -13,9 +14,10 @@ function Hero() {
         <h1 className="hero__title">{c.title}</h1>
         <p className="hero__subtitle">{c.subtitle}</p>
         <div className="hero__actions">
-          <a className="hero__cta" href={DEMO_URL}>
+          <DemoLink className="hero__cta" location="hero">
             {c.cta}
-          </a>
+          </DemoLink>
+          <WhatsAppLink location="hero" />
           <p className="hero__cta-note">{c.ctaNote}</p>
         </div>
       </div>

@@ -1,0 +1,29 @@
+.whatsapp-link {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-faint);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+  transition: color 0.2s ease-out;
+}
+
+.whatsapp-link:hover {
+  color: var(--text);
+}
+
+/* Sits on the dark image overlay in the closing CTA. */
+.whatsapp-link--onDark {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.whatsapp-link--onDark:hover {
+  color: #ffffff;
+}
+
+.whatsapp-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

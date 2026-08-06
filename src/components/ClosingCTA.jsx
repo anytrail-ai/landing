@@ -1,4 +1,5 @@
-import { DEMO_URL } from '../config'
+import DemoLink from './DemoLink'
+import WhatsAppLink from './WhatsAppLink'
 import './ClosingCTA.css'
 import { useLanguage } from '../i18n/useLanguage'
 
@@ -22,9 +23,10 @@ function ClosingCTA() {
         <div className="closingcta__inner">
           <h2 className="closingcta__title">{c.title}</h2>
           <p className="closingcta__body">{c.body}</p>
-          <a className="closingcta__cta" href={DEMO_URL}>
+          <DemoLink className="closingcta__cta" location="closing">
             {c.cta}
-          </a>
+          </DemoLink>
+          <WhatsAppLink location="closing" className="whatsapp-link--onDark" />
         </div>
       </div>
     </section>

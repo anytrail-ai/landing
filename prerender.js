@@ -1,9 +1,9 @@
 // Static prerender: turns the client-rendered SPA into real HTML that crawlers
 // (including AI crawlers, which mostly do not execute JavaScript) can read.
 //
-// Runs after `vite build` and `vite build --ssr`. For each language it renders
-// the app to markup, injects per-language <head> metadata, and writes a static
-// page. Also emits sitemap.xml so robots.txt has something to point at.
+// Runs after `vite build` and `vite build --ssr`. For every route in ROUTES it
+// renders the app to markup, injects per-page <head> metadata, and writes a
+// static page. Also emits sitemap.xml, robots.txt and llms.txt.
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT = path.dirname(fileURLToPath(import.meta.url))
 const DIST = path.join(ROOT, 'dist')
 
-// Canonical host. The apex 308-redirects to www, so www is the real origin —
+// Canonical host. The apex 308-redirects to www, so www is the real origin --
 // pointing canonical/hreflang/sitemap at the apex would aim every signal at a
 // redirect. Verify with `curl -sI https://anytrail.ai/` before changing this.
 const SITE = 'https://www.anytrail.ai'
@@ -22,7 +22,9 @@ const OG_IMAGE_H = 1024
 // Markup comes from the SSR bundle; metadata comes straight from the copy
 // module, which is plain JS and needs no build step.
 const { render } = await import(path.join(ROOT, 'dist-ssr', 'entry-server.js'))
-const { COPY, LANGS, LANG_PATH } = await import('./src/i18n/copy.js')
+const { COPY, LANGS, ROUTES, NOINDEX_PAGES } = await import(
+  './src/i18n/copy.js'
+)
 const { DEMO_URL } = await import('./src/config.js')
 
 const esc = (s) =>
@@ -32,8 +34,14 @@ const esc = (s) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
 
-const urlFor = (lang) =>
-  lang === 'en' ? `${SITE}/` : `${SITE}${LANG_PATH[lang]}`
+const urlFor = (lang, page) => {
+  const route = ROUTES[lang][page]
+  return route === '/' ? `${SITE}/` : `${SITE}${route}`
+}
+
+// Home uses the top-level meta block; other pages carry their own.
+const metaFor = (lang, page) =>
+  page === 'home' ? COPY[lang].meta : COPY[lang][page].meta
 
 function jsonLd(lang) {
   const { description } = COPY[lang].meta
@@ -59,24 +67,30 @@ function jsonLd(lang) {
   // aggregateRating, or review on that type, and we have no verified pricing
   // or ratings to cite. Semrush flagged the incomplete node as a markup error
   // (issue 45). Add it back only alongside real offer data.
+
   // Escape '<' so the payload can never terminate the surrounding <script>.
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })
     .replace(/</g, '\\u003c')
 }
 
-function head(lang) {
-  const { title, description, ogLocale } = COPY[lang].meta
-  const canonical = urlFor(lang)
+function head(lang, page) {
+  const { title, description, ogLocale } = metaFor(lang, page)
+  const canonical = urlFor(lang, page)
+  const noindex = NOINDEX_PAGES.includes(page)
 
+  // hreflang pairs the SAME page across languages, so /thanks points at
+  // /es/gracias rather than at the Spanish home page.
   const alternates = [
-    ...LANGS.map((l) => `<link rel="alternate" hreflang="${l}" href="${urlFor(l)}" />`),
-    `<link rel="alternate" hreflang="x-default" href="${urlFor('en')}" />`,
+    ...LANGS.map(
+      (l) => `<link rel="alternate" hreflang="${l}" href="${urlFor(l, page)}" />`,
+    ),
+    `<link rel="alternate" hreflang="x-default" href="${urlFor('en', page)}" />`,
   ].join('\n    ')
 
   return `<title>${esc(title)}</title>
     <meta name="description" content="${esc(description)}" />
     <link rel="canonical" href="${canonical}" />
-    ${alternates}
+${noindex ? '    <meta name="robots" content="noindex, follow" />\n' : ''}    ${alternates}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Anytrail" />
@@ -99,33 +113,46 @@ function head(lang) {
 const template = await fs.readFile(path.join(DIST, 'index.html'), 'utf8')
 
 for (const lang of LANGS) {
-  const html = template
-    // Drop the dev-only placeholder title so only the generated one survives.
-    .replace(/\s*<title>[\s\S]*?<\/title>/, '')
-    .replace('<html lang="en"', `<html lang="${lang}"`)
-    .replace('<!--app-head-->', head(lang))
-    .replace('<!--app-html-->', render(lang))
+  for (const page of Object.keys(ROUTES[lang])) {
+    const html = template
+      // Drop the dev-only placeholder title so only the generated one survives.
+      .replace(/\s*<title>[\s\S]*?<\/title>/, '')
+      .replace('<html lang="en"', `<html lang="${lang}"`)
+      .replace('<!--app-head-->', head(lang, page))
+      .replace('<!--app-html-->', render(lang, page))
 
-  const outDir = lang === 'en' ? DIST : path.join(DIST, LANG_PATH[lang])
-  await fs.mkdir(outDir, { recursive: true })
-  await fs.writeFile(path.join(outDir, 'index.html'), html)
-  console.log(`prerendered ${urlFor(lang)}`)
+    const route = ROUTES[lang][page]
+    const outDir = route === '/' ? DIST : path.join(DIST, route)
+    await fs.mkdir(outDir, { recursive: true })
+    await fs.writeFile(path.join(outDir, 'index.html'), html)
+    console.log(`prerendered ${urlFor(lang, page)}`)
+  }
 }
 
+// Only indexable pages belong in the sitemap. Listing a noindex page tells
+// Google to crawl something it is then told to drop.
+const indexable = Object.keys(ROUTES.en).filter(
+  (p) => !NOINDEX_PAGES.includes(p),
+)
 const lastmod = new Date().toISOString().slice(0, 10)
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${LANGS.map(
-  (lang) => `  <url>
-    <loc>${urlFor(lang)}</loc>
+${indexable
+  .flatMap((page) =>
+    LANGS.map(
+      (lang) => `  <url>
+    <loc>${urlFor(lang, page)}</loc>
     <lastmod>${lastmod}</lastmod>
 ${LANGS.map(
-  (l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${urlFor(l)}" />`,
+  (l) =>
+    `    <xhtml:link rel="alternate" hreflang="${l}" href="${urlFor(l, page)}" />`,
 ).join('\n')}
-    <xhtml:link rel="alternate" hreflang="x-default" href="${urlFor('en')}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${urlFor('en', page)}" />
   </url>`,
-).join('\n')}
+    ),
+  )
+  .join('\n')}
 </urlset>
 `
 await fs.writeFile(path.join(DIST, 'sitemap.xml'), sitemap)
@@ -135,6 +162,9 @@ console.log('wrote sitemap.xml')
 // absolute URLs inside them can never drift from SITE.
 await fs.writeFile(
   path.join(DIST, 'robots.txt'),
+  // Deliberately no Disallow for the thank-you pages. They carry a noindex
+  // meta tag, and blocking them here would stop Google reading that tag -- a
+  // blocked URL can still get indexed from external links.
   `User-agent: *
 Allow: /
 
@@ -157,12 +187,13 @@ quote, follows up, and hands qualified opportunities to the sales team.
 ## Pages
 
 ${LANGS.map(
-  (l) => `- [${l === 'en' ? 'Home (English)' : 'Inicio (Español)'}](${urlFor(l)}): ${COPY[l].meta.description}`,
+  (l) =>
+    `- [${l === 'en' ? 'Home (English)' : 'Inicio (Español)'}](${urlFor(l, 'home')}): ${COPY[l].meta.description}`,
 ).join('\n')}
 
 ## Contact
 
-- Book a demo: ${DEMO_URL}
+- Book a review: ${DEMO_URL}
 `
 await fs.writeFile(path.join(DIST, 'llms.txt'), llms)
 console.log('wrote llms.txt')

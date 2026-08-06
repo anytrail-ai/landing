@@ -10,13 +10,13 @@ export const COPY = {
       ogLocale: 'en_US',
     },
     navbar: {
-      cta: 'Book a demo',
+      cta: 'Book a review',
     },
     hero: {
       title: 'AI sales agents trained on what your industrial company actually sells.',
       subtitle:
         'Anytrail reads the buying signals in your market, then works every opportunity with agents that know your catalog — answering inbound inquiries, diagnosing the application, collecting the details for a quote, and following up until your sales team steps in.',
-      cta: 'Book a demo',
+      cta: 'Review my inbound process',
       ctaNote:
         'For manufacturers, distributors, and industrial equipment companies. Leads from WhatsApp, ads, and your website — handled the same way your best salesperson would.',
     },
@@ -78,7 +78,7 @@ export const COPY = {
     proof: {
       label: 'PROOF',
       title: 'Built inside a real industrial equipment sales team.',
-      p1: 'Anytrail was built and runs inside the inbound process of an industrial equipment company — from the first inquiry through diagnosis, product recommendation, quotation, and follow-up. Conversations handled by the agent have contributed to more than $20,000 USD in equipment sold.',
+      p1: 'Anytrail was built and runs inside the inbound process of an industrial equipment company — from the first inquiry through diagnosis, product recommendation, quotation, and follow-up. Last month alone, conversations handled by the agent contributed to more than $20,000 USD in equipment sold.',
       p2:
         'It was developed around the way industrial equipment is actually diagnosed, quoted, followed up, and sold — not around a generic chatbot script.',
     },
@@ -86,7 +86,21 @@ export const COPY = {
       title: 'Review your commercial process',
       body:
         "We'll look at how your company currently finds and responds to new opportunities, and identify where potential sales may be getting lost.",
-      cta: 'Book a demo',
+      cta: 'Review my inbound process',
+    },
+    whatsapp: {
+      cta: 'Or ask our agent on WhatsApp',
+      prefill: "Hi, I'd like to see how Anytrail handles our inbound inquiries.",
+    },
+    thanks: {
+      meta: {
+        title: 'Booking confirmed | Anytrail',
+        description: 'Your inbound process review is booked.',
+        ogLocale: 'en_US',
+      },
+      title: 'Your review is booked.',
+      body: "Check your email for the calendar invite. Before we meet, we'll send an inquiry through your own inbound channels and time how long a reply takes, so we can show you exactly where opportunities are being lost today.",
+      back: 'Back to home',
     },
     footer: {
       tagline: 'AI sales agents for industrial equipment companies. © 2026 Anytrail',
@@ -102,13 +116,13 @@ export const COPY = {
       ogLocale: 'es_ES',
     },
     navbar: {
-      cta: 'Agenda una demo',
+      cta: 'Agenda una revisión',
     },
     hero: {
       title: 'Agentes de ventas con IA entrenados en lo que tu empresa industrial realmente vende.',
       subtitle:
         'Anytrail detecta las señales de compra en tu mercado y trabaja cada oportunidad con agentes que conocen tu catálogo — responde consultas entrantes, diagnostica la aplicación, reúne los datos para cotizar y da seguimiento hasta que tu equipo de ventas entra.',
-      cta: 'Agenda una demo',
+      cta: 'Revisa mi proceso de ventas',
       ctaNote:
         'Para fabricantes, distribuidores y empresas de equipo industrial. Leads de WhatsApp, anuncios y tu sitio web — atendidos como lo haría tu mejor vendedor.',
     },
@@ -170,7 +184,7 @@ export const COPY = {
     proof: {
       label: 'PRUEBA',
       title: 'Construido dentro de un equipo de ventas de equipo industrial real.',
-      p1: 'Anytrail se construyó y opera dentro del proceso de ventas entrantes de una empresa de equipo industrial — desde la primera consulta hasta el diagnóstico, la recomendación de producto, la cotización y el seguimiento. Las conversaciones atendidas por el agente han contribuido a más de $400,000 MXN en equipo vendido.',
+      p1: 'Anytrail se construyó y opera dentro del proceso de ventas entrantes de una empresa de equipo industrial — desde la primera consulta hasta el diagnóstico, la recomendación de producto, la cotización y el seguimiento. Solo el mes pasado, las conversaciones atendidas por el agente contribuyeron a más de $400,000 MXN en equipo vendido.',
       p2:
         'Se desarrolló alrededor de cómo realmente se diagnostica, cotiza, da seguimiento y vende el equipo industrial — no alrededor de un guion genérico de chatbot.',
     },
@@ -178,7 +192,21 @@ export const COPY = {
       title: 'Revisa tu proceso comercial',
       body:
         'Revisamos cómo tu empresa encuentra y responde hoy a las nuevas oportunidades, e identificamos dónde se pueden estar perdiendo ventas.',
-      cta: 'Agenda una demo',
+      cta: 'Revisa mi proceso de ventas',
+    },
+    whatsapp: {
+      cta: 'O pregúntale a nuestro agente por WhatsApp',
+      prefill: 'Hola, quiero ver cómo Anytrail atiende nuestras consultas entrantes.',
+    },
+    thanks: {
+      meta: {
+        title: 'Reunión confirmada | Anytrail',
+        description: 'Tu revisión del proceso de ventas entrantes está agendada.',
+        ogLocale: 'es_ES',
+      },
+      title: 'Tu revisión está agendada.',
+      body: 'Revisa tu correo para la invitación. Antes de la reunión, enviaremos una consulta por tus propios canales de ventas entrantes y mediremos cuánto tarda la respuesta, para mostrarte exactamente dónde se están perdiendo oportunidades hoy.',
+      back: 'Volver al inicio',
     },
     footer: {
       tagline: 'Agentes de ventas con IA para empresas de equipo industrial. © 2026 Anytrail',
@@ -191,8 +219,36 @@ export const LANGS = ['en', 'es']
 // Path prefix per language. English is the site root.
 export const LANG_PATH = { en: '/', es: '/es' }
 
-// Language is derived from the URL, not from state, so each language is a real
-// crawlable page that hreflang can point at.
+// Every route on the site, keyed by language then page. Localised paths, so a
+// Spanish visitor never sees an English URL. prerender.js walks this to decide
+// what to render, so adding a page here is enough to get it built.
+export const ROUTES = {
+  en: { home: '/', thanks: '/thanks' },
+  es: { home: '/es', thanks: '/es/gracias' },
+}
+
+// Pages that must never be indexed. A thank-you page ranking in search would
+// pull people past the booking step into a dead end.
+export const NOINDEX_PAGES = ['thanks']
+
+const normalise = (p) => {
+  const trimmed = String(p || '/').replace(/\/+$/, '')
+  return trimmed === '' ? '/' : trimmed
+}
+
+// Language and page are derived from the URL, not from state, so each is a
+// real crawlable page that hreflang can point at.
+export function routeFromPath(pathname) {
+  const path = normalise(pathname)
+  for (const lang of LANGS) {
+    for (const [page, route] of Object.entries(ROUTES[lang])) {
+      if (normalise(route) === path) return { lang, page }
+    }
+  }
+  // Unknown path: fall back to the home page of the matching language.
+  return { lang: path.startsWith(LANG_PATH.es) ? 'es' : 'en', page: 'home' }
+}
+
 export function langFromPath(pathname) {
-  return pathname.replace(/\/+$/, '').startsWith(LANG_PATH.es) ? 'es' : 'en'
+  return routeFromPath(pathname).lang
 }

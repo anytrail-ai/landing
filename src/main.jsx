@@ -2,13 +2,14 @@ import { StrictMode } from 'react'
 import { hydrateRoot, createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { langFromPath } from './i18n/copy'
+import { routeFromPath } from './i18n/copy'
+import { initAnalytics } from './analytics'
 
-const lang = langFromPath(window.location.pathname)
+const { lang, page } = routeFromPath(window.location.pathname)
 const container = document.getElementById('root')
 const tree = (
   <StrictMode>
-    <App lang={lang} />
+    <App lang={lang} page={page} />
   </StrictMode>
 )
 
@@ -19,3 +20,5 @@ if (container.hasChildNodes()) {
 } else {
   createRoot(container).render(tree)
 }
+
+initAnalytics()

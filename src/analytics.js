@@ -32,8 +32,13 @@ function flush() {
   queue = []
   try {
     // sendBeacon survives page unload, which a normal fetch does not.
+    //
+    // The blob MUST be text/plain. application/json is not a CORS-safelisted
+    // content type, so it forces a preflight -- and sendBeacon cannot preflight,
+    // so the browser drops the request silently with no console error. The
+    // collector parses the body as JSON regardless of content type.
     if (navigator.sendBeacon) {
-      navigator.sendBeacon(TELEMETRY_URL, new Blob([body], { type: 'application/json' }))
+      navigator.sendBeacon(TELEMETRY_URL, new Blob([body], { type: 'text/plain' }))
     } else {
       fetch(TELEMETRY_URL, { method: 'POST', body, keepalive: true })
     }

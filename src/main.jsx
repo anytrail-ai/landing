@@ -21,4 +21,4 @@ if (container.hasChildNodes()) {
   createRoot(container).render(tree)
 }
 
-initAnalytics()
+initAnalytics({ page, lang })

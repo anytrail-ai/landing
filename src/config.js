@@ -19,8 +19,8 @@ export const THANKS_URL = {
 // is set, so shipping it blank is safe.
 export const WHATSAPP_NUMBER = import.meta.env?.VITE_WHATSAPP_NUMBER ?? ''
 
-// PostHog project API key. Leave empty to disable analytics cleanly; the
-// wrapper in analytics.js no-ops rather than throwing.
-export const POSTHOG_KEY = import.meta.env?.VITE_POSTHOG_KEY ?? ''
-export const POSTHOG_HOST =
-  import.meta.env?.VITE_POSTHOG_HOST ?? 'https://us.i.posthog.com'
+// First-party telemetry collector (AWS API Gateway -> Lambda -> DynamoDB).
+// Provisioned by infra/telemetry/deploy.sh, which prints this value.
+// Leave empty to disable telemetry cleanly; analytics.js no-ops rather than
+// throwing.
+export const TELEMETRY_URL = import.meta.env?.VITE_TELEMETRY_URL ?? ''

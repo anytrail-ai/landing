@@ -14,10 +14,22 @@ TABLE="anytrail-web-analytics"
 PAGE="${1:-home-en}"
 DAYS="${2:-30}"
 
+# The anytrail account, asserted below. `default` on this machine points at a
+# different account, so a stray AWS_PROFILE would otherwise deploy there
+# silently. Fail loudly instead of guessing.
+EXPECT_ACCOUNT="648377378513"
+
+
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 since="$(date -u -v-"${DAYS}"d +%Y-%m-%d 2>/dev/null || date -u -d "${DAYS} days ago" +%Y-%m-%d)"
 
-echo "==> querying $TABLE for page=$PAGE since $since"
+ACCOUNT="$(aws sts get-caller-identity --profile "$PROFILE" --region "$REGION" --query Account --output text)"
+if [ "$ACCOUNT" != "$EXPECT_ACCOUNT" ]; then
+  echo "ABORT: profile '$PROFILE' resolves to account $ACCOUNT, expected $EXPECT_ACCOUNT." >&2
+  exit 1
+fi
+
+echo "==> querying $TABLE for page=$PAGE since $since (profile $PROFILE)"
 
 aws dynamodb query --table-name "$TABLE" \
   --profile "$PROFILE" --region "$REGION" \

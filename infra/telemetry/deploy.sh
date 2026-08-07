@@ -16,6 +16,12 @@ FUNC="anytrail-web-analytics-collector"
 ROLE="anytrail-web-analytics-role"
 RETENTION_DAYS="${RETENTION_DAYS:-180}"
 
+# The anytrail account, asserted below. `default` on this machine points at a
+# different account, so a stray AWS_PROFILE would otherwise deploy there
+# silently. Fail loudly instead of guessing.
+EXPECT_ACCOUNT="648377378513"
+
+
 
 # Ownership guard. `anytrail-telemetry` already exists in this account as an
 # unrelated production service (company/campaign data, not web analytics), and
@@ -28,7 +34,12 @@ aws() { command aws --profile "$PROFILE" --region "$REGION" "$@"; }
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ACCOUNT="$(aws sts get-caller-identity --query Account --output text)"
 
-echo "==> account $ACCOUNT / region $REGION"
+if [ "$ACCOUNT" != "$EXPECT_ACCOUNT" ]; then
+  echo "ABORT: profile '$PROFILE' resolves to account $ACCOUNT," >&2
+  echo "       expected $EXPECT_ACCOUNT (anytrail). Refusing to deploy." >&2
+  exit 1
+fi
+echo "==> account $ACCOUNT / region $REGION / profile $PROFILE"
 
 # --- DynamoDB -------------------------------------------------------------
 if aws dynamodb describe-table --table-name "$TABLE" >/dev/null 2>&1; then

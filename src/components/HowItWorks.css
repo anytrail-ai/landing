@@ -8,7 +8,7 @@
   color: var(--text-faint);
 }
 
-/* the two ways an opportunity starts — alternatives, so no numbers and no
+/* the two ways an opportunity starts: alternatives, so no numbers and no
    connector line between them */
 .how__entries {
   margin: 0;

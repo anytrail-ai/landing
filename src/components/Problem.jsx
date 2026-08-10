@@ -10,7 +10,7 @@ function Problem() {
     <Section label={c.label} title={c.title} className="problem" wide>
       <p>{c.intro}</p>
       {/* Two groups: demand that was never found, and demand that was answered
-          too late. The split is the positioning — outbound and inbound are the
+          too late. The split is the positioning: outbound and inbound are the
           same leak seen from two ends. */}
       {c.groups.map((group) => (
         <div key={group.label} className="problem__group">

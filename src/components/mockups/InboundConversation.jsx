@@ -1,7 +1,7 @@
 import './InboundConversation.css'
 import { useLanguage } from '../../i18n/useLanguage'
 
-/* Illustrative conversation — shows the diagnosis step, not a real customer. */
+/* Illustrative conversation: shows the diagnosis step, not a real customer. */
 function InboundConversation() {
   const { copy } = useLanguage()
   const c = copy.conversation

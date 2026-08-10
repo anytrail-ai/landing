@@ -15,7 +15,7 @@ export const THANKS_URL = {
 }
 
 // WhatsApp number in E.164 without '+' or spaces, e.g. '5215512345678'.
-// Leave empty to hide the WhatsApp CTA entirely — nothing renders until this
+// Leave empty to hide the WhatsApp CTA entirely. Nothing renders until this
 // is set, so shipping it blank is safe.
 export const WHATSAPP_NUMBER = import.meta.env?.VITE_WHATSAPP_NUMBER ?? ''
 

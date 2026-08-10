@@ -180,9 +180,12 @@ const llms = `# Anytrail
 > ${COPY.en.meta.description}
 
 Anytrail is an AI sales agent platform for industrial equipment companies,
-manufacturers, and distributors. It detects buying signals, answers inbound
-inquiries, diagnoses the application, collects the technical details needed to
-quote, follows up, and hands qualified opportunities to the sales team.
+manufacturers, and distributors. It works demand in both directions: outbound,
+where it surfaces accounts that match what the company sells and opens the
+conversation on WhatsApp, email, or LinkedIn; and inbound, where it answers
+every inquiry the moment it lands. Either way the same agent diagnoses the
+application, collects the technical details needed to quote, follows up, and
+hands qualified opportunities to the sales team.
 
 ## Pages
 

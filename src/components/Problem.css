@@ -1,3 +1,19 @@
+.problem__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.problem__group-label {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
 .problem__grid {
   margin: var(--space-2) 0 0;
   padding: 0;
@@ -5,6 +21,11 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
+}
+
+/* the group already supplies the gap under its label */
+.problem__group .problem__grid {
+  margin-top: 0;
 }
 
 .problem__card {

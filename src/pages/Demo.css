@@ -431,3 +431,8 @@
 .demo-page {
   padding-top: var(--space-12);
 }
+
+.demo-lead-steps {
+  margin-bottom: var(--space-3);
+  font-size: 14px;
+}

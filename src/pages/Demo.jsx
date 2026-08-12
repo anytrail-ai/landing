@@ -77,6 +77,7 @@ export default function Demo() {
   const [icp, setIcp] = useState(null)
   const [leads, setLeads] = useState(null)
   const [leadsPending, setLeadsPending] = useState(false)
+  const [leadSteps, setLeadSteps] = useState([])
 
   const [messages, setMessages] = useState([])
   const [draft, setDraft] = useState('')
@@ -100,7 +101,8 @@ export default function Demo() {
       setStage('chat')
       if (wantsProspects) {
         setLeadsPending(true)
-        prospects(sid)
+        setLeadSteps(['Deriving your ideal customer profile…'])
+        prospects(sid, (step) => setLeadSteps((prev) => [...prev, step]))
           .then((r) => {
             setIcp(r.icp)
             setLeads(r.leads)
@@ -300,6 +302,16 @@ export default function Demo() {
           {wantsProspects && (
             <aside className="demo-card demo-leads">
               <h2>Your ICP + 5 leads</h2>
+              {leadsPending && (
+                <div className="demo-steps demo-lead-steps">
+                  {leadSteps.map((st, i) => (
+                    <p key={i} className={i === leadSteps.length - 1 ? 'demo-step demo-step-active' : 'demo-step'}>
+                      {i === leadSteps.length - 1 ? '● ' : '✓ '}
+                      {st}
+                    </p>
+                  ))}
+                </div>
+              )}
               {leadsPending && (
                 <div className="demo-skeleton" aria-label="Finding your leads…">
                   <div className="demo-skel demo-skel-icp" />

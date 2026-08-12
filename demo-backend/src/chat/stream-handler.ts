@@ -85,7 +85,9 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
     if (action === 'prospects') {
       try {
         sse(stream, 'step', { step: 'Deriving your ideal customer profile…' });
-        const result = await prospectsForSession(sessionId);
+        const result = await prospectsForSession(sessionId, (step) =>
+          sse(stream, 'step', { step }),
+        );
         sse(stream, 'prospects', result);
         sse(stream, 'done', {});
       } catch (err) {

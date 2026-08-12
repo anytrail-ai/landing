@@ -30,7 +30,10 @@ const whyFitSchema = z.object({ reasons: z.array(z.string()) });
 // subsidiaries, competitors, or the visitor themselves.
 const WHY_FIT_SYSTEM = `For each prospect company, write one specific sentence on why it fits the seller's ICP. Write exactly "SKIP" instead when the prospect is a competitor or subsidiary of the seller, OR when it does not plausibly match the ICP segments (wrong industry, consumer-only, unknown business with no evidence of fit). Only keep prospects a salesperson would actually call. Answer with JSON: {"reasons": string[]} — same order and count as the prospects given. No commentary.`;
 
-export async function prospectsForSession(sessionId: string): Promise<ProspectsResult> {
+export async function prospectsForSession(
+  sessionId: string,
+  onStep: (step: string) => void = () => {},
+): Promise<ProspectsResult> {
   const lead = await docClient().send(
     new GetCommand({ TableName: TABLE_NAME, Key: keys.lead(sessionId) }),
   );
@@ -40,6 +43,7 @@ export async function prospectsForSession(sessionId: string): Promise<ProspectsR
   if (!profile) throw new Error('not_profiled');
 
   const icp = await deriveIcp(profile);
+  onStep('Got it. Searching real companies that match your ICP…');
   const filters = await icpToApolloFilters(icp, profile);
   const apiKey = await getSecret('APOLLO_SECRET_ARN');
 
@@ -58,6 +62,7 @@ export async function prospectsForSession(sessionId: string): Promise<ProspectsR
     return new Map<string, never>();
   });
 
+  onStep(`Scoring ${orgs.length} candidates for fit…`);
   const raw = await converseJson(
     WHY_FIT_SYSTEM,
     `Seller: ${profile.companyName} — ${profile.positioning}\nICP: ${icp.icp_summary}\nProspects:\n${orgs

@@ -45,7 +45,11 @@ export async function prospectsForSession(sessionId: string): Promise<ProspectsR
 
   const orgs = await searchOrganizations(filters, domain, apiKey);
   // Contacts are best-effort; org list alone is still a valid result.
-  const contacts = await findContacts(
+  // APOLLO_ENRICH=disabled skips people search + reveal entirely (each reveal
+  // spends an Apollo enrichment credit).
+  const contacts = process.env.APOLLO_ENRICH === 'disabled'
+    ? new Map<string, never>()
+    : await findContacts(
     orgs.map((o) => ({ id: o.id, domain: o.primary_domain ?? null })),
     icp.buyer_titles,
     apiKey,

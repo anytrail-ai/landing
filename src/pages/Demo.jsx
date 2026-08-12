@@ -6,6 +6,26 @@ import './Demo.css'
 // products, optional ICP + 5 Apollo leads. Backend lives in anytrail-ai/
 // public-demo; this page is only the frontend, wrapped by the landing's
 // Navbar/Footer via App.jsx.
+// Products the agent mentions get their card (with photo) attached under the
+// bubble. Match on the full name or on distinctive model-code tokens (mixed
+// letters+digits, length >= 4) so "the S2EM1500A" still matches.
+function matchProducts(text, products) {
+  if (!text) return []
+  const lower = text.toLowerCase()
+  return products.filter((p) => {
+    if (lower.includes(p.name.toLowerCase())) return true
+    return p.name
+      .split(/[\s,()/-]+/)
+      .some(
+        (tok) =>
+          tok.length >= 4 &&
+          /\d/.test(tok) &&
+          /[a-z]/i.test(tok) &&
+          lower.includes(tok.toLowerCase()),
+      )
+  })
+}
+
 const ERRORS = {
   invalid_website: "We couldn't use that website address — check the URL and try again.",
   site_unreadable: "We couldn't read that site. Try another URL (maybe the www version).",
@@ -181,11 +201,30 @@ export default function Demo() {
               )}
               {messages.flatMap((m, i) => {
                 const parts = m.text ? m.text.split(/\n{2,}/).filter(Boolean) : ['']
-                return parts.map((part, j) => (
-                  <div key={`${i}-${j}`} className={`demo-bubble demo-bubble-${m.role}`}>
-                    {part || <span className="demo-typing">…</span>}
-                  </div>
-                ))
+                return parts.flatMap((part, j) => {
+                  const bubble = (
+                    <div key={`${i}-${j}`} className={`demo-bubble demo-bubble-${m.role}`}>
+                      {part || <span className="demo-typing">…</span>}
+                    </div>
+                  )
+                  const matched =
+                    m.role === 'assistant' && !busy
+                      ? matchProducts(part, profile.products).filter((p) => p.imageUrl)
+                      : []
+                  if (!matched.length) return [bubble]
+                  return [
+                    bubble,
+                    <div key={`${i}-${j}-cards`} className="demo-inline-cards">
+                      {matched.slice(0, 2).map((p, k) => (
+                        <div key={k} className="demo-product demo-product-inline">
+                          <img src={p.imageUrl} alt={p.name} loading="lazy" onError={(e) => (e.target.style.display = 'none')} />
+                          <strong>{p.name}</strong>
+                          {p.price && <span className="demo-price">{p.price}</span>}
+                        </div>
+                      ))}
+                    </div>,
+                  ]
+                })
               })}
               <div ref={chatEndRef} />
             </div>

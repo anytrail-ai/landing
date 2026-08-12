@@ -309,3 +309,14 @@
   color: var(--accent);
   font-weight: 600;
 }
+
+.demo-inline-cards {
+  display: flex;
+  gap: var(--space-3);
+  align-self: flex-start;
+  max-width: 85%;
+}
+
+.demo-product-inline {
+  flex: 0 1 150px;
+}

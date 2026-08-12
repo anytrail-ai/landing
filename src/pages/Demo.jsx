@@ -162,11 +162,14 @@ export default function Demo() {
                   your site.
                 </p>
               )}
-              {messages.map((m, i) => (
-                <div key={i} className={`demo-bubble demo-bubble-${m.role}`}>
-                  {m.text || <span className="demo-typing">…</span>}
-                </div>
-              ))}
+              {messages.flatMap((m, i) => {
+                const parts = m.text ? m.text.split(/\n{2,}/).filter(Boolean) : ['']
+                return parts.map((part, j) => (
+                  <div key={`${i}-${j}`} className={`demo-bubble demo-bubble-${m.role}`}>
+                    {part || <span className="demo-typing">…</span>}
+                  </div>
+                ))
+              })}
               <div ref={chatEndRef} />
             </div>
             {showEndScreen && (

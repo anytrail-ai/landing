@@ -391,3 +391,38 @@
   height: 13px;
   width: 90%;
 }
+
+.demo-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.demo-learned h2 {
+  font-family: var(--display);
+  font-size: 20px;
+  margin: 0 0 var(--space-1);
+}
+
+.demo-learned .demo-hint {
+  margin: 0 0 var(--space-3);
+}
+
+.demo-learned-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-top: 1px solid var(--border);
+  padding: var(--space-2) 0;
+  font-size: 14px;
+}
+
+.demo-learned-row img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  background: var(--surface-muted);
+  border-radius: 8px;
+  flex-shrink: 0;
+}

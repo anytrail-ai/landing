@@ -170,23 +170,6 @@ export default function Demo() {
         </section>
       )}
 
-      {stage === 'chat' && profile && profile.products.length > 0 && (
-        <section className="demo-catalog">
-          <h2>What the agent learned from your site</h2>
-          <div className="demo-catalog-row">
-            {profile.products.slice(0, 6).map((p, i) => (
-              <div key={i} className="demo-product">
-                {p.imageUrl && (
-                  <img src={p.imageUrl} alt={p.name} loading="lazy" onError={(e) => (e.target.style.display = 'none')} />
-                )}
-                <strong>{p.name}</strong>
-                {p.price && <span className="demo-price">{p.price}</span>}
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
       {stage === 'chat' && profile && (
         <section className="demo-stage">
           <div className="demo-chat demo-card">
@@ -267,6 +250,24 @@ export default function Demo() {
             )}
           </div>
 
+          <div className="demo-side">
+          {profile.products.length > 0 && (
+            <aside className="demo-card demo-learned">
+              <h2>What the agent learned</h2>
+              <p className="demo-hint">From {profile.companyName}'s website, just now.</p>
+              {profile.products.slice(0, 6).map((p, i) => (
+                <div key={i} className="demo-learned-row">
+                  {p.imageUrl && (
+                    <img src={p.imageUrl} alt="" loading="lazy" onError={(e) => (e.target.style.display = 'none')} />
+                  )}
+                  <div>
+                    <strong>{p.name}</strong>
+                    {p.price && <span className="demo-price"> {p.price}</span>}
+                  </div>
+                </div>
+              ))}
+            </aside>
+          )}
           {wantsProspects && (
             <aside className="demo-card demo-leads">
               <h2>Your ICP + 5 leads</h2>
@@ -325,6 +326,7 @@ export default function Demo() {
               ))}
             </aside>
           )}
+          </div>
         </section>
       )}
     </div>

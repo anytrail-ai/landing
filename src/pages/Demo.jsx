@@ -289,6 +289,12 @@ export default function Demo() {
                         l.contact.name
                       )}
                       {l.contact.title ? ` — ${l.contact.title}` : ''}
+                      {l.contact.email && (
+                        <>
+                          {' · '}
+                          <a href={`mailto:${l.contact.email}`}>{l.contact.email}</a>
+                        </>
+                      )}
                     </span>
                   )}
                   <p>{l.whyFit}</p>

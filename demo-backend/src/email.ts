@@ -72,7 +72,7 @@ export function renderProspectsEmail(
                 l.contact.linkedinUrl
                   ? `<a href="${esc(l.contact.linkedinUrl)}" style="color:${C.accent}">${esc(l.contact.name)}</a>`
                   : esc(l.contact.name)
-              }${l.contact.title ? ` <span style="color:${C.muted}">— ${esc(l.contact.title)}</span>` : ''}</div>`
+              }${l.contact.title ? ` <span style="color:${C.muted}">— ${esc(l.contact.title)}</span>` : ''}${l.contact.email ? `<br/><a href="mailto:${esc(l.contact.email)}" style="color:${C.accent};font-size:13px">${esc(l.contact.email)}</a>` : ''}</div>`
             : ''
         }
         <div style="color:${C.muted};font-size:14px;margin-top:6px;line-height:1.5">${esc(l.whyFit)}</div>
@@ -85,7 +85,7 @@ export function renderProspectsEmail(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.pageBg};padding:32px 16px"><tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;font-family:'Funnel Sans','Segoe UI',system-ui,sans-serif;color:${C.text}">
   <tr><td style="padding:0 8px 16px">
-    <img src="https://demo.anytrail.ai/anytrail-mark.png" alt="" height="24" style="height:24px;width:auto;vertical-align:middle"/>
+    <img src="https://www.anytrail.ai/anytrail-mark.png" alt="" height="24" style="height:24px;width:auto;vertical-align:middle"/>
     <span style="font-family:'Montserrat','Funnel Sans',system-ui,sans-serif;font-weight:300;font-size:20px;letter-spacing:0.01em;vertical-align:middle">&nbsp;anytrail</span>
     <span style="color:${C.faint};font-size:13px;vertical-align:middle"> &nbsp;·&nbsp; demo results</span>
   </td></tr>

@@ -15,7 +15,7 @@ export interface ProspectLead {
   location: string | null;
   employees: number | null;
   industry: string | null;
-  contact: { name: string; title: string | null; linkedinUrl: string | null } | null;
+  contact: { name: string; title: string | null; linkedinUrl: string | null; email: string | null } | null;
   whyFit: string;
 }
 
@@ -46,10 +46,13 @@ export async function prospectsForSession(sessionId: string): Promise<ProspectsR
   const orgs = await searchOrganizations(filters, domain, apiKey);
   // Contacts are best-effort; org list alone is still a valid result.
   const contacts = await findContacts(
-    orgs.map((o) => o.id),
+    orgs.map((o) => ({ id: o.id, domain: o.primary_domain ?? null })),
     icp.buyer_titles,
     apiKey,
-  ).catch(() => new Map<string, never>());
+  ).catch((err) => {
+    console.error('contacts_failed', err);
+    return new Map<string, never>();
+  });
 
   const raw = await converseJson(
     WHY_FIT_SYSTEM,
@@ -71,7 +74,7 @@ export async function prospectsForSession(sessionId: string): Promise<ProspectsR
         location: orgLocation(o),
         employees: o.estimated_num_employees,
         industry: o.industry,
-        contact: c ? { name: c.name, title: c.title, linkedinUrl: c.linkedin_url } : null,
+        contact: c ? { name: c.name, title: c.title, linkedinUrl: c.linkedin_url, email: c.email } : null,
         whyFit: why ?? 'Matches the ICP segments and size.',
       };
     })

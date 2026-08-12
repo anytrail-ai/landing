@@ -55,7 +55,7 @@ export default function Demo() {
   const [ended, setEnded] = useState(false)
   const [showEndScreen, setShowEndScreen] = useState(false)
   const [reviewing, setReviewing] = useState(false)
-  const chatEndRef = useRef(null)
+  const chatLogRef = useRef(null)
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -101,7 +101,8 @@ export default function Demo() {
           copy[copy.length - 1] = { ...last, text: last.text + delta }
           return copy
         })
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+        const log = chatLogRef.current
+        if (log) log.scrollTop = log.scrollHeight
       })
       if (nowEnded) {
         setTimeout(() => {
@@ -176,7 +177,7 @@ export default function Demo() {
             <header className="demo-chat-head">
               <strong>{profile.companyName}</strong> — AI sales agent
             </header>
-            <div className={`demo-chat-log${ended && !reviewing ? ' demo-chat-log-fade' : ''}`}>
+            <div ref={chatLogRef} className={`demo-chat-log${ended && !reviewing ? ' demo-chat-log-fade' : ''}`}>
               {messages.length === 0 && (
                 <p className="demo-hint">
                   Ask anything a customer would — products, prices, use cases. It answers from
@@ -210,7 +211,6 @@ export default function Demo() {
                   ]
                 })
               })}
-              <div ref={chatEndRef} />
             </div>
             {showEndScreen && !reviewing && (
               <div className="demo-end-screen">
@@ -251,7 +251,7 @@ export default function Demo() {
           </div>
 
           <div className="demo-side">
-          {profile.products.length > 0 && (
+          {false && profile.products.length > 0 && (
             <aside className="demo-card demo-learned">
               <h2>What the agent learned</h2>
               <p className="demo-hint">From {profile.companyName}'s website, just now.</p>

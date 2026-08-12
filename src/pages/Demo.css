@@ -426,3 +426,8 @@
   border-radius: 8px;
   flex-shrink: 0;
 }
+
+/* Breathing room below the landing navbar */
+.demo-page {
+  padding-top: var(--space-12);
+}

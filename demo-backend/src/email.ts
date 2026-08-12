@@ -49,7 +49,7 @@ export function renderProspectsEmail(
     'This took our AI about a minute. Imagine it working your real pipeline: https://anytrail.ai',
     '',
     '— Anytrail',
-    '(You requested this one-time email at demo.anytrail.ai. No follow-ups.)',
+    '(You requested this one-time email at anytrail.ai/demo. No follow-ups.)',
   ].join('\n');
 
   const leadRows = leads
@@ -105,7 +105,7 @@ export function renderProspectsEmail(
     </td></tr></table>
   </td></tr>
   <tr><td style="padding:16px 8px;color:${C.faint};font-size:12px;line-height:1.5">
-    You requested this one-time email at <a href="https://demo.anytrail.ai" style="color:${C.faint}">demo.anytrail.ai</a>. No follow-ups, no list.<br/>
+    You requested this one-time email at <a href="https://anytrail.ai/demo" style="color:${C.faint}">anytrail.ai/demo</a>. No follow-ups, no list.<br/>
     Anytrail — AI sales agents for industrial companies · <a href="https://anytrail.ai" style="color:${C.accent}">anytrail.ai</a>
   </td></tr>
 </table>

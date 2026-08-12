@@ -54,11 +54,11 @@ export async function extract(sessionId, onStep) {
   return result
 }
 
-export async function prospects(sessionId) {
+export async function prospects(sessionId, onStep = () => {}) {
   let result = null
   await streamRequest(
     { action: 'prospects', sessionId },
-    { prospects: (d) => (result = d) },
+    { step: (d) => onStep(d.step), prospects: (d) => (result = d) },
   )
   if (!result) throw new Error('internal')
   return result

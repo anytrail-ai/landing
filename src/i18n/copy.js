@@ -119,6 +119,14 @@ export const COPY = {
       body: "Check your email for the calendar invite. Before we meet, we'll send an inquiry through your own inbound channels and time how long a reply takes, so we can show you exactly where opportunities are being lost today.",
       back: 'Back to home',
     },
+    demo: {
+      meta: {
+        title: 'Live Demo | Anytrail',
+        description:
+          'See an AI sales agent built on your own website in one minute. It learns your products and sells them back to you — plus your ideal customer profile and 5 matching leads.',
+        ogLocale: 'en_US',
+      },
+    },
     footer: {
       tagline: 'AI sales agents for industrial equipment companies. © 2026 Anytrail',
     },
@@ -242,6 +250,14 @@ export const COPY = {
       body: 'Revisa tu correo para la invitación. Antes de la reunión, enviaremos una consulta por tus propios canales de ventas entrantes y mediremos cuánto tarda la respuesta, para mostrarte exactamente dónde se están perdiendo oportunidades hoy.',
       back: 'Volver al inicio',
     },
+    demo: {
+      meta: {
+        title: 'Demo en Vivo | Anytrail',
+        description:
+          'Mira un agente de ventas con IA construido sobre tu propio sitio web en un minuto. Aprende tus productos y te los vende — más tu perfil de cliente ideal y 5 prospectos.',
+        ogLocale: 'es_ES',
+      },
+    },
     footer: {
       tagline: 'Agentes de ventas con IA para empresas de equipo industrial. © 2026 Anytrail',
     },
@@ -257,8 +273,8 @@ export const LANG_PATH = { en: '/', es: '/es' }
 // Spanish visitor never sees an English URL. prerender.js walks this to decide
 // what to render, so adding a page here is enough to get it built.
 export const ROUTES = {
-  en: { home: '/', thanks: '/thanks' },
-  es: { home: '/es', thanks: '/es/gracias' },
+  en: { home: '/', thanks: '/thanks', demo: '/demo' },
+  es: { home: '/es', thanks: '/es/gracias', demo: '/es/demo' },
 }
 
 // Pages that must never be indexed. A thank-you page ranking in search would

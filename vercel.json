@@ -6,8 +6,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/demo", "destination": "https://demo.anytrail.ai", "permanent": false },
-    { "source": "/demo/(.*)", "destination": "https://demo.anytrail.ai/$1", "permanent": false }
+    { "source": "/demo", "destination": "https://anytrail.ai", "permanent": false },
+    { "source": "/demo/(.*)", "destination": "https://anytrail.ai", "permanent": false }
   ],
   "headers": [
     {

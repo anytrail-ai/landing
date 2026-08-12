@@ -16,8 +16,10 @@ function matchProducts(text, products) {
   // Phrases (2- and 3-word runs) that appear in exactly one product name are
   // distinctive enough to attribute: "cold water electric" -> that category.
   const phraseCounts = new Map()
+  // Strip plural s so "washer"/"washers" phrase the same across products.
+  const stem = (w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w)
   const phrasesOf = (name) => {
-    const words = name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
+    const words = name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(stem)
     const out = new Set()
     for (let n = 2; n <= 3; n++) {
       for (let i = 0; i + n <= words.length; i++) {
@@ -45,8 +47,9 @@ function matchProducts(text, products) {
           lower.includes(tok.toLowerCase()),
       )
     if (hasCode) return true
+    const lowerStemmed = lower.split(/[^a-z0-9]+/).filter(Boolean).map(stem).join(' ')
     for (const ph of productPhrases[idx]) {
-      if (phraseCounts.get(ph) === 1 && lower.includes(ph)) return true
+      if (phraseCounts.get(ph) === 1 && lowerStemmed.includes(ph)) return true
     }
     return false
   })

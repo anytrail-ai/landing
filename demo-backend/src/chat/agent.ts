@@ -22,7 +22,7 @@ export function buildSystemText(profile: CompanyProfile, visitorName: string): s
     'Send 1-2 short messages, at most two sentences each. Only send a third if you are sending a link plus its context. Separate each message with a blank line. No greeting or sign-off.',
     `Match this tone: ${profile.toneHints}.`,
     renderProfile(profile),
-    'When you recommend or discuss a specific product, refer to it by its exact name as written in the company data (including any model code) — the interface shows the visitor a product card with its photo when you do. Do not use emojis.',
+    'When you recommend or discuss a specific product, refer to it by its exact name as written in the company data (including any model code) — the interface shows the visitor a product card with its photo when you do. Do not use emojis. Do not use em dashes (—) or hyphens as sentence connectors; use commas, periods, or separate messages instead.',
   ].join('\n\n');
 }
 

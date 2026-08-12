@@ -54,6 +54,7 @@ export default function Demo() {
   const [busy, setBusy] = useState(false)
   const [ended, setEnded] = useState(false)
   const [showEndScreen, setShowEndScreen] = useState(false)
+  const [reviewing, setReviewing] = useState(false)
   const chatEndRef = useRef(null)
 
   async function onSubmit(e) {
@@ -192,7 +193,7 @@ export default function Demo() {
             <header className="demo-chat-head">
               <strong>{profile.companyName}</strong> — AI sales agent
             </header>
-            <div className={`demo-chat-log${ended ? ' demo-chat-log-fade' : ''}`}>
+            <div className={`demo-chat-log${ended && !reviewing ? ' demo-chat-log-fade' : ''}`}>
               {messages.length === 0 && (
                 <p className="demo-hint">
                   Ask anything a customer would — products, prices, use cases. It answers from
@@ -228,7 +229,7 @@ export default function Demo() {
               })}
               <div ref={chatEndRef} />
             </div>
-            {showEndScreen && (
+            {showEndScreen && !reviewing && (
               <div className="demo-end-screen">
                 <p>
                   This whole conversation was handled by an AI sales agent built on your
@@ -237,6 +238,17 @@ export default function Demo() {
                 <a className="demo-btn" href="https://anytrail.ai">
                   Book a call with Anytrail
                 </a>
+                <button className="demo-link-btn" type="button" onClick={() => setReviewing(true)}>
+                  Review the conversation
+                </button>
+              </div>
+            )}
+            {reviewing && (
+              <div className="demo-review-bar">
+                <span>Demo complete. This conversation is read-only.</span>
+                <button className="demo-link-btn" type="button" onClick={() => setReviewing(false)}>
+                  Back
+                </button>
               </div>
             )}
             {!ended && (

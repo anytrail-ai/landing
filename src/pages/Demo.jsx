@@ -270,7 +270,18 @@ export default function Demo() {
           {wantsProspects && (
             <aside className="demo-card demo-leads">
               <h2>Your ICP + 5 leads</h2>
-              {leadsPending && <p className="demo-hint">Deriving your ideal customer profile…</p>}
+              {leadsPending && (
+                <div className="demo-skeleton" aria-label="Finding your leads…">
+                  <div className="demo-skel demo-skel-icp" />
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <div key={i} className="demo-skel-lead">
+                      <div className="demo-skel demo-skel-title" />
+                      <div className="demo-skel demo-skel-meta" />
+                      <div className="demo-skel demo-skel-body" />
+                    </div>
+                  ))}
+                </div>
+              )}
               {icp && <p className="demo-icp">{icp.icp_summary}</p>}
               {leads && leads.length === 0 && !leadsPending && (
                 <p className="demo-hint">Lead search came up empty this time.</p>

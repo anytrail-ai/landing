@@ -6,7 +6,7 @@ export const LIMITS = {
   /** Rate-limit window in seconds (one day). */
   windowSeconds: 86400,
   /** User messages per chat session; hitting it triggers the closing CTA. */
-  messagesPerSession: 6,
+  messagesPerSession: 8,
   /** Pages Firecrawl may fetch per domain. */
   crawlPageCap: 8,
   /** Days a crawled company profile stays cached per domain. */

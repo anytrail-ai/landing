@@ -1,0 +1,152 @@
+import * as cdk from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as apigwv2 from 'aws-cdk-lib/aws-apigatewayv2';
+import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
+import * as cwactions from 'aws-cdk-lib/aws-cloudwatch-actions';
+import * as sns from 'aws-cdk-lib/aws-sns';
+import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
+import * as path from 'node:path';
+
+interface ApiStackProps extends cdk.StackProps {
+  table: dynamodb.Table;
+}
+
+// Two Lambdas, both public by design (no Cognito — abuse control is
+// rate limiting + caps in code, see src/limits.ts):
+//  - ApiFn: JSON HTTP API for /demo/* (lead capture, extraction, prospects)
+//  - ChatFn: response-streaming Function URL for SSE chat
+export class ApiStack extends cdk.Stack {
+  readonly apiUrl: string;
+  readonly chatUrl: string;
+
+  constructor(scope: Construct, id: string, props: ApiStackProps) {
+    super(scope, id, props);
+
+    const firecrawlSecret = new secretsmanager.Secret(this, 'FirecrawlKey', {
+      secretName: 'anytrail/demo/firecrawl',
+      description: 'Firecrawl API key for demo.anytrail.ai site extraction',
+    });
+    const apolloSecret = new secretsmanager.Secret(this, 'ApolloKey', {
+      secretName: 'anytrail/demo/apollo',
+      description: 'Apollo API key for demo.anytrail.ai lead sourcing',
+    });
+    const resendSecret = new secretsmanager.Secret(this, 'ResendKey', {
+      secretName: 'anytrail/demo/resend',
+      description: 'Resend API key for demo.anytrail.ai branded email',
+    });
+    const slackWebhookSecret = new secretsmanager.Secret(this, 'SlackWebhook', {
+      secretName: 'anytrail/demo/slack-webhook',
+      description: 'Slack incoming-webhook URL for demo signup pings',
+    });
+
+    const common = {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      memorySize: 1024,
+      timeout: cdk.Duration.seconds(120),
+      environment: {
+        TABLE_NAME: props.table.tableName,
+        FIRECRAWL_SECRET_ARN: firecrawlSecret.secretArn,
+        APOLLO_SECRET_ARN: apolloSecret.secretArn,
+        RESEND_SECRET_ARN: resendSecret.secretArn,
+        EMAIL_SENDER: 'Anytrail <demo@anytrail.ai>',
+        EMAIL_TEAM_COPY: 'root@anytrail.ai',
+        SLACK_WEBHOOK_SECRET_ARN: slackWebhookSecret.secretArn,
+        // Optional email fallback for signup pings; empty = Slack only.
+        NOTIFY_EMAIL: '',
+        // Kill switch (ANY-119): flip to 'disabled' in the console to stop all
+        // outbound calls (Firecrawl/Apollo) without a redeploy.
+        DEMO_OUTBOUND: 'enabled',
+      },
+    };
+
+    const apiFn = new NodejsFunction(this, 'ApiFn', {
+      ...common,
+      entry: path.join(__dirname, '../src/api/handler.ts'),
+    });
+
+    const chatFn = new NodejsFunction(this, 'ChatFn', {
+      ...common,
+      entry: path.join(__dirname, '../src/chat/stream-handler.ts'),
+      timeout: cdk.Duration.minutes(5),
+    });
+
+    for (const fn of [apiFn, chatFn]) {
+      props.table.grantReadWriteData(fn);
+      firecrawlSecret.grantRead(fn);
+      apolloSecret.grantRead(fn);
+      resendSecret.grantRead(fn);
+      slackWebhookSecret.grantRead(fn);
+      fn.addToRolePolicy(
+        new iam.PolicyStatement({
+          actions: ['bedrock:InvokeModel', 'bedrock:InvokeModelWithResponseStream'],
+          resources: ['*'],
+        }),
+      );
+    }
+
+    // Cost guardrails (ANY-119): Bedrock + Lambda invocation spikes page the
+    // team via SNS email.
+    const alarmTopic = new sns.Topic(this, 'AlarmTopic');
+    alarmTopic.addSubscription(
+      new subscriptions.EmailSubscription('root@anytrail.ai'),
+    );
+    const alarms = [
+      new cloudwatch.Alarm(this, 'BedrockSpike', {
+        metric: new cloudwatch.Metric({
+          namespace: 'AWS/Bedrock',
+          metricName: 'Invocations',
+          statistic: 'Sum',
+          period: cdk.Duration.hours(1),
+        }),
+        threshold: 500,
+        evaluationPeriods: 1,
+        treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+        alarmDescription: 'demo.anytrail.ai: >500 Bedrock invocations in an hour',
+      }),
+      new cloudwatch.Alarm(this, 'ApiSpike', {
+        metric: apiFn.metricInvocations({ period: cdk.Duration.hours(1), statistic: 'Sum' }),
+        threshold: 2000,
+        evaluationPeriods: 1,
+        treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+        alarmDescription: 'demo.anytrail.ai: >2000 API Lambda invocations in an hour',
+      }),
+    ];
+    for (const alarm of alarms) alarm.addAlarmAction(new cwactions.SnsAction(alarmTopic));
+
+    const httpApi = new apigwv2.HttpApi(this, 'DemoHttpApi', {
+      corsPreflight: {
+        allowOrigins: ['*'],
+        allowMethods: [apigwv2.CorsHttpMethod.ANY],
+        allowHeaders: ['content-type'],
+      },
+    });
+    // GET+POST only — ANY would also match OPTIONS, swallowing the CORS
+    // preflight before the gateway's corsPreflight config can answer it.
+    httpApi.addRoutes({
+      path: '/demo/{proxy+}',
+      methods: [apigwv2.HttpMethod.GET, apigwv2.HttpMethod.POST],
+      integration: new HttpLambdaIntegration('ApiIntegration', apiFn),
+    });
+
+    const chatUrl = chatFn.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: ['*'],
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ['content-type'],
+      },
+    });
+
+    this.apiUrl = httpApi.apiEndpoint;
+    this.chatUrl = chatUrl.url;
+    new cdk.CfnOutput(this, 'ApiUrl', { value: this.apiUrl });
+    new cdk.CfnOutput(this, 'ChatUrl', { value: this.chatUrl });
+  }
+}

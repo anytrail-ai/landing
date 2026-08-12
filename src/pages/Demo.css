@@ -267,3 +267,45 @@
   color: var(--text-faint);
   font-size: 13px;
 }
+
+.demo-catalog {
+  padding-top: var(--space-8);
+}
+
+.demo-catalog h2 {
+  font-family: var(--display);
+  font-size: 20px;
+  margin: 0 0 var(--space-4);
+}
+
+.demo-catalog-row {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.demo-product {
+  flex: 0 0 160px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 13px;
+}
+
+.demo-product img {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+  background: var(--surface-muted);
+  border-radius: 8px;
+}
+
+.demo-price {
+  color: var(--accent);
+  font-weight: 600;
+}

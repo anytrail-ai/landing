@@ -1,0 +1,8 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/app.ts",
+  "watch": { "include": ["**"], "exclude": ["node_modules", "cdk.out", "dist"] },
+  "context": {
+    "@aws-cdk/core:defaultCrossStackReferences": "strong",
+    "siteCertArn": "arn:aws:acm:us-east-1:648377378513:certificate/c7d8217c-2d51-4dd0-99ee-1582253b6972"
+  }
+}

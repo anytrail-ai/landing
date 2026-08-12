@@ -149,6 +149,23 @@ export default function Demo() {
         </section>
       )}
 
+      {stage === 'chat' && profile && profile.products.length > 0 && (
+        <section className="demo-catalog">
+          <h2>What the agent learned from your site</h2>
+          <div className="demo-catalog-row">
+            {profile.products.slice(0, 6).map((p, i) => (
+              <div key={i} className="demo-product">
+                {p.imageUrl && (
+                  <img src={p.imageUrl} alt={p.name} loading="lazy" onError={(e) => (e.target.style.display = 'none')} />
+                )}
+                <strong>{p.name}</strong>
+                {p.price && <span className="demo-price">{p.price}</span>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {stage === 'chat' && profile && (
         <section className="demo-stage">
           <div className="demo-chat demo-card">

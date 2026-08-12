@@ -32,3 +32,4 @@ dist-ssr
 # Generated telemetry report
 infra/telemetry/heatmap.html
 infra/telemetry/page.png
+demo-backend/cdk.out/

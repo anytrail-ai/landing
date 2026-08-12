@@ -57,6 +57,8 @@ export class ApiStack extends cdk.Stack {
         EMAIL_SENDER: 'Anytrail <agent@demo.anytrail.ai>',
         EMAIL_TEAM_COPY: 'root@anytrail.ai',
         SLACK_WEBHOOK_SECRET_ARN: slackWebhookSecret.secretArn,
+        // Flip to 'enabled' to resume contact reveals (1 Apollo credit each).
+        APOLLO_ENRICH: 'disabled',
         // Optional email fallback for signup pings; empty = Slack only.
         NOTIFY_EMAIL: '',
         // Kill switch (ANY-119): flip to 'disabled' in the console to stop all

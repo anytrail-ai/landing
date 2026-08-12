@@ -203,7 +203,7 @@ export default function Demo() {
       )}
 
       {stage === 'chat' && profile && (
-        <section className="demo-stage">
+        <section className={`demo-stage${wantsProspects ? '' : ' demo-stage-solo'}`}>
           <div className="demo-chat demo-card">
             <header className="demo-chat-head">
               <strong>{profile.companyName}</strong> — AI sales agent

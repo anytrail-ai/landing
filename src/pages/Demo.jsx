@@ -215,7 +215,9 @@ export default function Demo() {
                   your site.
                 </p>
               )}
-              {messages.flatMap((m, i) => {
+              {(() => {
+                const shownCards = new Set()
+                return messages.flatMap((m, i) => {
                 const parts = m.text ? m.text.split(/\n{2,}/).filter(Boolean) : ['']
                 return parts.flatMap((part, j) => {
                   const bubble = (
@@ -223,10 +225,16 @@ export default function Demo() {
                       {part || <span className="demo-typing">…</span>}
                     </div>
                   )
-                  const matched =
+                  const matched = (
                     m.role === 'assistant' && !busy
                       ? matchProducts(part, profile.products).filter((p) => p.imageUrl)
                       : []
+                  ).filter((p) => {
+                    // one card per product per conversation
+                    if (shownCards.has(p.name)) return false
+                    shownCards.add(p.name)
+                    return true
+                  })
                   if (!matched.length) return [bubble]
                   return [
                     bubble,
@@ -241,7 +249,8 @@ export default function Demo() {
                     </div>,
                   ]
                 })
-              })}
+                })
+              })()}
             </div>
             {showEndScreen && !reviewing && (
               <div className="demo-end-screen">

@@ -25,7 +25,7 @@ export const companyProfileSchema = z.object({
 export type CompanyProfile = z.infer<typeof companyProfileSchema>;
 
 const DISTILL_SYSTEM = `You turn website content into a structured company profile for a sales assistant. Answer with a single JSON object matching:
-{"companyName": string, "positioning": string (one line), "products": [{"name": string, "description": string, "price": string|null, "imageUrl": string|null (absolute https image URL for this product taken from the page markdown, or null)}], "targetAudience": string, "language": string (BCP-47 code of the site's language), "toneHints": string (how the company talks), "qualifyingQuestions": string[] (3-5 questions a good salesperson for THIS company would ask to qualify a buyer and pick the right product — application/use case, volume, constraints)}
+{"companyName": string, "positioning": string (one line), "products": [{"name": string, "description": string, "price": string|null, "imageUrl": string|null (absolute https URL of a photo showing THIS product itself, taken from the page markdown; skip logos, banners, hero/lifestyle shots, and site-wide images — if no clear product photo exists, use null)}], "targetAudience": string, "language": string (BCP-47 code of the site's language), "toneHints": string (how the company talks), "qualifyingQuestions": string[] (3-5 questions a good salesperson for THIS company would ask to qualify a buyer and pick the right product — application/use case, volume, constraints)}
 Focus on products and services. Include prices only when visible. No commentary outside the JSON.`;
 
 const INPUT_CHAR_BUDGET = 60_000;
@@ -50,7 +50,7 @@ export async function distillProfile(pages: CrawledPage[]): Promise<CompanyProfi
 
 export async function getCachedProfile(domain: string): Promise<CompanyProfile | null> {
   const res = await docClient().send(
-    new GetCommand({ TableName: TABLE_NAME, Key: keys.profile(domain + '#v3') }),
+    new GetCommand({ TableName: TABLE_NAME, Key: keys.profile(domain + '#v4') }),
   );
   if (!res.Item?.profile) return null;
   const parsed = companyProfileSchema.safeParse(res.Item.profile);
@@ -62,7 +62,7 @@ export async function cacheProfile(domain: string, profile: CompanyProfile): Pro
     new PutCommand({
       TableName: TABLE_NAME,
       Item: {
-        ...keys.profile(domain + '#v3'),
+        ...keys.profile(domain + '#v4'),
         profile,
         createdAt: new Date().toISOString(),
         expiresAt: Math.floor(Date.now() / 1000) + LIMITS.profileCacheDays * 86400,

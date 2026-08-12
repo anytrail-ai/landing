@@ -12,9 +12,30 @@ import './Demo.css'
 function matchProducts(text, products) {
   if (!text) return []
   const lower = text.toLowerCase()
-  return products.filter((p) => {
+
+  // Phrases (2- and 3-word runs) that appear in exactly one product name are
+  // distinctive enough to attribute: "cold water electric" -> that category.
+  const phraseCounts = new Map()
+  const phrasesOf = (name) => {
+    const words = name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)
+    const out = new Set()
+    for (let n = 2; n <= 3; n++) {
+      for (let i = 0; i + n <= words.length; i++) {
+        const ph = words.slice(i, i + n).join(' ')
+        if (ph.length >= 8) out.add(ph)
+      }
+    }
+    return out
+  }
+  const productPhrases = products.map((p) => phrasesOf(p.name))
+  for (const set of productPhrases) {
+    for (const ph of set) phraseCounts.set(ph, (phraseCounts.get(ph) ?? 0) + 1)
+  }
+
+  return products.filter((p, idx) => {
     if (lower.includes(p.name.toLowerCase())) return true
-    return p.name
+    // Model codes: mixed letters+digits tokens like S2EM1500A
+    const hasCode = p.name
       .split(/[\s,()/-]+/)
       .some(
         (tok) =>
@@ -23,6 +44,11 @@ function matchProducts(text, products) {
           /[a-z]/i.test(tok) &&
           lower.includes(tok.toLowerCase()),
       )
+    if (hasCode) return true
+    for (const ph of productPhrases[idx]) {
+      if (phraseCounts.get(ph) === 1 && lower.includes(ph)) return true
+    }
+    return false
   })
 }
 

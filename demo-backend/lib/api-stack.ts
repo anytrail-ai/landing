@@ -54,7 +54,7 @@ export class ApiStack extends cdk.Stack {
         FIRECRAWL_SECRET_ARN: firecrawlSecret.secretArn,
         APOLLO_SECRET_ARN: apolloSecret.secretArn,
         RESEND_SECRET_ARN: resendSecret.secretArn,
-        EMAIL_SENDER: 'Anytrail <demo@anytrail.ai>',
+        EMAIL_SENDER: 'Anytrail <agent@demo.anytrail.ai>',
         EMAIL_TEAM_COPY: 'root@anytrail.ai',
         SLACK_WEBHOOK_SECRET_ARN: slackWebhookSecret.secretArn,
         // Optional email fallback for signup pings; empty = Slack only.

@@ -6,7 +6,7 @@
 import { outboundFetch } from './net/outbound-fetch';
 import { getSecret } from './secrets';
 
-const SENDER = process.env.EMAIL_SENDER ?? 'Anytrail <demo@anytrail.ai>';
+const SENDER = process.env.EMAIL_SENDER ?? 'Anytrail <agent@demo.anytrail.ai>';
 // Signup pings go to Slack (NOTIFY_WEBHOOK_URL). NOTIFY_EMAIL is a fallback
 // channel, empty by default — EMAIL_TEAM_COPY is only the BCC on lead emails.
 const TEAM = process.env.NOTIFY_EMAIL;

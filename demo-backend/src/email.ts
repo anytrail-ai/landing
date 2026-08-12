@@ -6,7 +6,7 @@ import { getSecret } from './secrets';
 import type { Icp } from './pipeline/icp';
 import type { ProspectLead } from './api/prospects';
 
-const SENDER = process.env.EMAIL_SENDER ?? 'Anytrail <demo@anytrail.ai>';
+const SENDER = process.env.EMAIL_SENDER ?? 'Anytrail <agent@demo.anytrail.ai>';
 const TEAM_COPY = process.env.EMAIL_TEAM_COPY;
 
 // Landing palette (web/src/index.css) inlined for email clients.

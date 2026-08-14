@@ -303,7 +303,7 @@ export const COPY = {
         title: 'Agenda una revisión de tu proceso comercial | Anytrail',
         description:
           'Agenda una videollamada de 30 minutos. Revisamos cómo tu empresa encuentra y responde nuevas oportunidades hoy, y dónde se están perdiendo ventas.',
-        ogLocale: 'es_MX',
+        ogLocale: 'es_ES',
       },
       title: 'Revisa mi proceso comercial',
       intro:

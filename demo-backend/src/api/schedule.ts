@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { getSecret } from '../secrets';
 import { SCHEDULE } from '../schedule/config';
 import { sendBookingEmails } from '../schedule/email';
+import { manageUrlFor } from '../schedule/links';
 import { generateSlots } from '../schedule/slots';
 import {
   type Booking,
@@ -12,10 +13,8 @@ import {
   moveBooking,
   UnknownBookingError,
 } from '../schedule/store';
-import { signBooking, verifyBooking } from '../schedule/token';
+import { verifyBooking } from '../schedule/token';
 import { normalizeWebsite } from './start';
-
-const SITE = 'https://www.anytrail.ai';
 
 // Re-exported from the store: moveBooking's atomic transaction can throw it
 // too (the row a caller was authorized against is gone by the time the
@@ -61,18 +60,6 @@ export async function openSlots(nowMs: number): Promise<string[]> {
   const generated = generateSlots(nowMs);
   const booked = new Set(await listBookedInstants(nowMs, SCHEDULE.horizonDays));
   return generated.filter((iso) => !booked.has(iso));
-}
-
-/**
- * The signature commits to the slot AND the booker's address, so a stale link
- * from a cancelled booking cannot control whoever books that slot next. The
- * email is never in the URL — it comes from the stored row at verify time.
- */
-async function manageUrlFor(b: Pick<Booking, 'slotStartUtc' | 'email' | 'lang'>): Promise<string> {
-  const secret = await getSecret('SCHEDULE_SECRET_ARN');
-  const path = b.lang === 'es' ? '/es/agenda' : '/schedule';
-  const sig = signBooking(b.slotStartUtc, b.email, secret);
-  return `${SITE}${path}?b=${encodeURIComponent(b.slotStartUtc)}&s=${sig}`;
 }
 
 export async function book(

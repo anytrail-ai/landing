@@ -30,7 +30,7 @@ No Calendly, no Cal.com, no third-party scheduler. We build it, on the infrastru
 Lives in one place, `demo-backend/src/schedule/config.ts`, the way `limits.ts` centralises caps:
 
 ```
-timezone      America/Mexico_City
+timezone      America/New_York
 hours         Mon-Fri 09:00-17:00
 slot          30 minutes
 leadTime      2 hours
@@ -38,7 +38,9 @@ horizon       14 days
 meetUrl       process.env.MEET_URL
 ```
 
-`MEET_URL` is set on the Lambdas in `api-stack.ts`. Changing hours is a config edit and a redeploy, never a code change.
+Hours are defined in **New York time**; every visitor sees them converted to their own zone (see Timezones below). `MEET_URL` is `https://meet.google.com/kzk-tpgh-sbm`, set on the Lambdas in `api-stack.ts` beside `EMAIL_SENDER`. Changing hours is a config edit and a redeploy, never a code change.
+
+The room link is permanent and reusable, so anyone who has ever booked keeps a working door into it. That is the accepted trade for having no calendar integration; if it becomes a problem the fix is a per-booking link, which needs the Google Calendar API this design deliberately avoids.
 
 ## Data model
 
@@ -66,11 +68,11 @@ Cancel deletes both rows, which reopens the slot. Reschedule transacts the new s
 
 The failure mode this design exists to avoid: slots that smear across a DST boundary, or a visitor who books 9am and arrives at 8am.
 
-- Slots are generated in the host timezone from the config above.
+- Slots are generated in `America/New_York` from the config above.
 - They cross the wire and land in DynamoDB as UTC instants.
 - The page renders them in the visitor's local zone via `Intl.DateTimeFormat`, with the zone named explicitly ("2:30 PM CST").
 
-A visitor in Madrid and one in Monterrey see the same instant, each labelled correctly. DST transitions are handled by generating in the host zone rather than by adding fixed offsets.
+A visitor in Madrid and one in Monterrey see the same instant, each labelled correctly, and neither is asked to do arithmetic. DST transitions are handled by generating in New York time rather than by adding a fixed offset , the US and Mexico no longer change clocks on the same dates, so a hardcoded offset would be wrong for weeks of every year.
 
 ## API
 

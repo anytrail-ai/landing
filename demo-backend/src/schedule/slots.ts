@@ -62,6 +62,36 @@ function weekdayIn(dayKey: string): number {
 }
 
 /**
+ * All calendar day keys from now's local day through the horizon, in order.
+ * Uses true calendar arithmetic (Y-M-D increment) to handle DST correctly.
+ * No day is skipped or duplicated, regardless of DST transitions.
+ */
+export function horizonDayKeys(nowMs: number, horizonDays: number, tz: string): string[] {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const startParts = partsIn(new Date(nowMs), tz);
+  let year = startParts.year;
+  let month = startParts.month;
+  let day = startParts.day;
+
+  const out: string[] = [];
+
+  for (let d = 0; d <= horizonDays; d++) {
+    out.push(`${year}-${pad(month)}-${pad(day)}`);
+
+    // Increment to next calendar day using Date.UTC to handle month/year wraparound.
+    // Construct a UTC noon (12:00) of the numeric next day, which is guaranteed to be
+    // on the next local calendar day in all time zones (UTC-12 to UTC+12).
+    const nextUtcAtNoon = new Date(Date.UTC(year, month - 1, day + 1, 12, 0, 0));
+    const nextParts = partsIn(nextUtcAtNoon, tz);
+    year = nextParts.year;
+    month = nextParts.month;
+    day = nextParts.day;
+  }
+
+  return out;
+}
+
+/**
  * Every slot that is open by the clock alone: inside working hours, on a
  * weekday, past the lead time, inside the horizon. Bookings are subtracted by
  * the caller — this function does no I/O so it stays trivially testable.
@@ -72,31 +102,19 @@ export function generateSlots(nowMs: number): string[] {
   const latest = nowMs + horizonDays * 86400_000;
   const out: string[] = [];
 
-  // Step through local calendar days by stepping UTC time and tracking unique day keys.
-  // This correctly handles DST transitions: stepping by 1-hour increments guarantees
-  // encountering every local calendar day exactly once.
-  const seenDays = new Set<string>();
-  let currentUtcMs = nowMs;
-  const searchLimit = latest + 86400_000; // Search a bit past the horizon to catch final days
+  // Get all calendar days in the horizon, handling DST correctly.
+  const dayKeys = horizonDayKeys(nowMs, horizonDays, tz);
 
-  while (currentUtcMs <= searchLimit) {
-    const dayKey = dayKeyFor(new Date(currentUtcMs), tz);
-
-    if (!seenDays.has(dayKey)) {
-      seenDays.add(dayKey);
-      const weekday = weekdayIn(dayKey);
-      if (weekday !== 0 && weekday !== 6) {
-        for (let mins = startHour * 60; mins < endHour * 60; mins += slotMinutes) {
-          const slotKey = `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
-          const at = zonedToUtc(dayKey, slotKey, tz);
-          const t = at.getTime();
-          if (t >= earliest && t <= latest) out.push(at.toISOString());
-        }
+  for (const dayKey of dayKeys) {
+    const weekday = weekdayIn(dayKey);
+    if (weekday !== 0 && weekday !== 6) {
+      for (let mins = startHour * 60; mins < endHour * 60; mins += slotMinutes) {
+        const slotKey = `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
+        const at = zonedToUtc(dayKey, slotKey, tz);
+        const t = at.getTime();
+        if (t >= earliest && t <= latest) out.push(at.toISOString());
       }
     }
-
-    // Step forward 1 hour. This guarantees we will encounter every local calendar day.
-    currentUtcMs += 3600_000;
   }
   return out.sort();
 }

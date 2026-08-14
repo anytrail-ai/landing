@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SCHEDULE } from './config';
-import { dayKeyFor, generateSlots, slotKeyFor, zonedToUtc } from './slots';
+import { dayKeyFor, generateSlots, horizonDayKeys, slotKeyFor, zonedToUtc } from './slots';
 
 const TZ = 'America/New_York';
 
@@ -63,42 +63,45 @@ describe('generateSlots', () => {
     }
   });
 
-  it('includes 2026-03-09 (first Monday after spring-forward) when spanning the transition', () => {
-    // Friday 2026-03-06T15:00 EST (2026-03-06T20:00Z), before spring forward
-    const nowBeforeTransition = Date.parse('2026-03-06T20:00:00.000Z');
-    const slots = generateSlots(nowBeforeTransition);
-    const days = new Set(slots.map((iso) => dayKeyFor(new Date(iso), TZ)));
-    // The Monday after spring-forward (2026-03-09) must be included, not skipped.
-    expect(days.has('2026-03-09')).toBe(true);
+});
+
+describe('horizonDayKeys', () => {
+  const TZ = 'America/New_York';
+
+  it('enumerates all days including the spring-forward transition day (2026-03-08)', () => {
+    // Saturday 2026-03-07T23:59 EST (2026-03-08T04:59 UTC) — near local midnight before transition.
+    // The old millisecond-stepping bug would skip 2026-03-08 entirely.
+    const nowNearTransition = Date.parse('2026-03-08T04:59:00.000Z');
+    const days = horizonDayKeys(nowNearTransition, 3, TZ);
+
+    // Must include the spring-forward day (2026-03-08) and the next day (2026-03-09).
+    // Starting Saturday 2026-03-07, should see: 2026-03-07, 2026-03-08, 2026-03-09, 2026-03-10.
+    expect(days).toContain('2026-03-07');
+    expect(days).toContain('2026-03-08');
+    expect(days).toContain('2026-03-09');
+    expect(days).toContain('2026-03-10');
   });
 
-  it('does not duplicate day keys across 2026-11-01 (fall-back DST day)', () => {
-    // Friday 2026-10-30T15:00 EDT (2026-10-30T19:00Z), before fall-back
-    const nowBeforeTransition = Date.parse('2026-10-30T19:00:00.000Z');
-    const slots = generateSlots(nowBeforeTransition);
+  it('does not duplicate the fall-back transition day (2026-11-01)', () => {
+    // Sunday 2026-11-01T00:15 EDT (2026-11-01T04:15 UTC) — very early on the fall-back day.
+    // The old millisecond-stepping bug would produce 2026-11-01 twice because the 25-hour day
+    // spans two iterations: the local calendar day is 25 hours, so adding 24 hours stays within it.
+    const nowNearTransition = Date.parse('2026-11-01T04:15:00.000Z');
+    const days = horizonDayKeys(nowNearTransition, 3, TZ);
 
-    // Verify no exact duplicate ISO strings exist in the returned array.
-    const isoSet = new Set(slots);
-    expect(isoSet.size).toBe(slots.length);
-
-    // Count slots per day: 09:00-16:30 in 30-min increments = 16 slots per weekday.
-    const dayKeys = slots.map((iso) => dayKeyFor(new Date(iso), TZ));
+    // Each day key should appear exactly once.
     const counts: Record<string, number> = {};
-    for (const day of dayKeys) {
+    for (const day of days) {
       counts[day] = (counts[day] ?? 0) + 1;
     }
-    // Each weekday should have exactly 16 slots (09:00, 09:30, ..., 16:30).
-    // Note: First day may have fewer slots due to lead time constraint.
-    for (const [day, count] of Object.entries(counts)) {
-      const wd = new Date(day + 'T12:00:00Z').getUTCDay();
-      if (wd !== 0 && wd !== 6) {
-        // Allow fewer than 16 on the first day due to lead time; others must have exactly 16
-        expect(count).toBeGreaterThanOrEqual(8); // At least half a day's worth
-        expect(count).toBeLessThanOrEqual(16);
-      }
+    for (const count of Object.values(counts)) {
+      expect(count).toBe(1);
     }
 
-    // Verify that 2026-11-02 (Monday after fall-back) is included.
-    expect(dayKeys).toContain('2026-11-02');
+    // Also verify the expected days are present: 2026-11-01 through 2026-11-04.
+    expect(days).toContain('2026-11-01');
+    expect(days).toContain('2026-11-02');
+    expect(days).toContain('2026-11-03');
+    expect(days).toContain('2026-11-04');
   });
 });

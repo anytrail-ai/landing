@@ -33,6 +33,7 @@ export interface Booking {
   remindedT1: boolean;
   createdAt: string;
   ip: string;
+  sequence?: number;
 }
 
 function keyFor(slotStartUtc: string) {

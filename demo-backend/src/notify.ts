@@ -20,6 +20,36 @@ export interface SignupInfo {
   ip: string;
 }
 
+/** Slack-incoming-webhook compatible POST. Never throws: a Slack outage must
+ *  never fail the visitor action that triggered it. */
+export async function postSlack(text: string): Promise<void> {
+  if (!process.env.SLACK_WEBHOOK_SECRET_ARN) return;
+  try {
+    const url = await getSecret('SLACK_WEBHOOK_SECRET_ARN');
+    const res = await outboundFetch(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    if (!res.ok) console.error('notify_slack_failed', res.status);
+  } catch (err) {
+    console.error('notify_slack_failed', err);
+  }
+}
+
+/** Booking ping (ANY-66). Fire-and-forget, like every other notification. */
+export async function notifyBooking(info: {
+  name: string;
+  email: string;
+  website: string;
+  when: string;
+  note: string;
+}): Promise<void> {
+  await postSlack(
+    `📅 Call booked: ${info.name} <${info.email}> — ${info.website}\n${info.when}${info.note ? `\nNote: ${info.note}` : ''}`,
+  );
+}
+
 export async function notifySignup(info: SignupInfo): Promise<void> {
   const line = `New demo signup: ${info.name} <${info.email}> — ${info.domain}${info.wantsProspects ? ' (wants ICP + leads)' : ''}`;
 
@@ -47,19 +77,7 @@ export async function notifySignup(info: SignupInfo): Promise<void> {
     );
   }
 
-  if (process.env.SLACK_WEBHOOK_SECRET_ARN) {
-    tasks.push(
-      getSecret('SLACK_WEBHOOK_SECRET_ARN').then((webhook) =>
-        outboundFetch(webhook, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ text: line }),
-        }).then((res) => {
-          if (!res.ok) console.error('notify_webhook_failed', res.status);
-        }),
-      ),
-    );
-  }
+  tasks.push(postSlack(line));
 
   const results = await Promise.allSettled(tasks);
   for (const r of results) {

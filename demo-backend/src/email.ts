@@ -1,6 +1,7 @@
 // Branded lead-delivery email via Resend (https://resend.com). Best-effort:
 // email is a bonus channel; failures log and never break the on-page result.
 // A copy goes to the team inbox so every outgoing lead list is visible.
+import { esc } from './html';
 import { outboundFetch } from './net/outbound-fetch';
 import { getSecret } from './secrets';
 import type { Icp } from './pipeline/icp';
@@ -21,10 +22,6 @@ const C = {
   accent: '#2f6f4f',
   accentSoft: '#e8f0eb',
 };
-
-function esc(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
 
 export function renderProspectsEmail(
   visitorName: string,

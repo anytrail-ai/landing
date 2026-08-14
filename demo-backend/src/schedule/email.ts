@@ -1,0 +1,209 @@
+import { createHash } from 'node:crypto';
+import { esc } from '../html';
+import { outboundFetch } from '../net/outbound-fetch';
+import { notifyBooking } from '../notify';
+import { getSecret } from '../secrets';
+import { MEET_URL, SCHEDULE } from './config';
+import { buildIcs } from './ics';
+import type { Booking } from './store';
+
+const SENDER = process.env.EMAIL_SENDER ?? 'Anytrail <agent@demo.anytrail.ai>';
+const TEAM = process.env.EMAIL_TEAM_COPY ?? '';
+const SITE = 'https://www.anytrail.ai';
+
+// Landing palette, same values as src/email.ts.
+const C = {
+  pageBg: '#fefdf6',
+  surface: '#ffffff',
+  border: '#e7e2d1',
+  text: '#111827',
+  muted: '#6b7280',
+  faint: '#9ca3af',
+  accent: '#2f6f4f',
+  accentSoft: '#e8f0eb',
+};
+
+/** "Thursday, August 20, 2026 at 2:30 PM EDT" in the visitor's language. */
+export function formatSlot(slotStartUtc: string, lang: 'en' | 'es'): string {
+  return new Intl.DateTimeFormat(lang === 'es' ? 'es-MX' : 'en-US', {
+    timeZone: SCHEDULE.timezone,
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  }).format(new Date(slotStartUtc));
+}
+
+/**
+ * Stable per booking, not per slot. `createdAt` survives a reschedule (move()
+ * spreads the existing booking), so the same calendar event gets updated.
+ */
+export function icsUidFor(b: Pick<Booking, 'email' | 'createdAt'>): string {
+  const digest = createHash('sha256')
+    .update(`${b.email.trim().toLowerCase()}|${b.createdAt}`)
+    .digest('hex')
+    .slice(0, 24);
+  return `anytrail-${digest}@anytrail.ai`;
+}
+
+const T = {
+  en: {
+    subject: (when: string) => `Your Anytrail call is booked: ${when}`,
+    heading: 'Your call is booked.',
+    join: 'Join the call',
+    manage: 'Need to change it? Cancel or move your call',
+    demoLead: 'While you wait, run the agent on your own catalog:',
+    demoCta: 'Try the live demo',
+    minutes: `${SCHEDULE.slotMinutes} minutes, by video.`,
+    remind24: (when: string) => `Reminder: your Anytrail call is tomorrow, ${when}`,
+    remind1: (when: string) => `Starting in an hour: your Anytrail call at ${when}`,
+  },
+  es: {
+    subject: (when: string) => `Tu llamada con Anytrail está agendada: ${when}`,
+    heading: 'Tu llamada está agendada.',
+    join: 'Entrar a la llamada',
+    manage: '¿Necesitas cambiarla? Cancela o mueve tu llamada',
+    demoLead: 'Mientras tanto, prueba el agente con tu propio catálogo:',
+    demoCta: 'Probar la demo',
+    minutes: `${SCHEDULE.slotMinutes} minutos, por video.`,
+    remind24: (when: string) => `Recordatorio: tu llamada con Anytrail es mañana, ${when}`,
+    remind1: (when: string) => `Comienza en una hora: tu llamada con Anytrail a las ${when}`,
+  },
+} as const;
+
+function shell(inner: string): string {
+  return `<div style="background:${C.pageBg};padding:32px 0;font-family:-apple-system,Segoe UI,Roboto,sans-serif">
+  <div style="max-width:560px;margin:0 auto;background:${C.surface};border:1px solid ${C.border};border-radius:12px;padding:32px">
+    <div style="font-weight:700;font-size:18px;color:${C.text};margin-bottom:24px">anytrail</div>
+    ${inner}
+    <div style="margin-top:28px;border-top:1px solid ${C.border};padding-top:16px;font-size:12px;color:${C.faint}">
+      Anytrail · <a href="${SITE}" style="color:${C.accent}">anytrail.ai</a>
+    </div>
+  </div>
+</div>`;
+}
+
+export function renderConfirmation(
+  b: Booking,
+  manageUrl: string,
+  meetUrl: string,
+): { subject: string; html: string; text: string } {
+  const t = T[b.lang];
+  const when = formatSlot(b.slotStartUtc, b.lang);
+  const demoUrl = `${SITE}${b.lang === 'es' ? '/es/demo' : '/demo'}`;
+
+  const html = shell(`
+    <h1 style="font-size:22px;color:${C.text};margin:0 0 8px">${t.heading}</h1>
+    <p style="color:${C.text};font-size:16px;margin:0 0 4px"><strong>${esc(when)}</strong></p>
+    <p style="color:${C.muted};font-size:14px;margin:0 0 24px">${t.minutes}</p>
+    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:8px;font-weight:600;text-decoration:none">${t.join}</a>
+    <p style="margin:24px 0 0;font-size:14px"><a href="${manageUrl}" style="color:${C.muted}">${t.manage}</a></p>
+    <div style="margin-top:28px;background:${C.accentSoft};border-radius:8px;padding:16px">
+      <p style="margin:0 0 8px;font-size:14px;color:${C.text}">${esc(b.name)}, ${t.demoLead}</p>
+      <a href="${demoUrl}" style="color:${C.accent};font-weight:600">${t.demoCta}</a>
+    </div>`);
+
+  const text = [
+    t.heading,
+    when,
+    t.minutes,
+    `${t.join}: ${meetUrl}`,
+    `${t.manage}: ${manageUrl}`,
+    `${t.demoCta}: ${demoUrl}`,
+  ].join('\n\n');
+
+  return { subject: t.subject(when), html, text };
+}
+
+export function renderReminder(
+  b: Booking,
+  manageUrl: string,
+  meetUrl: string,
+  which: 'T24' | 'T1',
+): { subject: string; html: string; text: string } {
+  const t = T[b.lang];
+  const when = formatSlot(b.slotStartUtc, b.lang);
+  const subject = which === 'T24' ? t.remind24(when) : t.remind1(when);
+
+  const html = shell(`
+    <h1 style="font-size:20px;color:${C.text};margin:0 0 8px">${esc(subject)}</h1>
+    <p style="color:${C.text};font-size:16px;margin:0 0 24px"><strong>${esc(when)}</strong></p>
+    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:8px;font-weight:600;text-decoration:none">${t.join}</a>
+    <p style="margin:24px 0 0;font-size:14px"><a href="${manageUrl}" style="color:${C.muted}">${t.manage}</a></p>`);
+
+  return { subject, html, text: [subject, when, `${t.join}: ${meetUrl}`, manageUrl].join('\n\n') };
+}
+
+async function send(payload: Record<string, unknown>): Promise<void> {
+  const apiKey = await getSecret('RESEND_SECRET_ARN');
+  const res = await outboundFetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ from: SENDER, ...payload }),
+  });
+  if (!res.ok) console.error('schedule_email_failed', res.status, await res.text());
+}
+
+/**
+ * Visitor confirmation plus a team copy, both carrying the .ics. Best-effort:
+ * a mail failure logs and never fails the booking the visitor already made.
+ */
+export async function sendBookingEmails(b: Booking, manageUrl: string): Promise<void> {
+  const { subject, html, text } = renderConfirmation(b, manageUrl, MEET_URL);
+  const ics = buildIcs({
+    slotStartUtc: b.slotStartUtc,
+    // Identity is the booking, not the slot: a reschedule keeps this uid and
+    // bumps the sequence, so calendar clients update the event in place
+    // instead of leaving a ghost meeting at the old time.
+    uid: icsUidFor(b),
+    sequence: b.sequence ?? 0,
+    attendeeEmail: b.email,
+    attendeeName: b.name,
+    organizerEmail: (SENDER.match(/<(.+)>/) ?? [, SENDER])[1] as string,
+    meetUrl: MEET_URL,
+    summary: 'Anytrail: commercial process review',
+    description: `${SCHEDULE.slotMinutes} minutes by video. Join: ${MEET_URL}`,
+  });
+  const attachments = [
+    { filename: 'anytrail-call.ics', content: Buffer.from(ics).toString('base64') },
+  ];
+
+  try {
+    await send({ to: [b.email], subject, html, text, attachments });
+    if (TEAM) {
+      await send({
+        to: [TEAM],
+        subject: `New booking: ${b.name} (${b.website}) ${formatSlot(b.slotStartUtc, 'en')}`,
+        text: `${b.name} <${b.email}>\n${b.website}\n${b.note}\n\n${formatSlot(b.slotStartUtc, 'en')}`,
+        attachments,
+      });
+    }
+  } catch (err) {
+    console.error('send_booking_emails_failed', err);
+  }
+
+  // Slack ping is separate from the mail: one failing must not skip the other.
+  await notifyBooking({
+    name: b.name,
+    email: b.email,
+    website: b.website,
+    when: formatSlot(b.slotStartUtc, 'en'),
+    note: b.note,
+  });
+}
+
+export async function sendReminderEmail(
+  b: Booking,
+  manageUrl: string,
+  which: 'T24' | 'T1',
+): Promise<void> {
+  const { subject, html, text } = renderReminder(b, manageUrl, MEET_URL, which);
+  try {
+    await send({ to: [b.email], subject, html, text });
+  } catch (err) {
+    console.error('send_reminder_failed', err);
+  }
+}

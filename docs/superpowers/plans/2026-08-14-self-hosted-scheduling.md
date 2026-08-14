@@ -1377,8 +1377,10 @@ export async function cancel(slotStartUtc: string, sig: string): Promise<void> {
 }
 
 /**
- * New slot goes in first, old one comes out after. A race can lose the move,
- * never the booking.
+ * Atomic: `moveBooking` does the whole move in one transaction (see the spec's
+ * data-model section). A lost race surfaces as SlotTakenError with the original
+ * booking intact; there is no ordering window to crash into. A move to the same
+ * slot is rejected before the store.
  */
 export async function move(
   slotStartUtc: string,

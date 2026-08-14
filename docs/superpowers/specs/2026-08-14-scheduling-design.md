@@ -62,7 +62,9 @@ Two consequences fall out of this key shape for free:
 
 **The email guard exists because the day partition cannot be searched by email.** Enforcing one active booking per person needs its own row, so the two go in together as a `TransactWriteItems` of two conditional puts , slot free *and* no active booking for that address, or neither is written. Without the transaction a crash between the two writes would leave a booking nobody can find or a guard blocking a booking that does not exist.
 
-Cancel deletes both rows, which reopens the slot. Reschedule transacts the new slot in **first** (with the guard repointed), then deletes the old row , a race can lose the reschedule, never the booking.
+Cancel deletes both rows, which reopens the slot.
+
+**Reschedule is one transaction, not an ordering.** Revised during implementation: both orderings are wrong. Creating the new row first always trips the guard, because the guard still points at the old future booking and DynamoDB evaluates transaction conditions against pre-transaction state. Deleting first opens a window where a crash destroys a confirmed booking outright. So `moveBooking` sends Delete(old slot) + Put(new slot, conditional) + Put(guard, overwrite) as a single `TransactWriteItems`: no half-moved state to crash into, and a lost race surfaces as `SlotTakenError` with the original booking untouched. A move to the *same* slot is rejected before the store, since one transaction cannot hold two operations on one item.
 
 ## Timezones
 

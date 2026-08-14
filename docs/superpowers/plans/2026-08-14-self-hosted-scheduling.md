@@ -1956,6 +1956,12 @@ git commit -m "feat(schedule): route pair and bilingual copy"
 - Consumes: `COPY[lang].schedule` (Task 9), the four routes (Task 6).
 - Produces: nothing other tasks depend on.
 
+> **Revised during execution.** The manage view below offers only cancel, but the spec
+> requires the manage link to "cancel or move the call" and the backend route, the API
+> client and the `c.move` copy all exist for it. The shipped version also wires reschedule,
+> with the day/slot grid extracted into a `SlotPicker` component that the booking view and
+> the manage view share, so the markup is not duplicated between them.
+
 - [ ] **Step 1: Write the API client**
 
 ```js

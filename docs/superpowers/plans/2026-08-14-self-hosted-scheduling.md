@@ -295,7 +295,7 @@ The transaction that makes double-booking impossible.
 - Consumes: `dayKeyFor`, `slotKeyFor`, `horizonDayKeys` (Task 1); `TABLE_NAME`, `docClient`, `keys` (`src/db.ts`).
 - Produces:
   - `keys.bookingDay(dayKey, slotKey)`, `keys.emailGuard(email)`
-  - `interface Booking { slotStartUtc, name, email, website, note, lang, remindedT24, remindedT1, createdAt, ip }`
+  - `interface Booking { slotStartUtc, name, email, website, note, lang, remindedT24, remindedT1, createdAt, ip }` — Task 6 adds an optional `sequence?: number` for calendar-invite revisions
   - `createBooking(b: Booking): Promise<void>` — throws `SlotTakenError` or `AlreadyBookedError`
   - `getBooking(slotStartUtc: string): Promise<Booking | null>`
   - `deleteBooking(b: Booking): Promise<void>`
@@ -965,6 +965,7 @@ Expected: PASS — the existing suites are still green
 
 ```ts
 // demo-backend/src/schedule/email.ts
+import { createHash } from 'node:crypto';
 import { esc } from '../html';
 import { outboundFetch } from '../net/outbound-fetch';
 import { notifyBooking } from '../notify';
@@ -1001,6 +1002,18 @@ export function formatSlot(slotStartUtc: string, lang: 'en' | 'es'): string {
     minute: '2-digit',
     timeZoneName: 'short',
   }).format(new Date(slotStartUtc));
+}
+
+/**
+ * Stable per booking, not per slot. `createdAt` survives a reschedule (move()
+ * spreads the existing booking), so the same calendar event gets updated.
+ */
+export function icsUidFor(b: Pick<Booking, 'email' | 'createdAt'>): string {
+  const digest = createHash('sha256')
+    .update(`${b.email.trim().toLowerCase()}|${b.createdAt}`)
+    .digest('hex')
+    .slice(0, 24);
+  return `anytrail-${digest}@anytrail.ai`;
 }
 
 const T = {
@@ -1109,6 +1122,11 @@ export async function sendBookingEmails(b: Booking, manageUrl: string): Promise<
   const { subject, html, text } = renderConfirmation(b, manageUrl, MEET_URL);
   const ics = buildIcs({
     slotStartUtc: b.slotStartUtc,
+    // Identity is the booking, not the slot: a reschedule keeps this uid and
+    // bumps the sequence, so calendar clients update the event in place
+    // instead of leaving a ghost meeting at the old time.
+    uid: icsUidFor(b),
+    sequence: b.sequence ?? 0,
     attendeeEmail: b.email,
     attendeeName: b.name,
     organizerEmail: (SENDER.match(/<(.+)>/) ?? [, SENDER])[1] as string,
@@ -1181,6 +1199,7 @@ git commit -m "feat(schedule): bilingual confirmation and reminder emails, Slack
 
 **Interfaces:**
 - Consumes: everything from Tasks 1–5, plus `assertWithinRateLimit` (`src/api/rate-limit.ts`) and `getSecret`.
+- Also modifies: `src/schedule/store.ts` — add `sequence?: number` to the `Booking` interface, so a rescheduled call reuses its calendar event instead of duplicating it. `createBooking` spreads the booking, so it persists with no other change.
 - Produces:
   - `bookSchema` (zod), `openSlots(nowMs: number): Promise<string[]>`
   - `book(input, ip): Promise<{ slotStartUtc: string; manageUrl: string }>`
@@ -1321,6 +1340,7 @@ export async function book(
     // a "reminder" seconds after their confirmation.
     remindedT24: startsSoon,
     remindedT1: false,
+    sequence: 0,
     createdAt: new Date().toISOString(),
     ip,
   };
@@ -1374,6 +1394,9 @@ export async function move(
     slotStartUtc: toSlotStartUtc,
     remindedT24: new Date(toSlotStartUtc).getTime() - Date.now() < 24 * 60 * 60 * 1000,
     remindedT1: false,
+    // Same uid (createdAt is preserved by the spread), higher sequence: this is
+    // what makes a calendar client move the event rather than duplicate it.
+    sequence: (existing.sequence ?? 0) + 1,
   };
   await createBooking(moved);
   const manageUrl = await manageUrlFor(moved);

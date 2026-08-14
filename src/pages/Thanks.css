@@ -30,6 +30,22 @@
   color: var(--text-muted);
 }
 
+.thanks__demo-lead {
+  margin-top: 32px;
+  font-weight: 600;
+}
+
+.thanks__demo {
+  display: inline-block;
+  margin: 8px 0 24px;
+  background: #000;
+  color: #fff;
+  border-radius: 8px;
+  padding: 13px 26px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
 .thanks__back {
   font-family: var(--sans);
   font-size: 15px;

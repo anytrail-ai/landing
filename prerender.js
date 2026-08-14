@@ -25,8 +25,6 @@ const { render } = await import(path.join(ROOT, 'dist-ssr', 'entry-server.js'))
 const { COPY, LANGS, ROUTES, NOINDEX_PAGES } = await import(
   './src/i18n/copy.js'
 )
-const { DEMO_URL } = await import('./src/config.js')
-
 const esc = (s) =>
   String(s)
     .replace(/&/g, '&amp;')
@@ -196,7 +194,8 @@ ${LANGS.map(
 
 ## Contact
 
-- Book a review: ${DEMO_URL}
+- Book a commercial process review: ${urlFor('en', 'schedule')}
+- Try the live demo: ${urlFor('en', 'demo')}
 `
 await fs.writeFile(path.join(DIST, 'llms.txt'), llms)
 console.log('wrote llms.txt')

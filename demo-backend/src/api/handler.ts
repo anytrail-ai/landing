@@ -6,10 +6,13 @@ import { startDemo, startSchema } from './start';
 import { RateLimitedError, assertWithinRateLimit } from './rate-limit';
 import { UnknownSessionError, extractForSession } from './extract';
 import { prospectsForSession } from './prospects';
+import { book, bookSchema, cancel, move, openSlots, view } from './schedule';
 
 // JSON API for /demo/*. Routes fill in as the pipeline lands:
 //   POST /demo/start     — lead capture + extraction kickoff (ANY-113/114)
 //   POST /demo/prospects — ICP + Apollo leads (ANY-115)
+//   GET  /schedule/slots — open call slots (ANY-66)
+//   POST /schedule/book|cancel|move — booking lifecycle (ANY-66)
 export async function handler(
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> {
@@ -21,6 +24,11 @@ export async function handler(
     else if (route === 'POST /demo/start') res = await handleStart(event);
     else if (route === 'POST /demo/extract') res = await handleExtract(event);
     else if (route === 'POST /demo/prospects') res = await handleProspects(event);
+    else if (route === 'GET /schedule/slots') res = await handleSlots();
+    else if (route === 'POST /schedule/book') res = await handleBook(event);
+    else if (route === 'GET /schedule/manage') res = await handleManage(event);
+    else if (route === 'POST /schedule/cancel') res = await handleCancel(event);
+    else if (route === 'POST /schedule/move') res = await handleMove(event);
     else res = json(404, { error: 'not_found' });
     const status = typeof res === 'object' && 'statusCode' in res ? res.statusCode : 200;
     if (status !== 200) {
@@ -96,6 +104,94 @@ async function handleProspects(
     if (msg.startsWith('apollo_')) return json(502, { error: 'lead_search_failed' });
     throw err;
   }
+}
+
+async function handleSlots(): Promise<APIGatewayProxyResultV2> {
+  return json(200, { slots: await openSlots(Date.now()) });
+}
+
+async function handleBook(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const parsed = bookSchema.safeParse(parseBody(event));
+  if (!parsed.success) {
+    return json(422, { error: 'invalid_input', issues: parsed.error.issues });
+  }
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
+  try {
+    await assertWithinRateLimit(ip);
+    return json(200, await book(parsed.data, ip));
+  } catch (err) {
+    return scheduleError(err);
+  }
+}
+
+async function handleManage(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const { b, s } = event.queryStringParameters ?? {};
+  if (!b || !s) return json(422, { error: 'invalid_input' });
+  try {
+    const booking = await view(b, s);
+    // Never echo the IP or the note back to the browser.
+    return json(200, {
+      slotStartUtc: booking.slotStartUtc,
+      name: booking.name,
+      lang: booking.lang,
+    });
+  } catch (err) {
+    return scheduleError(err);
+  }
+}
+
+async function handleCancel(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const body = parseBody(event) as { slotStartUtc?: string; sig?: string };
+  if (!body.slotStartUtc || !body.sig) return json(422, { error: 'invalid_input' });
+  try {
+    await cancel(body.slotStartUtc, body.sig);
+    return json(200, { ok: true });
+  } catch (err) {
+    return scheduleError(err);
+  }
+}
+
+async function handleMove(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const body = parseBody(event) as {
+    slotStartUtc?: string;
+    sig?: string;
+    toSlotStartUtc?: string;
+  };
+  if (!body.slotStartUtc || !body.sig || !body.toSlotStartUtc) {
+    return json(422, { error: 'invalid_input' });
+  }
+  try {
+    return json(200, await move(body.slotStartUtc, body.sig, body.toSlotStartUtc));
+  } catch (err) {
+    return scheduleError(err);
+  }
+}
+
+// 409 means "pick another slot", 403 means "that link is not yours".
+function scheduleError(err: unknown): APIGatewayProxyResultV2 {
+  const name = (err as Error).name;
+  const msg = (err as Error).message;
+  // normalizeWebsite rejects junk domains, and the URL constructor throws a
+  // TypeError on unparseable input. Both are the caller's fault, not ours.
+  if (msg === 'invalid_domain' || name === 'TypeError') {
+    return json(422, { error: 'invalid_website' });
+  }
+  if (name === 'RateLimitedError') return json(429, { error: 'rate_limited' });
+  if (name === 'SlotTakenError' || name === 'SlotUnavailableError') {
+    return json(409, { error: 'slot_taken' });
+  }
+  if (name === 'AlreadyBookedError') return json(409, { error: 'already_booked' });
+  if (name === 'InvalidSignatureError') return json(403, { error: 'invalid_link' });
+  if (name === 'UnknownBookingError') return json(404, { error: 'unknown_booking' });
+  throw err;
 }
 
 function parseBody(event: APIGatewayProxyEventV2): unknown {

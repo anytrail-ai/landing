@@ -9,6 +9,7 @@ const input = {
   meetUrl: 'https://meet.google.com/kzk-tpgh-sbm',
   summary: 'Anytrail: commercial process review',
   description: 'A 30 minute call.',
+  uid: 'anytrail-booking-001@anytrail.ai',
 };
 
 describe('buildIcs', () => {
@@ -20,6 +21,7 @@ describe('buildIcs', () => {
     expect(ics).toContain('DTEND:20260820T190000Z');
     expect(ics).toContain('LOCATION:https://meet.google.com/kzk-tpgh-sbm');
     expect(ics).toContain('END:VCALENDAR');
+    expect(ics).toContain('SEQUENCE:0');
   });
 
   it('escapes commas and newlines, which would otherwise break parsing', () => {
@@ -29,5 +31,16 @@ describe('buildIcs', () => {
 
   it('uses CRLF line endings, which strict parsers require', () => {
     expect(buildIcs(input).includes('\r\n')).toBe(true);
+  });
+
+  it('wraps attendee CN parameter in quotes when it contains a comma', () => {
+    const ics = buildIcs({ ...input, attendeeName: 'Smith, Jr.' });
+    expect(ics).toContain('CN="Smith, Jr."');
+    expect(ics).not.toContain('\\,');
+  });
+
+  it('uses the supplied sequence number', () => {
+    const ics = buildIcs({ ...input, sequence: 3 });
+    expect(ics).toContain('SEQUENCE:3');
   });
 });

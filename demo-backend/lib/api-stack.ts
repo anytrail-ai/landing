@@ -11,6 +11,8 @@ import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as cwactions from 'aws-cdk-lib/aws-cloudwatch-actions';
 import * as sns from 'aws-cdk-lib/aws-sns';
 import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
+import * as events from 'aws-cdk-lib/aws-events';
+import * as targets from 'aws-cdk-lib/aws-events-targets';
 import * as path from 'node:path';
 
 interface ApiStackProps extends cdk.StackProps {
@@ -44,6 +46,11 @@ export class ApiStack extends cdk.Stack {
       secretName: 'anytrail/demo/slack-webhook',
       description: 'Slack incoming-webhook URL for demo signup pings',
     });
+    const scheduleSecret = new secretsmanager.Secret(this, 'ScheduleSigningKey', {
+      secretName: 'anytrail/demo/schedule-signing',
+      description: 'HMAC key for scheduling manage links',
+      generateSecretString: { passwordLength: 48, excludePunctuation: true },
+    });
 
     const common = {
       runtime: lambda.Runtime.NODEJS_20_X,
@@ -55,8 +62,11 @@ export class ApiStack extends cdk.Stack {
         APOLLO_SECRET_ARN: apolloSecret.secretArn,
         RESEND_SECRET_ARN: resendSecret.secretArn,
         EMAIL_SENDER: 'Anytrail <agent@demo.anytrail.ai>',
+        // The standing video room every booking is held in (ANY-66).
+        MEET_URL: 'https://meet.google.com/kzk-tpgh-sbm',
         EMAIL_TEAM_COPY: 'root@anytrail.ai',
         SLACK_WEBHOOK_SECRET_ARN: slackWebhookSecret.secretArn,
+        SCHEDULE_SECRET_ARN: scheduleSecret.secretArn,
         // Flip to 'enabled' to resume contact reveals (1 Apollo credit each).
         APOLLO_ENRICH: 'disabled',
         // Optional email fallback for signup pings; empty = Slack only.
@@ -84,6 +94,7 @@ export class ApiStack extends cdk.Stack {
       apolloSecret.grantRead(fn);
       resendSecret.grantRead(fn);
       slackWebhookSecret.grantRead(fn);
+      scheduleSecret.grantRead(fn);
       fn.addToRolePolicy(
         new iam.PolicyStatement({
           actions: ['bedrock:InvokeModel', 'bedrock:InvokeModelWithResponseStream'],
@@ -120,6 +131,22 @@ export class ApiStack extends cdk.Stack {
       }),
     ];
     for (const alarm of alarms) alarm.addAlarmAction(new cwactions.SnsAction(alarmTopic));
+
+    // Reminders: one rule for the whole system, not a schedule per booking, so
+    // a cancelled call leaves nothing behind to clean up.
+    const reminderFn = new NodejsFunction(this, 'ReminderFn', {
+      ...common,
+      entry: path.join(__dirname, '../src/reminders/handler.ts'),
+      timeout: cdk.Duration.minutes(2),
+    });
+    props.table.grantReadWriteData(reminderFn);
+    resendSecret.grantRead(reminderFn);
+    scheduleSecret.grantRead(reminderFn);
+
+    new events.Rule(this, 'ReminderSchedule', {
+      schedule: events.Schedule.rate(cdk.Duration.minutes(15)),
+      targets: [new targets.LambdaFunction(reminderFn)],
+    });
 
     const httpApi = new apigwv2.HttpApi(this, 'DemoHttpApi', {
       corsPreflight: {

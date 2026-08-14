@@ -72,17 +72,31 @@ export function generateSlots(nowMs: number): string[] {
   const latest = nowMs + horizonDays * 86400_000;
   const out: string[] = [];
 
-  for (let d = 0; d <= horizonDays; d++) {
-    const dayKey = dayKeyFor(new Date(nowMs + d * 86400_000), tz);
-    const weekday = weekdayIn(dayKey);
-    if (weekday === 0 || weekday === 6) continue;
+  // Step through local calendar days by stepping UTC time and tracking unique day keys.
+  // This correctly handles DST transitions: stepping by 1-hour increments guarantees
+  // encountering every local calendar day exactly once.
+  const seenDays = new Set<string>();
+  let currentUtcMs = nowMs;
+  const searchLimit = latest + 86400_000; // Search a bit past the horizon to catch final days
 
-    for (let mins = startHour * 60; mins < endHour * 60; mins += slotMinutes) {
-      const slotKey = `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
-      const at = zonedToUtc(dayKey, slotKey, tz);
-      const t = at.getTime();
-      if (t >= earliest && t <= latest) out.push(at.toISOString());
+  while (currentUtcMs <= searchLimit) {
+    const dayKey = dayKeyFor(new Date(currentUtcMs), tz);
+
+    if (!seenDays.has(dayKey)) {
+      seenDays.add(dayKey);
+      const weekday = weekdayIn(dayKey);
+      if (weekday !== 0 && weekday !== 6) {
+        for (let mins = startHour * 60; mins < endHour * 60; mins += slotMinutes) {
+          const slotKey = `${String(Math.floor(mins / 60)).padStart(2, '0')}:${String(mins % 60).padStart(2, '0')}`;
+          const at = zonedToUtc(dayKey, slotKey, tz);
+          const t = at.getTime();
+          if (t >= earliest && t <= latest) out.push(at.toISOString());
+        }
+      }
     }
+
+    // Step forward 1 hour. This guarantees we will encounter every local calendar day.
+    currentUtcMs += 3600_000;
   }
   return out.sort();
 }

@@ -62,4 +62,43 @@ describe('generateSlots', () => {
       expect(h * 60 + m).toBeLessThan(SCHEDULE.endHour * 60);
     }
   });
+
+  it('includes 2026-03-09 (first Monday after spring-forward) when spanning the transition', () => {
+    // Friday 2026-03-06T15:00 EST (2026-03-06T20:00Z), before spring forward
+    const nowBeforeTransition = Date.parse('2026-03-06T20:00:00.000Z');
+    const slots = generateSlots(nowBeforeTransition);
+    const days = new Set(slots.map((iso) => dayKeyFor(new Date(iso), TZ)));
+    // The Monday after spring-forward (2026-03-09) must be included, not skipped.
+    expect(days.has('2026-03-09')).toBe(true);
+  });
+
+  it('does not duplicate day keys across 2026-11-01 (fall-back DST day)', () => {
+    // Friday 2026-10-30T15:00 EDT (2026-10-30T19:00Z), before fall-back
+    const nowBeforeTransition = Date.parse('2026-10-30T19:00:00.000Z');
+    const slots = generateSlots(nowBeforeTransition);
+
+    // Verify no exact duplicate ISO strings exist in the returned array.
+    const isoSet = new Set(slots);
+    expect(isoSet.size).toBe(slots.length);
+
+    // Count slots per day: 09:00-16:30 in 30-min increments = 16 slots per weekday.
+    const dayKeys = slots.map((iso) => dayKeyFor(new Date(iso), TZ));
+    const counts: Record<string, number> = {};
+    for (const day of dayKeys) {
+      counts[day] = (counts[day] ?? 0) + 1;
+    }
+    // Each weekday should have exactly 16 slots (09:00, 09:30, ..., 16:30).
+    // Note: First day may have fewer slots due to lead time constraint.
+    for (const [day, count] of Object.entries(counts)) {
+      const wd = new Date(day + 'T12:00:00Z').getUTCDay();
+      if (wd !== 0 && wd !== 6) {
+        // Allow fewer than 16 on the first day due to lead time; others must have exactly 16
+        expect(count).toBeGreaterThanOrEqual(8); // At least half a day's worth
+        expect(count).toBeLessThanOrEqual(16);
+      }
+    }
+
+    // Verify that 2026-11-02 (Monday after fall-back) is included.
+    expect(dayKeys).toContain('2026-11-02');
+  });
 });

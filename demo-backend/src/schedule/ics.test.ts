@@ -43,4 +43,17 @@ describe('buildIcs', () => {
     const ics = buildIcs({ ...input, sequence: 3 });
     expect(ics).toContain('SEQUENCE:3');
   });
+
+  it('prevents line injection via newline in attendee name', () => {
+    const ics = buildIcs({ ...input, attendeeName: 'Ana\nBCC: someone@evil.com' });
+    // The ATTENDEE line should not be split by the injected newline
+    const lines = ics.split('\r\n');
+    const attendeeLine = lines.find((line) => line.startsWith('ATTENDEE;'));
+    expect(attendeeLine).toBeDefined();
+    // Should not contain raw CR or LF inside the CN parameter
+    expect(attendeeLine).not.toContain('\n');
+    expect(attendeeLine).not.toContain('\r');
+    // Should not create an extra line starting with the injected text
+    expect(lines.some((line) => line.startsWith('BCC: someone@evil.com'))).toBe(false);
+  });
 });

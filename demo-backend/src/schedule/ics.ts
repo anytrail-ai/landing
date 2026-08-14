@@ -12,9 +12,12 @@ function escText(s: string): string {
 
 // RFC 5545 §3.2: parameter values use quoted-string when they contain special chars.
 // Backslash is not a valid escape in parameter values; use double quotes instead.
+// Strip CR, LF, and other C0 control characters to prevent line injection and ABNF violations.
 function escParam(s: string): string {
-  // Strip any double quotes from the value first (quoted-string cannot contain them)
-  const clean = s.replace(/"/g, '');
+  // Strip CR/LF and other C0 control characters (0x00-0x1F)
+  let clean = s.replace(/[\r\n\x00-\x1f]/g, '');
+  // Strip any double quotes (quoted-string cannot contain them)
+  clean = clean.replace(/"/g, '');
   // Wrap in quotes if it contains `,`, `;`, or `:`
   if (/[,;:]/.test(clean)) {
     return `"${clean}"`;

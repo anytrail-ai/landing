@@ -812,6 +812,7 @@ Starts by extracting `esc()` so two email modules cannot drift apart.
 
 **Files:**
 - Create: `demo-backend/src/html.ts`
+- Modify: `demo-backend/src/schedule/store.ts` (add `sequence?: number` to the `Booking` interface — this task is its first consumer, and `createBooking` spreads the booking so it persists with no other change)
 - Modify: `demo-backend/src/email.ts` (import `esc` instead of defining it)
 - Modify: `demo-backend/src/notify.ts` (extract `postSlack`, add `notifyBooking`)
 - Create: `demo-backend/src/schedule/email.ts`
@@ -1199,7 +1200,7 @@ git commit -m "feat(schedule): bilingual confirmation and reminder emails, Slack
 
 **Interfaces:**
 - Consumes: everything from Tasks 1–5, plus `assertWithinRateLimit` (`src/api/rate-limit.ts`) and `getSecret`.
-- Also modifies: `src/schedule/store.ts` — add `sequence?: number` to the `Booking` interface, so a rescheduled call reuses its calendar event instead of duplicating it. `createBooking` spreads the booking, so it persists with no other change.
+- Note: `sequence?: number` was added to the `Booking` interface in Task 5, its first consumer. This task only sets the value.
 - Produces:
   - `bookSchema` (zod), `openSlots(nowMs: number): Promise<string[]>`
   - `book(input, ip): Promise<{ slotStartUtc: string; manageUrl: string }>`

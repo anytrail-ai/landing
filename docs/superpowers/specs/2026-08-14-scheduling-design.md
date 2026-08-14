@@ -89,7 +89,9 @@ POST /schedule/cancel | /move     re-verifies the signature, then acts
 
 Open slots = generated , booked , past , inside lead time.
 
-The manage link carries the slot id plus an HMAC signature over it, secret in Secrets Manager beside the Resend key. No lookup row, and a guessed URL cannot cancel someone else's call. Every mutating route re-verifies the signature; possession of the link is the only proof of ownership.
+The manage link carries the slot id plus an HMAC signature, secret in Secrets Manager beside the Resend key. No lookup row, and a guessed URL cannot cancel someone else's call. Every mutating route re-verifies the signature; possession of the link is the only proof of ownership.
+
+**Revised during implementation:** the signature covers `slotStartUtc` *and* the booker's address, not the slot alone. Signing only the slot committed the signature to a time rather than to a booking, so after a cancel and rebook of the same slot the original booker's link still verified against the new booking. The address is never in the URL — `authorize()` loads the booking first and verifies against the address stored on the row.
 
 ## On booking
 

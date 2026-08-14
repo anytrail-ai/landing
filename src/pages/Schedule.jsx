@@ -1,9 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { useLanguage } from '../i18n/useLanguage'
 import { ROUTES } from '../i18n/copy'
 import { bookSlot, cancelBooking, moveBooking, openSlots, viewBooking } from './scheduleApi'
 import SlotPicker from './SlotPicker'
-import { dayLabel, timeLabel, zoneLabel } from './scheduleFormat'
+import {
+  dayLabel,
+  timeLabel,
+  zoneLabel,
+  localDateKey,
+  subscribeNever,
+  getServerZone,
+} from './scheduleFormat'
 import './Schedule.css'
 
 // Booking page. Every instant comes from the server already computed; this
@@ -19,6 +26,15 @@ function parseManageUrl(url) {
   return { b: params.get('b'), s: params.get('s') }
 }
 
+// If the day currently selected has no slots left in a freshly-fetched list
+// (e.g. the last time on it just got taken), fall back to the first day that
+// still has any, so the grid never shows a highlighted day with nothing
+// under it.
+function reconcileDay(prevDay, freshSlots) {
+  if (prevDay && freshSlots.some((s) => localDateKey(s) === prevDay)) return prevDay
+  return freshSlots.length ? localDateKey(freshSlots[0]) : null
+}
+
 function Schedule() {
   const { lang, copy } = useLanguage()
   const c = copy.schedule
@@ -30,6 +46,15 @@ function Schedule() {
   const [form, setForm] = useState({ name: '', email: '', website: '', note: '' })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
+
+  // The visitor's zone abbreviation. Read via useSyncExternalStore, not at
+  // render time directly and not via setState-in-an-effect: read directly
+  // during render it would run on the server too, and the prerendered HTML
+  // would carry the *build machine's* zone rather than the visitor's, plus
+  // mismatch what the client renders on hydration. getServerZone ('') is
+  // used for the server render and the client's first, hydration-matching
+  // render; zoneLabel() takes over immediately after.
+  const zone = useSyncExternalStore(subscribeNever, zoneLabel, getServerZone)
 
   // A manage link (?b=&s=) turns this into the booking's own page. Kept in
   // state, not a one-shot memo, because a successful move re-signs the
@@ -61,7 +86,7 @@ function Schedule() {
     openSlots()
       .then((data) => {
         setSlots(data.slots)
-        setDay(data.slots.length ? data.slots[0].slice(0, 10) : null)
+        setDay(data.slots.length ? localDateKey(data.slots[0]) : null)
       })
       .catch(() => setError(c.errors.generic))
   }, [manage, c.errors])
@@ -82,7 +107,12 @@ function Schedule() {
       setError(c.errors[err.message] ?? c.errors.generic)
       // A taken slot means the grid is stale: refresh it.
       if (err.message === 'slot_taken') {
-        openSlots().then((data) => setSlots(data.slots)).catch(() => {})
+        openSlots()
+          .then((data) => {
+            setSlots(data.slots)
+            setDay((prevDay) => reconcileDay(prevDay, data.slots))
+          })
+          .catch(() => {})
         setPicked(null)
       }
       setBusy(false)
@@ -91,6 +121,7 @@ function Schedule() {
 
   async function doCancel() {
     setBusy(true)
+    setError(null)
     try {
       await cancelBooking(manage.b, manage.s)
       setCancelled(true)
@@ -108,7 +139,7 @@ function Schedule() {
     openSlots()
       .then((data) => {
         setMoveSlots(data.slots)
-        setMoveDay(data.slots.length ? data.slots[0].slice(0, 10) : null)
+        setMoveDay(data.slots.length ? localDateKey(data.slots[0]) : null)
         setMovePicked(null)
         setMoving(true)
       })
@@ -127,7 +158,14 @@ function Schedule() {
     setError(null)
     try {
       const result = await moveBooking(manage.b, manage.s, movePicked)
-      setManage(parseManageUrl(result.manageUrl))
+      const fresh = parseManageUrl(result.manageUrl)
+      setManage(fresh)
+      // Keep the address bar in sync with the re-signed link: a refresh or a
+      // bookmark taken right after this must still authorize, not 404 against
+      // the now-deleted old slot. Safe unguarded here, this only ever runs
+      // inside a click handler, never during the server render.
+      const qs = new URLSearchParams({ b: fresh.b, s: fresh.s }).toString()
+      window.history.replaceState(null, '', `${window.location.pathname}?${qs}`)
       setManaging((prev) => ({ ...prev, slotStartUtc: result.slotStartUtc }))
       setMoving(false)
       setMovePicked(null)
@@ -135,7 +173,12 @@ function Schedule() {
       setError(c.errors[err.message] ?? c.errors.generic)
       // A taken slot means the grid is stale: refresh it.
       if (err.message === 'slot_taken') {
-        openSlots().then((data) => setMoveSlots(data.slots)).catch(() => {})
+        openSlots()
+          .then((data) => {
+            setMoveSlots(data.slots)
+            setMoveDay((prevDay) => reconcileDay(prevDay, data.slots))
+          })
+          .catch(() => {})
         setMovePicked(null)
       }
     }
@@ -148,23 +191,32 @@ function Schedule() {
         <div className="schedule-inner schedule-narrow">
           <h1>{c.manageTitle}</h1>
           {cancelled && <p className="schedule-ok">{c.cancelled}</p>}
-          {error && <p className="schedule-error">{error}</p>}
+          {error && (
+            <p className="schedule-error" role="alert">
+              {error}
+            </p>
+          )}
           {managing && !cancelled && (
             <>
               <p className="schedule-when">
-                {dayLabel(managing.slotStartUtc, locale)}, {timeLabel(managing.slotStartUtc, locale)} {zoneLabel()}
+                {dayLabel(managing.slotStartUtc, locale)}, {timeLabel(managing.slotStartUtc, locale)}
+                {zone ? ` ${zone}` : ''}
               </p>
 
-              {!moving && (
-                <div className="schedule-actions">
+              <div className="schedule-actions">
+                {/* Hidden rather than removed once moving is true would put a
+                    second "move" label on screen at once (the picker's own
+                    confirm button); Cancel stays reachable the whole time so
+                    changing your mind mid-reschedule never requires a reload. */}
+                {!moving && (
                   <button className="schedule-btn" onClick={openMove} disabled={busy}>
                     {c.move}
                   </button>
-                  <button className="schedule-btn schedule-btn-quiet" onClick={doCancel} disabled={busy}>
-                    {c.cancel}
-                  </button>
-                </div>
-              )}
+                )}
+                <button className="schedule-btn schedule-btn-quiet" onClick={doCancel} disabled={busy}>
+                  {c.cancel}
+                </button>
+              </div>
 
               {moving && (
                 <div className="schedule-move">
@@ -175,6 +227,7 @@ function Schedule() {
                     picked={movePicked}
                     onPick={setMovePicked}
                     locale={locale}
+                    zone={zone}
                     c={c}
                   />
                   {movePicked && (
@@ -205,7 +258,11 @@ function Schedule() {
         </div>
 
         <div className="schedule-picker">
-          {error && <p className="schedule-error">{error}</p>}
+          {error && (
+            <p className="schedule-error" role="alert">
+              {error}
+            </p>
+          )}
 
           <SlotPicker
             slots={slots}
@@ -214,6 +271,7 @@ function Schedule() {
             picked={picked}
             onPick={setPicked}
             locale={locale}
+            zone={zone}
             c={c}
           />
 

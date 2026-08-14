@@ -292,7 +292,7 @@ The transaction that makes double-booking impossible.
 - Test: `demo-backend/src/schedule/store.test.ts`
 
 **Interfaces:**
-- Consumes: `dayKeyFor`, `slotKeyFor` (Task 1); `TABLE_NAME`, `docClient`, `keys` (`src/db.ts`).
+- Consumes: `dayKeyFor`, `slotKeyFor`, `horizonDayKeys` (Task 1); `TABLE_NAME`, `docClient`, `keys` (`src/db.ts`).
 - Produces:
   - `keys.bookingDay(dayKey, slotKey)`, `keys.emailGuard(email)`
   - `interface Booking { slotStartUtc, name, email, website, note, lang, remindedT24, remindedT1, createdAt, ip }`
@@ -596,7 +596,15 @@ Possession of the link is the only proof of ownership, so this is the security b
 
 **Interfaces:**
 - Consumes: nothing.
-- Produces: `signSlot(slotStartUtc: string, secret: string): string`, `verifySlot(slotStartUtc: string, sig: string, secret: string): boolean`
+- Produces: `signBooking(slotStartUtc: string, email: string, secret: string): string`, `verifyBooking(slotStartUtc: string, email: string, sig: string, secret: string): boolean`
+
+> **Revised during execution (commit 391886d).** As first written this task signed only
+> `slotStartUtc`, which commits the signature to a *time* rather than to a *booking*: after
+> a cancel and rebook of the same slot, the original booker's link still verified and could
+> cancel or move the new booker's call. The HMAC now covers `${slotStartUtc}|${email.trim().toLowerCase()}`,
+> normalised exactly as `keys.emailGuard` normalises it in `src/db.ts`, and the email is read
+> from the stored booking at verify time rather than carried in the URL. The code and tests
+> below show the original single-argument form; the shipped version takes the email too.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -810,7 +818,7 @@ Starts by extracting `esc()` so two email modules cannot drift apart.
 - Test: `demo-backend/src/schedule/email.test.ts`
 
 **Interfaces:**
-- Consumes: `getSecret` (`src/secrets.ts`), `outboundFetch` (`src/net/outbound-fetch.ts`), `buildIcs` (Task 4), `Booking` (Task 2), `signSlot` (Task 3).
+- Consumes: `getSecret` (`src/secrets.ts`), `outboundFetch` (`src/net/outbound-fetch.ts`), `buildIcs` (Task 4), `Booking` (Task 2), `signBooking` (Task 3).
 - Produces:
   - `esc(s: string): string` from `src/html.ts`
   - `postSlack(text: string): Promise<void>` and `notifyBooking(b: Booking): Promise<void>` from `src/notify.ts`
@@ -1236,7 +1244,7 @@ import {
   getBooking,
   listBookedInstants,
 } from '../schedule/store';
-import { signSlot, verifySlot } from '../schedule/token';
+import { signBooking, verifyBooking } from '../schedule/token';
 import { normalizeWebsite } from './start';
 
 const SITE = 'https://www.anytrail.ai';
@@ -1278,11 +1286,16 @@ export async function openSlots(nowMs: number): Promise<string[]> {
   return generated.filter((iso) => !booked.has(iso));
 }
 
-async function manageUrlFor(slotStartUtc: string, lang: 'en' | 'es'): Promise<string> {
+/**
+ * The signature commits to the slot AND the booker's address, so a stale link
+ * from a cancelled booking cannot control whoever books that slot next. The
+ * email is never in the URL — it comes from the stored row at verify time.
+ */
+async function manageUrlFor(b: Pick<Booking, 'slotStartUtc' | 'email' | 'lang'>): Promise<string> {
   const secret = await getSecret('SCHEDULE_SECRET_ARN');
-  const path = lang === 'es' ? '/es/agenda' : '/schedule';
-  const sig = signSlot(slotStartUtc, secret);
-  return `${SITE}${path}?b=${encodeURIComponent(slotStartUtc)}&s=${sig}`;
+  const path = b.lang === 'es' ? '/es/agenda' : '/schedule';
+  const sig = signBooking(b.slotStartUtc, b.email, secret);
+  return `${SITE}${path}?b=${encodeURIComponent(b.slotStartUtc)}&s=${sig}`;
 }
 
 export async function book(
@@ -1313,16 +1326,24 @@ export async function book(
   };
 
   await createBooking(booking);
-  const manageUrl = await manageUrlFor(booking.slotStartUtc, booking.lang);
+  const manageUrl = await manageUrlFor(booking);
   await sendBookingEmails(booking, manageUrl);
   return { slotStartUtc: booking.slotStartUtc, manageUrl };
 }
 
+/**
+ * Load first, verify second: the signature is checked against the address on
+ * the booking that exists NOW, so a link signed for a since-cancelled booking
+ * fails against its replacement. Revealing "no booking here" before the
+ * signature check leaks nothing — slot availability is already public.
+ */
 async function authorize(slotStartUtc: string, sig: string): Promise<Booking> {
-  const secret = await getSecret('SCHEDULE_SECRET_ARN');
-  if (!verifySlot(slotStartUtc, sig, secret)) throw new InvalidSignatureError();
   const booking = await getBooking(slotStartUtc);
   if (!booking) throw new UnknownBookingError();
+  const secret = await getSecret('SCHEDULE_SECRET_ARN');
+  if (!verifyBooking(slotStartUtc, booking.email, sig, secret)) {
+    throw new InvalidSignatureError();
+  }
   return booking;
 }
 
@@ -1355,7 +1376,7 @@ export async function move(
     remindedT1: false,
   };
   await createBooking(moved);
-  const manageUrl = await manageUrlFor(toSlotStartUtc, moved.lang);
+  const manageUrl = await manageUrlFor(moved);
   await sendBookingEmails(moved, manageUrl);
   return { slotStartUtc: toSlotStartUtc, manageUrl };
 }
@@ -1499,7 +1520,7 @@ git commit -m "feat(schedule): slots, book, manage, cancel and move routes"
 - Test: `demo-backend/src/reminders/handler.test.ts`
 
 **Interfaces:**
-- Consumes: `listBookingsForDay`, `markReminded`, `Booking` (Task 2); `dayKeyFor` (Task 1); `sendReminderEmail` (Task 5); `signSlot` (Task 3).
+- Consumes: `listBookingsForDay`, `markReminded`, `Booking` (Task 2); `dayKeyFor` (Task 1); `sendReminderEmail` (Task 5); `signBooking` (Task 3).
 - Produces: `dueReminders(bookings: Booking[], nowMs: number): { booking: Booking; which: 'T24' | 'T1' }[]`, `handler(): Promise<void>`
 
 - [ ] **Step 1: Write the failing test**
@@ -1567,7 +1588,7 @@ import { SCHEDULE } from '../schedule/config';
 import { sendReminderEmail } from '../schedule/email';
 import { dayKeyFor } from '../schedule/slots';
 import { type Booking, listBookingsForDay, markReminded } from '../schedule/store';
-import { signSlot } from '../schedule/token';
+import { signBooking } from '../schedule/token';
 import { getSecret } from '../secrets';
 
 const SITE = 'https://www.anytrail.ai';
@@ -1620,7 +1641,7 @@ export async function handler(): Promise<void> {
     const claimed = await markReminded(booking, which === 'T24' ? 'remindedT24' : 'remindedT1');
     if (!claimed) continue;
     const path = booking.lang === 'es' ? '/es/agenda' : '/schedule';
-    const manageUrl = `${SITE}${path}?b=${encodeURIComponent(booking.slotStartUtc)}&s=${signSlot(booking.slotStartUtc, secret)}`;
+    const manageUrl = `${SITE}${path}?b=${encodeURIComponent(booking.slotStartUtc)}&s=${signBooking(booking.slotStartUtc, booking.email, secret)}`;
     await sendReminderEmail(booking, manageUrl, which);
   }
   console.log('reminders_sent', { count: due.length });

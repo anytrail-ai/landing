@@ -9,6 +9,7 @@ import {
   deleteBooking,
   listBookedInstants,
   markReminded,
+  moveBooking,
 } from './store';
 
 const ddb = mockClient(DynamoDBDocumentClient);
@@ -92,6 +93,55 @@ describe('deleteBooking', () => {
     const [slot, guard] = call.TransactItems!;
     expect(slot.Delete!.Key).toEqual({ pk: 'BOOKINGDAY#2026-08-20', sk: 'SLOT#14:30' });
     expect(guard.Delete!.Key).toEqual({ pk: 'EMAIL#ana@acme.com', sk: 'ACTIVE' });
+  });
+});
+
+describe('moveBooking', () => {
+  const moved = { ...booking, slotStartUtc: '2026-08-21T15:00:00.000Z' };
+
+  it('deletes the old slot, puts the new one, and re-points the guard in one transaction', async () => {
+    ddb.on(TransactWriteCommand).resolves({});
+    await moveBooking(booking, moved);
+
+    const call = ddb.commandCalls(TransactWriteCommand)[0].args[0].input;
+    expect(call.TransactItems).toHaveLength(3);
+    const [del, put, guard] = call.TransactItems!;
+
+    expect(del.Delete!.Key).toEqual({ pk: 'BOOKINGDAY#2026-08-20', sk: 'SLOT#14:30' });
+
+    expect(put.Put!.Item!.pk).toBe('BOOKINGDAY#2026-08-21');
+    expect(put.Put!.Item!.sk).toBe('SLOT#11:00');
+    expect(put.Put!.Item!.slotStartUtc).toBe(moved.slotStartUtc);
+    expect(put.Put!.ConditionExpression).toBe('attribute_not_exists(pk)');
+
+    expect(guard.Put!.Item!.pk).toBe('EMAIL#ana@acme.com');
+    expect(guard.Put!.Item!.sk).toBe('ACTIVE');
+    expect(guard.Put!.Item!.slotStartUtc).toBe(moved.slotStartUtc);
+    expect(guard.Put!.Item!.expiresAt).toBe(
+      Math.floor(new Date(moved.slotStartUtc).getTime() / 1000) + 86400,
+    );
+    // No condition on the guard write: the caller is already authenticated
+    // by the HMAC on the booking being moved, so this is just following the
+    // same owner to their new slot, not gatekeeping a second identity.
+    expect(guard.Put!.ConditionExpression).toBeUndefined();
+  });
+
+  it('reports a slot taken by someone else as SlotTakenError', async () => {
+    const err = Object.assign(new Error('cancelled'), {
+      name: 'TransactionCanceledException',
+      CancellationReasons: [{ Code: 'None' }, { Code: 'ConditionalCheckFailed' }, { Code: 'None' }],
+    });
+    ddb.on(TransactWriteCommand).rejects(err);
+    await expect(moveBooking(booking, moved)).rejects.toBeInstanceOf(SlotTakenError);
+  });
+
+  it('rethrows anything that is not the new-slot condition failing', async () => {
+    const err = Object.assign(new Error('cancelled'), {
+      name: 'TransactionCanceledException',
+      CancellationReasons: [{ Code: 'None' }, { Code: 'None' }, { Code: 'ConditionalCheckFailed' }],
+    });
+    ddb.on(TransactWriteCommand).rejects(err);
+    await expect(moveBooking(booking, moved)).rejects.not.toBeInstanceOf(SlotTakenError);
   });
 });
 

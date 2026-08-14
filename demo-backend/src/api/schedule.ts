@@ -9,6 +9,7 @@ import {
   deleteBooking,
   getBooking,
   listBookedInstants,
+  moveBooking,
 } from '../schedule/store';
 import { signBooking, verifyBooking } from '../schedule/token';
 import { normalizeWebsite } from './start';
@@ -123,19 +124,28 @@ export async function cancel(slotStartUtc: string, sig: string): Promise<void> {
 }
 
 /**
- * New slot goes in first, old one comes out after. A race can lose the move,
- * never the booking.
+ * The move is one DynamoDB transaction (`moveBooking`): delete the old slot,
+ * put the new one, re-point the email guard. All three writes apply or none
+ * do, so a crash or timeout between them cannot happen — a move can never
+ * leave a booking half-moved. If someone else takes the target slot first,
+ * the new-slot Put's condition fails and `moveBooking` throws
+ * `SlotTakenError` with the original booking still fully intact; nothing is
+ * ever silently lost.
  */
 export async function move(
   slotStartUtc: string,
   sig: string,
   toSlotStartUtc: string,
 ): Promise<{ slotStartUtc: string; manageUrl: string }> {
+  // A single transaction cannot Delete and Put the same item, so a move to
+  // the slot it already occupies is a hard validation error, not a race —
+  // reject it before touching the store at all.
+  if (toSlotStartUtc === slotStartUtc) throw new SlotUnavailableError();
+
   const existing = await authorize(slotStartUtc, sig);
   const open = await openSlots(Date.now());
   if (!open.includes(toSlotStartUtc)) throw new SlotUnavailableError();
 
-  await deleteBooking(existing);
   const moved: Booking = {
     ...existing,
     slotStartUtc: toSlotStartUtc,
@@ -145,7 +155,7 @@ export async function move(
     // what makes a calendar client move the event rather than duplicate it.
     sequence: (existing.sequence ?? 0) + 1,
   };
-  await createBooking(moved);
+  await moveBooking(existing, moved);
   const manageUrl = await manageUrlFor(moved);
   await sendBookingEmails(moved, manageUrl);
   return { slotStartUtc: toSlotStartUtc, manageUrl };

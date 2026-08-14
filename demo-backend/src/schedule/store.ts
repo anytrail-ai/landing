@@ -90,6 +90,59 @@ export async function createBooking(b: Booking): Promise<void> {
   }
 }
 
+/**
+ * Atomically replaces `from`'s slot with `to`'s, in one transaction: delete
+ * the old slot row, put the new one (conditioned on it still being free), and
+ * overwrite the email guard to point at the new slot. A crash or timeout
+ * between writes cannot happen — DynamoDB applies all three or none — so a
+ * move can never destroy a confirmed booking; it either succeeds outright or
+ * fails with the original booking still fully intact.
+ *
+ * The guard Put carries no condition. This is not an oversight: the caller
+ * is already authenticated by the HMAC signature on the booking being moved,
+ * so the guard here is just following that same owner to their new slot, not
+ * gatekeeping a second identity. The new-slot Put's `attribute_not_exists`
+ * condition is what actually protects against a race (someone else taking
+ * that slot first) — conditioning the guard write too would add a failure
+ * mode without protecting anything the slot condition doesn't already cover.
+ * Do not add a condition here.
+ */
+export async function moveBooking(from: Booking, to: Booking): Promise<void> {
+  try {
+    await docClient().send(
+      new TransactWriteCommand({
+        TransactItems: [
+          { Delete: { TableName: TABLE_NAME, Key: keyFor(from.slotStartUtc) } },
+          {
+            Put: {
+              TableName: TABLE_NAME,
+              Item: { ...keyFor(to.slotStartUtc), ...to },
+              ConditionExpression: 'attribute_not_exists(pk)',
+            },
+          },
+          {
+            Put: {
+              TableName: TABLE_NAME,
+              Item: {
+                ...keys.emailGuard(to.email),
+                slotStartUtc: to.slotStartUtc,
+                expiresAt: Math.floor(new Date(to.slotStartUtc).getTime() / 1000) + 86400,
+              },
+            },
+          },
+        ],
+      }),
+    );
+  } catch (err) {
+    const e = err as { name?: string; CancellationReasons?: { Code?: string }[] };
+    if (e.name === 'TransactionCanceledException') {
+      const [, slot] = e.CancellationReasons ?? [];
+      if (slot?.Code === 'ConditionalCheckFailed') throw new SlotTakenError();
+    }
+    throw err;
+  }
+}
+
 export async function getBooking(slotStartUtc: string): Promise<Booking | null> {
   const res = await docClient().send(
     new GetCommand({ TableName: TABLE_NAME, Key: keyFor(slotStartUtc) }),

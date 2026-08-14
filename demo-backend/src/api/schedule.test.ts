@@ -1,5 +1,15 @@
-import { describe, expect, it } from 'vitest';
-import { bookSchema } from './schedule';
+import { GetSecretValueCommand, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
+import {
+  DynamoDBDocumentClient,
+  GetCommand,
+  QueryCommand,
+  TransactWriteCommand,
+} from '@aws-sdk/lib-dynamodb';
+import { mockClient } from 'aws-sdk-client-mock';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { setDocClientForTests } from '../db';
+import { signBooking } from '../schedule/token';
+import { bookSchema, move } from './schedule';
 
 describe('bookSchema', () => {
   it('accepts a complete booking and defaults the optional note', () => {
@@ -25,5 +35,65 @@ describe('bookSchema', () => {
     expect(bookSchema.safeParse({ ...base, slotStartUtc: 'tomorrow' }).success).toBe(false);
     expect(bookSchema.safeParse({ ...base, lang: 'fr' }).success).toBe(false);
     expect(bookSchema.safeParse({ ...base, note: 'x'.repeat(2001) }).success).toBe(false);
+  });
+});
+
+const ddb = mockClient(DynamoDBDocumentClient);
+const secretsManager = mockClient(SecretsManagerClient);
+setDocClientForTests(ddb as unknown as DynamoDBDocumentClient);
+
+const SECRET = 'test-schedule-secret';
+
+const existing = {
+  slotStartUtc: '2026-08-20T18:30:00.000Z',
+  name: 'Ana',
+  email: 'ana@acme.com',
+  website: 'https://acme.com',
+  note: '',
+  lang: 'en' as const,
+  remindedT24: false,
+  remindedT1: false,
+  createdAt: '2026-08-19T12:00:00.000Z',
+  ip: '1.2.3.4',
+  sequence: 0,
+};
+
+describe('move', () => {
+  beforeEach(() => {
+    ddb.reset();
+    secretsManager.reset();
+    process.env.SCHEDULE_SECRET_ARN = 'arn:aws:secretsmanager:test:schedule';
+    secretsManager.on(GetSecretValueCommand).resolves({ SecretString: SECRET });
+    // Pinned so the target slot's business-hours/lead-time/horizon check in
+    // openSlots is deterministic regardless of when the suite actually runs.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-08-17T12:00:00.000Z')); // a Monday
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('rejects a move to the same slot without ever reaching the store', async () => {
+    await expect(
+      move(existing.slotStartUtc, 'irrelevant-sig', existing.slotStartUtc),
+    ).rejects.toMatchObject({ name: 'SlotUnavailableError' });
+    expect(ddb.commandCalls(GetCommand)).toHaveLength(0);
+  });
+
+  it('keeps the original createdAt and bumps sequence one higher', async () => {
+    ddb.on(GetCommand).resolves({ Item: existing });
+    ddb.on(QueryCommand).resolves({ Items: [] });
+    ddb.on(TransactWriteCommand).resolves({});
+
+    const to = '2026-08-21T15:00:00.000Z'; // Friday, 11:00 America/New_York
+    const sig = signBooking(existing.slotStartUtc, existing.email, SECRET);
+    const res = await move(existing.slotStartUtc, sig, to);
+
+    expect(res.slotStartUtc).toBe(to);
+    const call = ddb.commandCalls(TransactWriteCommand)[0].args[0].input;
+    const put = call.TransactItems![1].Put!.Item as { createdAt: string; sequence: number };
+    expect(put.createdAt).toBe(existing.createdAt);
+    expect(put.sequence).toBe(1);
   });
 });

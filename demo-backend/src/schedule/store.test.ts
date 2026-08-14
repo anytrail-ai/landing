@@ -2,7 +2,14 @@ import { DynamoDBDocumentClient, QueryCommand, TransactWriteCommand, UpdateComma
 import { mockClient } from 'aws-sdk-client-mock';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { setDocClientForTests } from '../db';
-import { AlreadyBookedError, SlotTakenError, createBooking, listBookedInstants, markReminded } from './store';
+import {
+  AlreadyBookedError,
+  SlotTakenError,
+  createBooking,
+  deleteBooking,
+  listBookedInstants,
+  markReminded,
+} from './store';
 
 const ddb = mockClient(DynamoDBDocumentClient);
 
@@ -56,6 +63,36 @@ describe('createBooking', () => {
     ddb.on(TransactWriteCommand).rejects(err2);
     await expect(createBooking(booking)).rejects.toBeInstanceOf(AlreadyBookedError);
   });
+
+  it('lets a new booking through when the existing guard points at a past booking', async () => {
+    ddb.on(TransactWriteCommand).resolves({});
+    await createBooking(booking);
+
+    const call = ddb.commandCalls(TransactWriteCommand)[0].args[0].input;
+    const guard = call.TransactItems![1];
+    // The OR clause is what lets DynamoDB accept the write when the existing
+    // guard row's slotStartUtc is in the past — only an *active* booking
+    // should block. expiresAt is housekeeping on top of that (TTL deletion
+    // can lag up to 48h, so it is not the real enforcement mechanism).
+    expect(guard.Put!.ConditionExpression).toBe('attribute_not_exists(pk) OR slotStartUtc < :now');
+    expect(guard.Put!.ExpressionAttributeValues).toHaveProperty(':now');
+    expect(guard.Put!.Item!.expiresAt).toBe(
+      Math.floor(new Date(booking.slotStartUtc).getTime() / 1000) + 86400,
+    );
+  });
+});
+
+describe('deleteBooking', () => {
+  it('deletes the slot row and the email guard in one transaction', async () => {
+    ddb.on(TransactWriteCommand).resolves({});
+    await deleteBooking(booking);
+
+    const call = ddb.commandCalls(TransactWriteCommand)[0].args[0].input;
+    expect(call.TransactItems).toHaveLength(2);
+    const [slot, guard] = call.TransactItems!;
+    expect(slot.Delete!.Key).toEqual({ pk: 'BOOKINGDAY#2026-08-20', sk: 'SLOT#14:30' });
+    expect(guard.Delete!.Key).toEqual({ pk: 'EMAIL#ana@acme.com', sk: 'ACTIVE' });
+  });
 });
 
 describe('listBookedInstants', () => {
@@ -65,13 +102,43 @@ describe('listBookedInstants', () => {
     expect(booked).toContain(booking.slotStartUtc);
     expect(ddb.commandCalls(QueryCommand).length).toBe(2); // today + 1
   });
+
+  it('does not skip a calendar day across a DST spring-forward', async () => {
+    ddb.on(QueryCommand).resolves({ Items: [] });
+    // 2027-03-13T04:00:00Z is 23:00 EST on Mar 12 in New York.
+    await listBookedInstants(Date.parse('2027-03-13T04:00:00.000Z'), 2);
+
+    const dayKeys = ddb
+      .commandCalls(QueryCommand)
+      .map((c) => c.args[0].input.ExpressionAttributeValues![':pk']);
+    expect(dayKeys).toEqual([
+      'BOOKINGDAY#2027-03-12',
+      'BOOKINGDAY#2027-03-13',
+      'BOOKINGDAY#2027-03-14',
+    ]);
+  });
 });
 
 describe('markReminded', () => {
+  it('sets the flag and returns true the first time', async () => {
+    ddb.on(UpdateCommand).resolves({});
+    const result = await markReminded(booking, 'remindedT24');
+    expect(result).toBe(true);
+
+    const call = ddb.commandCalls(UpdateCommand)[0].args[0].input;
+    expect(call.UpdateExpression).toBe('SET #f = :true');
+    expect(call.ExpressionAttributeNames).toEqual({ '#f': 'remindedT24' });
+    expect(call.ConditionExpression).toContain('#f = :false');
+  });
+
   it('returns false when the flag was already set, so a retry cannot double-send', async () => {
     ddb.on(UpdateCommand).rejects(
       Object.assign(new Error('failed'), { name: 'ConditionalCheckFailedException' }),
     );
     expect(await markReminded(booking, 'remindedT24')).toBe(false);
+
+    const call = ddb.commandCalls(UpdateCommand)[0].args[0].input;
+    expect(call.ConditionExpression).toContain('#f = :false');
+    expect(call.ExpressionAttributeNames).toEqual({ '#f': 'remindedT24' });
   });
 });

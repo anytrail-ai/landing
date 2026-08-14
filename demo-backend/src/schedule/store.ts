@@ -1,5 +1,4 @@
 import {
-  DeleteCommand,
   GetCommand,
   QueryCommand,
   TransactWriteCommand,
@@ -7,7 +6,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { TABLE_NAME, docClient, keys } from '../db';
 import { SCHEDULE } from './config';
-import { dayKeyFor, slotKeyFor } from './slots';
+import { dayKeyFor, horizonDayKeys, slotKeyFor } from './slots';
 
 export class SlotTakenError extends Error {
   constructor() {
@@ -45,6 +44,12 @@ function keyFor(slotStartUtc: string) {
  * The slot row and the email guard go in together or not at all. Without the
  * transaction a crash between the two writes leaves either a booking nobody
  * can find, or a guard blocking a booking that does not exist.
+ *
+ * The guard's condition is time-aware: a guard row left behind by a *past*
+ * booking (the call already happened) does not block a new one, since the
+ * spec is one *active* booking per address, not one ever. `expiresAt` is
+ * only housekeeping on top of that — DynamoDB TTL deletion can lag up to 48
+ * hours, so the OR-clause carries the real semantics.
  */
 export async function createBooking(b: Booking): Promise<void> {
   try {
@@ -61,8 +66,13 @@ export async function createBooking(b: Booking): Promise<void> {
           {
             Put: {
               TableName: TABLE_NAME,
-              Item: { ...keys.emailGuard(b.email), slotStartUtc: b.slotStartUtc },
-              ConditionExpression: 'attribute_not_exists(pk)',
+              Item: {
+                ...keys.emailGuard(b.email),
+                slotStartUtc: b.slotStartUtc,
+                expiresAt: Math.floor(new Date(b.slotStartUtc).getTime() / 1000) + 86400,
+              },
+              ConditionExpression: 'attribute_not_exists(pk) OR slotStartUtc < :now',
+              ExpressionAttributeValues: { ':now': new Date().toISOString() },
             },
           },
         ],
@@ -109,11 +119,14 @@ export async function listBookingsForDay(dayKey: string): Promise<Booking[]> {
   return (res.Items ?? []) as Booking[];
 }
 
-/** Day-partitioned, so this is `days + 1` queries and never a table scan. */
+/**
+ * Day-partitioned, so this is `days + 1` queries and never a table scan.
+ * Day keys come from `horizonDayKeys`'s calendar arithmetic, not fixed
+ * 86400_000ms steps — a DST spring-forward would otherwise skip a day.
+ */
 export async function listBookedInstants(fromMs: number, days: number): Promise<string[]> {
   const out: string[] = [];
-  for (let d = 0; d <= days; d++) {
-    const dayKey = dayKeyFor(new Date(fromMs + d * 86400_000), SCHEDULE.timezone);
+  for (const dayKey of horizonDayKeys(fromMs, days, SCHEDULE.timezone)) {
     for (const item of await listBookingsForDay(dayKey)) out.push(item.slotStartUtc);
   }
   return out;

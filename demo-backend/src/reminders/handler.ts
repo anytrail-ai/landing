@@ -1,7 +1,8 @@
+import { getSecret } from '../secrets';
 import { SCHEDULE } from '../schedule/config';
 import { sendReminderEmail } from '../schedule/email';
 import { manageUrlFor } from '../schedule/links';
-import { dayKeyFor } from '../schedule/slots';
+import { horizonDayKeys } from '../schedule/slots';
 import { type Booking, listBookingsForDay, markReminded } from '../schedule/store';
 
 /** The EventBridge rate. A reminder is due if its mark falls in this window. */
@@ -35,11 +36,16 @@ export function dueReminders(bookings: Booking[], nowMs: number): DueReminder[] 
 /**
  * One rule for the whole system rather than a schedule per booking: nothing to
  * clean up when someone cancels. Today plus tomorrow covers every 24h lead.
+ *
+ * Calendar-correct day stepping: `horizonDayKeys(now, 1, tz)` (the same
+ * function `listBookedInstants` uses) walks Y-M-D arithmetic rather than
+ * adding a fixed 86400_000ms, so a DST transition cannot skip the day in
+ * between — a plain `+86400_000ms` can land on the wrong calendar day near a
+ * spring-forward and silently drop that day's bookings from the sweep.
  */
 export async function handler(): Promise<void> {
   const now = Date.now();
-  const tz = SCHEDULE.timezone;
-  const days = [dayKeyFor(new Date(now), tz), dayKeyFor(new Date(now + 86400_000), tz)];
+  const days = horizonDayKeys(now, 1, SCHEDULE.timezone);
 
   const bookings: Booking[] = [];
   for (const day of days) bookings.push(...(await listBookingsForDay(day)));
@@ -47,12 +53,31 @@ export async function handler(): Promise<void> {
   const due = dueReminders(bookings, now);
   if (due.length === 0) return;
 
+  // Warmed once, outside the loop: a Secrets Manager failure here aborts
+  // before anything is claimed, instead of surfacing mid-pass after some
+  // bookings are already durably marked reminded (and so permanently
+  // unreachable to a later retry, since `dueReminders` filters on the flag).
+  // The per-booking `manageUrlFor` calls below hit the module-level cache in
+  // `secrets.ts` and cannot themselves trigger a network fetch.
+  await getSecret('SCHEDULE_SECRET_ARN');
+
+  let sent = 0;
   for (const { booking, which } of due) {
-    // Claim first: the conditional update is what makes a Lambda retry safe.
-    const claimed = await markReminded(booking, which === 'T24' ? 'remindedT24' : 'remindedT1');
-    if (!claimed) continue;
-    const manageUrl = await manageUrlFor(booking);
-    await sendReminderEmail(booking, manageUrl, which);
+    try {
+      // Claim first: the conditional update is what makes a Lambda retry safe.
+      const claimed = await markReminded(booking, which === 'T24' ? 'remindedT24' : 'remindedT1');
+      if (!claimed) continue;
+      const manageUrl = await manageUrlFor(booking);
+      await sendReminderEmail(booking, manageUrl, which);
+      sent++;
+    } catch (err) {
+      // One booking's failure must not take the rest of the pass down with
+      // it. If the throw happened after the claim (e.g. manageUrlFor), the
+      // flag is already set and no future sweep will retry this one — log it
+      // instead of losing it silently. If markReminded itself threw, nothing
+      // was claimed and the next sweep retries it normally.
+      console.error('reminder_send_failed', booking.slotStartUtc, which, err);
+    }
   }
-  console.log('reminders_sent', { count: due.length });
+  console.log('reminders_sent', { count: sent });
 }

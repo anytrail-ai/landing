@@ -2,6 +2,7 @@ import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
 } from 'aws-lambda';
+import { LIMITS } from '../limits';
 import { startDemo, startSchema } from './start';
 import { RateLimitedError, assertWithinRateLimit } from './rate-limit';
 import { UnknownSessionError, extractForSession } from './extract';
@@ -12,7 +13,7 @@ import { book, bookSchema, cancel, move, openSlots, view } from './schedule';
 //   POST /demo/start     — lead capture + extraction kickoff (ANY-113/114)
 //   POST /demo/prospects — ICP + Apollo leads (ANY-115)
 //   GET  /schedule/slots — open call slots (ANY-66)
-//   POST /schedule/book|cancel|move — booking lifecycle (ANY-66)
+//   GET  /schedule/manage, POST /schedule/book|cancel|move — booking lifecycle (ANY-66)
 export async function handler(
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> {
@@ -24,7 +25,7 @@ export async function handler(
     else if (route === 'POST /demo/start') res = await handleStart(event);
     else if (route === 'POST /demo/extract') res = await handleExtract(event);
     else if (route === 'POST /demo/prospects') res = await handleProspects(event);
-    else if (route === 'GET /schedule/slots') res = await handleSlots();
+    else if (route === 'GET /schedule/slots') res = await handleSlots(event);
     else if (route === 'POST /schedule/book') res = await handleBook(event);
     else if (route === 'GET /schedule/manage') res = await handleManage(event);
     else if (route === 'POST /schedule/cancel') res = await handleCancel(event);
@@ -106,8 +107,23 @@ async function handleProspects(
   }
 }
 
-async function handleSlots(): Promise<APIGatewayProxyResultV2> {
-  return json(200, { slots: await openSlots(Date.now()) });
+// Every scheduling route shares one cap, separate from demo-start's: /schedule/slots
+// fires on every page load of the scheduling UI, and sharing demo-start's counter
+// would let ordinary browsing drain a visitor's ability to submit the lead form.
+function assertWithinScheduleRateLimit(ip: string): Promise<void> {
+  return assertWithinRateLimit(ip, Date.now(), { bucket: 'schedule', cap: LIMITS.schedulePerIp });
+}
+
+async function handleSlots(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
+  try {
+    await assertWithinScheduleRateLimit(ip);
+    return json(200, { slots: await openSlots(Date.now()) });
+  } catch (err) {
+    return scheduleError(err);
+  }
 }
 
 async function handleBook(
@@ -119,7 +135,7 @@ async function handleBook(
   }
   const ip = event.requestContext.http.sourceIp ?? 'unknown';
   try {
-    await assertWithinRateLimit(ip);
+    await assertWithinScheduleRateLimit(ip);
     return json(200, await book(parsed.data, ip));
   } catch (err) {
     return scheduleError(err);
@@ -131,7 +147,9 @@ async function handleManage(
 ): Promise<APIGatewayProxyResultV2> {
   const { b, s } = event.queryStringParameters ?? {};
   if (!b || !s) return json(422, { error: 'invalid_input' });
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
   try {
+    await assertWithinScheduleRateLimit(ip);
     const booking = await view(b, s);
     // Never echo the IP or the note back to the browser.
     return json(200, {
@@ -149,7 +167,9 @@ async function handleCancel(
 ): Promise<APIGatewayProxyResultV2> {
   const body = parseBody(event) as { slotStartUtc?: string; sig?: string };
   if (!body.slotStartUtc || !body.sig) return json(422, { error: 'invalid_input' });
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
   try {
+    await assertWithinScheduleRateLimit(ip);
     await cancel(body.slotStartUtc, body.sig);
     return json(200, { ok: true });
   } catch (err) {
@@ -168,22 +188,20 @@ async function handleMove(
   if (!body.slotStartUtc || !body.sig || !body.toSlotStartUtc) {
     return json(422, { error: 'invalid_input' });
   }
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
   try {
+    await assertWithinScheduleRateLimit(ip);
     return json(200, await move(body.slotStartUtc, body.sig, body.toSlotStartUtc));
   } catch (err) {
     return scheduleError(err);
   }
 }
 
-// 409 means "pick another slot", 403 means "that link is not yours".
-function scheduleError(err: unknown): APIGatewayProxyResultV2 {
+// 409 means "pick another slot", 403 means "that link is not yours". Exported
+// for a table-driven test over the full error-name -> status contract.
+export function scheduleError(err: unknown): APIGatewayProxyResultV2 {
   const name = (err as Error).name;
-  const msg = (err as Error).message;
-  // normalizeWebsite rejects junk domains, and the URL constructor throws a
-  // TypeError on unparseable input. Both are the caller's fault, not ours.
-  if (msg === 'invalid_domain' || name === 'TypeError') {
-    return json(422, { error: 'invalid_website' });
-  }
+  if (name === 'InvalidWebsiteError') return json(422, { error: 'invalid_website' });
   if (name === 'RateLimitedError') return json(429, { error: 'rate_limited' });
   if (name === 'SlotTakenError' || name === 'SlotUnavailableError') {
     return json(409, { error: 'slot_taken' });
@@ -191,6 +209,9 @@ function scheduleError(err: unknown): APIGatewayProxyResultV2 {
   if (name === 'AlreadyBookedError') return json(409, { error: 'already_booked' });
   if (name === 'InvalidSignatureError') return json(403, { error: 'invalid_link' });
   if (name === 'UnknownBookingError') return json(404, { error: 'unknown_booking' });
+  // Anything else (a malformed stored row, a null deref, an AWS SDK error) is
+  // a real defect, not caller input — let it reach the handler's catch-all
+  // so it logs as `unhandled` and 500s, instead of masquerading as a 4xx.
   throw err;
 }
 

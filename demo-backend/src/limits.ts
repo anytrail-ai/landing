@@ -3,6 +3,11 @@ export const LIMITS = {
   /** POST /demo/start requests allowed per IP per window.
    * Temporarily raised for founder testing — drop back to ~20 before real launch. */
   startPerIp: 200,
+  /** All five /schedule/* requests per IP per window, combined. Separate from
+   * startPerIp: /schedule/slots fires on every page load of the scheduling
+   * UI, and sharing the demo-start counter would let ordinary browsing drain
+   * a visitor's ability to submit the lead form. */
+  schedulePerIp: 300,
   /** Rate-limit window in seconds (one day). */
   windowSeconds: 86400,
   /** User messages per chat session; hitting it triggers the closing CTA. */

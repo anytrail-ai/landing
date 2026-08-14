@@ -22,6 +22,18 @@ export class AlreadyBookedError extends Error {
   }
 }
 
+/**
+ * Lives here (not in the API layer) because `moveBooking` throws it too: the
+ * booking `authorize()` loaded no longer matches the row on disk by the time
+ * the transaction runs, which is a store-level fact, not a signature failure.
+ */
+export class UnknownBookingError extends Error {
+  constructor() {
+    super('unknown_booking');
+    this.name = 'UnknownBookingError';
+  }
+}
+
 export interface Booking {
   slotStartUtc: string;
   name: string;
@@ -92,11 +104,22 @@ export async function createBooking(b: Booking): Promise<void> {
 
 /**
  * Atomically replaces `from`'s slot with `to`'s, in one transaction: delete
- * the old slot row, put the new one (conditioned on it still being free), and
+ * the old slot row (conditioned on it still being the exact booking that was
+ * authorized), put the new one (conditioned on it still being free), and
  * overwrite the email guard to point at the new slot. A crash or timeout
  * between writes cannot happen — DynamoDB applies all three or none — so a
  * move can never destroy a confirmed booking; it either succeeds outright or
  * fails with the original booking still fully intact.
+ *
+ * The Delete's `createdAt = :c` condition closes a TOCTOU window: without it,
+ * a caller authorized against the row at t1 could still have its Delete
+ * apply at t4 after that row was cancelled at t2 and re-booked by someone
+ * else at t3 — silently deleting the new booker's slot and orphaning their
+ * email guard (a DynamoDB Delete on a missing item succeeds, so a plain
+ * unconditioned Delete cannot tell "still mine" from "gone, then replaced").
+ * `createdAt` is stable for a given active booking (move() preserves it) and
+ * changes on every new booking of that slot, so it is exactly the "is this
+ * still the row I authorized" check.
  *
  * The guard Put carries no condition. This is not an oversight: the caller
  * is already authenticated by the HMAC signature on the booking being moved,
@@ -112,7 +135,14 @@ export async function moveBooking(from: Booking, to: Booking): Promise<void> {
     await docClient().send(
       new TransactWriteCommand({
         TransactItems: [
-          { Delete: { TableName: TABLE_NAME, Key: keyFor(from.slotStartUtc) } },
+          {
+            Delete: {
+              TableName: TABLE_NAME,
+              Key: keyFor(from.slotStartUtc),
+              ConditionExpression: 'createdAt = :c',
+              ExpressionAttributeValues: { ':c': from.createdAt },
+            },
+          },
           {
             Put: {
               TableName: TABLE_NAME,
@@ -136,7 +166,8 @@ export async function moveBooking(from: Booking, to: Booking): Promise<void> {
   } catch (err) {
     const e = err as { name?: string; CancellationReasons?: { Code?: string }[] };
     if (e.name === 'TransactionCanceledException') {
-      const [, slot] = e.CancellationReasons ?? [];
+      const [del, slot] = e.CancellationReasons ?? [];
+      if (del?.Code === 'ConditionalCheckFailed') throw new UnknownBookingError();
       if (slot?.Code === 'ConditionalCheckFailed') throw new SlotTakenError();
     }
     throw err;

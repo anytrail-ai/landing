@@ -5,6 +5,7 @@ import { setDocClientForTests } from '../db';
 import {
   AlreadyBookedError,
   SlotTakenError,
+  UnknownBookingError,
   createBooking,
   deleteBooking,
   listBookedInstants,
@@ -108,6 +109,11 @@ describe('moveBooking', () => {
     const [del, put, guard] = call.TransactItems!;
 
     expect(del.Delete!.Key).toEqual({ pk: 'BOOKINGDAY#2026-08-20', sk: 'SLOT#14:30' });
+    // Bound to the authorized booking's createdAt: closes the TOCTOU window
+    // where the row was cancelled and re-booked by someone else between
+    // authorize() loading it and this transaction running.
+    expect(del.Delete!.ConditionExpression).toBe('createdAt = :c');
+    expect(del.Delete!.ExpressionAttributeValues).toEqual({ ':c': booking.createdAt });
 
     expect(put.Put!.Item!.pk).toBe('BOOKINGDAY#2026-08-21');
     expect(put.Put!.Item!.sk).toBe('SLOT#11:00');
@@ -124,6 +130,15 @@ describe('moveBooking', () => {
     // by the HMAC on the booking being moved, so this is just following the
     // same owner to their new slot, not gatekeeping a second identity.
     expect(guard.Put!.ConditionExpression).toBeUndefined();
+  });
+
+  it('reports the authorized row having changed underneath it as UnknownBookingError', async () => {
+    const err = Object.assign(new Error('cancelled'), {
+      name: 'TransactionCanceledException',
+      CancellationReasons: [{ Code: 'ConditionalCheckFailed' }, { Code: 'None' }, { Code: 'None' }],
+    });
+    ddb.on(TransactWriteCommand).rejects(err);
+    await expect(moveBooking(booking, moved)).rejects.toBeInstanceOf(UnknownBookingError);
   });
 
   it('reports a slot taken by someone else as SlotTakenError', async () => {

@@ -10,11 +10,17 @@ import {
   getBooking,
   listBookedInstants,
   moveBooking,
+  UnknownBookingError,
 } from '../schedule/store';
 import { signBooking, verifyBooking } from '../schedule/token';
 import { normalizeWebsite } from './start';
 
 const SITE = 'https://www.anytrail.ai';
+
+// Re-exported from the store: moveBooking's atomic transaction can throw it
+// too (the row a caller was authorized against is gone by the time the
+// transaction runs), so it is a store-level fact, not just a signature one.
+export { UnknownBookingError };
 
 export class InvalidSignatureError extends Error {
   constructor() {
@@ -22,16 +28,20 @@ export class InvalidSignatureError extends Error {
     this.name = 'InvalidSignatureError';
   }
 }
-export class UnknownBookingError extends Error {
-  constructor() {
-    super('unknown_booking');
-    this.name = 'UnknownBookingError';
-  }
-}
 export class SlotUnavailableError extends Error {
   constructor() {
     super('slot_unavailable');
     this.name = 'SlotUnavailableError';
+  }
+}
+/** normalizeWebsite's junk-domain Error and the URL constructor's TypeError
+ * on unparseable input are both the caller's fault; wrapping them here keeps
+ * "malformed website" from masquerading as any other TypeError a genuine
+ * defect (a null deref, a bad stored row) might raise in the other routes. */
+export class InvalidWebsiteError extends Error {
+  constructor() {
+    super('invalid_website');
+    this.name = 'InvalidWebsiteError';
   }
 }
 
@@ -73,7 +83,12 @@ export async function book(
   const open = await openSlots(Date.now());
   if (!open.includes(input.slotStartUtc)) throw new SlotUnavailableError();
 
-  const { url } = normalizeWebsite(input.website);
+  let url: string;
+  try {
+    ({ url } = normalizeWebsite(input.website));
+  } catch {
+    throw new InvalidWebsiteError();
+  }
   const startsSoon =
     new Date(input.slotStartUtc).getTime() - Date.now() < 24 * 60 * 60 * 1000;
 

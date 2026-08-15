@@ -143,6 +143,11 @@ export class ApiStack extends cdk.Stack {
     resendSecret.grantRead(reminderFn);
     scheduleSecret.grantRead(reminderFn);
 
+    // This rate MUST stay equal to SWEEP_MS in src/reminders/handler.ts. The
+    // handler treats a booking as due when its lead time falls inside a
+    // window this wide; if the two silently drift apart (edit one without
+    // the other), a gap opens between sweeps that is never sampled and some
+    // bookings' T-24/T-1 reminders are skipped entirely, not just delayed.
     new events.Rule(this, 'ReminderSchedule', {
       schedule: events.Schedule.rate(cdk.Duration.minutes(15)),
       targets: [new targets.LambdaFunction(reminderFn)],
@@ -161,6 +166,15 @@ export class ApiStack extends cdk.Stack {
       path: '/demo/{proxy+}',
       methods: [apigwv2.HttpMethod.GET, apigwv2.HttpMethod.POST],
       integration: new HttpLambdaIntegration('ApiIntegration', apiFn),
+    });
+    // Scheduling routes (ANY-66) live on the same Lambda's own if-chain
+    // (src/api/handler.ts) but need their own gateway route or API Gateway
+    // never invokes the Lambda for them at all — it answers 404 itself
+    // before the handler ever sees the request.
+    httpApi.addRoutes({
+      path: '/schedule/{proxy+}',
+      methods: [apigwv2.HttpMethod.GET, apigwv2.HttpMethod.POST],
+      integration: new HttpLambdaIntegration('ScheduleIntegration', apiFn),
     });
 
     const chatUrl = chatFn.addFunctionUrl({

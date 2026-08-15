@@ -82,8 +82,11 @@ export function renderProspectsEmail(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.pageBg};padding:32px 16px"><tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;font-family:'Funnel Sans','Segoe UI',system-ui,sans-serif;color:${C.text}">
   <tr><td style="padding:0 8px 16px">
-    <img src="https://www.anytrail.ai/anytrail-mark.png" alt="" height="24" style="height:24px;width:auto;vertical-align:middle"/>
-    <span style="font-family:'Montserrat','Funnel Sans',system-ui,sans-serif;font-weight:300;font-size:20px;letter-spacing:0.01em;vertical-align:middle">&nbsp;anytrail</span>
+    <!-- The real lockup, not a mark plus a web font: mail clients do not load
+         @font-face, so the wordmark used to fall back to whatever the client
+         had and never matched the site. Width and height are attributes as
+         well as styles because Outlook ignores the CSS. -->
+    <img src="https://www.anytrail.ai/anytrail-logo.png" alt="Anytrail" width="130" height="32" style="width:130px;height:32px;border:0;vertical-align:middle"/>
     <span style="color:${C.faint};font-size:13px;vertical-align:middle"> &nbsp;·&nbsp; demo results</span>
   </td></tr>
   <tr><td style="background:${C.surface};border:1px solid ${C.border};border-radius:12px;padding:32px">

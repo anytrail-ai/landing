@@ -87,7 +87,13 @@ const T = {
 function shell(inner: string): string {
   return `<div style="background:${C.pageBg};padding:32px 0;font-family:-apple-system,Segoe UI,Roboto,sans-serif">
   <div style="max-width:560px;margin:0 auto;background:${C.surface};border:1px solid ${C.border};border-radius:12px;padding:32px">
-    <div style="font-weight:700;font-size:18px;color:${C.text};margin-bottom:24px">anytrail</div>
+    <!-- Served from the landing site's public/ so it survives independently of
+         this deploy. Width and height are attributes as well as styles because
+         Outlook ignores the CSS; alt text carries the brand when a client blocks
+         images, which many do by default. -->
+    <div style="margin-bottom:24px">
+      <a href="${SITE}" style="text-decoration:none"><img src="${SITE}/anytrail-logo.png" alt="Anytrail" width="130" height="32" style="display:block;width:130px;height:32px;border:0;outline:none;text-decoration:none" /></a>
+    </div>
     ${inner}
     <div style="margin-top:28px;border-top:1px solid ${C.border};padding-top:16px;font-size:12px;color:${C.faint}">
       Anytrail · <a href="${SITE}" style="color:${C.accent}">anytrail.ai</a>

@@ -44,6 +44,18 @@ describe('renderConfirmation', () => {
     expect(html).not.toContain('Your call');
   });
 
+  it('shows the brand lockup with alt text and Outlook-readable dimensions', () => {
+    const { html } = renderConfirmation(booking, MANAGE, MEET);
+    expect(html).toContain('https://www.anytrail.ai/anytrail-logo.png');
+    // Many clients block images by default, so the alt text is what most
+    // recipients actually see first.
+    expect(html).toContain('alt="Anytrail"');
+    // Outlook ignores the CSS sizing and honours only the attributes; without
+    // these the logo renders at its full 673px and blows out the layout.
+    expect(html).toContain('width="130"');
+    expect(html).toContain('height="32"');
+  });
+
   it('never uses an em dash, in either language', () => {
     for (const lang of ['en', 'es'] as const) {
       const { html, text } = renderConfirmation({ ...booking, lang }, MANAGE, MEET);

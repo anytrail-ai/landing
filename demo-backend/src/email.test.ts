@@ -32,4 +32,14 @@ describe('renderProspectsEmail', () => {
     expect(text).toContain('Luis Pérez (VP Sales)');
     expect(text).toContain('No follow-ups');
   });
+
+  it('shows the brand lockup rather than a web-font wordmark', () => {
+    const { html } = renderProspectsEmail('Ana', 'Hidrorey', icp, leads);
+    expect(html).toContain('https://www.anytrail.ai/anytrail-logo.png');
+    expect(html).toContain('alt="Anytrail"');
+    expect(html).toContain('width="130"');
+    // Mail clients do not load @font-face, so a text wordmark fell back to
+    // whatever the client had and never matched the site.
+    expect(html).not.toContain('Montserrat');
+  });
 });

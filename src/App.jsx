@@ -16,6 +16,8 @@ const PAGES = {
   demo: Demo,
   schedule: Schedule,
   speedToLead: () => <ClusterPage copyKey="speedToLead" />,
+  manufacturingCrm: () => <ClusterPage copyKey="manufacturingCrm" />,
+  rfqAutomation: () => <ClusterPage copyKey="rfqAutomation" />,
 }
 
 function App({ lang = 'en', page = 'home' }) {

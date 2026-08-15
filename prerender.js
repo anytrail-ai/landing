@@ -6,7 +6,7 @@
 // static page. Also emits sitemap.xml, robots.txt and llms.txt.
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url))
 const DIST = path.join(ROOT, 'dist')
@@ -21,7 +21,11 @@ const OG_IMAGE_H = 1024
 
 // Markup comes from the SSR bundle; metadata comes straight from the copy
 // module, which is plain JS and needs no build step.
-const { render } = await import(path.join(ROOT, 'dist-ssr', 'entry-server.js'))
+// pathToFileURL, not a bare path: on Windows an absolute path starts with a
+// drive letter, which the ESM loader reads as an unsupported "c:" scheme.
+const { render } = await import(
+  pathToFileURL(path.join(ROOT, 'dist-ssr', 'entry-server.js')).href
+)
 const { COPY, LANGS, ROUTES, NOINDEX_PAGES, CLUSTER_PAGES } = await import(
   './src/i18n/copy.js'
 )
@@ -77,12 +81,18 @@ function head(lang, page) {
   const noindex = NOINDEX_PAGES.includes(page)
 
   // hreflang pairs the SAME page across languages, so /thanks points at
-  // /es/gracias rather than at the Spanish home page.
+  // /es/gracias rather than at the Spanish home page. Pages that exist in only
+  // one language (the extension privacy notice) list just that one — emitting
+  // an alternate for a language without the route would point at a URL that
+  // does not exist.
+  const langsWithPage = LANGS.filter((l) => ROUTES[l][page])
   const alternates = [
-    ...LANGS.map(
+    ...langsWithPage.map(
       (l) => `<link rel="alternate" hreflang="${l}" href="${urlFor(l, page)}" />`,
     ),
-    `<link rel="alternate" hreflang="x-default" href="${urlFor('en', page)}" />`,
+    ...(ROUTES.en[page]
+      ? [`<link rel="alternate" hreflang="x-default" href="${urlFor('en', page)}" />`]
+      : []),
   ].join('\n    ')
 
   return `<title>${esc(title)}</title>
@@ -138,14 +148,16 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${indexable
   .flatMap((page) =>
-    LANGS.map(
+    LANGS.filter((lang) => ROUTES[lang][page]).map(
       (lang) => `  <url>
     <loc>${urlFor(lang, page)}</loc>
     <lastmod>${lastmod}</lastmod>
-${LANGS.map(
-  (l) =>
-    `    <xhtml:link rel="alternate" hreflang="${l}" href="${urlFor(l, page)}" />`,
-).join('\n')}
+${LANGS.filter((l) => ROUTES[l][page])
+  .map(
+    (l) =>
+      `    <xhtml:link rel="alternate" hreflang="${l}" href="${urlFor(l, page)}" />`,
+  )
+  .join('\n')}
     <xhtml:link rel="alternate" hreflang="x-default" href="${urlFor('en', page)}" />
   </url>`,
     ),

@@ -22,7 +22,7 @@ const OG_IMAGE_H = 1024
 // Markup comes from the SSR bundle; metadata comes straight from the copy
 // module, which is plain JS and needs no build step.
 const { render } = await import(path.join(ROOT, 'dist-ssr', 'entry-server.js'))
-const { COPY, LANGS, ROUTES, NOINDEX_PAGES } = await import(
+const { COPY, LANGS, ROUTES, NOINDEX_PAGES, CLUSTER_PAGES } = await import(
   './src/i18n/copy.js'
 )
 const esc = (s) =>
@@ -190,6 +190,15 @@ hands qualified opportunities to the sales team.
 ${LANGS.map(
   (l) =>
     `- [${l === 'en' ? 'Home (English)' : 'Inicio (Español)'}](${urlFor(l, 'home')}): ${COPY[l].meta.description}`,
+).join('\n')}
+
+## Reading
+
+${LANGS.flatMap((l) =>
+  CLUSTER_PAGES.map(
+    (page) =>
+      `- [${COPY[l][page].navLabel}](${urlFor(l, page)}): ${COPY[l][page].meta.description}`,
+  ),
 ).join('\n')}
 
 ## Contact

@@ -1,0 +1,190 @@
+/* Long-form content pages. The home page leads with a mockup; a cluster page
+   leads with the argument, so the head is type only. */
+
+.cluster__head {
+  padding: calc(var(--section-pad-y) + 48px) 16px var(--space-12);
+}
+
+.cluster__head-inner {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cluster__title {
+  margin: 0;
+  max-width: 720px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 44px;
+  letter-spacing: -0.8px;
+  color: var(--text-strong);
+}
+
+/* Body size, per the type ramp. The lede separates itself from the sections
+   below by colour and measure, not by an off-ramp font size. */
+.cluster__lede {
+  margin: 0;
+  max-width: 620px;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 22.5px;
+  color: var(--text);
+}
+
+/* Sections stack tighter than on the home page: this is one continuous
+   argument, not a sequence of separate pitches. */
+.cluster__section {
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
+}
+
+.cluster__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cluster__points-label {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.cluster__grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.cluster__card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cluster__card-title {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-strong);
+}
+
+.cluster__card-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--text-muted);
+}
+
+/* Tinted rather than white: the limits read as an aside to the argument,
+   deliberately not styled like the confident cards above. */
+.cluster__limits {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cluster__limits-title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 30px;
+  letter-spacing: -0.4px;
+  color: var(--text-strong);
+}
+
+.cluster__limits-list {
+  margin: 0;
+  padding-left: 1.1em;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: 15px;
+  line-height: 22.5px;
+  color: var(--text-muted);
+}
+
+.cluster__related {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cluster__related-label {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.cluster__related-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-top: 1px solid var(--border);
+}
+
+.cluster__related-list li {
+  border-bottom: 1px solid var(--border);
+}
+
+.cluster__related-list a {
+  display: block;
+  padding: var(--space-3) 0;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 22.5px;
+  color: var(--text-strong);
+  text-decoration: none;
+}
+
+.cluster__related-list a:hover {
+  color: var(--nav-text-hover);
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .cluster__head {
+    padding: calc(var(--section-pad-y-mobile) + 40px) 16px var(--space-8);
+  }
+
+  /* Display drops to headline on small screens. Both are documented steps. */
+  .cluster__title {
+    font-size: 34px;
+    line-height: 40px;
+    letter-spacing: -0.6px;
+  }
+
+  .cluster__grid {
+    grid-template-columns: 1fr;
+  }
+}

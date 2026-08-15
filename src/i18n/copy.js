@@ -117,7 +117,7 @@ export const COPY = {
       },
       title: 'Your review is booked.',
       body: "Check your email for the calendar invite. Before we meet, we'll send an inquiry through your own inbound channels and time how long a reply takes, so we can show you exactly where opportunities are being lost today.",
-      manageSave: 'Save this link in case the confirmation email does not arrive — it is the only way to cancel or move your call:',
+      manageSave: 'Save this link in case the confirmation email does not arrive. It is the only way to cancel or move your call:',
       back: 'Back to home',
       demoLead: 'While you wait, run the agent on your own catalog.',
       demoCta: 'Try the live demo',
@@ -126,7 +126,7 @@ export const COPY = {
       meta: {
         title: 'Live Demo | Anytrail',
         description:
-          'See an AI sales agent built on your own website in one minute. It learns your products and sells them back to you — plus your ideal customer profile and 5 matching leads.',
+          'See an AI sales agent built on your own website in one minute. It learns your products and sells them back to you, plus your ideal customer profile and 5 matching leads.',
         ogLocale: 'en_US',
       },
     },
@@ -634,7 +634,7 @@ export const COPY = {
       },
       title: 'Tu revisión está agendada.',
       body: 'Revisa tu correo para la invitación. Antes de la reunión, enviaremos una consulta por tus propios canales de ventas entrantes y mediremos cuánto tarda la respuesta, para mostrarte exactamente dónde se están perdiendo oportunidades hoy.',
-      manageSave: 'Guarda este enlace por si el correo de confirmación no llega — es la única forma de cancelar o mover tu llamada:',
+      manageSave: 'Guarda este enlace por si el correo de confirmación no llega. Es la única forma de cancelar o mover tu llamada:',
       back: 'Volver al inicio',
       demoLead: 'Mientras tanto, prueba el agente con tu propio catálogo.',
       demoCta: 'Probar la demo',
@@ -643,7 +643,7 @@ export const COPY = {
       meta: {
         title: 'Demo en Vivo | Anytrail',
         description:
-          'Mira un agente de ventas con IA construido sobre tu propio sitio web en un minuto. Aprende tus productos y te los vende — más tu perfil de cliente ideal y 5 prospectos.',
+          'Mira un agente de ventas con IA construido sobre tu propio sitio web en un minuto. Aprende tus productos y te los vende, más tu perfil de cliente ideal y 5 prospectos.',
         ogLocale: 'es_ES',
       },
     },

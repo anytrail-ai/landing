@@ -167,8 +167,123 @@ export const COPY = {
         generic: 'Something went wrong. Try again.',
       },
     },
+    // Cluster page. Structure is read by ClusterPage.jsx, so the two remaining
+    // cluster pages are a copy block and a ROUTES entry, nothing more.
+    speedToLead: {
+      meta: {
+        title: 'Speed to Lead for Industrial Equipment Companies | Anytrail',
+        description:
+          'Speed to lead in industrial equipment sales is not how fast you reply. It is how fast the reply moves the quote forward. What to measure, and where the hours actually go.',
+        ogLocale: 'en_US',
+      },
+      h1: 'Speed to lead in industrial equipment sales.',
+      // Short form for the footer link, where the full h1 sentence is too long.
+      navLabel: 'Speed to lead in industrial sales',
+      lede: [
+        'Speed to lead is the time between an inquiry arriving and somebody responding to it. In industrial equipment sales that definition is close to useless, because the reply that counts is not the first one. It is the first one that moved the deal toward a quote.',
+        'This page is about that difference: why the standard advice does not transfer from software to equipment, where the hours really go, and what to measure instead.',
+      ],
+      sections: [
+        {
+          label: 'WHERE THE NUMBER CAME FROM',
+          title: 'The five minute rule was written for mortgage forms.',
+          paras: [
+            'Every speed to lead statistic in circulation traces back to the same handful of studies, and all of them measured web form fills for mortgages, insurance, and software trials. In those markets the product is already defined and the buyer is comparing price and patience. Calling within five minutes works because there is nothing left to figure out. Someone wants a thirty year fixed, and you either quote it or you do not.',
+            'Industrial equipment does not behave that way. When a maintenance manager writes in about a pressure washer, nobody yet knows what to sell. Not you, and not them. The residue is unnamed, the duty cycle is a guess, and whether there is three phase power at the wash bay is a question that decides which half of your catalog is even eligible. Answering that inquiry in five minutes with a price is not fast. It is wrong, quickly.',
+            'The speed that matters here is a different quantity, and it is worth naming precisely, because the number most teams track is not it.',
+          ],
+        },
+        {
+          title: 'The first person to answer writes the spec.',
+          paras: [
+            'There is a mechanic in technical sales that does not exist in commodity sales, and it settles more deals than price does. Whoever answers first gets to ask the diagnostic questions. Whoever asks the diagnostic questions defines what the requirement is. By the time the buyer reaches the second vendor, they are no longer describing a problem. They are reading back a specification your competitor wrote, and asking to be quoted against it.',
+            'Every equipment salesperson has felt this from the losing side. The quote request comes in oddly particular, the customer insists on a feature nobody asks for unprompted, and the deal gets scored on a sheet you had no hand in building. That sheet was built during the first conversation, usually within a day of the inquiry, often by whoever happened to be near their phone.',
+            'That is the real prize for answering first, and it also explains why answering fast with nothing does not collect it.',
+          ],
+        },
+        {
+          title: 'An instant reply that says nothing is still a lost day.',
+          paras: [
+            'Most teams that set out to fix response time end up improving the wrong number. They add an autoresponder, or a chat widget that greets the visitor, or a routing rule that assigns the inquiry to a rep within sixty seconds. The dashboard turns green. Nothing changes, because none of those things asked the buyer a question.',
+            'Two clocks run on every inquiry. The first is time to first contact, which is what a CRM reports. The second is time to first useful reply, meaning the first message that moved the opportunity closer to a quotable specification. Only the second one predicts anything. An acknowledgment at thirty seconds followed by a real question nineteen hours later is a nineteen hour response, and the buyer experienced it as one.',
+          ],
+          pointsLabel: 'Worth measuring',
+          points: [
+            {
+              title: 'Time to first useful reply',
+              body: 'The gap between the inquiry landing and the first message that asks something a quote depends on. Not the acknowledgment. The question.',
+            },
+            {
+              title: 'Share of inquiries arriving off hours',
+              body: 'What lands after six, on weekends, and during shutdown weeks. Most teams have never actually measured this and guess low, because a message that arrived at 21:40 looks like Monday morning by the time anyone opens it.',
+            },
+            {
+              title: 'Round trips to a quotable spec',
+              body: 'How many exchanges it takes to get from the first inquiry to enough information to price. Every round trip costs a day, and every day is an opening for somebody else.',
+            },
+            {
+              title: 'Follow up survival',
+              body: 'Of the inquiries that went quiet after one exchange, how many got a second attempt. This is usually the largest single leak, and it hides well, because nothing failed. Somebody just got busy.',
+            },
+          ],
+        },
+        {
+          title: 'Where the hours actually go.',
+          paras: [
+            'None of this is a motivation problem. Good salespeople lose these hours too. The delay is structural, and it shows up in four predictable places.',
+          ],
+          points: [
+            {
+              title: 'Nobody owns the hour it arrived',
+              body: 'The line is covered from eight to six. The inquiry landed at 21:40. There is no rule for that hour, so it waits for a shift that already has a queue of its own.',
+            },
+            {
+              title: 'It arrived incomplete',
+              body: 'The buyer wrote two sentences. Pricing needs six answers. Someone has to go back and ask, which puts the clock on the buyer’s schedule instead of yours.',
+            },
+            {
+              title: 'It was routed before it was understood',
+              body: 'Assignment rules split by territory or product line, but an inquiry rarely states either one clearly. The wrong rep receives it, reads it, forwards it, and the day is gone.',
+            },
+            {
+              title: 'The follow up depended on memory',
+              body: 'Equipment deals close on the second and third touch. Those are exactly the ones that live in a person’s head in between other work.',
+            },
+          ],
+        },
+        {
+          label: 'WHAT WE DO ABOUT IT',
+          title: 'Anytrail answers with the question, not the greeting.',
+          paras: [
+            'Anytrail replies the moment an inquiry lands, whether it came from WhatsApp, an ad, or your website, and the first message it sends is diagnostic. It asks what the residue is, how many hours a week the machine will run, and whether the site has three phase power, because those are the questions your own team asks before it prices anything.',
+            'It keeps going until there is enough to quote, matches the application against your catalog, and hands the opportunity to a salesperson with the answers already collected. If the buyer goes quiet, it comes back over the following days and weeks without anyone having to remember. The same agent works the other direction as well, opening conversations with accounts that match what you sell.',
+            'Your team keeps pricing, the technical recommendation, the quotation, and the sale. That boundary is deliberate. An agent that quotes is an agent that will eventually quote something you cannot deliver.',
+          ],
+        },
+      ],
+      limits: {
+        title: 'What this does not do.',
+        items: [
+          'It does not set prices or issue quotes. It collects what a quote needs and hands that over.',
+          'It does not replace a salesperson on a technical call. It makes sure that call starts with the application already diagnosed.',
+          'We publish no benchmark response times, industry averages, or conversion lifts. We have not measured them ourselves, and the figures in circulation were measured on a different kind of sale.',
+        ],
+      },
+      relatedLabel: 'Keep reading',
+      related: [
+        { page: 'home', label: 'How Anytrail works, inbound and outbound' },
+        { page: 'demo', label: 'Build an agent on your own catalog in a minute' },
+        { page: 'schedule', label: 'Book a commercial process review' },
+      ],
+      closing: {
+        title: 'Find out what your own response time actually is.',
+        body: 'Before the call we send a real inquiry through your own inbound channels and time how long a useful reply takes. You get the timings either way, whether or not you buy anything.',
+        cta: 'Review my commercial process',
+      },
+    },
     footer: {
       tagline: 'AI sales agents for industrial equipment companies. © 2026 Anytrail',
+      linksLabel: 'Reading',
     },
   },
 
@@ -338,8 +453,123 @@ export const COPY = {
         generic: 'Algo salió mal. Inténtalo de nuevo.',
       },
     },
+    // "Speed to lead" no tiene equivalente de búsqueda en español. El comprador
+    // industrial mexicano busca "tiempo de respuesta", así que la página se
+    // escribe sobre ese término, no sobre la traducción del modismo inglés.
+    speedToLead: {
+      meta: {
+        title: 'Tiempo de respuesta a leads industriales | Anytrail',
+        description:
+          'En la venta de equipo industrial no gana el que contesta rápido, sino el que contesta algo que acerca la cotización. Qué medir y dónde se van realmente las horas.',
+        ogLocale: 'es_ES',
+      },
+      h1: 'Tiempo de respuesta a leads en la venta de equipo industrial.',
+      navLabel: 'Tiempo de respuesta a leads industriales',
+      lede: [
+        'El tiempo de respuesta es lo que pasa entre que llega una consulta y que alguien contesta. En la venta de equipo industrial esa definición sirve de poco, porque la respuesta que cuenta no es la primera. Es la primera que acercó el trato a una cotización.',
+        'De eso trata esta página: por qué el consejo estándar no se traslada del software al equipo, dónde se van de verdad las horas, y qué conviene medir en su lugar.',
+      ],
+      sections: [
+        {
+          label: 'DE DÓNDE SALIÓ EL NÚMERO',
+          title: 'La regla de los cinco minutos se escribió para formularios de crédito.',
+          paras: [
+            'Todas las estadísticas de tiempo de respuesta que circulan vienen del mismo puñado de estudios, y todos midieron formularios web de créditos hipotecarios, seguros y pruebas de software. En esos mercados el producto ya está definido y el comprador compara precio y paciencia. Llamar en cinco minutos funciona porque no queda nada por averiguar. Alguien quiere un crédito a plazo fijo y tú se lo cotizas o no.',
+            'El equipo industrial no se comporta así. Cuando un jefe de mantenimiento escribe preguntando por una hidrolavadora, todavía nadie sabe qué se va a vender. Ni tú ni él. El residuo no tiene nombre, el ciclo de trabajo es una suposición, y si hay o no corriente trifásica en la zona de lavado es una pregunta que decide cuál mitad de tu catálogo siquiera califica. Contestar esa consulta en cinco minutos con un precio no es rapidez. Es equivocarse rápido.',
+            'La velocidad que importa aquí es otra cosa, y vale la pena nombrarla con precisión, porque el número que casi todos miden no es ese.',
+          ],
+        },
+        {
+          title: 'El primero que contesta es el que redacta la especificación.',
+          paras: [
+            'Hay una mecánica en la venta técnica que no existe en la venta de commodities, y define más tratos que el precio. El que contesta primero es el que hace las preguntas de diagnóstico. El que hace las preguntas de diagnóstico es el que define cuál es el requerimiento. Para cuando el comprador llega con el segundo proveedor, ya no está describiendo un problema. Está leyendo en voz alta una especificación que escribió tu competencia, y pidiendo que le coticen contra ella.',
+            'Cualquier vendedor de equipo lo ha vivido desde el lado perdedor. La solicitud llega rara de específica, el cliente insiste en una característica que nadie pide por su cuenta, y el trato se califica en una tabla que tú no ayudaste a armar. Esa tabla se armó en la primera conversación, casi siempre dentro del primer día, muchas veces por quien tenía el celular a la mano.',
+            'Ese es el verdadero premio por contestar primero, y también explica por qué contestar rápido sin decir nada no lo cobra.',
+          ],
+        },
+        {
+          title: 'Una respuesta inmediata que no dice nada sigue siendo un día perdido.',
+          paras: [
+            'La mayoría de los equipos que se proponen arreglar el tiempo de respuesta terminan mejorando el número equivocado. Ponen un autorespondedor, o un chat que saluda al visitante, o una regla que asigna la consulta a un vendedor en menos de un minuto. El tablero se pone verde. Nada cambia, porque ninguna de esas cosas le preguntó nada al comprador.',
+            'En cada consulta corren dos relojes. El primero es el tiempo hasta el primer contacto, que es lo que reporta el CRM. El segundo es el tiempo hasta la primera respuesta útil, es decir el primer mensaje que acercó la oportunidad a una especificación cotizable. Solo el segundo predice algo. Un acuse de recibo a los treinta segundos y una pregunta real diecinueve horas después es una respuesta de diecinueve horas, y así la vivió el comprador.',
+          ],
+          pointsLabel: 'Lo que vale la pena medir',
+          points: [
+            {
+              title: 'Tiempo hasta la primera respuesta útil',
+              body: 'Lo que pasa entre que llega la consulta y el primer mensaje que pregunta algo de lo que depende una cotización. No el acuse de recibo. La pregunta.',
+            },
+            {
+              title: 'Cuántas consultas llegan fuera de horario',
+              body: 'Lo que entra después de las seis, en fin de semana y en semanas de paro de planta. Casi nadie lo ha medido de verdad y todos lo subestiman, porque un mensaje que llegó a las 21:40 parece del lunes en la mañana para cuando alguien lo abre.',
+            },
+            {
+              title: 'Cuántas vueltas hasta poder cotizar',
+              body: 'Cuántos intercambios se necesitan desde la primera consulta hasta tener con qué poner precio. Cada vuelta cuesta un día, y cada día es una puerta abierta para alguien más.',
+            },
+            {
+              title: 'Cuántos seguimientos sobreviven',
+              body: 'De las consultas que se quedaron calladas después de un intercambio, cuántas recibieron un segundo intento. Suele ser la fuga más grande, y se esconde bien, porque nada falló. Alguien simplemente se ocupó en otra cosa.',
+            },
+          ],
+        },
+        {
+          title: 'Dónde se van realmente las horas.',
+          paras: [
+            'Nada de esto es falta de ganas. A los buenos vendedores también se les van estas horas. La demora es estructural, y aparece en cuatro lugares predecibles.',
+          ],
+          points: [
+            {
+              title: 'Nadie es dueño de la hora en que llegó',
+              body: 'La línea está cubierta de ocho a seis. La consulta entró a las 21:40. Para esa hora no hay regla, así que espera a un turno que ya trae su propia cola.',
+            },
+            {
+              title: 'Llegó incompleta',
+              body: 'El comprador escribió dos renglones. Para cotizar hacen falta seis datos. Alguien tiene que regresar a preguntar, y eso pone el reloj en la agenda del comprador y no en la tuya.',
+            },
+            {
+              title: 'Se asignó antes de entenderse',
+              body: 'Las reglas de asignación reparten por zona o por línea de producto, pero una consulta casi nunca dice ninguna de las dos con claridad. Le llega al vendedor equivocado, la lee, la reenvía, y se fue el día.',
+            },
+            {
+              title: 'El seguimiento dependía de la memoria',
+              body: 'Los tratos de equipo se cierran en el segundo y el tercer contacto. Justo los que viven en la cabeza de una persona entre un pendiente y otro.',
+            },
+          ],
+        },
+        {
+          label: 'QUÉ HACEMOS AL RESPECTO',
+          title: 'Anytrail contesta con la pregunta, no con el saludo.',
+          paras: [
+            'Anytrail responde en el momento en que llega la consulta, venga de WhatsApp, de un anuncio o de tu sitio web, y su primer mensaje es de diagnóstico. Pregunta qué residuo hay que remover, cuántas horas a la semana va a trabajar el equipo y si la planta tiene corriente trifásica, porque son las preguntas que tu propio equipo hace antes de poner un precio.',
+            'Sigue hasta reunir lo necesario para cotizar, identifica el equipo de tu catálogo que corresponde a esa aplicación, y entrega la oportunidad a un vendedor con las respuestas ya reunidas. Si el comprador deja de contestar, vuelve en los días y semanas siguientes sin que nadie tenga que acordarse. El mismo agente trabaja también la otra dirección, abriendo conversaciones con cuentas que embonan con lo que vendes.',
+            'Tu equipo conserva el precio, la recomendación técnica, la cotización y la venta. Ese límite es a propósito. Un agente que cotiza es un agente que tarde o temprano va a cotizar algo que no puedes entregar.',
+          ],
+        },
+      ],
+      limits: {
+        title: 'Qué no hace.',
+        items: [
+          'No pone precios ni emite cotizaciones. Reúne lo que una cotización necesita y lo entrega.',
+          'No sustituye al vendedor en una llamada técnica. Se asegura de que esa llamada empiece con la aplicación ya diagnosticada.',
+          'No publicamos tiempos de respuesta de referencia, promedios de industria ni mejoras de conversión. No los hemos medido nosotros, y los que circulan se midieron sobre otro tipo de venta.',
+        ],
+      },
+      relatedLabel: 'Seguir leyendo',
+      related: [
+        { page: 'home', label: 'Cómo funciona Anytrail, entrante y de prospección' },
+        { page: 'demo', label: 'Arma un agente con tu propio catálogo en un minuto' },
+        { page: 'schedule', label: 'Agenda una revisión de tu proceso comercial' },
+      ],
+      closing: {
+        title: 'Averigua cuál es tu tiempo de respuesta real.',
+        body: 'Antes de la llamada enviamos una consulta real por tus propios canales de ventas entrantes y medimos cuánto tarda en llegar una respuesta útil. Te entregamos los tiempos de cualquier forma, compres algo o no.',
+        cta: 'Revisa mi proceso comercial',
+      },
+    },
     footer: {
       tagline: 'Agentes de ventas con IA para empresas de equipo industrial. © 2026 Anytrail',
+      linksLabel: 'Lectura',
     },
   },
 }
@@ -353,9 +583,28 @@ export const LANG_PATH = { en: '/', es: '/es' }
 // Spanish visitor never sees an English URL. prerender.js walks this to decide
 // what to render, so adding a page here is enough to get it built.
 export const ROUTES = {
-  en: { home: '/', thanks: '/thanks', demo: '/demo', schedule: '/schedule' },
-  es: { home: '/es', thanks: '/es/gracias', demo: '/es/demo', schedule: '/es/agenda' },
+  en: {
+    home: '/',
+    thanks: '/thanks',
+    demo: '/demo',
+    schedule: '/schedule',
+    speedToLead: '/speed-to-lead',
+  },
+  es: {
+    home: '/es',
+    thanks: '/es/gracias',
+    demo: '/es/demo',
+    schedule: '/es/agenda',
+    // "speed to lead" has no Spanish search equivalent, so the slug is built
+    // on the term a Spanish-speaking industrial buyer actually types.
+    speedToLead: '/es/tiempo-de-respuesta',
+  },
 }
+
+// Long-form content pages, in the order they appear in the footer. Every page
+// on the site links here, which is what gives a new cluster page more than the
+// single internal link Semrush flags.
+export const CLUSTER_PAGES = ['speedToLead']
 
 // Pages that must never be indexed. A thank-you page ranking in search would
 // pull people past the booking step into a dead end.

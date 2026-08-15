@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import './Navbar.css'
 import CtaLink from './CtaLink'
 import { useLanguage } from '../i18n/useLanguage'
-import { LANGS, LANG_PATH } from '../i18n/copy'
+import { LANGS, LANG_PATH, ROUTES } from '../i18n/copy'
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
-  const { lang, copy } = useLanguage()
+  const { lang, page, copy } = useLanguage()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -42,7 +42,9 @@ function Navbar() {
                 className={`navbar__lang-btn${
                   lang === l ? ' navbar__lang-btn--active' : ''
                 }`}
-                href={LANG_PATH[l]}
+                // Same page in the other language. Falls back to that
+                // language's home only if the page has no counterpart.
+                href={ROUTES[l][page] ?? LANG_PATH[l]}
                 hrefLang={l}
                 aria-current={lang === l ? 'true' : undefined}
               >

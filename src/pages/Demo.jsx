@@ -55,11 +55,17 @@ function matchProducts(text, products) {
   })
 }
 
+// The "What the agent learned" panel is built but switched off. It was hidden
+// behind a literal `false &&` in the JSX, which read as dead code and failed
+// lint; the flag makes the intent explicit and keeps the markup ready to
+// re-enable. Flip to true to bring the panel back.
+const SHOW_LEARNED_PANEL = false
+
 const ERRORS = {
-  invalid_website: "We couldn't use that website address — check the URL and try again.",
+  invalid_website: "We couldn't use that website address. Check the URL and try again.",
   site_unreadable: "We couldn't read that site. Try another URL (maybe the www version).",
   rate_limited:
-    "Straight up: each demo run costs us real AI credits, so we cap runs per network per day — and this network just hit it. Come back tomorrow, or book a call and we'll run it live with you.",
+    "Straight up: each demo run costs us real AI credits, so we cap runs per network per day, and this network just hit it. Come back tomorrow, or book a call and we'll run it live with you.",
   invalid_input: 'Please fill every field with valid values.',
 }
 
@@ -112,7 +118,7 @@ export default function Demo() {
       }
     } catch (err) {
       setStage('form')
-      setError(ERRORS[err.message] ?? 'Something went wrong — please try again.')
+      setError(ERRORS[err.message] ?? 'Something went wrong. Please try again.')
     }
   }
 
@@ -144,7 +150,7 @@ export default function Demo() {
     } catch {
       setMessages((m) => [
         ...m.slice(0, -1),
-        { role: 'assistant', text: 'Sorry — something glitched. Try that again.' },
+        { role: 'assistant', text: 'Sorry, something glitched. Try that again.' },
       ])
     } finally {
       setBusy(false)
@@ -157,8 +163,8 @@ export default function Demo() {
         <section className="demo-hero">
           <h1>See your own AI sales agent. Live, in one minute.</h1>
           <p className="demo-sub">
-            We read your website, learn your products, and put an AI salesman in front of you
-            — selling <em>your</em> stuff. Judge it yourself.
+            We read your website, learn your products, and put an AI salesman in front of you,
+            selling <em>your</em> stuff. Judge it yourself.
           </p>
           <form className="demo-card demo-form" onSubmit={onSubmit}>
             <label>
@@ -206,12 +212,12 @@ export default function Demo() {
         <section className={`demo-stage${wantsProspects ? '' : ' demo-stage-solo'}`}>
           <div className="demo-chat demo-card">
             <header className="demo-chat-head">
-              <strong>{profile.companyName}</strong> — AI sales agent
+              <strong>{profile.companyName}</strong> · AI sales agent
             </header>
             <div ref={chatLogRef} className={`demo-chat-log${ended && !reviewing ? ' demo-chat-log-fade' : ''}`}>
               {messages.length === 0 && (
                 <p className="demo-hint">
-                  Ask anything a customer would — products, prices, use cases. It answers from
+                  Ask anything a customer would: products, prices, use cases. It answers from
                   your site.
                 </p>
               )}
@@ -256,7 +262,7 @@ export default function Demo() {
               <div className="demo-end-screen">
                 <p>
                   This whole conversation was handled by an AI sales agent built on your
-                  website in under a minute — imagine it working your real leads 24/7.
+                  website in under a minute. Imagine it working your real leads 24/7.
                 </p>
                 <a className="demo-btn" href="https://anytrail.ai">
                   Book a call with Anytrail
@@ -291,7 +297,7 @@ export default function Demo() {
           </div>
 
           <div className="demo-side">
-          {false && profile.products.length > 0 && (
+          {SHOW_LEARNED_PANEL && profile.products.length > 0 && (
             <aside className="demo-card demo-learned">
               <h2>What the agent learned</h2>
               <p className="demo-hint">From {profile.companyName}'s website, just now.</p>
@@ -362,7 +368,7 @@ export default function Demo() {
                       ) : (
                         l.contact.name
                       )}
-                      {l.contact.title ? ` — ${l.contact.title}` : ''}
+                      {l.contact.title ? ` · ${l.contact.title}` : ''}
                       {l.contact.email && (
                         <>
                           {' · '}

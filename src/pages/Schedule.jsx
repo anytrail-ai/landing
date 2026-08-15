@@ -41,6 +41,10 @@ function Schedule() {
   const locale = lang === 'es' ? 'es-MX' : 'en-US'
 
   const [slots, setSlots] = useState([])
+  // Distinguishes "still fetching" from "fetched, genuinely empty": without
+  // it the prerendered/pre-hydration empty array renders "no open times"
+  // even though the fetch simply hasn't finished yet.
+  const [loaded, setLoaded] = useState(false)
   const [day, setDay] = useState(null)
   const [picked, setPicked] = useState(null)
   const [form, setForm] = useState({ name: '', email: '', website: '', note: '' })
@@ -73,6 +77,7 @@ function Schedule() {
   // selection so it never collides with the booking view's.
   const [moving, setMoving] = useState(false)
   const [moveSlots, setMoveSlots] = useState([])
+  const [moveLoaded, setMoveLoaded] = useState(false)
   const [moveDay, setMoveDay] = useState(null)
   const [movePicked, setMovePicked] = useState(null)
 
@@ -89,6 +94,7 @@ function Schedule() {
         setDay(data.slots.length ? localDateKey(data.slots[0]) : null)
       })
       .catch(() => setError(c.errors.generic))
+      .finally(() => setLoaded(true))
   }, [manage, c.errors])
 
   function selectDay(d) {
@@ -101,7 +107,17 @@ function Schedule() {
     setBusy(true)
     setError(null)
     try {
-      await bookSlot({ ...form, slotStartUtc: picked, lang })
+      const result = await bookSlot({ ...form, slotStartUtc: picked, lang })
+      // The manage link is the visitor's only proof of ownership, and it
+      // otherwise reaches them solely through the confirmation email. Stash
+      // it for the thanks page so a Resend outage cannot lock them out of
+      // their own booking. Guarded: sessionStorage can throw (Safari private
+      // mode, storage disabled) and that must never block the redirect.
+      try {
+        window.sessionStorage.setItem('schedule:manageUrl', result.manageUrl)
+      } catch {
+        // Best-effort only.
+      }
       window.location.href = ROUTES[lang].thanks
     } catch (err) {
       setError(c.errors[err.message] ?? c.errors.generic)
@@ -136,6 +152,7 @@ function Schedule() {
   function openMove() {
     setError(null)
     setBusy(true)
+    setMoveLoaded(false)
     openSlots()
       .then((data) => {
         setMoveSlots(data.slots)
@@ -144,7 +161,10 @@ function Schedule() {
         setMoving(true)
       })
       .catch(() => setError(c.errors.generic))
-      .finally(() => setBusy(false))
+      .finally(() => {
+        setBusy(false)
+        setMoveLoaded(true)
+      })
   }
 
   function selectMoveDay(d) {
@@ -229,6 +249,7 @@ function Schedule() {
                     locale={locale}
                     zone={zone}
                     c={c}
+                    loaded={moveLoaded && !error}
                   />
                   {movePicked && (
                     <button className="schedule-btn" onClick={confirmMove} disabled={busy}>
@@ -273,6 +294,10 @@ function Schedule() {
             locale={locale}
             zone={zone}
             c={c}
+            // Suppress "no open times" while an error banner is already
+            // showing (e.g. a failed fetch, which also leaves `slots` empty)
+            // so a failure never reads as both an error and an empty day.
+            loaded={loaded && !error}
           />
 
           {picked && (

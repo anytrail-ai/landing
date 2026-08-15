@@ -1,5 +1,5 @@
 // Client for the scheduling routes on the demo backend. Mirrors demoApi.js.
-const API_URL = 'https://3cyy3hfm3a.execute-api.us-east-1.amazonaws.com'
+import { API_URL } from './demoApi'
 
 async function request(path, { method = 'POST', body } = {}) {
   const res = await fetch(`${API_URL}${path}`, {

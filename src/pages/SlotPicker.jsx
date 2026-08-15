@@ -11,7 +11,11 @@ import { dayLabel, timeLabel, localDateKey } from './scheduleFormat'
 // not do, and it silently disagrees with the grid east of about UTC+5:30.
 // `zone` is a string (may be '' before mount, see Schedule.jsx) rather than
 // computed here, so this component never reads the clock during render.
-function SlotPicker({ slots, day, onDayChange, picked, onPick, locale, zone, c }) {
+// `loaded` is false until the caller's fetch settles (success or failure).
+// Without it, the empty initial `slots` array reads identically to a
+// genuinely empty day, which is exactly what the prerendered HTML (and every
+// visitor, until the API round-trip finishes) would show.
+function SlotPicker({ slots, day, onDayChange, picked, onPick, locale, zone, c, loaded }) {
   const grouped = useMemo(() => {
     const map = new Map()
     for (const s of slots) {
@@ -47,7 +51,7 @@ function SlotPicker({ slots, day, onDayChange, picked, onPick, locale, zone, c }
         {c.yourZone}
         {zone ? ` (${zone})` : ''}
       </p>
-      {times.length === 0 && <p className="schedule-hint">{c.noSlots}</p>}
+      {loaded && times.length === 0 && <p className="schedule-hint">{c.noSlots}</p>}
       <div className="schedule-times">
         {times.map((s) => (
           <button

@@ -30,6 +30,19 @@
   color: var(--text-muted);
 }
 
+.thanks__manage {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.thanks__manage a {
+  color: var(--accent);
+}
+
 .thanks__demo-lead {
   margin-top: 32px;
   font-weight: 600;

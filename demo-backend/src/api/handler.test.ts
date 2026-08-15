@@ -4,9 +4,14 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { setDocClientForTests } from '../db';
 import { handler, scheduleError } from './handler';
 
-function event(method: string, path: string, opts: { sourceIp?: string } = {}) {
+function event(
+  method: string,
+  path: string,
+  opts: { sourceIp?: string; body?: unknown } = {},
+) {
   return {
     rawPath: path,
+    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
     requestContext: { http: { method, path, sourceIp: opts.sourceIp } },
   } as never;
 }
@@ -62,5 +67,28 @@ describe('scheduling rate limit', () => {
 
     const call = ddb.commandCalls(UpdateCommand)[0].args[0].input;
     expect(call.Key!.pk).toBe('IP#9.9.9.9#schedule');
+  });
+
+  // Finding 4: /schedule/book must not share the general 300/day schedule
+  // bucket — it gets its own small cap so a single IP with throwaway
+  // addresses cannot burn every slot in the calendar.
+  it('/schedule/book writes to its own book bucket, not the general schedule one', async () => {
+    ddb.on(UpdateCommand).resolves({});
+    ddb.on(QueryCommand).resolves({ Items: [] });
+    await handler(
+      event('POST', '/schedule/book', {
+        sourceIp: '9.9.9.9',
+        body: {
+          slotStartUtc: '2026-08-20T18:30:00.000Z',
+          name: 'Ana',
+          email: 'ana@acme.com',
+          website: 'acme.com',
+          lang: 'en',
+        },
+      }),
+    );
+
+    const call = ddb.commandCalls(UpdateCommand)[0].args[0].input;
+    expect(call.Key!.pk).toBe('IP#9.9.9.9#book');
   });
 });

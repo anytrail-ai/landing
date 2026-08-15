@@ -9,7 +9,72 @@ import { mockClient } from 'aws-sdk-client-mock';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setDocClientForTests } from '../db';
 import { signBooking } from '../schedule/token';
-import { book, bookSchema, move, view } from './schedule';
+
+// Hoisted so the mock factory below can reference it — vi.mock is hoisted
+// above these imports at transform time, so cancel() always sees the mock.
+const mocks = vi.hoisted(() => ({
+  postSlack: vi.fn(async (_text: string): Promise<void> => {}),
+  // sendBookingEmails (book/move) also imports notifyBooking from '../notify';
+  // stubbed here too so mocking this module for the cancel tests below
+  // doesn't turn book/move's already-caught Slack ping into console noise.
+  notifyBooking: vi.fn(async (): Promise<void> => {}),
+}));
+vi.mock('../notify', () => ({
+  postSlack: mocks.postSlack,
+  notifyBooking: mocks.notifyBooking,
+}));
+
+import { book, bookSchema, cancel, cancelSchema, move, moveSchema, view } from './schedule';
+
+describe('cancelSchema', () => {
+  it('accepts a well-formed cancel body', () => {
+    const parsed = cancelSchema.safeParse({
+      slotStartUtc: '2026-08-20T18:30:00.000Z',
+      sig: 'abc123',
+    });
+    expect(parsed.success).toBe(true);
+  });
+
+  // The finding's exact repro: an object where a string is expected must be
+  // a 422 (schema rejection), not reach keyFor() -> new Date({}) -> an
+  // Intl.DateTimeFormat RangeError -> an unhandled 500.
+  it('rejects an object slotStartUtc, a missing sig, and an empty sig', () => {
+    expect(cancelSchema.safeParse({ slotStartUtc: {}, sig: 'x' }).success).toBe(false);
+    expect(cancelSchema.safeParse({ slotStartUtc: '2026-08-20T18:30:00.000Z' }).success).toBe(
+      false,
+    );
+    expect(
+      cancelSchema.safeParse({ slotStartUtc: '2026-08-20T18:30:00.000Z', sig: '' }).success,
+    ).toBe(false);
+  });
+});
+
+describe('moveSchema', () => {
+  it('accepts a well-formed move body', () => {
+    const parsed = moveSchema.safeParse({
+      slotStartUtc: '2026-08-20T18:30:00.000Z',
+      sig: 'abc123',
+      toSlotStartUtc: '2026-08-21T18:30:00.000Z',
+    });
+    expect(parsed.success).toBe(true);
+  });
+
+  it('rejects an object toSlotStartUtc and a missing sig', () => {
+    expect(
+      moveSchema.safeParse({
+        slotStartUtc: '2026-08-20T18:30:00.000Z',
+        sig: 'x',
+        toSlotStartUtc: {},
+      }).success,
+    ).toBe(false);
+    expect(
+      moveSchema.safeParse({
+        slotStartUtc: '2026-08-20T18:30:00.000Z',
+        toSlotStartUtc: '2026-08-21T18:30:00.000Z',
+      }).success,
+    ).toBe(false);
+  });
+});
 
 describe('bookSchema', () => {
   it('accepts a complete booking and defaults the optional note', () => {
@@ -155,5 +220,42 @@ describe('move', () => {
     const put = call.TransactItems![1].Put!.Item as { createdAt: string; sequence: number };
     expect(put.createdAt).toBe(existing.createdAt);
     expect(put.sequence).toBe(1);
+  });
+});
+
+describe('cancel', () => {
+  beforeEach(() => {
+    ddb.reset();
+    secretsManager.reset();
+    mocks.postSlack.mockClear();
+    mocks.postSlack.mockResolvedValue(undefined);
+    process.env.SCHEDULE_SECRET_ARN = 'arn:aws:secretsmanager:test:schedule';
+    secretsManager.on(GetSecretValueCommand).resolves({ SecretString: SECRET });
+    ddb.on(GetCommand).resolves({ Item: existing });
+    ddb.on(TransactWriteCommand).resolves({});
+  });
+
+  // Book and move both ping Slack; without this a cancelled call leaves the
+  // founder with a stale calendar entry and no signal it is dead.
+  it('posts a Slack ping with the name, email and formatted slot', async () => {
+    const sig = signBooking(existing.slotStartUtc, existing.email, SECRET);
+    await cancel(existing.slotStartUtc, sig);
+
+    expect(mocks.postSlack).toHaveBeenCalledTimes(1);
+    const [text] = mocks.postSlack.mock.calls[0] as [string];
+    expect(text).toContain(existing.name);
+    expect(text).toContain(existing.email);
+    // Thursday, August 20, 2026 at ~2:30 PM New York time.
+    expect(text).toMatch(/Aug(ust)?\s+20,?\s+2026/);
+  });
+
+  // A Slack outage must never turn the cancel the visitor already made into
+  // a 500 — same fire-and-forget contract as sendBookingEmails.
+  it('still resolves, and still deletes the booking, when Slack is down', async () => {
+    mocks.postSlack.mockRejectedValueOnce(new Error('slack is down'));
+    const sig = signBooking(existing.slotStartUtc, existing.email, SECRET);
+
+    await expect(cancel(existing.slotStartUtc, sig)).resolves.toBeUndefined();
+    expect(ddb.commandCalls(TransactWriteCommand)).toHaveLength(1);
   });
 });

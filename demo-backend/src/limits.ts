@@ -8,6 +8,11 @@ export const LIMITS = {
    * UI, and sharing the demo-start counter would let ordinary browsing drain
    * a visitor's ability to submit the lead form. */
   schedulePerIp: 300,
+  /** POST /schedule/book only, its own much smaller bucket. Emails are
+   * unverified, so without this a single IP with throwaway addresses could
+   * burn through the ~224-slot calendar well inside the general 300 cap,
+   * firing a Resend send and a Slack ping for each one. */
+  bookPerIp: 5,
   /** Rate-limit window in seconds (one day). */
   windowSeconds: 86400,
   /** User messages per chat session; hitting it triggers the closing CTA. */

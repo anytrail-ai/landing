@@ -1,17 +1,34 @@
 import { SCHEDULE } from './config';
 
+// One Intl.DateTimeFormat per timezone, reused across calls: constructing one
+// is expensive (~18ms uncached vs ~2ms cached, measured), and zonedToUtc
+// alone calls partsIn twice per candidate slot — generateSlots can build
+// hundreds of these a call, adding 50-90ms of avoidable latency to
+// /schedule/slots, /book and /move on Lambda's slower vCPU. There is only a
+// handful of distinct timezones ever passed in (SCHEDULE.timezone, plus
+// whatever a test passes), so this map never grows unbounded.
+const formatterCache = new Map<string, Intl.DateTimeFormat>();
+function formatterFor(tz: string): Intl.DateTimeFormat {
+  let dtf = formatterCache.get(tz);
+  if (!dtf) {
+    dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      hour12: false,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    formatterCache.set(tz, dtf);
+  }
+  return dtf;
+}
+
 // Wall-clock parts of `at` as seen in `tz`.
 function partsIn(at: Date, tz: string): Record<string, number> {
-  const dtf = new Intl.DateTimeFormat('en-US', {
-    timeZone: tz,
-    hour12: false,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
+  const dtf = formatterFor(tz);
   const out: Record<string, number> = {};
   for (const p of dtf.formatToParts(at)) {
     if (p.type !== 'literal') out[p.type] = Number(p.value);

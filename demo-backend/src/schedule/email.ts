@@ -58,7 +58,9 @@ export function icsUidFor(b: Pick<Booking, 'email' | 'createdAt'>): string {
 const T = {
   en: {
     subject: (when: string) => `Your Anytrail call is booked: ${when}`,
+    subjectMoved: (when: string) => `Your Anytrail call moved: ${when}`,
     heading: 'Your call is booked.',
+    headingMoved: 'Your call has been moved.',
     join: 'Join the call',
     manage: 'Need to change it? Cancel or move your call',
     demoLead: 'While you wait, run the agent on your own catalog:',
@@ -69,7 +71,9 @@ const T = {
   },
   es: {
     subject: (when: string) => `Tu llamada con Anytrail está agendada: ${when}`,
+    subjectMoved: (when: string) => `Tu llamada con Anytrail cambió de horario: ${when}`,
     heading: 'Tu llamada está agendada.',
+    headingMoved: 'Tu llamada cambió de horario.',
     join: 'Entrar a la llamada',
     manage: '¿Necesitas cambiarla? Cancela o mueve tu llamada',
     demoLead: 'Mientras tanto, prueba el agente con tu propio catálogo:',
@@ -96,13 +100,19 @@ export function renderConfirmation(
   b: Booking,
   manageUrl: string,
   meetUrl: string,
+  // A reschedule reuses this same renderer (move() sends the same email
+  // shape as book()); 'moved' swaps only the subject/heading so the team and
+  // the visitor see a reschedule for what it is, not a second new booking.
+  kind: 'booked' | 'moved' = 'booked',
 ): { subject: string; html: string; text: string } {
   const t = T[b.lang];
   const when = formatSlot(b.slotStartUtc, b.lang);
   const demoUrl = `${SITE}${b.lang === 'es' ? '/es/demo' : '/demo'}`;
+  const heading = kind === 'moved' ? t.headingMoved : t.heading;
+  const subject = kind === 'moved' ? t.subjectMoved(when) : t.subject(when);
 
   const html = shell(`
-    <h1 style="font-size:22px;color:${C.text};margin:0 0 8px">${t.heading}</h1>
+    <h1 style="font-size:22px;color:${C.text};margin:0 0 8px">${heading}</h1>
     <p style="color:${C.text};font-size:16px;margin:0 0 4px"><strong>${esc(when)}</strong></p>
     <p style="color:${C.muted};font-size:14px;margin:0 0 24px">${t.minutes}</p>
     <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:8px;font-weight:600;text-decoration:none">${t.join}</a>
@@ -113,7 +123,7 @@ export function renderConfirmation(
     </div>`);
 
   const text = [
-    t.heading,
+    heading,
     when,
     t.minutes,
     `${t.join}: ${meetUrl}`,
@@ -121,7 +131,7 @@ export function renderConfirmation(
     `${t.demoCta}: ${demoUrl}`,
   ].join('\n\n');
 
-  return { subject: t.subject(when), html, text };
+  return { subject, html, text };
 }
 
 export function renderReminder(
@@ -143,28 +153,42 @@ export function renderReminder(
   return { subject, html, text: [subject, when, `${t.join}: ${meetUrl}`, manageUrl].join('\n\n') };
 }
 
-async function send(payload: Record<string, unknown>): Promise<void> {
+// `label` makes a Resend failure greppable by which recipient it was for: the
+// manage link reaches the visitor ONLY through their email (it is their only
+// proof of ownership), so a silent visitor-send failure permanently locks
+// them out with no way to self-serve. A team-copy failure is not that.
+async function send(payload: Record<string, unknown>, label: 'visitor' | 'team'): Promise<void> {
   const apiKey = await getSecret('RESEND_SECRET_ARN');
   const res = await outboundFetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
     body: JSON.stringify({ from: SENDER, ...payload }),
   });
-  if (!res.ok) console.error('schedule_email_failed', res.status, await res.text());
+  if (!res.ok) {
+    console.error(`schedule_email_${label}_failed`, res.status, await res.text());
+  }
 }
 
 /**
  * Visitor confirmation plus a team copy, both carrying the .ics. Best-effort:
  * a mail failure logs and never fails the booking the visitor already made.
+ * `kind` distinguishes a fresh booking from a reschedule in both the subject/
+ * heading and the Slack ping — move() reuses this same function, and without
+ * it a reschedule reads as a second new booking to both the team and the
+ * visitor.
  */
-export async function sendBookingEmails(b: Booking, manageUrl: string): Promise<void> {
+export async function sendBookingEmails(
+  b: Booking,
+  manageUrl: string,
+  kind: 'booked' | 'moved' = 'booked',
+): Promise<void> {
   // Everything through the mail send is inside the try: formatSlot/buildIcs
   // can throw (e.g. Intl.DateTimeFormat's RangeError on an unparseable
   // instant), and this function must never reject regardless of where the
   // failure happens — a mail bug must never fail the booking the visitor
   // already made.
   try {
-    const { subject, html, text } = renderConfirmation(b, manageUrl, MEET_URL);
+    const { subject, html, text } = renderConfirmation(b, manageUrl, MEET_URL, kind);
     const ics = buildIcs({
       slotStartUtc: b.slotStartUtc,
       // Identity is the booking, not the slot: a reschedule keeps this uid and
@@ -183,14 +207,18 @@ export async function sendBookingEmails(b: Booking, manageUrl: string): Promise<
       { filename: 'anytrail-call.ics', content: Buffer.from(ics).toString('base64') },
     ];
 
-    await send({ to: [b.email], subject, html, text, attachments });
+    await send({ to: [b.email], subject, html, text, attachments }, 'visitor');
     if (TEAM) {
-      await send({
-        to: [TEAM],
-        subject: `New booking: ${b.name} (${b.website}) ${formatSlot(b.slotStartUtc, 'en')}`,
-        text: `${b.name} <${b.email}>\n${b.website}\n${b.note}\n\n${formatSlot(b.slotStartUtc, 'en')}`,
-        attachments,
-      });
+      const teamVerb = kind === 'moved' ? 'Rescheduled' : 'New booking';
+      await send(
+        {
+          to: [TEAM],
+          subject: `${teamVerb}: ${b.name} (${b.website}) ${formatSlot(b.slotStartUtc, 'en')}`,
+          text: `${b.name} <${b.email}>\n${b.website}\n${b.note}\n\n${formatSlot(b.slotStartUtc, 'en')}`,
+          attachments,
+        },
+        'team',
+      );
     }
   } catch (err) {
     console.error('send_booking_emails_failed', err);
@@ -199,13 +227,16 @@ export async function sendBookingEmails(b: Booking, manageUrl: string): Promise<
   // Slack ping is separate from the mail: one failing must not skip the
   // other, and its own formatSlot call is guarded the same way.
   try {
-    await notifyBooking({
-      name: b.name,
-      email: b.email,
-      website: b.website,
-      when: formatSlot(b.slotStartUtc, 'en'),
-      note: b.note,
-    });
+    await notifyBooking(
+      {
+        name: b.name,
+        email: b.email,
+        website: b.website,
+        when: formatSlot(b.slotStartUtc, 'en'),
+        note: b.note,
+      },
+      kind,
+    );
   } catch (err) {
     console.error('notify_booking_failed', err);
   }
@@ -218,7 +249,7 @@ export async function sendReminderEmail(
 ): Promise<void> {
   try {
     const { subject, html, text } = renderReminder(b, manageUrl, MEET_URL, which);
-    await send({ to: [b.email], subject, html, text });
+    await send({ to: [b.email], subject, html, text }, 'visitor');
   } catch (err) {
     console.error('send_reminder_failed', err);
   }

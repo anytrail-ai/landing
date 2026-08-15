@@ -5,7 +5,11 @@ import { manageUrlFor } from '../schedule/links';
 import { horizonDayKeys } from '../schedule/slots';
 import { type Booking, listBookingsForDay, markReminded } from '../schedule/store';
 
-/** The EventBridge rate. A reminder is due if its mark falls in this window. */
+/** The EventBridge rate. A reminder is due if its mark falls in this window.
+ * MUST stay equal to the `events.Schedule.rate(...)` in lib/api-stack.ts's
+ * ReminderSchedule rule — the two drifting apart silently reopens a window
+ * where a booking's lead time can fall between sweeps and never get sampled,
+ * so its reminder is skipped entirely rather than merely late. */
 const SWEEP_MS = 15 * 60 * 1000;
 const H = 60 * 60 * 1000;
 

@@ -7,7 +7,16 @@ import { startDemo, startSchema } from './start';
 import { RateLimitedError, assertWithinRateLimit } from './rate-limit';
 import { UnknownSessionError, extractForSession } from './extract';
 import { prospectsForSession } from './prospects';
-import { book, bookSchema, cancel, move, openSlots, view } from './schedule';
+import {
+  book,
+  bookSchema,
+  cancel,
+  cancelSchema,
+  move,
+  moveSchema,
+  openSlots,
+  view,
+} from './schedule';
 
 // JSON API for /demo/*. Routes fill in as the pipeline lands:
 //   POST /demo/start     — lead capture + extraction kickoff (ANY-113/114)
@@ -126,6 +135,15 @@ async function handleSlots(
   }
 }
 
+// POST /schedule/book gets its own much smaller bucket, separate from the
+// other four schedule routes' shared 300/day: emails are unverified, so a
+// single IP with throwaway addresses could otherwise burn every slot in the
+// ~224-slot calendar well under the general cap, firing a Resend send and a
+// Slack ping for each one.
+function assertWithinBookRateLimit(ip: string): Promise<void> {
+  return assertWithinRateLimit(ip, Date.now(), { bucket: 'book', cap: LIMITS.bookPerIp });
+}
+
 async function handleBook(
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> {
@@ -135,7 +153,7 @@ async function handleBook(
   }
   const ip = event.requestContext.http.sourceIp ?? 'unknown';
   try {
-    await assertWithinScheduleRateLimit(ip);
+    await assertWithinBookRateLimit(ip);
     return json(200, await book(parsed.data, ip));
   } catch (err) {
     return scheduleError(err);
@@ -165,12 +183,14 @@ async function handleManage(
 async function handleCancel(
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> {
-  const body = parseBody(event) as { slotStartUtc?: string; sig?: string };
-  if (!body.slotStartUtc || !body.sig) return json(422, { error: 'invalid_input' });
+  const parsed = cancelSchema.safeParse(parseBody(event));
+  if (!parsed.success) {
+    return json(422, { error: 'invalid_input', issues: parsed.error.issues });
+  }
   const ip = event.requestContext.http.sourceIp ?? 'unknown';
   try {
     await assertWithinScheduleRateLimit(ip);
-    await cancel(body.slotStartUtc, body.sig);
+    await cancel(parsed.data.slotStartUtc, parsed.data.sig);
     return json(200, { ok: true });
   } catch (err) {
     return scheduleError(err);
@@ -180,18 +200,17 @@ async function handleCancel(
 async function handleMove(
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> {
-  const body = parseBody(event) as {
-    slotStartUtc?: string;
-    sig?: string;
-    toSlotStartUtc?: string;
-  };
-  if (!body.slotStartUtc || !body.sig || !body.toSlotStartUtc) {
-    return json(422, { error: 'invalid_input' });
+  const parsed = moveSchema.safeParse(parseBody(event));
+  if (!parsed.success) {
+    return json(422, { error: 'invalid_input', issues: parsed.error.issues });
   }
   const ip = event.requestContext.http.sourceIp ?? 'unknown';
   try {
     await assertWithinScheduleRateLimit(ip);
-    return json(200, await move(body.slotStartUtc, body.sig, body.toSlotStartUtc));
+    return json(
+      200,
+      await move(parsed.data.slotStartUtc, parsed.data.sig, parsed.data.toSlotStartUtc),
+    );
   } catch (err) {
     return scheduleError(err);
   }

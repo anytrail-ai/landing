@@ -37,16 +37,22 @@ export async function postSlack(text: string): Promise<void> {
   }
 }
 
-/** Booking ping (ANY-66). Fire-and-forget, like every other notification. */
-export async function notifyBooking(info: {
-  name: string;
-  email: string;
-  website: string;
-  when: string;
-  note: string;
-}): Promise<void> {
+/** Booking ping (ANY-66). Fire-and-forget, like every other notification.
+ * `kind` tells 'booked' apart from 'moved' so a reschedule doesn't read as a
+ * second new booking to the team. */
+export async function notifyBooking(
+  info: {
+    name: string;
+    email: string;
+    website: string;
+    when: string;
+    note: string;
+  },
+  kind: 'booked' | 'moved' = 'booked',
+): Promise<void> {
+  const label = kind === 'moved' ? '🔄 Call moved' : '📅 Call booked';
   await postSlack(
-    `📅 Call booked: ${info.name} <${info.email}> — ${info.website}\n${info.when}${info.note ? `\nNote: ${info.note}` : ''}`,
+    `${label}: ${info.name} <${info.email}> — ${info.website}\n${info.when}${info.note ? `\nNote: ${info.note}` : ''}`,
   );
 }
 

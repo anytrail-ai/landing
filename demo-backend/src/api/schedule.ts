@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { getSecret } from '../secrets';
+import { postSlack } from '../notify';
 import { SCHEDULE } from '../schedule/config';
-import { sendBookingEmails } from '../schedule/email';
+import { formatSlot, sendBookingEmails } from '../schedule/email';
 import { manageUrlFor } from '../schedule/links';
 import { generateSlots } from '../schedule/slots';
 import {
@@ -54,6 +55,23 @@ export const bookSchema = z.object({
 });
 
 export type BookInput = z.infer<typeof bookSchema>;
+
+// cancel/move used to be hand-validated (truthiness only), so a body like
+// {"slotStartUtc":{},"sig":"x"} reached keyFor() -> new Date({}) -> Invalid
+// Date -> an Intl RangeError -> a 500, from trivially malformed public input.
+// Schemas here give both the same 422-on-garbage contract book already has.
+export const cancelSchema = z.object({
+  slotStartUtc: z.string().datetime(),
+  sig: z.string().trim().min(1),
+});
+export type CancelInput = z.infer<typeof cancelSchema>;
+
+export const moveSchema = z.object({
+  slotStartUtc: z.string().datetime(),
+  sig: z.string().trim().min(1),
+  toSlotStartUtc: z.string().datetime(),
+});
+export type MoveInput = z.infer<typeof moveSchema>;
 
 /** Generated slots minus the booked ones. */
 export async function openSlots(nowMs: number): Promise<string[]> {
@@ -122,7 +140,20 @@ export async function view(slotStartUtc: string, sig: string): Promise<Booking> 
 }
 
 export async function cancel(slotStartUtc: string, sig: string): Promise<void> {
-  await deleteBooking(await authorize(slotStartUtc, sig));
+  const booking = await authorize(slotStartUtc, sig);
+  await deleteBooking(booking);
+  // Book and move both ping Slack; cancel must too, or the founder keeps a
+  // calendar entry with no signal it is dead. Fire-and-forget, same style as
+  // sendBookingEmails/notify.ts: postSlack never throws on its own, but this
+  // still guards formatSlot so a Slack outage (or any surprise here) can
+  // never turn the cancel the visitor already made into a 500.
+  try {
+    await postSlack(
+      `🚫 Call cancelled: ${booking.name} <${booking.email}> — ${formatSlot(booking.slotStartUtc, 'en')}`,
+    );
+  } catch (err) {
+    console.error('notify_cancel_failed', err);
+  }
 }
 
 /**
@@ -159,6 +190,6 @@ export async function move(
   };
   await moveBooking(existing, moved);
   const manageUrl = await manageUrlFor(moved);
-  await sendBookingEmails(moved, manageUrl);
+  await sendBookingEmails(moved, manageUrl, 'moved');
   return { slotStartUtc: toSlotStartUtc, manageUrl };
 }

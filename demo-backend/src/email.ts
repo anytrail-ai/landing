@@ -53,7 +53,7 @@ export function renderProspectsEmail(
     .map(
       (l) => `
       <tr><td style="border-top:1px solid ${C.border};padding:16px 0">
-        <div style="font-weight:600;font-size:16px">${
+        <div style="font-weight:600;font-size:15px">${
           l.website
             ? `<a href="${esc(l.website)}" style="color:${C.text};text-decoration:none">${esc(l.company)}</a>`
             : esc(l.company)
@@ -82,14 +82,17 @@ export function renderProspectsEmail(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.pageBg};padding:32px 16px"><tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;font-family:'Funnel Sans','Segoe UI',system-ui,sans-serif;color:${C.text}">
   <tr><td style="padding:0 8px 16px">
-    <img src="https://www.anytrail.ai/anytrail-mark.png" alt="" height="24" style="height:24px;width:auto;vertical-align:middle"/>
-    <span style="font-family:'Montserrat','Funnel Sans',system-ui,sans-serif;font-weight:300;font-size:20px;letter-spacing:0.01em;vertical-align:middle">&nbsp;anytrail</span>
+    <!-- The real lockup, not a mark plus a web font: mail clients do not load
+         @font-face, so the wordmark used to fall back to whatever the client
+         had and never matched the site. Width and height are attributes as
+         well as styles because Outlook ignores the CSS. -->
+    <img src="https://www.anytrail.ai/anytrail-logo.png" alt="Anytrail" width="130" height="32" style="width:130px;height:32px;border:0;vertical-align:middle"/>
     <span style="color:${C.faint};font-size:13px;vertical-align:middle"> &nbsp;·&nbsp; demo results</span>
   </td></tr>
   <tr><td style="background:${C.surface};border:1px solid ${C.border};border-radius:12px;padding:32px">
     <h1 style="font-family:'Funnel Display','Funnel Sans',system-ui,sans-serif;font-size:24px;line-height:1.2;margin:0 0 8px">Your ideal customers, ${esc(visitorName)}</h1>
     <p style="color:${C.muted};font-size:15px;margin:0 0 20px">Derived from ${esc(companyName)}'s website by your demo sales agent — plus ${leads.length} real companies that match.</p>
-    <div style="background:${C.accentSoft};border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.5">
+    <div style="background:${C.accentSoft};border-radius:6px;padding:14px 16px;font-size:14px;line-height:1.5">
       <strong style="color:${C.accent}">ICP</strong><br/>${esc(icp.icp_summary)}
     </div>
     <p style="color:${C.muted};font-size:13px;margin:12px 0 20px">
@@ -97,7 +100,7 @@ export function renderProspectsEmail(
       <strong>Sales motion:</strong> ${esc(icp.sales_motion)}
     </p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${leadRows}</table>
-    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:28px"><tr><td style="background:#000000;border-radius:8px">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:28px"><tr><td style="background:#000000;border-radius:6px">
       <a href="https://anytrail.ai" style="display:inline-block;padding:13px 26px;color:#ffffff;font-weight:600;font-size:15px;text-decoration:none">This took a minute — put it on your real pipeline</a>
     </td></tr></table>
   </td></tr>

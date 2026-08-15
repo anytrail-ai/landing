@@ -87,7 +87,13 @@ const T = {
 function shell(inner: string): string {
   return `<div style="background:${C.pageBg};padding:32px 0;font-family:-apple-system,Segoe UI,Roboto,sans-serif">
   <div style="max-width:560px;margin:0 auto;background:${C.surface};border:1px solid ${C.border};border-radius:12px;padding:32px">
-    <div style="font-weight:700;font-size:18px;color:${C.text};margin-bottom:24px">anytrail</div>
+    <!-- Served from the landing site's public/ so it survives independently of
+         this deploy. Width and height are attributes as well as styles because
+         Outlook ignores the CSS; alt text carries the brand when a client blocks
+         images, which many do by default. -->
+    <div style="margin-bottom:24px">
+      <a href="${SITE}" style="text-decoration:none"><img src="${SITE}/anytrail-logo.png" alt="Anytrail" width="130" height="32" style="display:block;width:130px;height:32px;border:0;outline:none;text-decoration:none" /></a>
+    </div>
     ${inner}
     <div style="margin-top:28px;border-top:1px solid ${C.border};padding-top:16px;font-size:12px;color:${C.faint}">
       Anytrail · <a href="${SITE}" style="color:${C.accent}">anytrail.ai</a>
@@ -112,12 +118,12 @@ export function renderConfirmation(
   const subject = kind === 'moved' ? t.subjectMoved(when) : t.subject(when);
 
   const html = shell(`
-    <h1 style="font-size:22px;color:${C.text};margin:0 0 8px">${heading}</h1>
-    <p style="color:${C.text};font-size:16px;margin:0 0 4px"><strong>${esc(when)}</strong></p>
+    <h1 style="font-size:24px;color:${C.text};margin:0 0 8px">${heading}</h1>
+    <p style="color:${C.text};font-size:15px;margin:0 0 4px"><strong>${esc(when)}</strong></p>
     <p style="color:${C.muted};font-size:14px;margin:0 0 24px">${t.minutes}</p>
-    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:8px;font-weight:600;text-decoration:none">${t.join}</a>
+    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:6px;font-weight:600;text-decoration:none">${t.join}</a>
     <p style="margin:24px 0 0;font-size:14px"><a href="${esc(manageUrl)}" style="color:${C.muted}">${t.manage}</a></p>
-    <div style="margin-top:28px;background:${C.accentSoft};border-radius:8px;padding:16px">
+    <div style="margin-top:28px;background:${C.accentSoft};border-radius:6px;padding:16px">
       <p style="margin:0 0 8px;font-size:14px;color:${C.text}">${esc(b.name)}, ${t.demoLead}</p>
       <a href="${demoUrl}" style="color:${C.accent};font-weight:600">${t.demoCta}</a>
     </div>`);
@@ -145,9 +151,9 @@ export function renderReminder(
   const subject = which === 'T24' ? t.remind24(when) : t.remind1(when);
 
   const html = shell(`
-    <h1 style="font-size:20px;color:${C.text};margin:0 0 8px">${esc(subject)}</h1>
-    <p style="color:${C.text};font-size:16px;margin:0 0 24px"><strong>${esc(when)}</strong></p>
-    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:8px;font-weight:600;text-decoration:none">${t.join}</a>
+    <h1 style="font-size:24px;color:${C.text};margin:0 0 8px">${esc(subject)}</h1>
+    <p style="color:${C.text};font-size:15px;margin:0 0 24px"><strong>${esc(when)}</strong></p>
+    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:6px;font-weight:600;text-decoration:none">${t.join}</a>
     <p style="margin:24px 0 0;font-size:14px"><a href="${esc(manageUrl)}" style="color:${C.muted}">${t.manage}</a></p>`);
 
   return { subject, html, text: [subject, when, `${t.join}: ${meetUrl}`, manageUrl].join('\n\n') };

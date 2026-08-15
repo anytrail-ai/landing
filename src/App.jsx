@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Thanks from './pages/Thanks'
 import Demo from './pages/Demo'
 import Schedule from './pages/Schedule'
+import PrivacyCopilot from './pages/PrivacyCopilot'
 import ClusterPage from './components/ClusterPage'
 import { LanguageProvider } from './i18n/LanguageContext'
 import './App.css'
@@ -15,6 +16,7 @@ const PAGES = {
   thanks: Thanks,
   demo: Demo,
   schedule: Schedule,
+  privacyCopilot: PrivacyCopilot,
   speedToLead: () => <ClusterPage copyKey="speedToLead" />,
   manufacturingCrm: () => <ClusterPage copyKey="manufacturingCrm" />,
   rfqAutomation: () => <ClusterPage copyKey="rfqAutomation" />,

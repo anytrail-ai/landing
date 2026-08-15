@@ -109,6 +109,67 @@ export const COPY = {
       cta: 'Or ask our agent on WhatsApp',
       prefill: "Hi, I'd like to see how Anytrail could work our opportunities, inbound and outbound.",
     },
+    privacyCopilot: {
+      meta: {
+        title: 'Anytrail Copilot Privacy Policy | Anytrail',
+        description:
+          'What data the Anytrail Copilot Chrome extension handles, what it never does with it, and how to request access or deletion.',
+        ogLocale: 'en_US',
+      },
+      title: 'Anytrail Copilot — Privacy Policy',
+      updated: 'Last updated: August 15, 2026',
+      intro:
+        'Anytrail Copilot is a Chrome extension for sales teams that use Anytrail. This policy explains what data it handles, what it is used for, and what it never does.',
+      contactHeading: 'Who is responsible',
+      contactBody: 'Anytrail. Contact:',
+      contactEmail: 'root@anytrail.ai',
+      sections: [
+        {
+          heading: 'What the extension handles',
+          paragraphs: [
+            'Your Anytrail account. When you sign in, your email and password are sent once to our server to authenticate you. Your password is never stored, neither in your browser nor on our servers: only the session tokens produced by that sign-in are kept, in your browser local storage.',
+            'Your outreach activity. The extension records in your Anytrail account the actions you take on the contacts in your campaign: invitation sent, message sent, invitation accepted, reply received, or contact removed with its reason. These records include your email, so your company knows who followed up with each contact.',
+            'What it reads from LinkedIn. Using your own LinkedIn session, the extension reads your recent messages and notifications and your connections list, for two purposes only: knowing who replied to you, and knowing who accepted your invitation. This reading happens in your browser. The content of your messages is never sent to our servers; only the fact that a reply or a connection happened, with its date.',
+            'Contacts in your campaign. The names, job titles and profiles you see in the extension come from the campaigns your own company loaded into Anytrail.',
+          ],
+        },
+        {
+          heading: 'What it never does',
+          paragraphs: [
+            'It never sends anything for you. You send every invitation and every message yourself, from LinkedIn. The extension prepares the text and records what happened.',
+            'It does not sell or share your data with third parties, and does not use it for advertising.',
+            'It does not read your browsing outside linkedin.com.',
+            'It does not store your passwords, for Anytrail or for LinkedIn.',
+            'It does not use your data to train models.',
+          ],
+        },
+        {
+          heading: 'Cookies',
+          paragraphs: [
+            'The extension reads a single linkedin.com cookie (JSESSIONID) because LinkedIn requires its value as a security token on its own requests. That value is never stored or transmitted anywhere.',
+          ],
+        },
+        {
+          heading: 'Where data is stored and for how long',
+          paragraphs: [
+            'In your browser local storage (session, tasks and the day counters), and in Anytrail infrastructure on Amazon Web Services, US East region (us-east-1).',
+            'The local session is cleared when you sign out or uninstall the extension. Outreach activity history is kept in your company account while the campaign is active, and deleted when your company requests it.',
+          ],
+        },
+        {
+          heading: 'Your rights',
+          paragraphs: [
+            'You can request access to, correction of, or deletion of your data by writing to root@anytrail.ai. If your account belongs to your company, we will coordinate the request with whoever administers it.',
+          ],
+        },
+        {
+          heading: 'Changes',
+          paragraphs: [
+            'Any change to this policy will be published at this same address, with the updated date at the top.',
+          ],
+        },
+      ],
+    },
     thanks: {
       meta: {
         title: 'Booking confirmed | Anytrail',
@@ -1053,6 +1114,10 @@ export const ROUTES = {
     speedToLead: '/speed-to-lead',
     manufacturingCrm: '/manufacturing-crm',
     rfqAutomation: '/rfq-automation',
+    // English only: it is the privacy notice for the Chrome extension, and the
+    // Chrome Web Store listing points at this exact URL. Pages missing from a
+    // language are skipped by prerender.js rather than faked.
+    privacyCopilot: '/privacy/copilot',
   },
   es: {
     home: '/es',

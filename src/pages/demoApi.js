@@ -1,7 +1,10 @@
 // Client for the demo backend (repo: anytrail-ai/public-demo, AWS).
 // The heavy stages (extract, prospects, chat) stream SSE from a Lambda
 // Function URL; only lead capture goes through the JSON API.
-const API_URL = 'https://3cyy3hfm3a.execute-api.us-east-1.amazonaws.com'
+// Exported so scheduleApi.js (and anything else on the same API) shares this
+// one place instead of duplicating the host — the spec dropped DEMO_URL from
+// config.js for the same reason: no third place for a URL to drift.
+export const API_URL = 'https://3cyy3hfm3a.execute-api.us-east-1.amazonaws.com'
 const CHAT_URL = 'https://hf7g2sqkicab2s6bc3sci7t5gm0aretu.lambda-url.us-east-1.on.aws/'
 
 async function post(path, body) {

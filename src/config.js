@@ -1,12 +1,3 @@
-// Booking destination for every CTA.
-//
-// This is currently a Google Appointment Schedule, which cannot ask
-// qualification questions, cannot redirect to /thanks after booking (so
-// bookings are unmeasurable), has weak reminders, and has no Spanish version.
-// Swap it for a Cal.com or Calendly link and point that scheduler's
-// "redirect on booking" setting at THANKS_URL below.
-export const DEMO_URL = 'https://calendar.app.google/RRXx172BHw4CXL4z7'
-
 // Absolute URLs the scheduler should redirect to after a successful booking.
 // Set these in the scheduler's confirmation/redirect settings, per language.
 export const THANKS_URL = {

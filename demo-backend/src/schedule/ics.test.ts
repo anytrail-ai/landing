@@ -1,0 +1,59 @@
+import { describe, expect, it } from 'vitest';
+import { buildIcs } from './ics';
+
+const input = {
+  slotStartUtc: '2026-08-20T18:30:00.000Z',
+  attendeeEmail: 'ana@acme.com',
+  attendeeName: 'Ana',
+  organizerEmail: 'agent@demo.anytrail.ai',
+  meetUrl: 'https://meet.google.com/kzk-tpgh-sbm',
+  summary: 'Anytrail: commercial process review',
+  description: 'A 30 minute call.',
+  uid: 'anytrail-booking-001@anytrail.ai',
+};
+
+describe('buildIcs', () => {
+  it('emits a REQUEST with UTC stamps 30 minutes apart', () => {
+    const ics = buildIcs(input);
+    expect(ics).toContain('BEGIN:VCALENDAR');
+    expect(ics).toContain('METHOD:REQUEST');
+    expect(ics).toContain('DTSTART:20260820T183000Z');
+    expect(ics).toContain('DTEND:20260820T190000Z');
+    expect(ics).toContain('LOCATION:https://meet.google.com/kzk-tpgh-sbm');
+    expect(ics).toContain('END:VCALENDAR');
+    expect(ics).toContain('SEQUENCE:0');
+  });
+
+  it('escapes commas and newlines, which would otherwise break parsing', () => {
+    const ics = buildIcs({ ...input, description: 'Line one\nLine, two' });
+    expect(ics).toContain('Line one\\nLine\\, two');
+  });
+
+  it('uses CRLF line endings, which strict parsers require', () => {
+    expect(buildIcs(input).includes('\r\n')).toBe(true);
+  });
+
+  it('wraps attendee CN parameter in quotes when it contains a comma', () => {
+    const ics = buildIcs({ ...input, attendeeName: 'Smith, Jr.' });
+    expect(ics).toContain('CN="Smith, Jr."');
+    expect(ics).not.toContain('\\,');
+  });
+
+  it('uses the supplied sequence number', () => {
+    const ics = buildIcs({ ...input, sequence: 3 });
+    expect(ics).toContain('SEQUENCE:3');
+  });
+
+  it('prevents line injection via newline in attendee name', () => {
+    const ics = buildIcs({ ...input, attendeeName: 'Ana\nBCC: someone@evil.com' });
+    // The ATTENDEE line should not be split by the injected newline
+    const lines = ics.split('\r\n');
+    const attendeeLine = lines.find((line) => line.startsWith('ATTENDEE;'));
+    expect(attendeeLine).toBeDefined();
+    // Should not contain raw CR or LF inside the CN parameter
+    expect(attendeeLine).not.toContain('\n');
+    expect(attendeeLine).not.toContain('\r');
+    // Should not create an extra line starting with the injected text
+    expect(lines.some((line) => line.startsWith('BCC: someone@evil.com'))).toBe(false);
+  });
+});

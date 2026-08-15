@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './Navbar.css'
-import DemoLink from './DemoLink'
+import CtaLink from './CtaLink'
 import { useLanguage } from '../i18n/useLanguage'
 import { LANGS, LANG_PATH } from '../i18n/copy'
 
@@ -51,9 +51,9 @@ function Navbar() {
             ))}
           </nav>
 
-          <DemoLink className="navbar__cta" location="navbar">
+          <CtaLink className="navbar__cta" location="navbar">
             {copy.navbar.cta}
-          </DemoLink>
+          </CtaLink>
         </div>
       </div>
     </header>

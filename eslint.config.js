@@ -6,8 +6,10 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   // dist-ssr is build output too. Without it, `npm run lint` passes or fails
-  // depending on whether a build happens to be on disk.
-  globalIgnores(['dist', 'dist-ssr']),
+  // depending on whether a build happens to be on disk. demo-backend/cdk.out
+  // is the same class of problem: CDK synth output written by
+  // `npm run synth`, not source we own or want linted.
+  globalIgnores(['dist', 'dist-ssr', 'demo-backend/cdk.out']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [

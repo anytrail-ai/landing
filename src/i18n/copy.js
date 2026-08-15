@@ -117,7 +117,10 @@ export const COPY = {
       },
       title: 'Your review is booked.',
       body: "Check your email for the calendar invite. Before we meet, we'll send an inquiry through your own inbound channels and time how long a reply takes, so we can show you exactly where opportunities are being lost today.",
+      manageSave: 'Save this link in case the confirmation email does not arrive — it is the only way to cancel or move your call:',
       back: 'Back to home',
+      demoLead: 'While you wait, run the agent on your own catalog.',
+      demoCta: 'Try the live demo',
     },
     demo: {
       meta: {
@@ -125,6 +128,43 @@ export const COPY = {
         description:
           'See an AI sales agent built on your own website in one minute. It learns your products and sells them back to you — plus your ideal customer profile and 5 matching leads.',
         ogLocale: 'en_US',
+      },
+    },
+    schedule: {
+      meta: {
+        title: 'Book a commercial process review | Anytrail',
+        description:
+          'Book a 30 minute video call. We look at how your company finds and answers new opportunities today, and show you where sales are being lost.',
+        ogLocale: 'en_US',
+      },
+      title: 'Review my commercial process',
+      intro:
+        'Thirty minutes, by video. We look at how opportunities reach you today, how fast they get answered, and what happens to the ones nobody follows up on.',
+      bullets: [
+        'Before the call we send an inquiry through your own channels and time the reply.',
+        'You get the timings and the gaps, whether or not you buy anything.',
+        'No slides. Bring the questions your sales team argues about.',
+      ],
+      pickDay: 'Pick a day',
+      pickTime: 'Pick a time',
+      yourZone: 'Times shown in your timezone',
+      noSlots: 'No open times that day. Try another one.',
+      form: { name: 'Your name', email: 'Work email', website: 'Company website', note: 'Anything we should know? (optional)' },
+      submit: 'Book the call',
+      booking: 'Booking...',
+      manageTitle: 'Your booking',
+      cancel: 'Cancel this call',
+      move: 'Move to another time',
+      cancelled: 'Your call is cancelled. You can book another any time.',
+      errors: {
+        invalid_website: "We couldn't use that website address. Check the URL and try again.",
+        invalid_input: "That didn't look right. Check the form and try again.",
+        slot_taken: 'Someone just took that time. Pick another one.',
+        already_booked: 'You already have a call booked. Use the link in your confirmation email to change it.',
+        rate_limited: 'Too many attempts. Try again later.',
+        invalid_link: 'That link is not valid. Check the one in your confirmation email.',
+        unknown_booking: 'We could not find that booking. It may already be cancelled.',
+        generic: 'Something went wrong. Try again.',
       },
     },
     footer: {
@@ -248,7 +288,10 @@ export const COPY = {
       },
       title: 'Tu revisión está agendada.',
       body: 'Revisa tu correo para la invitación. Antes de la reunión, enviaremos una consulta por tus propios canales de ventas entrantes y mediremos cuánto tarda la respuesta, para mostrarte exactamente dónde se están perdiendo oportunidades hoy.',
+      manageSave: 'Guarda este enlace por si el correo de confirmación no llega — es la única forma de cancelar o mover tu llamada:',
       back: 'Volver al inicio',
+      demoLead: 'Mientras tanto, prueba el agente con tu propio catálogo.',
+      demoCta: 'Probar la demo',
     },
     demo: {
       meta: {
@@ -256,6 +299,43 @@ export const COPY = {
         description:
           'Mira un agente de ventas con IA construido sobre tu propio sitio web en un minuto. Aprende tus productos y te los vende — más tu perfil de cliente ideal y 5 prospectos.',
         ogLocale: 'es_ES',
+      },
+    },
+    schedule: {
+      meta: {
+        title: 'Agenda una revisión de tu proceso comercial | Anytrail',
+        description:
+          'Agenda una videollamada de 30 minutos. Revisamos cómo tu empresa encuentra y responde nuevas oportunidades hoy, y dónde se están perdiendo ventas.',
+        ogLocale: 'es_ES',
+      },
+      title: 'Revisa mi proceso comercial',
+      intro:
+        'Treinta minutos, por video. Revisamos cómo te llegan las oportunidades hoy, qué tan rápido se responden, y qué pasa con las que nadie sigue.',
+      bullets: [
+        'Antes de la llamada enviamos una consulta por tus propios canales y medimos cuánto tarda la respuesta.',
+        'Te entregamos los tiempos y las fugas, compres algo o no.',
+        'Sin presentaciones. Trae las preguntas que tu equipo comercial discute.',
+      ],
+      pickDay: 'Elige un día',
+      pickTime: 'Elige una hora',
+      yourZone: 'Horarios en tu zona horaria',
+      noSlots: 'No hay horarios disponibles ese día. Prueba con otro.',
+      form: { name: 'Tu nombre', email: 'Correo de trabajo', website: 'Sitio web de la empresa', note: '¿Algo que debamos saber? (opcional)' },
+      submit: 'Agendar la llamada',
+      booking: 'Agendando...',
+      manageTitle: 'Tu cita',
+      cancel: 'Cancelar esta llamada',
+      move: 'Mover a otro horario',
+      cancelled: 'Tu llamada fue cancelada. Puedes agendar otra cuando quieras.',
+      errors: {
+        invalid_website: 'No pudimos usar esa dirección web. Revisa la URL e inténtalo de nuevo.',
+        invalid_input: 'Algo no se ve bien. Revisa el formulario e inténtalo de nuevo.',
+        slot_taken: 'Alguien acaba de tomar ese horario. Elige otro.',
+        already_booked: 'Ya tienes una llamada agendada. Usa el enlace de tu correo de confirmación para cambiarla.',
+        rate_limited: 'Demasiados intentos. Inténtalo más tarde.',
+        invalid_link: 'Ese enlace no es válido. Revisa el de tu correo de confirmación.',
+        unknown_booking: 'No encontramos esa cita. Puede que ya esté cancelada.',
+        generic: 'Algo salió mal. Inténtalo de nuevo.',
       },
     },
     footer: {
@@ -273,8 +353,8 @@ export const LANG_PATH = { en: '/', es: '/es' }
 // Spanish visitor never sees an English URL. prerender.js walks this to decide
 // what to render, so adding a page here is enough to get it built.
 export const ROUTES = {
-  en: { home: '/', thanks: '/thanks', demo: '/demo' },
-  es: { home: '/es', thanks: '/es/gracias', demo: '/es/demo' },
+  en: { home: '/', thanks: '/thanks', demo: '/demo', schedule: '/schedule' },
+  es: { home: '/es', thanks: '/es/gracias', demo: '/es/demo', schedule: '/es/agenda' },
 }
 
 // Pages that must never be indexed. A thank-you page ranking in search would

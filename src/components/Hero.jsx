@@ -1,5 +1,5 @@
 import './Hero.css'
-import DemoLink from './DemoLink'
+import CtaLink from './CtaLink'
 import WhatsAppLink from './WhatsAppLink'
 import InboundConversation from './mockups/InboundConversation'
 import { useLanguage } from '../i18n/useLanguage'
@@ -14,9 +14,9 @@ function Hero() {
         <h1 className="hero__title">{c.title}</h1>
         <p className="hero__subtitle">{c.subtitle}</p>
         <div className="hero__actions">
-          <DemoLink className="hero__cta" location="hero">
+          <CtaLink className="hero__cta" location="hero">
             {c.cta}
-          </DemoLink>
+          </CtaLink>
           <WhatsAppLink location="hero" />
           <p className="hero__cta-note">{c.ctaNote}</p>
         </div>

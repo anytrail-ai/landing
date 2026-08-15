@@ -53,7 +53,7 @@ export function renderProspectsEmail(
     .map(
       (l) => `
       <tr><td style="border-top:1px solid ${C.border};padding:16px 0">
-        <div style="font-weight:600;font-size:16px">${
+        <div style="font-weight:600;font-size:15px">${
           l.website
             ? `<a href="${esc(l.website)}" style="color:${C.text};text-decoration:none">${esc(l.company)}</a>`
             : esc(l.company)
@@ -92,7 +92,7 @@ export function renderProspectsEmail(
   <tr><td style="background:${C.surface};border:1px solid ${C.border};border-radius:12px;padding:32px">
     <h1 style="font-family:'Funnel Display','Funnel Sans',system-ui,sans-serif;font-size:24px;line-height:1.2;margin:0 0 8px">Your ideal customers, ${esc(visitorName)}</h1>
     <p style="color:${C.muted};font-size:15px;margin:0 0 20px">Derived from ${esc(companyName)}'s website by your demo sales agent — plus ${leads.length} real companies that match.</p>
-    <div style="background:${C.accentSoft};border-radius:8px;padding:14px 16px;font-size:14px;line-height:1.5">
+    <div style="background:${C.accentSoft};border-radius:6px;padding:14px 16px;font-size:14px;line-height:1.5">
       <strong style="color:${C.accent}">ICP</strong><br/>${esc(icp.icp_summary)}
     </div>
     <p style="color:${C.muted};font-size:13px;margin:12px 0 20px">
@@ -100,7 +100,7 @@ export function renderProspectsEmail(
       <strong>Sales motion:</strong> ${esc(icp.sales_motion)}
     </p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${leadRows}</table>
-    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:28px"><tr><td style="background:#000000;border-radius:8px">
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:28px"><tr><td style="background:#000000;border-radius:6px">
       <a href="https://anytrail.ai" style="display:inline-block;padding:13px 26px;color:#ffffff;font-weight:600;font-size:15px;text-decoration:none">This took a minute — put it on your real pipeline</a>
     </td></tr></table>
   </td></tr>

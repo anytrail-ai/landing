@@ -118,12 +118,12 @@ export function renderConfirmation(
   const subject = kind === 'moved' ? t.subjectMoved(when) : t.subject(when);
 
   const html = shell(`
-    <h1 style="font-size:22px;color:${C.text};margin:0 0 8px">${heading}</h1>
-    <p style="color:${C.text};font-size:16px;margin:0 0 4px"><strong>${esc(when)}</strong></p>
+    <h1 style="font-size:24px;color:${C.text};margin:0 0 8px">${heading}</h1>
+    <p style="color:${C.text};font-size:15px;margin:0 0 4px"><strong>${esc(when)}</strong></p>
     <p style="color:${C.muted};font-size:14px;margin:0 0 24px">${t.minutes}</p>
-    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:8px;font-weight:600;text-decoration:none">${t.join}</a>
+    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:6px;font-weight:600;text-decoration:none">${t.join}</a>
     <p style="margin:24px 0 0;font-size:14px"><a href="${esc(manageUrl)}" style="color:${C.muted}">${t.manage}</a></p>
-    <div style="margin-top:28px;background:${C.accentSoft};border-radius:8px;padding:16px">
+    <div style="margin-top:28px;background:${C.accentSoft};border-radius:6px;padding:16px">
       <p style="margin:0 0 8px;font-size:14px;color:${C.text}">${esc(b.name)}, ${t.demoLead}</p>
       <a href="${demoUrl}" style="color:${C.accent};font-weight:600">${t.demoCta}</a>
     </div>`);
@@ -151,9 +151,9 @@ export function renderReminder(
   const subject = which === 'T24' ? t.remind24(when) : t.remind1(when);
 
   const html = shell(`
-    <h1 style="font-size:20px;color:${C.text};margin:0 0 8px">${esc(subject)}</h1>
-    <p style="color:${C.text};font-size:16px;margin:0 0 24px"><strong>${esc(when)}</strong></p>
-    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:8px;font-weight:600;text-decoration:none">${t.join}</a>
+    <h1 style="font-size:24px;color:${C.text};margin:0 0 8px">${esc(subject)}</h1>
+    <p style="color:${C.text};font-size:15px;margin:0 0 24px"><strong>${esc(when)}</strong></p>
+    <a href="${meetUrl}" style="display:inline-block;background:#000;color:#fff;padding:13px 26px;border-radius:6px;font-weight:600;text-decoration:none">${t.join}</a>
     <p style="margin:24px 0 0;font-size:14px"><a href="${esc(manageUrl)}" style="color:${C.muted}">${t.manage}</a></p>`);
 
   return { subject, html, text: [subject, when, `${t.join}: ${meetUrl}`, manageUrl].join('\n\n') };

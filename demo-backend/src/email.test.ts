@@ -15,7 +15,10 @@ const leads = [
     location: 'Monterrey, Mexico',
     employees: 120,
     industry: 'machinery',
-    contact: { name: 'Luis Pérez', title: 'VP Sales', linkedinUrl: null },
+    // `email` is part of ProspectLead's contact and was missing here, so this
+    // fixture never satisfied the type. Adding a second call site below made
+    // tsc report it twice; filling it in fixes both.
+    contact: { name: 'Luis Pérez', title: 'VP Sales', linkedinUrl: null, email: null },
     whyFit: 'Distributes industrial machinery in the target region.',
   },
 ];

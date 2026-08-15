@@ -271,13 +271,244 @@ export const COPY = {
       },
       relatedLabel: 'Keep reading',
       related: [
+        { page: 'rfqAutomation', label: 'RFQ automation, and the RFQs that arrive incomplete' },
+        { page: 'manufacturingCrm', label: 'Manufacturing CRM: what it fixes, and what it does not' },
         { page: 'home', label: 'How Anytrail works, inbound and outbound' },
-        { page: 'demo', label: 'Build an agent on your own catalog in a minute' },
         { page: 'schedule', label: 'Book a commercial process review' },
       ],
       closing: {
         title: 'Find out what your own response time actually is.',
         body: 'Before the call we send a real inquiry through your own inbound channels and time how long a useful reply takes. You get the timings either way, whether or not you buy anything.',
+        cta: 'Review my commercial process',
+      },
+    },
+    // The search term names a category we are deliberately not. The page says
+    // so rather than pretending to be a CRM to catch the traffic.
+    manufacturingCrm: {
+      meta: {
+        title: 'Manufacturing CRM: What It Fixes, and What It Does Not | Anytrail',
+        description:
+          'A CRM records what happened. In manufacturing, the expensive problem is what never got recorded. Why generic CRMs struggle here, and what to ask before you replace yours.',
+        ogLocale: 'en_US',
+      },
+      h1: 'Manufacturing CRM: what it fixes, and what it does not.',
+      navLabel: 'What a manufacturing CRM fixes',
+      lede: [
+        'If you are looking for a manufacturing CRM, something is usually already wrong. The forecast does not match reality, nobody trusts the pipeline, or the deals that closed were never in the system until the week they closed.',
+        'Before replacing the tool, it is worth separating two problems that look identical from the outside. One of them a CRM fixes. The other one it cannot, and buying a better CRM will not touch it.',
+      ],
+      sections: [
+        {
+          label: 'START HERE',
+          title: 'A CRM is a system of record. That is the whole job.',
+          paras: [
+            'A CRM stores what happened and reports on it. Who the account is, which stage the deal is in, what was agreed, what closed. Done well that is genuinely valuable, and a manufacturer running on spreadsheets and inbox memory should absolutely fix it.',
+            'But a system of record is downstream of the record existing. It organizes information after a human has entered it. Every CRM ever built shares this property, and it is the reason a CRM project can finish successfully and change nothing about revenue.',
+            'So the question worth asking is not which CRM. It is whether your problem lives before or after the data entry step.',
+          ],
+        },
+        {
+          title: 'Where generic CRMs actually struggle in manufacturing.',
+          paras: [
+            'Most CRMs were designed around a software or services sale: one buyer, one contract, a stage that advances in one direction. Manufacturing violates several of those assumptions at once, which is why the tool tends to feel like it is fighting you.',
+          ],
+          pointsLabel: 'The structural mismatches',
+          points: [
+            {
+              title: 'The unit of work is a quote, not an opportunity',
+              body: 'One inquiry can produce four quotes across two years as the spec changes. CRMs model that as one opportunity you keep editing, or four you keep deduplicating. Neither matches what your team is actually doing.',
+            },
+            {
+              title: 'The buyer is often not your contact',
+              body: 'Sell through distributors or reps and the person specifying the equipment is a company away. The CRM has a contact record for someone who does not make the decision.',
+            },
+            {
+              title: 'The installed base is the pipeline',
+              body: 'A pump sold six years ago is a replacement due now. That is a real, forecastable opportunity, and almost no CRM models it as anything other than a closed deal in the past.',
+            },
+            {
+              title: 'The spec does not fit in fields',
+              body: 'Duty cycle, residue, site conditions, power supply. It arrives as a photo of a nameplate in a WhatsApp thread, and it ends up in an attachment nobody can query.',
+            },
+          ],
+        },
+        {
+          title: 'Your CRM data problem is not a discipline problem.',
+          paras: [
+            'The standard diagnosis is that salespeople do not update the CRM, and the standard remedy is a policy, a dashboard, or a manager asking on Fridays. This rarely works for long, and it is worth being honest about why.',
+            'Entering data is unpaid work with a delayed, indirect payoff for the person doing it. A salesperson who just spent forty minutes on the phone establishing that the customer needs three phase power and cannot take delivery until the shutdown has every incentive to move to the next call, because the deal does not advance by typing it up. It advances by quoting.',
+            'So the record stays thin, the reports are built on the thin record, and the forecast is a work of fiction that everybody agrees to treat as data. Adding required fields makes it worse: people fill them with whatever passes validation.',
+            'This is the part no CRM can fix, because the fix has to happen before the data entry step, in the conversation itself.',
+          ],
+        },
+        {
+          title: 'What to ask before you replace the CRM.',
+          paras: [
+            'If the tool genuinely is the problem, replacing it is correct. These are the questions that separate the two cases.',
+          ],
+          points: [
+            {
+              title: 'Which deals are missing, not which fields',
+              body: 'Pull ten deals that closed last quarter. How many existed in the CRM more than a month before they closed? If most appeared late, the system is a ledger, not a pipeline, and a new ledger will behave the same.',
+            },
+            {
+              title: 'Where the technical detail lives today',
+              body: 'If the answer is email, WhatsApp, and a salesperson’s memory, then migrating to a new CRM moves the empty fields, not the information.',
+            },
+            {
+              title: 'Who is expected to type',
+              body: 'Any plan whose success depends on busy salespeople entering more than they do now is a plan that has already been tried at your company.',
+            },
+            {
+              title: 'What happens to an inquiry at 9pm',
+              body: 'Not a CRM question at all, which is rather the point. It is usually the more expensive problem.',
+            },
+          ],
+        },
+        {
+          label: 'WHERE WE FIT',
+          title: 'Anytrail is not a CRM, and it does not want to be your record.',
+          paras: [
+            'We are the four things listed above, from the other side. Anytrail works the demand rather than filing it: it answers inbound inquiries the moment they land, opens conversations with accounts that match what you sell, runs the diagnostic questions your team would ask, and follows up over weeks.',
+            'Because it is in the conversation, the technical detail is captured as it is established rather than reconstructed afterwards. The application, the duty cycle, the power supply and the site constraints arrive with the opportunity, structured, without anyone typing them up. What your CRM records improves as a side effect of the work getting done, which is the only version of that problem that stays fixed.',
+            'Keep your CRM. It is the system of record, and you need one. Anytrail sits in front of it.',
+          ],
+        },
+      ],
+      limits: {
+        title: 'What this does not do.',
+        items: [
+          'It is not a CRM and does not replace one. No pipeline reporting, no forecasting, no system of record.',
+          'We do not migrate your existing CRM data, and we make no claims about integrations with any specific CRM on this page.',
+          'It does not set prices or issue quotes. Your team keeps pricing, the technical recommendation, and the sale.',
+          'We publish no benchmark figures on CRM adoption, data quality, or win rates. We have not measured them ourselves.',
+        ],
+      },
+      relatedLabel: 'Keep reading',
+      related: [
+        { page: 'speedToLead', label: 'Speed to lead in industrial equipment sales' },
+        { page: 'rfqAutomation', label: 'RFQ automation, and the RFQs that arrive incomplete' },
+        { page: 'home', label: 'How Anytrail works, inbound and outbound' },
+        { page: 'schedule', label: 'Book a commercial process review' },
+      ],
+      closing: {
+        title: 'Find out which of the two problems you have.',
+        body: 'Thirty minutes. We look at how opportunities reach you, what gets recorded, and what never makes it into the system at all. You get the findings whether or not you buy anything.',
+        cta: 'Review my commercial process',
+      },
+    },
+    // Closest match of the three cluster terms to what the product actually
+    // does. The boundary to hold: Anytrail prepares quotes, it never issues.
+    rfqAutomation: {
+      meta: {
+        title: 'RFQ Automation for Industrial Equipment | Anytrail',
+        description:
+          'Most RFQ automation assumes a complete RFQ arrives. In industrial equipment it usually does not. What to automate when the request is missing the details you need to price it.',
+        ogLocale: 'en_US',
+      },
+      h1: 'RFQ automation for industrial equipment.',
+      navLabel: 'RFQ automation for equipment',
+      lede: [
+        'RFQ automation usually means software that moves a request for quote through your process faster: routing it, templating the response, tracking where it sits.',
+        'All of that assumes the RFQ arrived complete. In industrial equipment it usually did not, and the time you lose is spent getting to a quotable specification, not producing the document once you have one.',
+      ],
+      sections: [
+        {
+          label: 'TWO DIFFERENT THINGS',
+          title: 'Buyer-side and supplier-side automation are not the same product.',
+          paras: [
+            'The term covers two markets that have very little to do with each other. On the buyer side, procurement teams automate sending RFQs out to a vendor list and normalizing what comes back. That software is bought by the person purchasing, and it is a genuinely different problem.',
+            'On the supplier side, which is where you are if you sell equipment, automation means what happens to a request when it arrives. Most of the tooling here was built for the case where a complete, structured RFQ lands from a portal: line items, quantities, specifications, a deadline. If that describes your inbound, the standard tools work.',
+            'For most equipment manufacturers and distributors it does not. The request arrives as three sentences on WhatsApp.',
+          ],
+        },
+        {
+          title: 'The incomplete RFQ is the normal case, not the exception.',
+          paras: [
+            '"Can you quote me on a pump" is a real RFQ, and it is unquotable as written. Before anyone can price it, someone has to establish a list of things the sender did not think to include, usually because they did not know they mattered.',
+          ],
+          pointsLabel: 'What is typically missing',
+          points: [
+            {
+              title: 'The application',
+              body: 'What the equipment is for, which determines everything downstream. What is being moved, cleaned, cut, or lifted, and in what condition.',
+            },
+            {
+              title: 'Duty cycle',
+              body: 'Two hours a week and sixteen hours a day are different machines at different prices. Nobody volunteers this number.',
+            },
+            {
+              title: 'Site conditions and power',
+              body: 'Three phase availability, ambient conditions, drainage, access for installation. Any one of these can eliminate the model you were about to quote.',
+            },
+            {
+              title: 'Who is actually asking',
+              body: 'A maintenance manager replacing a failed unit and a project engineer specifying for a new line need different responses, on different timelines, at different prices.',
+            },
+          ],
+        },
+        {
+          title: 'A longer form does not solve this, and it costs you submissions.',
+          paras: [
+            'The obvious fix is to ask for everything up front: a detailed quote request form with the fields your team needs. Every equipment company tries this. Two things go wrong.',
+            'The first is that a form is flat and diagnosis is conditional. Whether the power supply question matters depends on the answer to the application question. Whether you need drainage details depends on what is being washed. A form cannot branch on an answer it has not received yet, so it either asks everyone everything, which is long enough that people abandon it, or it asks the safe generic subset, which is exactly the incomplete RFQ you started with.',
+            'The second is that the buyer often cannot answer the questions in the form. They know the pump is leaking. They do not know the head or the flow rate, and a required field asking for it does not create the knowledge. A person would work around this by asking what the pump is doing and inferring the rest. A form cannot.',
+            'This is why the round trips happen, and each one costs a day.',
+          ],
+        },
+        {
+          title: 'What is actually worth automating.',
+          paras: [
+            'Ranked roughly by how much time each recovers in an equipment business.',
+          ],
+          points: [
+            {
+              title: 'Conditional intake',
+              body: 'Asking the next question based on the last answer, the way a salesperson would, instead of presenting a fixed field list. This is the step that eliminates round trips rather than shortening them.',
+            },
+            {
+              title: 'A completeness check before handoff',
+              body: 'Nothing reaches a salesperson until the answers needed to price it are present. The expensive failure is a quote request that sits in someone’s queue for two days before anyone notices it is unquotable.',
+            },
+            {
+              title: 'Catalog matching',
+              body: 'Narrowing to the models that fit the application and the site constraints, so the person quoting starts from a shortlist rather than the full catalog.',
+            },
+            {
+              title: 'Follow-up on stalled requests',
+              body: 'RFQs go quiet constantly, and the second and third touch are where equipment deals close. This is pure recovered revenue and it is almost never automated.',
+            },
+          ],
+        },
+        {
+          label: 'WHAT WE DO',
+          title: 'Anytrail gets the RFQ to quotable. Your team quotes it.',
+          paras: [
+            'Anytrail answers the request when it arrives, on WhatsApp, from an ad, or from your website, and works it the way your own team would: what the application is, how hard the machine will run, what the site can support. It asks the next question based on the last answer, so a buyer who does not know the flow rate still ends up somewhere quotable.',
+            'When the picture is complete it matches the application against your catalog and hands the request to a salesperson with the answers already collected. Requests that go quiet get followed up over the following days and weeks without anyone having to remember.',
+            'It stops there, deliberately. Anytrail prepares the quote; it does not issue one. Pricing, the technical recommendation, and the final document stay with your team. An agent that quotes autonomously is an agent that will eventually commit you to a price or a lead time you cannot honor.',
+          ],
+        },
+      ],
+      limits: {
+        title: 'What this does not do.',
+        items: [
+          'It does not issue quotes, set prices, or commit to lead times. It collects what a quote needs and hands that to a person.',
+          'It is not a procurement or eProcurement tool. If you are the buyer sending RFQs out, this is the wrong side of the market.',
+          'We make no claims on this page about integrations with any specific ERP, quoting system, or supplier portal.',
+          'We publish no figures on RFQ volumes, cycle times, or win rates. We have not measured them ourselves.',
+        ],
+      },
+      relatedLabel: 'Keep reading',
+      related: [
+        { page: 'speedToLead', label: 'Speed to lead in industrial equipment sales' },
+        { page: 'manufacturingCrm', label: 'Manufacturing CRM: what it fixes, and what it does not' },
+        { page: 'home', label: 'How Anytrail works, inbound and outbound' },
+        { page: 'schedule', label: 'Book a commercial process review' },
+      ],
+      closing: {
+        title: 'See how many round trips your RFQs actually take.',
+        body: 'Before the call we send a real request through your own channels and count the exchanges it takes to reach something quotable. You get the findings whether or not you buy anything.',
         cta: 'Review my commercial process',
       },
     },
@@ -557,13 +788,244 @@ export const COPY = {
       },
       relatedLabel: 'Seguir leyendo',
       related: [
+        { page: 'rfqAutomation', label: 'Automatización de cotizaciones y las solicitudes que llegan incompletas' },
+        { page: 'manufacturingCrm', label: 'CRM para manufactura: qué resuelve y qué no' },
         { page: 'home', label: 'Cómo funciona Anytrail, entrante y de prospección' },
-        { page: 'demo', label: 'Arma un agente con tu propio catálogo en un minuto' },
         { page: 'schedule', label: 'Agenda una revisión de tu proceso comercial' },
       ],
       closing: {
         title: 'Averigua cuál es tu tiempo de respuesta real.',
         body: 'Antes de la llamada enviamos una consulta real por tus propios canales de ventas entrantes y medimos cuánto tarda en llegar una respuesta útil. Te entregamos los tiempos de cualquier forma, compres algo o no.',
+        cta: 'Revisa mi proceso comercial',
+      },
+    },
+    // El término nombra una categoría que deliberadamente no somos. La página
+    // lo dice, en lugar de fingir ser un CRM para capturar el tráfico.
+    manufacturingCrm: {
+      meta: {
+        title: 'CRM para manufactura: qué resuelve y qué no | Anytrail',
+        description:
+          'Un CRM registra lo que pasó. En manufactura, el problema caro es lo que nunca se registró. Por qué los CRM genéricos batallan aquí y qué preguntar antes de cambiar el tuyo.',
+        ogLocale: 'es_ES',
+      },
+      h1: 'CRM para manufactura: qué resuelve y qué no.',
+      navLabel: 'Qué resuelve un CRM para manufactura',
+      lede: [
+        'Si andas buscando un CRM para manufactura, por lo general ya hay algo descompuesto. El pronóstico no cuadra con la realidad, nadie confía en el pipeline, o los tratos que se cerraron nunca estuvieron en el sistema hasta la semana en que se firmaron.',
+        'Antes de cambiar la herramienta vale la pena separar dos problemas que desde afuera se ven iguales. Uno sí lo resuelve un CRM. El otro no, y comprar un CRM mejor no lo va a tocar.',
+      ],
+      sections: [
+        {
+          label: 'EMPECEMOS POR AQUÍ',
+          title: 'Un CRM es un sistema de registro. Ese es todo el trabajo.',
+          paras: [
+            'Un CRM guarda lo que pasó y reporta sobre eso. Quién es la cuenta, en qué etapa va el trato, qué se acordó, qué se cerró. Bien hecho, eso vale mucho, y un fabricante que opera con hojas de cálculo y memoria de bandeja de entrada debería arreglarlo.',
+            'Pero un sistema de registro va después de que el registro existe. Ordena información una vez que una persona la capturó. Todos los CRM que se han construido comparten esa propiedad, y por eso un proyecto de CRM puede terminar bien y no cambiar nada en los ingresos.',
+            'Así que la pregunta que importa no es cuál CRM. Es si tu problema vive antes o después del paso de captura.',
+          ],
+        },
+        {
+          title: 'Dónde batallan de verdad los CRM genéricos en manufactura.',
+          paras: [
+            'La mayoría de los CRM se diseñaron alrededor de una venta de software o de servicios: un comprador, un contrato, una etapa que avanza en un solo sentido. La manufactura rompe varias de esas suposiciones al mismo tiempo, y por eso la herramienta se siente como si te estorbara.',
+          ],
+          pointsLabel: 'Los desajustes de fondo',
+          points: [
+            {
+              title: 'La unidad de trabajo es una cotización, no una oportunidad',
+              body: 'Una sola consulta puede producir cuatro cotizaciones en dos años conforme cambia la especificación. El CRM lo modela como una oportunidad que editas sin parar, o como cuatro que andas depurando. Ninguna de las dos se parece a lo que tu equipo hace.',
+            },
+            {
+              title: 'El comprador muchas veces no es tu contacto',
+              body: 'Si vendes por distribuidores o representantes, quien especifica el equipo está a una empresa de distancia. El CRM tiene el registro de alguien que no decide.',
+            },
+            {
+              title: 'La cartera instalada es el pipeline',
+              body: 'Una bomba que vendiste hace seis años es un reemplazo que toca ahora. Es una oportunidad real y pronosticable, y casi ningún CRM la modela como algo distinto a un trato cerrado en el pasado.',
+            },
+            {
+              title: 'La especificación no cabe en campos',
+              body: 'Ciclo de trabajo, residuo, condiciones del sitio, alimentación eléctrica. Llega como la foto de una placa en un hilo de WhatsApp y termina en un adjunto que nadie puede consultar.',
+            },
+          ],
+        },
+        {
+          title: 'Tu problema de datos en el CRM no es falta de disciplina.',
+          paras: [
+            'El diagnóstico de siempre es que los vendedores no actualizan el CRM, y el remedio de siempre es una política, un tablero, o un gerente preguntando los viernes. Casi nunca aguanta, y vale la pena ser honestos sobre por qué.',
+            'Capturar datos es trabajo no pagado con un beneficio lejano e indirecto para quien lo hace. Un vendedor que acaba de pasar cuarenta minutos al teléfono estableciendo que el cliente necesita trifásica y que no puede recibir hasta el paro de planta tiene todos los incentivos para pasar a la siguiente llamada, porque el trato no avanza por capturarlo. Avanza por cotizar.',
+            'Entonces el registro queda flaco, los reportes se arman sobre el registro flaco, y el pronóstico es una obra de ficción que todos acuerdan tratar como dato. Poner campos obligatorios lo empeora: la gente los llena con lo que pase la validación.',
+            'Esta es la parte que ningún CRM puede arreglar, porque el arreglo tiene que ocurrir antes de la captura, dentro de la conversación.',
+          ],
+        },
+        {
+          title: 'Qué preguntar antes de cambiar el CRM.',
+          paras: [
+            'Si de verdad la herramienta es el problema, cambiarla es lo correcto. Estas son las preguntas que separan los dos casos.',
+          ],
+          points: [
+            {
+              title: 'Cuáles tratos faltan, no cuáles campos',
+              body: 'Saca diez tratos que se cerraron el trimestre pasado. ¿Cuántos existían en el CRM más de un mes antes de cerrarse? Si la mayoría apareció tarde, el sistema es una bitácora y no un pipeline, y una bitácora nueva se va a portar igual.',
+            },
+            {
+              title: 'Dónde vive hoy el detalle técnico',
+              body: 'Si la respuesta es el correo, WhatsApp y la memoria de un vendedor, migrar a otro CRM mueve los campos vacíos, no la información.',
+            },
+            {
+              title: 'Quién se supone que va a capturar',
+              body: 'Cualquier plan cuyo éxito dependa de que vendedores ocupados capturen más de lo que capturan hoy es un plan que en tu empresa ya se intentó.',
+            },
+            {
+              title: 'Qué pasa con una consulta a las nueve de la noche',
+              body: 'No es una pregunta de CRM, que es justamente el punto. Casi siempre es el problema más caro.',
+            },
+          ],
+        },
+        {
+          label: 'DÓNDE ENTRAMOS',
+          title: 'Anytrail no es un CRM, y no quiere ser tu sistema de registro.',
+          paras: [
+            'Somos las cuatro cosas de arriba, vistas del otro lado. Anytrail trabaja la demanda en lugar de archivarla: responde las consultas entrantes en el momento en que llegan, abre conversaciones con cuentas que embonan con lo que vendes, hace las preguntas de diagnóstico que haría tu equipo, y da seguimiento durante semanas.',
+            'Como está dentro de la conversación, el detalle técnico se captura mientras se establece y no se reconstruye después. La aplicación, el ciclo de trabajo, la alimentación eléctrica y las restricciones del sitio llegan junto con la oportunidad, ordenadas, sin que nadie las tenga que capturar. Lo que tu CRM registra mejora como efecto secundario de que el trabajo se hizo, que es la única versión de ese problema que se queda arreglada.',
+            'Quédate con tu CRM. Es el sistema de registro y sí necesitas uno. Anytrail va delante de él.',
+          ],
+        },
+      ],
+      limits: {
+        title: 'Qué no hace.',
+        items: [
+          'No es un CRM ni sustituye uno. Nada de reportes de pipeline, pronóstico ni sistema de registro.',
+          'No migramos los datos de tu CRM actual, y en esta página no afirmamos nada sobre integraciones con ningún CRM en particular.',
+          'No pone precios ni emite cotizaciones. Tu equipo conserva el precio, la recomendación técnica y la venta.',
+          'No publicamos cifras de referencia sobre adopción de CRM, calidad de datos ni tasas de cierre. No las hemos medido nosotros.',
+        ],
+      },
+      relatedLabel: 'Seguir leyendo',
+      related: [
+        { page: 'speedToLead', label: 'Tiempo de respuesta a leads en la venta de equipo industrial' },
+        { page: 'rfqAutomation', label: 'Automatización de cotizaciones y las solicitudes que llegan incompletas' },
+        { page: 'home', label: 'Cómo funciona Anytrail, entrante y de prospección' },
+        { page: 'schedule', label: 'Agenda una revisión de tu proceso comercial' },
+      ],
+      closing: {
+        title: 'Averigua cuál de los dos problemas tienes.',
+        body: 'Treinta minutos. Revisamos cómo te llegan las oportunidades, qué queda registrado y qué nunca entra al sistema. Te entregamos los hallazgos, compres algo o no.',
+        cta: 'Revisa mi proceso comercial',
+      },
+    },
+    // De los tres términos, el que más se parece a lo que el producto hace.
+    // El límite que hay que sostener: Anytrail prepara la cotización, no la emite.
+    rfqAutomation: {
+      meta: {
+        title: 'Automatización de cotizaciones para equipo industrial | Anytrail',
+        description:
+          'Casi toda la automatización de cotizaciones asume que la solicitud llega completa. En equipo industrial rara vez llega así. Qué automatizar cuando falta lo que necesitas para poner precio.',
+        ogLocale: 'es_ES',
+      },
+      h1: 'Automatización de cotizaciones para equipo industrial.',
+      navLabel: 'Automatización de cotizaciones',
+      lede: [
+        'Automatizar cotizaciones normalmente significa software que mueve una solicitud más rápido por tu proceso: la asigna, arma la respuesta con plantillas, y rastrea dónde va.',
+        'Todo eso asume que la solicitud llegó completa. En equipo industrial casi nunca llegó así, y el tiempo que pierdes se va en llegar a una especificación cotizable, no en producir el documento una vez que la tienes.',
+      ],
+      sections: [
+        {
+          label: 'SON DOS COSAS DISTINTAS',
+          title: 'Automatizar del lado del comprador y del lado del proveedor no es el mismo producto.',
+          paras: [
+            'El término cubre dos mercados que tienen poco que ver entre sí. Del lado del comprador, las áreas de compras automatizan el envío de solicitudes a una lista de proveedores y la normalización de lo que regresa. Ese software lo compra quien adquiere, y es otro problema.',
+            'Del lado del proveedor, que es donde estás tú si vendes equipo, automatizar significa qué pasa con una solicitud cuando llega. Casi todas las herramientas de este lado se construyeron para el caso en que aterriza una solicitud completa y estructurada desde un portal: partidas, cantidades, especificaciones y una fecha límite. Si así es tu entrada, las herramientas estándar funcionan.',
+            'Para la mayoría de los fabricantes y distribuidores de equipo no es así. La solicitud llega en tres renglones por WhatsApp.',
+          ],
+        },
+        {
+          title: 'La solicitud incompleta es el caso normal, no la excepción.',
+          paras: [
+            '"¿Me cotizas una bomba?" es una solicitud real, y como está escrita no se puede cotizar. Antes de que alguien ponga precio, hay que establecer una lista de cosas que el remitente no pensó en incluir, casi siempre porque no sabía que importaban.',
+          ],
+          pointsLabel: 'Lo que suele faltar',
+          points: [
+            {
+              title: 'La aplicación',
+              body: 'Para qué es el equipo, que determina todo lo demás. Qué se va a mover, lavar, cortar o levantar, y en qué condiciones.',
+            },
+            {
+              title: 'El ciclo de trabajo',
+              body: 'Dos horas a la semana y dieciséis horas al día son máquinas distintas a precios distintos. Nadie ofrece ese dato por su cuenta.',
+            },
+            {
+              title: 'Condiciones del sitio y alimentación',
+              body: 'Disponibilidad de trifásica, condiciones ambientales, drenaje, acceso para la instalación. Cualquiera de estas puede eliminar el modelo que estabas por cotizar.',
+            },
+            {
+              title: 'Quién está preguntando en realidad',
+              body: 'Un jefe de mantenimiento reemplazando una unidad que falló y un ingeniero de proyecto especificando para una línea nueva necesitan respuestas distintas, en tiempos distintos y a precios distintos.',
+            },
+          ],
+        },
+        {
+          title: 'Un formulario más largo no resuelve esto, y te cuesta solicitudes.',
+          paras: [
+            'La salida obvia es pedir todo por adelantado: un formulario de solicitud con los campos que tu equipo necesita. Toda empresa de equipo lo intenta. Fallan dos cosas.',
+            'La primera es que un formulario es plano y el diagnóstico es condicional. Que importe la pregunta de la alimentación eléctrica depende de la respuesta sobre la aplicación. Que necesites datos de drenaje depende de qué se está lavando. Un formulario no puede ramificar sobre una respuesta que todavía no recibe, así que o le pregunta todo a todos, y entonces es tan largo que la gente lo abandona, o pregunta el subconjunto genérico y seguro, que es exactamente la solicitud incompleta de la que partiste.',
+            'La segunda es que muchas veces el comprador no puede contestar lo que el formulario pregunta. Sabe que la bomba está goteando. No sabe la carga ni el gasto, y un campo obligatorio no le crea ese conocimiento. Una persona lo resolvería preguntando qué hace la bomba y deduciendo el resto. Un formulario no.',
+            'Por eso ocurren las vueltas, y cada una cuesta un día.',
+          ],
+        },
+        {
+          title: 'Qué sí vale la pena automatizar.',
+          paras: [
+            'Ordenado más o menos por cuánto tiempo recupera cada uno en un negocio de equipo.',
+          ],
+          points: [
+            {
+              title: 'Captura condicional',
+              body: 'Hacer la siguiente pregunta según la respuesta anterior, como lo haría un vendedor, en lugar de presentar una lista fija de campos. Este es el paso que elimina vueltas, no el que las acorta.',
+            },
+            {
+              title: 'Revisar que esté completa antes de entregarla',
+              body: 'Que nada llegue a un vendedor hasta que estén las respuestas necesarias para poner precio. La falla cara es una solicitud que se queda dos días en la cola de alguien antes de que se note que no se puede cotizar.',
+            },
+            {
+              title: 'Identificación en el catálogo',
+              body: 'Reducir a los modelos que embonan con la aplicación y con las restricciones del sitio, para que quien cotiza empiece de una lista corta y no del catálogo completo.',
+            },
+            {
+              title: 'Seguimiento de las que se atoran',
+              body: 'Las solicitudes se quedan calladas todo el tiempo, y el segundo y tercer contacto es donde se cierran los tratos de equipo. Es ingreso puro recuperado y casi nunca se automatiza.',
+            },
+          ],
+        },
+        {
+          label: 'QUÉ HACEMOS',
+          title: 'Anytrail lleva la solicitud hasta que se pueda cotizar. Tu equipo cotiza.',
+          paras: [
+            'Anytrail responde la solicitud cuando llega, por WhatsApp, desde un anuncio o desde tu sitio web, y la trabaja como lo haría tu equipo: cuál es la aplicación, qué tan duro va a trabajar la máquina, qué aguanta el sitio. Hace la siguiente pregunta según la respuesta anterior, así que un comprador que no sabe el gasto de todos modos termina en un punto cotizable.',
+            'Cuando el panorama está completo, identifica en tu catálogo lo que corresponde a esa aplicación y entrega la solicitud a un vendedor con las respuestas ya reunidas. Las que se quedan calladas reciben seguimiento en los días y semanas siguientes sin que nadie tenga que acordarse.',
+            'Y ahí se detiene, a propósito. Anytrail prepara la cotización; no la emite. El precio, la recomendación técnica y el documento final se quedan con tu equipo. Un agente que cotiza solo es un agente que tarde o temprano te va a comprometer a un precio o a un tiempo de entrega que no puedes cumplir.',
+          ],
+        },
+      ],
+      limits: {
+        title: 'Qué no hace.',
+        items: [
+          'No emite cotizaciones, no pone precios y no compromete tiempos de entrega. Reúne lo que una cotización necesita y se lo entrega a una persona.',
+          'No es una herramienta de compras. Si tú eres quien envía solicitudes a proveedores, este es el lado equivocado del mercado.',
+          'En esta página no afirmamos nada sobre integraciones con ningún ERP, sistema de cotización o portal de proveedores en particular.',
+          'No publicamos cifras sobre volumen de solicitudes, tiempos de ciclo ni tasas de cierre. No las hemos medido nosotros.',
+        ],
+      },
+      relatedLabel: 'Seguir leyendo',
+      related: [
+        { page: 'speedToLead', label: 'Tiempo de respuesta a leads en la venta de equipo industrial' },
+        { page: 'manufacturingCrm', label: 'CRM para manufactura: qué resuelve y qué no' },
+        { page: 'home', label: 'Cómo funciona Anytrail, entrante y de prospección' },
+        { page: 'schedule', label: 'Agenda una revisión de tu proceso comercial' },
+      ],
+      closing: {
+        title: 'Mira cuántas vueltas dan realmente tus solicitudes.',
+        body: 'Antes de la llamada enviamos una solicitud real por tus propios canales y contamos los intercambios que toma llegar a algo cotizable. Te entregamos los hallazgos, compres algo o no.',
         cta: 'Revisa mi proceso comercial',
       },
     },
@@ -589,22 +1051,27 @@ export const ROUTES = {
     demo: '/demo',
     schedule: '/schedule',
     speedToLead: '/speed-to-lead',
+    manufacturingCrm: '/manufacturing-crm',
+    rfqAutomation: '/rfq-automation',
   },
   es: {
     home: '/es',
     thanks: '/es/gracias',
     demo: '/es/demo',
     schedule: '/es/agenda',
-    // "speed to lead" has no Spanish search equivalent, so the slug is built
-    // on the term a Spanish-speaking industrial buyer actually types.
+    // Spanish slugs are built on the terms a Spanish-speaking industrial buyer
+    // actually types, not on translations of the English idiom. "Speed to
+    // lead" in particular has no Spanish search equivalent at all.
     speedToLead: '/es/tiempo-de-respuesta',
+    manufacturingCrm: '/es/crm-para-manufactura',
+    rfqAutomation: '/es/automatizacion-de-cotizaciones',
   },
 }
 
 // Long-form content pages, in the order they appear in the footer. Every page
 // on the site links here, which is what gives a new cluster page more than the
 // single internal link Semrush flags.
-export const CLUSTER_PAGES = ['speedToLead']
+export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation']
 
 // Pages that must never be indexed. A thank-you page ranking in search would
 // pull people past the booking step into a dead end.

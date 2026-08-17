@@ -22,7 +22,7 @@ const PRIORITY = [
   /about|nosotros/i,
 ];
 
-export function pickUrls(all: string[], homepage: string, cap = LIMITS.crawlPageCap): string[] {
+export function pickUrls(all: string[], homepage: string, cap: number = LIMITS.crawlPageCap): string[] {
   const scored = all
     .filter((u) => u !== homepage)
     .map((u) => {

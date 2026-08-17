@@ -1,0 +1,78 @@
+name: Deploy
+
+# Deploys demo-backend (DemoDataStack + DemoApiStack) via CDK. The landing site
+# itself is NOT deployed here — Vercel's Git integration ships it on push to main.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'demo-backend/**'
+      - '.github/workflows/deploy.yml'
+  # Escape hatch: redeploy without an empty commit.
+  workflow_dispatch:
+
+# One production deploy at a time. Queue rather than cancel — cancelling
+# mid-`cdk deploy` can strand a stack in UPDATE_IN_PROGRESS.
+concurrency:
+  group: deploy-demo-backend
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  # Shared deploy role from gtm-engine/infra/setup_github_oidc.sh. Its trust
+  # policy pins repo+branch, so this only works from anytrail-ai/landing main.
+  AWS_ROLE: arn:aws:iam::648377378513:role/gha-deploy-anytrail
+  AWS_REGION: us-east-1
+
+jobs:
+  demo-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: demo-backend/package-lock.json
+
+      - run: npm ci
+        working-directory: demo-backend
+
+      # Tests gate the deploy even on a dispatch run: a manual redeploy of a
+      # broken main should fail here, not in production.
+      - run: npx vitest run
+        working-directory: demo-backend
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy
+        working-directory: demo-backend
+        run: npx cdk deploy --all --require-approval never
+
+      - name: Verify the stacks settled
+        run: |
+          for STACK in DemoDataStack DemoApiStack; do
+            STATUS=$(aws cloudformation describe-stacks --stack-name "$STACK" \
+              --query 'Stacks[0].StackStatus' --output text)
+            echo "$STACK: $STATUS"
+            case "$STATUS" in
+              CREATE_COMPLETE|UPDATE_COMPLETE) ;;
+              *) echo "::error::$STACK ended in $STATUS"; exit 1 ;;
+            esac
+          done
+
+      - name: Summary
+        run: |
+          {
+            echo "## Deployed demo-backend \`${{ github.sha }}\`"
+            echo ""
+            echo "Stacks: DemoDataStack, DemoApiStack (us-east-1)"
+          } >> "$GITHUB_STEP_SUMMARY"

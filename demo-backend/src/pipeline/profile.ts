@@ -17,7 +17,9 @@ export const companyProfileSchema = z.object({
     }),
   ),
   targetAudience: z.string(),
-  language: z.string(),
+  // The model occasionally omits language despite the prompt; it is only a
+  // prompt hint downstream, so defaulting beats failing the whole pipeline.
+  language: z.string().default('en'),
   toneHints: z.string(),
   qualifyingQuestions: z.array(z.string()).nullish(),
 });

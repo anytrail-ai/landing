@@ -181,6 +181,21 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
     // the anytrail.ai link when delivering the CTA).
     const ended =
       userCount >= LIMITS.messagesPerSession || /anytrail\.ai/i.test(reply);
+
+    // Without the bot secret there is no slackTs and threads are impossible
+    // (incoming webhooks are write-only), so the webhook path posts the
+    // conversation once, at session end, as a single team notification —
+    // same channel the signup ping already goes to, one extra message per
+    // completed demo. The bot path already threaded each turn, so it skips
+    // this. Awaited: the streaming Lambda freezes once the stream ends.
+    if (ended && !slackTs) {
+      const lines = messages.map((m) => `${m.role === 'user' ? '👤' : '🤖'} ${m.text}`);
+      lines.push(`🤖 ${reply}`);
+      await postSlackMessage(
+        `📝 Demo transcript — ${visitorName} (${lead.Item.domain}):\n${lines.join('\n')}`.slice(0, 8000),
+      );
+    }
+
     sse(stream, 'done', { length: reply.length, ended });
   } catch (err) {
     console.error('chat_failed', err);

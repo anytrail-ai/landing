@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { z } from 'zod';
 import { TABLE_NAME, docClient, keys } from '../db';
 import { assertPublicUrl, type LookupLike } from '../net/ssrf';
@@ -56,12 +56,23 @@ export async function startDemo(
     }),
   );
   // Awaited (Lambda freezes after the response) but failure-proof inside.
-  await notifySignup({
+  const slackTs = await notifySignup({
     name: input.name,
     email: input.email,
     domain,
     wantsProspects: input.wantsProspects,
     ip,
   });
+  // Remember the signup ping's Slack ts so chat turns can thread under it.
+  if (slackTs) {
+    await docClient().send(
+      new UpdateCommand({
+        TableName: TABLE_NAME,
+        Key: keys.lead(sessionId),
+        UpdateExpression: 'SET slackTs = :ts',
+        ExpressionAttributeValues: { ':ts': slackTs },
+      }),
+    );
+  }
   return { sessionId, domain };
 }

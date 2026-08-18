@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 import { startDemo, extract, prospects, chatTurn } from './demoApi'
+import { useIntentAlert } from './demoIntent'
+import DemoIntentAlert from './DemoIntentAlert'
 import './Demo.css'
 
 // Live demo: visitor's site gets crawled, a sales agent chats over their own
@@ -92,6 +94,7 @@ export default function Demo() {
   const [showEndScreen, setShowEndScreen] = useState(false)
   const [reviewing, setReviewing] = useState(false)
   const chatLogRef = useRef(null)
+  const { alert: intentAlert, dismiss: dismissIntentAlert } = useIntentAlert(messages, sessionId)
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -214,6 +217,16 @@ export default function Demo() {
             <header className="demo-chat-head">
               <strong>{profile.companyName}</strong> · AI sales agent
             </header>
+            {intentAlert && !ended && (
+              <DemoIntentAlert
+                leadName={name}
+                companyName={profile.companyName}
+                score={intentAlert.score}
+                signals={intentAlert.signals}
+                firedAt={intentAlert.firedAt}
+                onDismiss={dismissIntentAlert}
+              />
+            )}
             <div ref={chatLogRef} className={`demo-chat-log${ended && !reviewing ? ' demo-chat-log-fade' : ''}`}>
               {messages.length === 0 && (
                 <p className="demo-hint">

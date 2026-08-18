@@ -135,6 +135,23 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
       (text) => sse(stream, 'delta', { text }),
     );
 
+    // Transcript log: one structured line per turn so the team can read what
+    // visitors say to the agent. Filter CloudWatch on "chat_turn" (or a
+    // sessionId) to reconstruct a conversation. Reply is truncated to keep
+    // log lines bounded; the visitor message is already capped at 4000 by
+    // the input schema.
+    console.log(
+      'chat_turn',
+      JSON.stringify({
+        sessionId,
+        domain: lead.Item.domain,
+        visitor: visitorName,
+        turn: userCount,
+        user: messages.filter((m) => m.role === 'user').at(-1)?.text ?? '',
+        reply: reply.slice(0, 2000),
+      }),
+    );
+
     await docClient().send(
       new UpdateCommand({
         TableName: TABLE_NAME,

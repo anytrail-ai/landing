@@ -9,6 +9,7 @@ import { companyProfileSchema, getCachedProfile } from '../pipeline/profile';
 import { CTA_TEXT, runChatTurn } from './agent';
 import { UnknownSessionError, extractForSession } from '../api/extract';
 import { prospectsForSession } from '../api/prospects';
+import { postSlackMessage } from '../notify';
 
 function pipelineError(err: unknown): string {
   if (err instanceof UnknownSessionError) return 'unknown_session';
@@ -134,6 +135,36 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
       },
       (text) => sse(stream, 'delta', { text }),
     );
+
+    // Transcript log: one structured line per turn so the team can read what
+    // visitors say to the agent. Filter CloudWatch on "chat_turn" (or a
+    // sessionId) to reconstruct a conversation. Reply is truncated to keep
+    // log lines bounded; the visitor message is already capped at 4000 by
+    // the input schema.
+    const lastUserText = messages.filter((m) => m.role === 'user').at(-1)?.text ?? '';
+    console.log(
+      'chat_turn',
+      JSON.stringify({
+        sessionId,
+        domain: lead.Item.domain,
+        visitor: visitorName,
+        turn: userCount,
+        user: lastUserText,
+        reply: reply.slice(0, 2000),
+      }),
+    );
+
+    // Same transcript into Slack, threaded under the session's signup ping so
+    // the channel shows one message per demo and the conversation lives in
+    // its replies. Needs the bot path (slackTs only exists then); awaited
+    // because the streaming Lambda freezes once the stream ends.
+    const slackTs = lead.Item.slackTs as string | undefined;
+    if (slackTs) {
+      await postSlackMessage(
+        `👤 ${lastUserText}\n🤖 ${reply.slice(0, 1500)}`,
+        slackTs,
+      );
+    }
 
     await docClient().send(
       new UpdateCommand({

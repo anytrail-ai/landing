@@ -37,6 +37,57 @@ export async function postSlack(text: string): Promise<void> {
   }
 }
 
+interface SlackBot {
+  token: string;
+  channel: string;
+}
+
+/** Bot credentials from the optional slack-bot secret: JSON
+ * {"token":"xoxb-…","channel":"C…"}. A missing, placeholder, or malformed
+ * secret disables the bot path and everything falls back to the webhook. */
+async function getSlackBot(): Promise<SlackBot | null> {
+  if (!process.env.SLACK_BOT_SECRET_ARN) return null;
+  try {
+    const parsed = JSON.parse(await getSecret('SLACK_BOT_SECRET_ARN')) as Partial<SlackBot>;
+    if (parsed.token && parsed.channel) return { token: parsed.token, channel: parsed.channel };
+  } catch {
+    /* fall through to webhook */
+  }
+  return null;
+}
+
+/** Post to the team channel and return the message ts. With the bot secret
+ * configured this uses chat.postMessage, so replies can thread under the
+ * returned ts. Otherwise it falls back to the incoming webhook, which cannot
+ * thread — threaded posts are silently skipped there. Never throws. */
+export async function postSlackMessage(text: string, threadTs?: string): Promise<string | null> {
+  const bot = await getSlackBot();
+  if (!bot) {
+    if (!threadTs) await postSlack(text);
+    return null;
+  }
+  try {
+    const res = await outboundFetch('https://slack.com/api/chat.postMessage', {
+      method: 'POST',
+      headers: { authorization: `Bearer ${bot.token}`, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        channel: bot.channel,
+        text,
+        ...(threadTs ? { thread_ts: threadTs } : {}),
+      }),
+    });
+    const data = (await res.json()) as { ok?: boolean; ts?: string; error?: string };
+    if (!data.ok) {
+      console.error('notify_slack_failed', data.error);
+      return null;
+    }
+    return data.ts ?? null;
+  } catch (err) {
+    console.error('notify_slack_failed', err);
+    return null;
+  }
+}
+
 /** Booking ping (ANY-66). Fire-and-forget, like every other notification.
  * `kind` tells 'booked' apart from 'moved' so a reschedule doesn't read as a
  * second new booking to the team. */
@@ -51,12 +102,14 @@ export async function notifyBooking(
   kind: 'booked' | 'moved' = 'booked',
 ): Promise<void> {
   const label = kind === 'moved' ? '🔄 Call moved' : '📅 Call booked';
-  await postSlack(
+  await postSlackMessage(
     `${label}: ${info.name} <${info.email}> — ${info.website}\n${info.when}${info.note ? `\nNote: ${info.note}` : ''}`,
   );
 }
 
-export async function notifySignup(info: SignupInfo): Promise<void> {
+/** Returns the Slack message ts of the signup ping (bot path only) so the
+ * chat transcript can thread under it; null on the webhook path or failure. */
+export async function notifySignup(info: SignupInfo): Promise<string | null> {
   const line = `New demo signup: ${info.name} <${info.email}> — ${info.domain}${info.wantsProspects ? ' (wants ICP + leads)' : ''}`;
 
   const tasks: Promise<unknown>[] = [];
@@ -83,10 +136,12 @@ export async function notifySignup(info: SignupInfo): Promise<void> {
     );
   }
 
-  tasks.push(postSlack(line));
+  const slackTask = postSlackMessage(line);
+  tasks.push(slackTask);
 
   const results = await Promise.allSettled(tasks);
   for (const r of results) {
     if (r.status === 'rejected') console.error('notify_failed', r.reason);
   }
+  return slackTask.catch(() => null);
 }

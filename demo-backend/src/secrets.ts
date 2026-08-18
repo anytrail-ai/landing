@@ -13,6 +13,7 @@ export async function getSecret(
     | 'APOLLO_SECRET_ARN'
     | 'RESEND_SECRET_ARN'
     | 'SLACK_WEBHOOK_SECRET_ARN'
+    | 'SLACK_BOT_SECRET_ARN'
     | 'SCHEDULE_SECRET_ARN',
 ): Promise<string> {
   const arn = process.env[envVar];

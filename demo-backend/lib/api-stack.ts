@@ -46,6 +46,11 @@ export class ApiStack extends cdk.Stack {
       secretName: 'anytrail/demo/slack-webhook',
       description: 'Slack incoming-webhook URL for demo signup pings',
     });
+    const slackBotSecret = new secretsmanager.Secret(this, 'SlackBot', {
+      secretName: 'anytrail/demo/slack-bot',
+      description:
+        'Slack bot for threaded demo transcripts: JSON {"token":"xoxb-…","channel":"C…"}. Empty/placeholder = webhook fallback, no threads.',
+    });
     const scheduleSecret = new secretsmanager.Secret(this, 'ScheduleSigningKey', {
       secretName: 'anytrail/demo/schedule-signing',
       description: 'HMAC key for scheduling manage links',
@@ -66,6 +71,7 @@ export class ApiStack extends cdk.Stack {
         MEET_URL: 'https://meet.google.com/kzk-tpgh-sbm',
         EMAIL_TEAM_COPY: 'root@anytrail.ai',
         SLACK_WEBHOOK_SECRET_ARN: slackWebhookSecret.secretArn,
+        SLACK_BOT_SECRET_ARN: slackBotSecret.secretArn,
         SCHEDULE_SECRET_ARN: scheduleSecret.secretArn,
         // Flip to 'enabled' to resume contact reveals (1 Apollo credit each).
         APOLLO_ENRICH: 'disabled',
@@ -94,6 +100,7 @@ export class ApiStack extends cdk.Stack {
       apolloSecret.grantRead(fn);
       resendSecret.grantRead(fn);
       slackWebhookSecret.grantRead(fn);
+      slackBotSecret.grantRead(fn);
       scheduleSecret.grantRead(fn);
       fn.addToRolePolicy(
         new iam.PolicyStatement({

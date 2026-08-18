@@ -14,6 +14,18 @@ const profile = companyProfileSchema.parse({
   toneHints: 'direct, technical',
 });
 
+describe('companyProfileSchema', () => {
+  it('defaults language to en when the model omits it', () => {
+    const { language, ...withoutLanguage } = profile;
+    const parsed = companyProfileSchema.parse(withoutLanguage);
+    expect(parsed.language).toBe('en');
+  });
+
+  it('keeps an explicit language', () => {
+    expect(companyProfileSchema.parse({ ...profile, language: 'es-MX' }).language).toBe('es-MX');
+  });
+});
+
 describe('renderProfile', () => {
   it('wraps content in the injection boundary', () => {
     const out = renderProfile(profile);

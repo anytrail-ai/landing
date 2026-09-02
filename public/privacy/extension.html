@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Política de privacidad — Extensión Anytrail CRM</title>
+    <meta
+      name="description"
+      content="Política de privacidad de la extensión de navegador Anytrail CRM para WhatsApp Web."
+    />
+    <link rel="icon" href="/anytrail-mark.png" />
+    <link rel="canonical" href="https://www.anytrail.ai/privacy/extension" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:wght@300..800&display=swap"
+    />
+    <style>
+      :root {
+        --sans: 'Funnel Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
+        --display: 'Funnel Display', 'Funnel Sans', system-ui, sans-serif;
+        --page-bg: #fefdf6;
+        --border: #e7e2d1;
+        --text: #111827;
+        --text-muted: #6b7280;
+        --accent: #2f6f4f;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font: 16px/1.6 var(--sans);
+        color: var(--text);
+        background: var(--page-bg);
+        -webkit-font-smoothing: antialiased;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 48px 24px 96px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 48px;
+        text-decoration: none;
+        color: inherit;
+      }
+      .brand img {
+        height: 28px;
+        width: auto;
+      }
+      h1 {
+        font-family: var(--display);
+        font-size: 1.9rem;
+        line-height: 1.2;
+        margin: 0 0 4px;
+      }
+      h2 {
+        font-family: var(--display);
+        font-size: 1.25rem;
+        margin: 40px 0 12px;
+      }
+      .updated {
+        color: var(--text-muted);
+        margin: 0 0 32px;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      li {
+        margin-bottom: 10px;
+      }
+      a {
+        color: var(--accent);
+      }
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 64px 0;
+      }
+      .en {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="brand" href="https://www.anytrail.ai/"
+        ><img src="/anytrail-logo.png" alt="Anytrail"
+      /></a>
+
+      <h1>Política de privacidad — Extensión Anytrail CRM</h1>
+      <p class="updated">Última actualización: 1 de septiembre de 2026</p>
+
+      <p>
+        La extensión de navegador <strong>Anytrail CRM</strong> (la «Extensión») es una
+        herramienta para equipos de ventas que son clientes de Anytrail. Muestra la
+        información del CRM de Anytrail correspondiente a la conversación abierta en
+        WhatsApp Web y permite realizar acciones del CRM (cotizaciones, enlaces de pago,
+        seguimientos, cambios de etapa) sin salir de WhatsApp Web.
+      </p>
+
+      <h2>Qué datos procesa la Extensión</h2>
+      <ul>
+        <li>
+          <strong>Identificación de la conversación abierta.</strong> La Extensión lee de
+          la página de WhatsApp Web el número de teléfono del chat abierto y, cuando el
+          contacto está guardado con nombre, el texto de los últimos mensajes visibles.
+          Estos datos se envían al servidor de Anytrail únicamente para identificar al
+          cliente («lead») correspondiente en el CRM de su empresa. Los textos de mensajes
+          se usan de forma transitoria para esa búsqueda y no se almacenan como resultado
+          de ella.
+        </li>
+        <li>
+          <strong>Credenciales de sesión.</strong> Para autenticarle, la Extensión usa
+          Amazon Cognito, el mismo sistema de inicio de sesión que la plataforma web de
+          Anytrail. Los tokens de sesión se guardan localmente en su navegador.
+        </li>
+        <li>
+          <strong>Acciones que usted realiza.</strong> Las acciones que ejecuta desde el
+          panel (crear una cotización, enviar un enlace de pago, programar un seguimiento,
+          cambiar la etapa de un lead) se envían al servidor de Anytrail y quedan
+          registradas en el CRM de su empresa, igual que si las hiciera desde la
+          plataforma web.
+        </li>
+      </ul>
+
+      <h2>Qué datos NO procesa</h2>
+      <ul>
+        <li>
+          No recopila su historial de navegación. La Extensión solo tiene acceso a
+          <code>web.whatsapp.com</code>, a la plataforma de Anytrail
+          (<code>platform.anytrail.ai</code>) y a la API de Anytrail
+          (<code>api.platform.anytrail.ai</code>).
+        </li>
+        <li>No lee mensajes de conversaciones que usted no tenga abiertas.</li>
+        <li>No vende ni comparte datos con terceros, y no muestra publicidad.</li>
+        <li>No usa cookies de seguimiento ni analítica dentro de la Extensión.</li>
+      </ul>
+
+      <h2>Dónde se procesan los datos</h2>
+      <p>
+        Los datos se transmiten cifrados (HTTPS) a los servidores de Anytrail alojados en
+        Amazon Web Services (región us-east-1, EE.&nbsp;UU.) y se rigen por el acuerdo de
+        servicio entre Anytrail y la empresa cliente a la que usted pertenece.
+      </p>
+
+      <h2>Sus derechos</h2>
+      <p>
+        El responsable del tratamiento de los datos del CRM es la empresa cliente de
+        Anytrail para la que usted trabaja. Para ejercer derechos de acceso, rectificación
+        o supresión, contacte a su administrador o escriba a
+        <a href="mailto:privacy@anytrail.ai">privacy@anytrail.ai</a>.
+      </p>
+
+      <hr />
+
+      <section class="en" lang="en">
+        <h1>Privacy Policy — Anytrail CRM Extension</h1>
+        <p class="updated">Last updated: September 1, 2026</p>
+
+        <p>
+          The <strong>Anytrail CRM</strong> browser extension is a tool for sales teams
+          that are Anytrail customers. It shows the Anytrail CRM record for the
+          conversation currently open in WhatsApp Web and lets reps perform CRM actions
+          without leaving WhatsApp Web.
+        </p>
+
+        <h2>Data processed</h2>
+        <ul>
+          <li>
+            The phone number of the open chat and, for saved contacts, the text of the
+            last visible messages — sent to Anytrail's server solely to identify the
+            matching CRM lead; message texts are used transiently for that lookup and are
+            not stored by it.
+          </li>
+          <li>
+            Session credentials via Amazon Cognito (the same sign-in as the Anytrail web
+            platform), stored locally in your browser.
+          </li>
+          <li>
+            Actions you take from the panel (quotes, payment links, follow-ups, stage
+            changes), which are recorded in your company's CRM exactly as if done from
+            the web platform.
+          </li>
+        </ul>
+
+        <h2>Not processed</h2>
+        <p>
+          Browsing history (access is limited to <code>web.whatsapp.com</code>,
+          <code>platform.anytrail.ai</code>, and <code>api.platform.anytrail.ai</code>);
+          messages from chats you do not open. No data is sold or shared with third
+          parties; no advertising; no tracking cookies or in-extension analytics.
+        </p>
+
+        <h2>Where</h2>
+        <p>
+          Data is transmitted over HTTPS to Anytrail servers on Amazon Web Services
+          (us-east-1, USA) and governed by the service agreement between Anytrail and
+          your employer, the data controller. To exercise data rights, contact your
+          administrator or <a href="mailto:privacy@anytrail.ai">privacy@anytrail.ai</a>.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

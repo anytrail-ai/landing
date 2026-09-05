@@ -1,0 +1,12 @@
+{
+  "addons": {
+    "crm-extension@anytrail.ai": {
+      "updates": [
+        {
+          "version": "1.2.0",
+          "update_link": "https://www.anytrail.ai/extension/anytrail-crm-1.2.0.xpi"
+        }
+      ]
+    }
+  }
+}

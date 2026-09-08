@@ -67,6 +67,31 @@ export async function prospects(sessionId, onStep = () => {}) {
   return result
 }
 
+// Simulated rep board over the crawled profile. Cached per domain server-side,
+// so a booth re-run on the same prospect returns instantly.
+export async function board(sessionId, onStep = () => {}) {
+  let result = null
+  await streamRequest(
+    { action: 'board', sessionId },
+    { step: (d) => onStep(d.step), board: (d) => (result = d.board) },
+  )
+  if (!result) throw new Error('internal')
+  return result
+}
+
+// WhatsApp booth wiring: QR link (session code), connection status poll, and
+// the one real Cloud API send behind the "schedule follow-up" moment.
+export const waLink = (sessionId) => post('/demo/wa/link', { sessionId })
+
+export async function waStatus(sessionId) {
+  const res = await fetch(`${API_URL}/demo/wa/status?sessionId=${encodeURIComponent(sessionId)}`)
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error ?? `http_${res.status}`)
+  return data
+}
+
+export const waSend = (sessionId, text) => post('/demo/wa/send', { sessionId, text })
+
 export async function chatTurn(sessionId, messages, onDelta) {
   let ended = false
   await streamRequest(

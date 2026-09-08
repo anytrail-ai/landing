@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
-import { startDemo, extract, prospects, chatTurn } from './demoApi'
+import { startDemo, extract, prospects, chatTurn, board as fetchBoard } from './demoApi'
 import { useIntentAlert } from './demoIntent'
 import DemoIntentAlert from './DemoIntentAlert'
+import DemoBoard from './DemoBoard'
 import './Demo.css'
 
 // Live demo: visitor's site gets crawled, a sales agent chats over their own
@@ -82,6 +83,7 @@ export default function Demo() {
 
   const [sessionId, setSessionId] = useState('')
   const [profile, setProfile] = useState(null)
+  const [boardData, setBoardData] = useState(null)
   const [icp, setIcp] = useState(null)
   const [leads, setLeads] = useState(null)
   const [leadsPending, setLeadsPending] = useState(false)
@@ -106,8 +108,12 @@ export default function Demo() {
       setSessionId(sid)
       const { profile: p } = await extract(sid, (step) => setSteps((s) => [...s, step]))
       setProfile(p)
-      setSteps((s) => [...s, 'Your sales agent is ready.'])
-      setStage('chat')
+      // The rep board is the demo's centerpiece ("the moat is the tools"):
+      // land there first; the agent chat stays one click away.
+      const b = await fetchBoard(sid, (step) => setSteps((s) => [...s, step]))
+      setBoardData(b)
+      setSteps((s) => [...s, 'Your board is ready.'])
+      setStage('board')
       if (wantsProspects) {
         setLeadsPending(true)
         setLeadSteps(['Deriving your ideal customer profile…'])
@@ -209,6 +215,16 @@ export default function Demo() {
             ))}
           </div>
         </section>
+      )}
+
+      {stage === 'board' && profile && boardData && (
+        <DemoBoard
+          board={boardData}
+          profile={profile}
+          sessionId={sessionId}
+          visitorName={name}
+          onOpenChat={() => setStage('chat')}
+        />
       )}
 
       {stage === 'chat' && profile && (

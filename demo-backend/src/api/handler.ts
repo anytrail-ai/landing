@@ -17,6 +17,18 @@ import {
   openSlots,
   view,
 } from './schedule';
+import { z } from 'zod';
+import {
+  WaNotConnectedError,
+  WaSendFailedError,
+  createWaLink,
+  handleInbound,
+  signatureValid,
+  verifyWebhook,
+  waConfig,
+  waSend,
+  waStatus,
+} from './wa';
 
 // JSON API for /demo/*. Routes fill in as the pipeline lands:
 //   POST /demo/start     — lead capture + extraction kickoff (ANY-113/114)
@@ -34,6 +46,11 @@ export async function handler(
     else if (route === 'POST /demo/start') res = await handleStart(event);
     else if (route === 'POST /demo/extract') res = await handleExtract(event);
     else if (route === 'POST /demo/prospects') res = await handleProspects(event);
+    else if (route === 'POST /demo/wa/link') res = await handleWaLink(event);
+    else if (route === 'GET /demo/wa/status') res = await handleWaStatus(event);
+    else if (route === 'POST /demo/wa/send') res = await handleWaSend(event);
+    else if (route === 'GET /demo/wa/webhook') res = await handleWaWebhookVerify(event);
+    else if (route === 'POST /demo/wa/webhook') res = await handleWaWebhook(event);
     else if (route === 'GET /schedule/slots') res = await handleSlots(event);
     else if (route === 'POST /schedule/book') res = await handleBook(event);
     else if (route === 'GET /schedule/manage') res = await handleManage(event);
@@ -114,6 +131,106 @@ async function handleProspects(
     if (msg.startsWith('apollo_')) return json(502, { error: 'lead_search_failed' });
     throw err;
   }
+}
+
+// WhatsApp booth-demo routes (board QR → inbound webhook → real send). The
+// webhook pair is called by Meta, not the SPA, so it is deliberately outside
+// the rate limiter — Meta retries on any non-200 and a limiter would turn a
+// busy minute into a redelivery storm.
+
+async function handleWaLink(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const body = parseBody(event) as { sessionId?: string };
+  if (typeof body.sessionId !== 'string' || !body.sessionId) {
+    return json(422, { error: 'invalid_input' });
+  }
+  try {
+    return json(200, await createWaLink(body.sessionId));
+  } catch (err) {
+    if ((err as Error).name === 'UnknownSessionError') {
+      return json(404, { error: 'unknown_session' });
+    }
+    throw err;
+  }
+}
+
+async function handleWaStatus(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const sessionId = event.queryStringParameters?.sessionId;
+  if (!sessionId) return json(422, { error: 'invalid_input' });
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
+  try {
+    await assertWithinRateLimit(ip, Date.now(), {
+      bucket: 'wa-status',
+      cap: LIMITS.waStatusPerIp,
+    });
+    return json(200, await waStatus(sessionId));
+  } catch (err) {
+    if (err instanceof RateLimitedError) return json(429, { error: 'rate_limited' });
+    if ((err as Error).name === 'UnknownSessionError') {
+      return json(404, { error: 'unknown_session' });
+    }
+    throw err;
+  }
+}
+
+const waSendSchema = z.object({
+  sessionId: z.string().min(1),
+  text: z.string().min(1).max(1000),
+});
+
+async function handleWaSend(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const parsed = waSendSchema.safeParse(parseBody(event));
+  if (!parsed.success) return json(422, { error: 'invalid_input' });
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
+  try {
+    await assertWithinRateLimit(ip, Date.now(), {
+      bucket: 'wa-send',
+      cap: LIMITS.waSendPerIp,
+    });
+    return json(200, await waSend(parsed.data.sessionId, parsed.data.text));
+  } catch (err) {
+    if (err instanceof RateLimitedError) return json(429, { error: 'rate_limited' });
+    if (err instanceof WaNotConnectedError) return json(409, { error: 'wa_not_connected' });
+    if (err instanceof WaSendFailedError) return json(502, { error: 'wa_send_failed' });
+    if ((err as Error).name === 'UnknownSessionError') {
+      return json(404, { error: 'unknown_session' });
+    }
+    throw err;
+  }
+}
+
+async function handleWaWebhookVerify(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const challenge = verifyWebhook(event.queryStringParameters ?? {}, await waConfig());
+  if (challenge === null) return json(403, { error: 'verify_failed' });
+  // Meta expects the raw challenge back as plain text, not JSON.
+  return {
+    statusCode: 200,
+    headers: { 'content-type': 'text/plain' },
+    body: challenge,
+  };
+}
+
+async function handleWaWebhook(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const rawBody = event.isBase64Encoded
+    ? Buffer.from(event.body ?? '', 'base64').toString('utf8')
+    : (event.body ?? '');
+  const cfg = await waConfig();
+  const header =
+    event.headers?.['x-hub-signature-256'] ?? event.headers?.['X-Hub-Signature-256'];
+  if (!signatureValid(rawBody, header, cfg.appSecret)) {
+    return json(403, { error: 'bad_signature' });
+  }
+  await handleInbound(rawBody);
+  return json(200, { ok: true });
 }
 
 // Every scheduling route shares one cap, separate from demo-start's: /schedule/slots

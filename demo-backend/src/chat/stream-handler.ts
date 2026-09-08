@@ -9,6 +9,7 @@ import { companyProfileSchema, getCachedProfile } from '../pipeline/profile';
 import { CTA_TEXT, runChatTurn } from './agent';
 import { UnknownSessionError, extractForSession } from '../api/extract';
 import { prospectsForSession } from '../api/prospects';
+import { cacheBoard, generateBoard, getCachedBoard } from '../pipeline/board';
 import { postSlackMessage } from '../notify';
 
 function pipelineError(err: unknown): string {
@@ -34,9 +35,9 @@ declare const awslambda: {
 };
 
 const bodySchema = z.object({
-  // 'chat' (default) streams a model turn; 'extract' and 'prospects' run the
-  // long pipeline stages here because API Gateway hard-caps requests at 30s.
-  action: z.enum(['chat', 'extract', 'prospects']).default('chat'),
+  // 'chat' (default) streams a model turn; 'extract', 'prospects' and 'board'
+  // run the long pipeline stages here because API Gateway hard-caps at 30s.
+  action: z.enum(['chat', 'extract', 'prospects', 'board']).default('chat'),
   sessionId: z.string().min(1),
   messages: z
     .array(
@@ -90,6 +91,33 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
           sse(stream, 'step', { step }),
         );
         sse(stream, 'prospects', result);
+        sse(stream, 'done', {});
+      } catch (err) {
+        sse(stream, 'error', { error: pipelineError(err) });
+      }
+      return;
+    }
+
+    if (action === 'board') {
+      try {
+        const lead = await docClient().send(
+          new GetCommand({ TableName: TABLE_NAME, Key: keys.lead(sessionId) }),
+        );
+        if (!lead.Item) throw new UnknownSessionError();
+        const domain = lead.Item.domain as string;
+        const profile =
+          companyProfileSchema.safeParse(lead.Item.profile).data ??
+          (await getCachedProfile(domain));
+        if (!profile) throw new Error('not_profiled');
+        let board = await getCachedBoard(domain);
+        if (!board) {
+          sse(stream, 'step', {
+            step: `Simulating a week of ${profile.companyName} customer conversations…`,
+          });
+          board = await generateBoard(profile);
+          await cacheBoard(domain, board);
+        }
+        sse(stream, 'board', { board });
         sse(stream, 'done', {});
       } catch (err) {
         sse(stream, 'error', { error: pipelineError(err) });

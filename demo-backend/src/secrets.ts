@@ -14,7 +14,8 @@ export async function getSecret(
     | 'RESEND_SECRET_ARN'
     | 'SLACK_WEBHOOK_SECRET_ARN'
     | 'SLACK_BOT_SECRET_ARN'
-    | 'SCHEDULE_SECRET_ARN',
+    | 'SCHEDULE_SECRET_ARN'
+    | 'WHATSAPP_SECRET_ARN',
 ): Promise<string> {
   const arn = process.env[envVar];
   if (!arn) throw new Error(`${envVar} not set`);

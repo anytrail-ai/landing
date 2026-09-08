@@ -25,4 +25,13 @@ export const LIMITS = {
   chatMaxTokens: 1024,
   /** Bedrock max output tokens for extraction / ICP / prospect calls. */
   pipelineMaxTokens: 4096,
+  /** Bedrock max output tokens for the simulated rep board (10 cards, each
+   * with a short transcript — 4096 truncates mid-JSON). */
+  boardMaxTokens: 8192,
+  /** Real WhatsApp sends per IP per window. A conference booth is ONE venue IP
+   * shared by every run, so this is sized for a full booth day, not a person. */
+  waSendPerIp: 100,
+  /** /demo/wa/status polls per IP per window — the board UI polls every few
+   * seconds while the QR panel waits, so this must dwarf startPerIp. */
+  waStatusPerIp: 20000,
 } as const;

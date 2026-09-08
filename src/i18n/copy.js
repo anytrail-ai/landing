@@ -192,7 +192,7 @@ export const COPY = {
       },
       hero: {
         title: 'Watch the agent sell. On WhatsApp, right now.',
-        sub: "Leave your name and phone number, then open WhatsApp and talk to the agent like a customer would. It sells pressure washers, so ask what a buyer would ask.",
+        sub: 'Leave your name and phone number, then open WhatsApp and talk to the agent like a customer would.',
       },
       form: {
         name: 'Your name',
@@ -741,8 +741,8 @@ export const COPY = {
         ogLocale: 'es_ES',
       },
       hero: {
-        title: 'Mira al agente vender. Por WhatsApp, ahora mismo.',
-        sub: 'Déjanos tu nombre y tu teléfono, luego abre WhatsApp y habla con el agente como lo haría un cliente. Vende hidrolavadoras, así que pregunta lo que preguntaría un comprador.',
+        title: 'Mira a Anytrail ayudarte a cerrar más, ahora mismo.',
+        sub: 'Déjanos tu nombre y tu teléfono, luego abre WhatsApp y habla con el agente como lo haría un cliente.',
       },
       form: {
         name: 'Tu nombre',

@@ -1,0 +1,419 @@
+import { useRef, useState } from 'react'
+import { startDemo, extract, prospects, chatTurn, board as fetchBoard } from './demoApi'
+import { useIntentAlert } from './demoIntent'
+import DemoIntentAlert from './DemoIntentAlert'
+import DemoBoard from './DemoBoard'
+import './InboundDemo.css'
+
+// Live demo: visitor's site gets crawled, a sales agent chats over their own
+// products, optional ICP + 5 Apollo leads. Backend lives in anytrail-ai/
+// public-demo; this page is only the frontend, wrapped by the landing's
+// Navbar/Footer via App.jsx.
+// Products the agent mentions get their card (with photo) attached under the
+// bubble. Match on the full name or on distinctive model-code tokens (mixed
+// letters+digits, length >= 4) so "the S2EM1500A" still matches.
+function matchProducts(text, products) {
+  if (!text) return []
+  const lower = text.toLowerCase()
+
+  // Phrases (2- and 3-word runs) that appear in exactly one product name are
+  // distinctive enough to attribute: "cold water electric" -> that category.
+  const phraseCounts = new Map()
+  // Strip plural s so "washer"/"washers" phrase the same across products.
+  const stem = (w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w)
+  const phrasesOf = (name) => {
+    const words = name.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean).map(stem)
+    const out = new Set()
+    for (let n = 2; n <= 3; n++) {
+      for (let i = 0; i + n <= words.length; i++) {
+        const ph = words.slice(i, i + n).join(' ')
+        if (ph.length >= 8) out.add(ph)
+      }
+    }
+    return out
+  }
+  const productPhrases = products.map((p) => phrasesOf(p.name))
+  for (const set of productPhrases) {
+    for (const ph of set) phraseCounts.set(ph, (phraseCounts.get(ph) ?? 0) + 1)
+  }
+
+  return products.filter((p, idx) => {
+    if (lower.includes(p.name.toLowerCase())) return true
+    // Model codes: mixed letters+digits tokens like S2EM1500A
+    const hasCode = p.name
+      .split(/[\s,()/-]+/)
+      .some(
+        (tok) =>
+          tok.length >= 4 &&
+          /\d/.test(tok) &&
+          /[a-z]/i.test(tok) &&
+          lower.includes(tok.toLowerCase()),
+      )
+    if (hasCode) return true
+    const lowerStemmed = lower.split(/[^a-z0-9]+/).filter(Boolean).map(stem).join(' ')
+    for (const ph of productPhrases[idx]) {
+      if (phraseCounts.get(ph) === 1 && lowerStemmed.includes(ph)) return true
+    }
+    return false
+  })
+}
+
+// The "What the agent learned" panel is built but switched off. It was hidden
+// behind a literal `false &&` in the JSX, which read as dead code and failed
+// lint; the flag makes the intent explicit and keeps the markup ready to
+// re-enable. Flip to true to bring the panel back.
+const SHOW_LEARNED_PANEL = false
+
+const ERRORS = {
+  invalid_website: "We couldn't use that website address. Check the URL and try again.",
+  site_unreadable: "We couldn't read that site. Try another URL (maybe the www version).",
+  rate_limited:
+    "Straight up: each demo run costs us real AI credits, so we cap runs per network per day, and this network just hit it. Come back tomorrow, or book a call and we'll run it live with you.",
+  invalid_input: 'Please fill every field with valid values.',
+}
+
+export default function InboundDemo() {
+  const [stage, setStage] = useState('form')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [websiteUrl, setWebsiteUrl] = useState('')
+  const [wantsProspects, setWantsProspects] = useState(true)
+  const [error, setError] = useState(null)
+  const [steps, setSteps] = useState([])
+
+  const [sessionId, setSessionId] = useState('')
+  const [profile, setProfile] = useState(null)
+  const [boardData, setBoardData] = useState(null)
+  const [icp, setIcp] = useState(null)
+  const [leads, setLeads] = useState(null)
+  const [leadsPending, setLeadsPending] = useState(false)
+  const [leadSteps, setLeadSteps] = useState([])
+
+  const [messages, setMessages] = useState([])
+  const [draft, setDraft] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [ended, setEnded] = useState(false)
+  const [showEndScreen, setShowEndScreen] = useState(false)
+  const [reviewing, setReviewing] = useState(false)
+  const chatLogRef = useRef(null)
+  const { alert: intentAlert, dismiss: dismissIntentAlert } = useIntentAlert(messages, sessionId)
+
+  async function onSubmit(e) {
+    e.preventDefault()
+    setError(null)
+    setStage('working')
+    setSteps(['Saving your details…'])
+    try {
+      const { sessionId: sid } = await startDemo({ name, email, websiteUrl, wantsProspects })
+      setSessionId(sid)
+      const { profile: p } = await extract(sid, (step) => setSteps((s) => [...s, step]))
+      setProfile(p)
+      // The rep board is the demo's centerpiece ("the moat is the tools"):
+      // land there first; the agent chat stays one click away.
+      const b = await fetchBoard(sid, (step) => setSteps((s) => [...s, step]))
+      setBoardData(b)
+      setSteps((s) => [...s, 'Your board is ready.'])
+      setStage('board')
+      if (wantsProspects) {
+        setLeadsPending(true)
+        setLeadSteps(['Deriving your ideal customer profile…'])
+        prospects(sid, (step) => setLeadSteps((prev) => [...prev, step]))
+          .then((r) => {
+            setIcp(r.icp)
+            setLeads(r.leads)
+          })
+          .catch(() => setLeads([]))
+          .finally(() => setLeadsPending(false))
+      }
+    } catch (err) {
+      setStage('form')
+      setError(ERRORS[err.message] ?? 'Something went wrong. Please try again.')
+    }
+  }
+
+  async function onSend(e) {
+    e.preventDefault()
+    const text = draft.trim()
+    if (!text || busy || ended) return
+    setDraft('')
+    setBusy(true)
+    const history = [...messages, { role: 'user', text }]
+    setMessages([...history, { role: 'assistant', text: '' }])
+    try {
+      const { ended: nowEnded } = await chatTurn(sessionId, history, (delta) => {
+        setMessages((m) => {
+          const copy = [...m]
+          const last = copy[copy.length - 1]
+          copy[copy.length - 1] = { ...last, text: last.text + delta }
+          return copy
+        })
+        const log = chatLogRef.current
+        if (log) log.scrollTop = log.scrollHeight
+      })
+      if (nowEnded) {
+        setTimeout(() => {
+          setEnded(true)
+          setTimeout(() => setShowEndScreen(true), 900)
+        }, 1800)
+      }
+    } catch {
+      setMessages((m) => [
+        ...m.slice(0, -1),
+        { role: 'assistant', text: 'Sorry, something glitched. Try that again.' },
+      ])
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="inbound-page">
+      {stage === 'form' && (
+        <section className="inbound-hero">
+          <h1>See your own AI sales agent. Live, in one minute.</h1>
+          <p className="inbound-sub">
+            We read your website, learn your products, and put an AI salesman in front of you,
+            selling <em>your</em> stuff. Judge it yourself.
+          </p>
+          <form className="inbound-card inbound-form" onSubmit={onSubmit}>
+            <label>
+              Your name
+              <input value={name} onChange={(e) => setName(e.target.value)} required maxLength={200} placeholder="Ana García" />
+            </label>
+            <label>
+              Work email
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="ana@yourcompany.com" />
+            </label>
+            <label>
+              Company website
+              <input value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} required placeholder="yourcompany.com" />
+            </label>
+            <label className="inbound-check">
+              <input
+                type="checkbox"
+                checked={wantsProspects}
+                onChange={(e) => setWantsProspects(e.target.checked)}
+              />
+              Also build my ideal customer profile + 5 matching leads
+            </label>
+            {error && <p className="inbound-error">{error}</p>}
+            <button className="inbound-btn" type="submit">
+              Build my sales agent
+            </button>
+          </form>
+        </section>
+      )}
+
+      {stage === 'working' && (
+        <section className="inbound-hero">
+          <div className="inbound-card inbound-steps">
+            {steps.map((s, i) => (
+              <p key={i} className={i === steps.length - 1 ? 'inbound-step inbound-step-active' : 'inbound-step'}>
+                {i === steps.length - 1 ? '● ' : '✓ '}
+                {s}
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {stage === 'board' && profile && boardData && (
+        <DemoBoard
+          board={boardData}
+          profile={profile}
+          sessionId={sessionId}
+          visitorName={name}
+          onOpenChat={() => setStage('chat')}
+        />
+      )}
+
+      {stage === 'chat' && profile && (
+        <section className={`inbound-stage${wantsProspects ? '' : ' inbound-stage-solo'}`}>
+          <div className="inbound-chat inbound-card">
+            <header className="inbound-chat-head">
+              <strong>{profile.companyName}</strong> · AI sales agent
+            </header>
+            {intentAlert && !ended && (
+              <DemoIntentAlert
+                leadName={name}
+                companyName={profile.companyName}
+                score={intentAlert.score}
+                signals={intentAlert.signals}
+                firedAt={intentAlert.firedAt}
+                onDismiss={dismissIntentAlert}
+              />
+            )}
+            <div ref={chatLogRef} className={`inbound-chat-log${ended && !reviewing ? ' inbound-chat-log-fade' : ''}`}>
+              {messages.length === 0 && (
+                <p className="inbound-hint">
+                  Ask anything a customer would: products, prices, use cases. It answers from
+                  your site.
+                </p>
+              )}
+              {(() => {
+                const shownCards = new Set()
+                return messages.flatMap((m, i) => {
+                const parts = m.text ? m.text.split(/\n{2,}/).filter(Boolean) : ['']
+                return parts.flatMap((part, j) => {
+                  const bubble = (
+                    <div key={`${i}-${j}`} className={`inbound-bubble inbound-bubble-${m.role}`}>
+                      {part || <span className="inbound-typing">…</span>}
+                    </div>
+                  )
+                  const matched = (
+                    m.role === 'assistant' && !busy
+                      ? matchProducts(part, profile.products).filter((p) => p.imageUrl)
+                      : []
+                  ).filter((p) => {
+                    // one card per product per conversation
+                    if (shownCards.has(p.name)) return false
+                    shownCards.add(p.name)
+                    return true
+                  })
+                  if (!matched.length) return [bubble]
+                  return [
+                    bubble,
+                    <div key={`${i}-${j}-cards`} className="inbound-inline-cards">
+                      {matched.slice(0, 2).map((p, k) => (
+                        <div key={k} className="inbound-product inbound-product-inline">
+                          <img src={p.imageUrl} alt={p.name} loading="lazy" onError={(e) => (e.target.style.display = 'none')} />
+                          <strong>{p.name}</strong>
+                          {p.price && <span className="inbound-price">{p.price}</span>}
+                        </div>
+                      ))}
+                    </div>,
+                  ]
+                })
+                })
+              })()}
+            </div>
+            {showEndScreen && !reviewing && (
+              <div className="inbound-end-screen">
+                <p>
+                  This whole conversation was handled by an AI sales agent built on your
+                  website in under a minute. Imagine it working your real leads 24/7.
+                </p>
+                <a className="inbound-btn" href="https://anytrail.ai">
+                  Book a call with Anytrail
+                </a>
+                <button className="inbound-link-btn" type="button" onClick={() => setReviewing(true)}>
+                  Review the conversation
+                </button>
+              </div>
+            )}
+            {reviewing && (
+              <div className="inbound-review-bar">
+                <span>Demo complete. This conversation is read-only.</span>
+                <button className="inbound-link-btn" type="button" onClick={() => setReviewing(false)}>
+                  Back
+                </button>
+              </div>
+            )}
+            {!ended && (
+              <form className="inbound-chat-input" onSubmit={onSend}>
+                <input
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  placeholder="Type like a customer would…"
+                  disabled={busy}
+                  maxLength={4000}
+                />
+                <button className="inbound-btn" disabled={busy || !draft.trim()}>
+                  Send
+                </button>
+              </form>
+            )}
+          </div>
+
+          <div className="inbound-side">
+          {SHOW_LEARNED_PANEL && profile.products.length > 0 && (
+            <aside className="inbound-card inbound-learned">
+              <h2>What the agent learned</h2>
+              <p className="inbound-hint">From {profile.companyName}'s website, just now.</p>
+              {profile.products.slice(0, 6).map((p, i) => (
+                <div key={i} className="inbound-learned-row">
+                  {p.imageUrl && (
+                    <img src={p.imageUrl} alt="" loading="lazy" onError={(e) => (e.target.style.display = 'none')} />
+                  )}
+                  <div>
+                    <strong>{p.name}</strong>
+                    {p.price && <span className="inbound-price"> {p.price}</span>}
+                  </div>
+                </div>
+              ))}
+            </aside>
+          )}
+          {wantsProspects && (
+            <aside className="inbound-card inbound-leads">
+              <h2>Your ICP + 5 leads</h2>
+              {leadsPending && (
+                <div className="inbound-steps inbound-lead-steps">
+                  {leadSteps.map((st, i) => (
+                    <p key={i} className={i === leadSteps.length - 1 ? 'inbound-step inbound-step-active' : 'inbound-step'}>
+                      {i === leadSteps.length - 1 ? '● ' : '✓ '}
+                      {st}
+                    </p>
+                  ))}
+                </div>
+              )}
+              {leadsPending && (
+                <div className="inbound-skeleton" aria-label="Finding your leads…">
+                  <div className="inbound-skel inbound-skel-icp" />
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <div key={i} className="inbound-skel-lead">
+                      <div className="inbound-skel inbound-skel-title" />
+                      <div className="inbound-skel inbound-skel-meta" />
+                      <div className="inbound-skel inbound-skel-body" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {icp && <p className="inbound-icp">{icp.icp_summary}</p>}
+              {leads && leads.length === 0 && !leadsPending && (
+                <p className="inbound-hint">Lead search came up empty this time.</p>
+              )}
+              {leads?.map((l, i) => (
+                <div key={i} className="inbound-lead">
+                  <strong>
+                    {l.website ? (
+                      <a href={l.website} target="_blank" rel="noreferrer">
+                        {l.company}
+                      </a>
+                    ) : (
+                      l.company
+                    )}
+                  </strong>
+                  <span className="inbound-meta">
+                    {[l.industry, l.location, l.employees ? `~${l.employees} employees` : null]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </span>
+                  {l.contact && (
+                    <span className="inbound-meta">
+                      {l.contact.linkedinUrl ? (
+                        <a href={l.contact.linkedinUrl} target="_blank" rel="noreferrer">
+                          {l.contact.name}
+                        </a>
+                      ) : (
+                        l.contact.name
+                      )}
+                      {l.contact.title ? ` · ${l.contact.title}` : ''}
+                      {l.contact.email && (
+                        <>
+                          {' · '}
+                          <a href={`mailto:${l.contact.email}`}>{l.contact.email}</a>
+                        </>
+                      )}
+                    </span>
+                  )}
+                  <p>{l.whyFit}</p>
+                </div>
+              ))}
+            </aside>
+          )}
+          </div>
+        </section>
+      )}
+    </div>
+  )
+}

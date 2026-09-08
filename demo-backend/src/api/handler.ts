@@ -4,6 +4,7 @@ import type {
 } from 'aws-lambda';
 import { LIMITS } from '../limits';
 import { startDemo, startSchema } from './start';
+import { InvalidPhoneError, captureLead, leadSchema } from './lead';
 import { RateLimitedError, assertWithinRateLimit } from './rate-limit';
 import { UnknownSessionError, extractForSession } from './extract';
 import { prospectsForSession } from './prospects';
@@ -31,6 +32,7 @@ import {
 } from './wa';
 
 // JSON API for /demo/*. Routes fill in as the pipeline lands:
+//   POST /demo/lead      — name + phone from the /demo page, then WhatsApp handoff
 //   POST /demo/start     — lead capture + extraction kickoff (ANY-113/114)
 //   POST /demo/prospects — ICP + Apollo leads (ANY-115)
 //   GET  /schedule/slots — open call slots (ANY-66)
@@ -43,6 +45,7 @@ export async function handler(
   try {
     let res: APIGatewayProxyResultV2;
     if (route === 'GET /demo/health') res = json(200, { ok: true });
+    else if (route === 'POST /demo/lead') res = await handleLead(event);
     else if (route === 'POST /demo/start') res = await handleStart(event);
     else if (route === 'POST /demo/extract') res = await handleExtract(event);
     else if (route === 'POST /demo/prospects') res = await handleProspects(event);
@@ -70,6 +73,27 @@ export async function handler(
   } catch (err) {
     console.error('unhandled', { route, error: err });
     return json(500, { error: 'internal' });
+  }
+}
+
+// Its own small bucket: the page is a two-field form with no AI behind it, so
+// the cap only exists to bound Slack pings and table writes from one network.
+async function handleLead(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const parsed = leadSchema.safeParse(parseBody(event));
+  if (!parsed.success) {
+    return json(422, { error: 'invalid_input', issues: parsed.error.issues });
+  }
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
+  try {
+    await assertWithinRateLimit(ip, Date.now(), { bucket: 'lead', cap: LIMITS.leadPerIp });
+    const result = await captureLead(parsed.data, ip);
+    return json(200, { ok: true, ...result });
+  } catch (err) {
+    if (err instanceof RateLimitedError) return json(429, { error: 'rate_limited' });
+    if (err instanceof InvalidPhoneError) return json(422, { error: 'invalid_phone' });
+    throw err;
   }
 }
 

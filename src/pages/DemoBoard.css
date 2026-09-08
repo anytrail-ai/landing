@@ -8,6 +8,39 @@
   padding: var(--space-8) var(--space-4) var(--space-16);
 }
 
+/* Self-contained button/link styles (mirroring .inbound-btn / .inbound-link-btn)
+ * so the board renders identically wherever it is mounted — it must not depend
+ * on the host page's prefixed stylesheet. */
+.demo-board-btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 8px;
+  padding: var(--space-3) var(--space-6);
+  font: 600 15px var(--sans);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.demo-board-btn:hover:not(:disabled) {
+  background: var(--btn-bg-hover);
+}
+
+.demo-board-btn-ghost {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.demo-board-linkbtn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font: 500 14px var(--sans);
+  cursor: pointer;
+}
+
 .demo-board-head {
   display: flex;
   align-items: flex-start;
@@ -259,6 +292,10 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-6);
 }
 
 .demo-peek-head {

@@ -280,7 +280,7 @@ export default function DemoBoard({ board, profile, sessionId, visitorName, onOp
       </div>
 
       <p className="demo-board-foot">
-        <button className="demo-link-btn" type="button" onClick={onOpenChat}>
+        <button className="demo-board-linkbtn" type="button" onClick={onOpenChat}>
           {t.chatCta}
         </button>
       </p>
@@ -315,7 +315,7 @@ function CardPeek({ card, t, scheduled, revealed, onReveal, onSchedule, onClose 
 
   return (
     <div className="demo-peek-backdrop" onClick={onClose}>
-      <div className="demo-peek demo-card" onClick={(e) => e.stopPropagation()}>
+      <div className="demo-peek" onClick={(e) => e.stopPropagation()}>
         <header className="demo-peek-head">
           <strong>{card.customerName}</strong>
           {card.company && <span> · {card.company}</span>}
@@ -376,24 +376,24 @@ function CardPeek({ card, t, scheduled, revealed, onReveal, onSchedule, onClose 
         ) : (
           <div className="demo-peek-actions">
             {card.quote && !revealed.quote && (
-              <button className="demo-btn demo-btn-ghost" type="button" onClick={() => onReveal('quote')}>
+              <button className="demo-board-btn demo-board-btn-ghost" type="button" onClick={() => onReveal('quote')}>
                 📄 {t.quoteBtn}
               </button>
             )}
             {card.delivery && !revealed.delivery && (
-              <button className="demo-btn demo-btn-ghost" type="button" onClick={() => onReveal('delivery')}>
+              <button className="demo-board-btn demo-board-btn-ghost" type="button" onClick={() => onReveal('delivery')}>
                 🚚 {t.deliveryBtn}
               </button>
             )}
             {!picking ? (
-              <button className="demo-btn" type="button" onClick={() => setPicking(true)}>
+              <button className="demo-board-btn" type="button" onClick={() => setPicking(true)}>
                 ⏰ {t.followUpBtn}
               </button>
             ) : (
               options.map((o) => (
                 <button
                   key={o.label}
-                  className="demo-btn demo-btn-ghost"
+                  className="demo-board-btn demo-board-btn-ghost"
                   type="button"
                   onClick={() => {
                     onSchedule(o.label, o.ms, reply)

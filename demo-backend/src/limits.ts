@@ -13,6 +13,9 @@ export const LIMITS = {
    * burn through the ~224-slot calendar well inside the general 300 cap,
    * firing a Resend send and a Slack ping for each one. */
   bookPerIp: 5,
+  /** POST /demo/lead (name + phone → WhatsApp) per IP per window. No AI cost
+   * behind it, so the cap only bounds Slack pings and table writes. */
+  leadPerIp: 30,
   /** Rate-limit window in seconds (one day). */
   windowSeconds: 86400,
   /** User messages per chat session; hitting it triggers the closing CTA. */

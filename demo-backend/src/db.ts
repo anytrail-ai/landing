@@ -19,12 +19,14 @@ export function setDocClientForTests(c: DynamoDBDocumentClient | undefined): voi
 
 // Single-table key shapes:
 //   LEAD#<sessionId>       / META      — a captured lead + its session state
+//   WALEAD#<id>            / META      — a /demo name+phone lead handed to WhatsApp
 //   DOMAIN#<domain>        / PROFILE   — cached CompanyProfile (expiresAt TTL)
 //   IP#<ip>                / RATE#<window> — rate-limit bucket (expiresAt TTL)
 //   BOOKINGDAY#<yyyy-mm-dd>/ SLOT#<hh:mm>  — a booked call (day = New York date)
 //   EMAIL#<lowercased>     / ACTIVE    — guard: one active booking per address
 export const keys = {
   lead: (sessionId: string) => ({ pk: `LEAD#${sessionId}`, sk: 'META' }),
+  whatsappLead: (id: string) => ({ pk: `WALEAD#${id}`, sk: 'META' }),
   profile: (domain: string) => ({ pk: `DOMAIN#${domain}`, sk: 'PROFILE' }),
   // `bucket` is omitted for the original demo-start caller so its key shape
   // (and therefore its already-running counters) never changes; a named

@@ -78,3 +78,8 @@ export async function chatTurn(sessionId, messages, onDelta) {
   )
   return { ended }
 }
+
+// Records a /demo visitor (name + phone + page language) before the WhatsApp
+// handoff. Rejects with the backend's error code ('invalid_phone',
+// 'rate_limited', …) so the page can pick the matching copy.
+export const captureLead = (input) => post('/demo/lead', input)

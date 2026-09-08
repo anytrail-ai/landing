@@ -3,6 +3,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Thanks from './pages/Thanks'
 import Demo from './pages/Demo'
+import InboundDemo from './pages/InboundDemo'
 import Schedule from './pages/Schedule'
 import PrivacyCopilot from './pages/PrivacyCopilot'
 import ClusterPage from './components/ClusterPage'
@@ -15,6 +16,7 @@ const PAGES = {
   home: Home,
   thanks: Thanks,
   demo: Demo,
+  inboundDemo: InboundDemo,
   schedule: Schedule,
   privacyCopilot: PrivacyCopilot,
   speedToLead: () => <ClusterPage copyKey="speedToLead" />,

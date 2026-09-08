@@ -74,4 +74,6 @@ jobs:
       - if: needs.changes.outputs.frontend == 'true'
         run: npm run lint
       - if: needs.changes.outputs.frontend == 'true'
+        run: npm test
+      - if: needs.changes.outputs.frontend == 'true'
         run: npm run build

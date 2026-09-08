@@ -4,7 +4,13 @@ AWS backend for the live demo at [anytrail.ai/demo](https://anytrail.ai/demo)
 (frontend: `../src/pages/Demo.jsx` + `demoApi.js`). Moved here from
 `anytrail-ai/public-demo` so the whole demo falls under this repo's PR rules.
 
-Visitors submit their company website; Firecrawl extracts it, Bedrock
+The `/demo` page itself is now a two-field form (name + phone) that records
+the visitor (`POST /demo/lead` → DynamoDB `WALEAD#` row, Slack ping, CloudWatch
+`demo_lead` line) and hands them to the WhatsApp agent with a prefilled
+opener (`src/api/lead.ts`; number and message in `../src/config.js`).
+
+The older website-crawl demo is still served by the same stacks:
+visitors submit their company website; Firecrawl extracts it, Bedrock
 (Claude Sonnet 4.6) distills a company profile and powers a sales-agent chat
 over SSE, and the optional ICP path finds 5 real leads via Apollo, emailed via
 Resend. Design/spec: `docs/superpowers/specs/2026-08-12-public-demo-design.md`.

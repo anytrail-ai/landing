@@ -187,6 +187,39 @@ export const COPY = {
       meta: {
         title: 'Live Demo | Anytrail',
         description:
+          'Talk to a live AI sales agent on WhatsApp. Leave your name and phone number, then watch it handle a real inquiry like a customer would send.',
+        ogLocale: 'en_US',
+      },
+      hero: {
+        title: 'Watch the agent sell. On WhatsApp, right now.',
+        sub: "Leave your name and phone number, then open WhatsApp and talk to the agent like a customer would. It sells pressure washers, so ask what a buyer would ask.",
+      },
+      form: {
+        name: 'Your name',
+        namePlaceholder: 'Ana García',
+        phone: 'Phone number',
+        phonePlaceholder: '+52 81 1234 5678',
+        phoneHint: 'Include the country code.',
+        submit: 'Continue to WhatsApp',
+        saving: 'Saving…',
+      },
+      done: {
+        title: 'Thanks, {name}.',
+        body: 'Tap below to open WhatsApp. The first message is already written for you; send it and the agent takes it from there.',
+        cta: 'Open WhatsApp',
+        messageLabel: 'Your first message:',
+      },
+      errors: {
+        invalid_phone: 'That phone number does not look right. Include the country code, like +52 81 1234 5678.',
+        invalid_input: 'Please fill in your name and phone number.',
+        rate_limited: 'Too many tries from this network today. Come back tomorrow, or write to us on WhatsApp directly.',
+        generic: 'Something went wrong. Please try again.',
+      },
+    },
+    inboundDemo: {
+      meta: {
+        title: 'Inbound Agent Demo | Anytrail',
+        description:
           'See an AI sales agent built on your own website in one minute. It learns your products and sells them back to you, plus your ideal customer profile and 5 matching leads.',
         ogLocale: 'en_US',
       },
@@ -704,8 +737,33 @@ export const COPY = {
       meta: {
         title: 'Demo en Vivo | Anytrail',
         description:
-          'Mira un agente de ventas con IA construido sobre tu propio sitio web en un minuto. Aprende tus productos y te los vende, más tu perfil de cliente ideal y 5 prospectos.',
+          'Habla con un agente de ventas con IA en vivo por WhatsApp. Deja tu nombre y tu teléfono y mira cómo atiende una consulta real, como la enviaría un cliente.',
         ogLocale: 'es_ES',
+      },
+      hero: {
+        title: 'Mira al agente vender. Por WhatsApp, ahora mismo.',
+        sub: 'Déjanos tu nombre y tu teléfono, luego abre WhatsApp y habla con el agente como lo haría un cliente. Vende hidrolavadoras, así que pregunta lo que preguntaría un comprador.',
+      },
+      form: {
+        name: 'Tu nombre',
+        namePlaceholder: 'Ana García',
+        phone: 'Número de teléfono',
+        phonePlaceholder: '+52 81 1234 5678',
+        phoneHint: 'Incluye la lada del país.',
+        submit: 'Continuar a WhatsApp',
+        saving: 'Guardando…',
+      },
+      done: {
+        title: 'Gracias, {name}.',
+        body: 'Toca el botón para abrir WhatsApp. El primer mensaje ya está escrito; envíalo y el agente sigue desde ahí.',
+        cta: 'Abrir WhatsApp',
+        messageLabel: 'Tu primer mensaje:',
+      },
+      errors: {
+        invalid_phone: 'Ese número no parece correcto. Incluye la lada del país, como +52 81 1234 5678.',
+        invalid_input: 'Completa tu nombre y tu número de teléfono.',
+        rate_limited: 'Demasiados intentos desde esta red hoy. Vuelve mañana o escríbenos directo por WhatsApp.',
+        generic: 'Algo salió mal. Inténtalo de nuevo.',
       },
     },
     schedule: {
@@ -1118,6 +1176,10 @@ export const ROUTES = {
     // Chrome Web Store listing points at this exact URL. Pages missing from a
     // language are skipped by prerender.js rather than faked.
     privacyCopilot: '/privacy/copilot',
+    // English only, like the privacy notice: the original website-crawl chat
+    // demo, kept reachable for inbound-agent walkthroughs after /demo became
+    // the WhatsApp handoff.
+    inboundDemo: '/inbound_demo',
   },
   es: {
     home: '/es',
@@ -1140,7 +1202,7 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 
 // Pages that must never be indexed. A thank-you page ranking in search would
 // pull people past the booking step into a dead end.
-export const NOINDEX_PAGES = ['thanks']
+export const NOINDEX_PAGES = ['thanks', 'inboundDemo']
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

@@ -10,6 +10,12 @@ export const THANKS_URL = {
 // is set, so shipping it blank is safe.
 export const WHATSAPP_NUMBER = import.meta.env?.VITE_WHATSAPP_NUMBER ?? ''
 
+// The /demo page hands visitors to this WhatsApp line (E.164 digits, no '+').
+// The prefilled opener is Spanish in both site languages on purpose: the agent
+// on the other end sells pressure washers to a Spanish-speaking market.
+export const DEMO_WHATSAPP_NUMBER = '5218127648080'
+export const DEMO_WHATSAPP_MESSAGE = 'Hola, me interesa una hidrolavadora.'
+
 // First-party telemetry collector (AWS API Gateway -> Lambda -> DynamoDB).
 // Provisioned by infra/telemetry/deploy.sh, which prints this value.
 // Leave empty to disable telemetry cleanly; analytics.js no-ops rather than

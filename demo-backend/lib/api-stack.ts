@@ -51,6 +51,11 @@ export class ApiStack extends cdk.Stack {
       description:
         'Slack bot for threaded demo transcripts: JSON {"token":"xoxb-…","channel":"C…"}. Empty/placeholder = webhook fallback, no threads.',
     });
+    const whatsappSecret = new secretsmanager.Secret(this, 'WhatsappConfig', {
+      secretName: 'anytrail/demo/whatsapp',
+      description:
+        'WhatsApp Cloud API config for the booth demo: JSON {"token":"…","phoneNumberId":"…","waNumber":"5215…","verifyToken":"…","appSecret":"…"}. appSecret empty = webhook signature check off.',
+    });
     const scheduleSecret = new secretsmanager.Secret(this, 'ScheduleSigningKey', {
       secretName: 'anytrail/demo/schedule-signing',
       description: 'HMAC key for scheduling manage links',
@@ -73,6 +78,7 @@ export class ApiStack extends cdk.Stack {
         SLACK_WEBHOOK_SECRET_ARN: slackWebhookSecret.secretArn,
         SLACK_BOT_SECRET_ARN: slackBotSecret.secretArn,
         SCHEDULE_SECRET_ARN: scheduleSecret.secretArn,
+        WHATSAPP_SECRET_ARN: whatsappSecret.secretArn,
         // Flip to 'enabled' to resume contact reveals (1 Apollo credit each).
         APOLLO_ENRICH: 'disabled',
         // Optional email fallback for signup pings; empty = Slack only.
@@ -102,6 +108,7 @@ export class ApiStack extends cdk.Stack {
       slackWebhookSecret.grantRead(fn);
       slackBotSecret.grantRead(fn);
       scheduleSecret.grantRead(fn);
+      whatsappSecret.grantRead(fn);
       fn.addToRolePolicy(
         new iam.PolicyStatement({
           actions: ['bedrock:InvokeModel', 'bedrock:InvokeModelWithResponseStream'],

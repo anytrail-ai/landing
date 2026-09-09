@@ -1,0 +1,415 @@
+/* Rep-board demo stage — scoped under .demo-board. Reads as an app screen
+ * (the product's work queue), deliberately denser than the landing sections,
+ * but built from the same warm-paper tokens so it still belongs to the page. */
+
+.demo-board {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4) var(--space-16);
+}
+
+/* Self-contained button/link styles (mirroring .inbound-btn / .inbound-link-btn)
+ * so the board renders identically wherever it is mounted — it must not depend
+ * on the host page's prefixed stylesheet. */
+.demo-board-btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 8px;
+  padding: var(--space-3) var(--space-6);
+  font: 600 15px var(--sans);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.demo-board-btn:hover:not(:disabled) {
+  background: var(--btn-bg-hover);
+}
+
+.demo-board-btn-ghost {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.demo-board-linkbtn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font: 500 14px var(--sans);
+  cursor: pointer;
+}
+
+.demo-board-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.demo-board-head h1 {
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  margin: 0 0 var(--space-2);
+}
+
+.demo-board-head p {
+  color: var(--text-muted);
+  max-width: 52ch;
+  margin: 0;
+}
+
+/* QR side panel — the "become a lead" invitation. */
+.demo-board-qr {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-4);
+  max-width: 400px;
+}
+
+.demo-board-qr img {
+  border-radius: 6px;
+  flex: none;
+}
+
+.demo-board-qr strong {
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.demo-board-qr p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.demo-board-qr-done {
+  border-color: #2f6f4f;
+  background: #e8f0eb;
+}
+
+.demo-board-qr-connected {
+  font-weight: 600;
+  color: #2f6f4f;
+  margin: 0;
+}
+
+/* Four-column queue; horizontal scroll below desktop widths. */
+.demo-board-columns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(240px, 1fr));
+  gap: var(--space-4);
+  overflow-x: auto;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .demo-board-columns {
+    grid-template-columns: repeat(4, 260px);
+  }
+}
+
+.demo-board-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.demo-board-col-title {
+  font: 600 12px/16px var(--sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--border);
+}
+
+.demo-board-col-atRisk { border-bottom-color: #b42318; }
+.demo-board-col-intent { border-bottom-color: #2f6f4f; }
+.demo-board-col-followUp { border-bottom-color: #b45309; }
+.demo-board-col-revive { border-bottom-color: #6b7280; }
+
+.demo-board-count {
+  background: var(--paper-tint, #f6f4ea);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+/* Cards are <button>s: whole card opens the peek. */
+.demo-board-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-3);
+  cursor: pointer;
+  font: 14px/1.45 var(--sans);
+  color: var(--text);
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.demo-board-card:hover {
+  border-color: var(--text-muted);
+  transform: translateY(-1px);
+}
+
+.demo-board-card-self {
+  border: 2px solid #2f6f4f;
+  box-shadow: 0 0 0 4px #e8f0eb;
+  animation: demo-board-arrive 0.5s ease-out;
+}
+
+@keyframes demo-board-arrive {
+  from { transform: translateY(-8px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.demo-board-card-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.demo-board-avatar {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font: 600 12px var(--sans);
+  color: #fff;
+}
+
+.demo-board-sev-high { background: #b42318; }
+.demo-board-sev-medium { background: #b45309; }
+.demo-board-sev-low { background: #6b7280; }
+
+.demo-board-who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.demo-board-who strong {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.demo-board-who em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.demo-board-chip {
+  margin-left: auto;
+  flex: none;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--paper-tint, #f6f4ea);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.demo-board-chip-you {
+  color: #fff;
+  background: #2f6f4f;
+  border-color: #2f6f4f;
+  font-weight: 700;
+}
+
+.demo-board-msg {
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.demo-board-deal {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.demo-board-reason {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.demo-board-scheduled {
+  font-size: 12px;
+  font-weight: 600;
+  color: #2f6f4f;
+}
+
+.demo-board-foot {
+  margin-top: var(--space-6);
+  text-align: center;
+}
+
+/* --- Conversation peek ---------------------------------------------------- */
+
+.demo-peek-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 18, 10, 0.45);
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  z-index: 50;
+}
+
+.demo-peek {
+  width: min(560px, 100%);
+  max-height: 86vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-6);
+}
+
+.demo-peek-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.demo-peek-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+/* WhatsApp-register transcript: customer incoming (paper), rep outgoing (moss). */
+.demo-peek-chat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--paper-tint, #f6f4ea);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--space-3);
+}
+
+.demo-peek-bubble {
+  max-width: 85%;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.demo-peek-customer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  align-self: flex-start;
+}
+
+.demo-peek-rep {
+  background: #e8f0eb;
+  border: 1px solid #cfe0d6;
+  align-self: flex-end;
+}
+
+.demo-peek-quote table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: var(--space-2);
+}
+
+.demo-peek-quote td {
+  padding: 4px 6px;
+  border-top: 1px solid var(--border);
+}
+
+.demo-peek-quote td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.demo-peek-quote-total td {
+  font-weight: 700;
+  border-top: 2px solid var(--text);
+}
+
+.demo-peek-quote p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: var(--space-2) 0 0;
+}
+
+.demo-peek-delivery {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.demo-peek-reply {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.demo-peek-reply textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: var(--space-2);
+  font: 14px/1.4 var(--sans);
+  color: var(--text);
+  background: var(--page-bg);
+  resize: vertical;
+}
+
+.demo-peek-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.demo-btn-ghost {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.demo-peek-status {
+  margin: 0;
+  font-weight: 600;
+  color: #2f6f4f;
+}

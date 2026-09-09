@@ -44,4 +44,8 @@ export const keys = {
     pk: `EMAIL#${email.trim().toLowerCase()}`,
     sk: 'ACTIVE',
   }),
+  // WHATSAPP session-code binding: WACODE#<code> / META → { sessionId } with a
+  // 1-day TTL. Written when the board UI requests its QR link, read by the
+  // inbound webhook to attach a visitor's wa_id to their demo session.
+  waCode: (code: string) => ({ pk: `WACODE#${code}`, sk: 'META' }),
 } as const;

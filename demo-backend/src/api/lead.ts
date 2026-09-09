@@ -4,14 +4,17 @@ import { z } from 'zod';
 import { TABLE_NAME, docClient, keys } from '../db';
 import { postSlackMessage } from '../notify';
 
-// The /demo page: a visitor leaves a name and phone number, then continues
-// on WhatsApp with the live agent. This is the record-keeping half — the row
-// in DynamoDB is the ledger, the Slack ping is how the team sees it land, and
-// the CloudWatch line is the fallback if either of those is down.
+// The /demo page: a visitor leaves a name, phone number and email, then
+// continues on WhatsApp with the live agent. This is the record-keeping half —
+// the row in DynamoDB is the ledger, the Slack ping is how the team sees it
+// land, and the CloudWatch line is the fallback if either of those is down.
 
 export const leadSchema = z.object({
   name: z.string().trim().min(1).max(200),
   phone: z.string().trim().min(1).max(40),
+  // Same shape as /demo/start and /schedule/book. Lower-cased so the same
+  // person never lands twice on a capitalisation difference.
+  email: z.string().trim().toLowerCase().email().max(320),
   // Language of the page the form was on (/demo → en, /es/demo → es).
   lang: z.enum(['en', 'es']).default('en'),
 });
@@ -58,6 +61,7 @@ export async function captureLead(input: LeadInput, ip: string): Promise<LeadRes
         name: input.name,
         phone,
         phoneRaw: input.phone,
+        email: input.email,
         lang: input.lang,
         ip,
         source: 'demo',
@@ -67,11 +71,14 @@ export async function captureLead(input: LeadInput, ip: string): Promise<LeadRes
   );
 
   // Filter CloudWatch on "demo_lead" to list every capture.
-  console.log('demo_lead', JSON.stringify({ id, name: input.name, phone, lang: input.lang, createdAt }));
+  console.log(
+    'demo_lead',
+    JSON.stringify({ id, name: input.name, phone, email: input.email, lang: input.lang, createdAt }),
+  );
 
   // Awaited (Lambda freezes after the response) but never throws.
   await postSlackMessage(
-    `📱 Demo lead → WhatsApp: ${input.name} — ${phone} (${input.lang})`,
+    `📱 Demo lead → WhatsApp: ${input.name} — ${phone} — ${input.email} (${input.lang})`,
   );
 
   return { id };

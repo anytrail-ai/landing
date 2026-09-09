@@ -212,7 +212,6 @@ export const COPY = {
       errors: {
         invalid_phone: 'That phone number does not look right. Include the country code, like +52 81 1234 5678.',
         invalid_input: 'Please fill in your name and phone number.',
-        rate_limited: 'Too many tries from this network today. Come back tomorrow, or write to us on WhatsApp directly.',
         generic: 'Something went wrong. Please try again.',
       },
     },
@@ -762,7 +761,6 @@ export const COPY = {
       errors: {
         invalid_phone: 'Ese número no parece correcto. Incluye la lada del país, como +52 81 1234 5678.',
         invalid_input: 'Completa tu nombre y tu número de teléfono.',
-        rate_limited: 'Demasiados intentos desde esta red hoy. Vuelve mañana o escríbenos directo por WhatsApp.',
         generic: 'Algo salió mal. Inténtalo de nuevo.',
       },
     },

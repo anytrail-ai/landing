@@ -59,8 +59,11 @@ export async function handler(
   }
 }
 
-// Its own small bucket: the page is a two-field form with no AI behind it, so
-// the cap only exists to bound Slack pings and table writes from one network.
+// Deliberately not rate-limited: the /demo page is a two-field form with no AI
+// behind it, and shared networks (offices, events, carrier NAT) were hitting
+// the old per-IP cap and locking real visitors out. Each submit only costs a
+// table write and a Slack ping. /demo/start (the /inbound_demo chat) keeps
+// its cap because it triggers Firecrawl + Bedrock.
 async function handleLead(
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> {
@@ -70,11 +73,9 @@ async function handleLead(
   }
   const ip = event.requestContext.http.sourceIp ?? 'unknown';
   try {
-    await assertWithinRateLimit(ip, Date.now(), { bucket: 'lead', cap: LIMITS.leadPerIp });
     const result = await captureLead(parsed.data, ip);
     return json(200, { ok: true, ...result });
   } catch (err) {
-    if (err instanceof RateLimitedError) return json(429, { error: 'rate_limited' });
     if (err instanceof InvalidPhoneError) return json(422, { error: 'invalid_phone' });
     throw err;
   }

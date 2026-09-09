@@ -85,11 +85,14 @@ describe('POST /demo/lead (handler)', () => {
     expect(ddb.commandCalls(PutCommand)).toHaveLength(1);
   });
 
-  it('429s when the lead bucket is full', async () => {
+  it('is not rate-limited: never touches a counter, even when one would be full', async () => {
     const err = new Error('cap');
     err.name = 'ConditionalCheckFailedException';
     ddb.on(UpdateCommand).rejects(err);
+    ddb.on(PutCommand).resolves({});
     const res = await handler(event({ name: 'Ana', phone: '+52 81 2764 8080', lang: 'es' }));
-    expect(res).toMatchObject({ statusCode: 429 });
+    expect(res).toMatchObject({ statusCode: 200 });
+    expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0);
+    expect(ddb.commandCalls(PutCommand)).toHaveLength(1);
   });
 });

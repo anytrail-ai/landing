@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { mockClient } from 'aws-sdk-client-mock';
 import { DynamoDBDocumentClient, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
-import { captureLead, normalizePhone } from './lead';
+import { captureLead, leadSchema, normalizePhone } from './lead';
 import { setDocClientForTests } from '../db';
 import { handler } from './handler';
 
@@ -25,10 +25,10 @@ describe('normalizePhone', () => {
 });
 
 describe('captureLead', () => {
-  it('stores name, normalised phone and language, and returns an id', async () => {
+  it('stores name, normalised phone, email and language, and returns an id', async () => {
     ddb.on(PutCommand).resolves({});
     const res = await captureLead(
-      { name: 'Ana', phone: '+52 81 2764 8080', lang: 'es' },
+      { name: 'Ana', phone: '+52 81 2764 8080', email: 'ana@acme.com', lang: 'es' },
       '1.2.3.4',
     );
     expect(res.id).toMatch(/[0-9a-f-]{36}/);
@@ -39,6 +39,7 @@ describe('captureLead', () => {
       name: 'Ana',
       phone: '+528127648080',
       phoneRaw: '+52 81 2764 8080',
+      email: 'ana@acme.com',
       lang: 'es',
       ip: '1.2.3.4',
       source: 'demo',
@@ -48,10 +49,30 @@ describe('captureLead', () => {
 
   it('rejects an unusable phone before writing anything', async () => {
     await expect(
-      captureLead({ name: 'Ana', phone: 'no', lang: 'en' }, '1.2.3.4'),
+      captureLead({ name: 'Ana', phone: 'no', email: 'ana@acme.com', lang: 'en' }, '1.2.3.4'),
     ).rejects.toThrow('invalid_phone');
     expect(ddb.commandCalls(PutCommand)).toHaveLength(0);
   });
+});
+
+describe('leadSchema email', () => {
+  it('trims and lower-cases a valid address', () => {
+    const parsed = leadSchema.safeParse({
+      name: 'Ana',
+      phone: '+52 81 2764 8080',
+      email: '  Ana@Acme.COM ',
+    });
+    expect(parsed.success).toBe(true);
+    if (parsed.success) expect(parsed.data.email).toBe('ana@acme.com');
+  });
+
+  it.each(['', 'ana', 'ana@', '@acme.com', 'ana acme.com'])(
+    'rejects %j',
+    (email) => {
+      const parsed = leadSchema.safeParse({ name: 'Ana', phone: '+52 81 2764 8080', email });
+      expect(parsed.success).toBe(false);
+    },
+  );
 });
 
 describe('POST /demo/lead (handler)', () => {
@@ -69,9 +90,17 @@ describe('POST /demo/lead (handler)', () => {
     expect(JSON.parse((res as { body: string }).body).error).toBe('invalid_input');
   });
 
+  it('422s on a malformed email', async () => {
+    ddb.on(UpdateCommand).resolves({});
+    const res = await handler(event({ name: 'Ana', phone: '+52 81 2764 8080', email: 'ana', lang: 'es' }));
+    expect(res).toMatchObject({ statusCode: 422 });
+    expect(JSON.parse((res as { body: string }).body).error).toBe('invalid_input');
+    expect(ddb.commandCalls(PutCommand)).toHaveLength(0);
+  });
+
   it('422s on a phone that cannot be dialled', async () => {
     ddb.on(UpdateCommand).resolves({});
-    const res = await handler(event({ name: 'Ana', phone: '12', lang: 'es' }));
+    const res = await handler(event({ name: 'Ana', phone: '12', email: 'ana@acme.com', lang: 'es' }));
     expect(res).toMatchObject({ statusCode: 422 });
     expect(JSON.parse((res as { body: string }).body)).toEqual({ error: 'invalid_phone' });
   });
@@ -79,17 +108,20 @@ describe('POST /demo/lead (handler)', () => {
   it('stores the lead and answers 200 with its id', async () => {
     ddb.on(UpdateCommand).resolves({});
     ddb.on(PutCommand).resolves({});
-    const res = await handler(event({ name: 'Ana', phone: '+52 81 2764 8080', lang: 'es' }));
+    const res = await handler(event({ name: 'Ana', phone: '+52 81 2764 8080', email: 'ana@acme.com', lang: 'es' }));
     expect(res).toMatchObject({ statusCode: 200 });
     expect(JSON.parse((res as { body: string }).body)).toMatchObject({ ok: true });
     expect(ddb.commandCalls(PutCommand)).toHaveLength(1);
   });
 
-  it('429s when the lead bucket is full', async () => {
+  it('is not rate-limited: never touches a counter, even when one would be full', async () => {
     const err = new Error('cap');
     err.name = 'ConditionalCheckFailedException';
     ddb.on(UpdateCommand).rejects(err);
-    const res = await handler(event({ name: 'Ana', phone: '+52 81 2764 8080', lang: 'es' }));
-    expect(res).toMatchObject({ statusCode: 429 });
+    ddb.on(PutCommand).resolves({});
+    const res = await handler(event({ name: 'Ana', phone: '+52 81 2764 8080', email: 'ana@acme.com', lang: 'es' }));
+    expect(res).toMatchObject({ statusCode: 200 });
+    expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0);
+    expect(ddb.commandCalls(PutCommand)).toHaveLength(1);
   });
 });

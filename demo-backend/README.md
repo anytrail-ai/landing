@@ -4,7 +4,7 @@ AWS backend for the live demo at [anytrail.ai/demo](https://anytrail.ai/demo)
 (frontend: `../src/pages/Demo.jsx` + `demoApi.js`). Moved here from
 `anytrail-ai/public-demo` so the whole demo falls under this repo's PR rules.
 
-The `/demo` page itself is now a two-field form (name + phone) that records
+The `/demo` page itself is now a three-field form (name + phone + email) that records
 the visitor (`POST /demo/lead` → DynamoDB `WALEAD#` row, Slack ping, CloudWatch
 `demo_lead` line) and hands them to the WhatsApp agent with a prefilled
 opener (`src/api/lead.ts`; number and message in `../src/config.js`).

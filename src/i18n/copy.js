@@ -187,12 +187,12 @@ export const COPY = {
       meta: {
         title: 'Live Demo | Anytrail',
         description:
-          'Talk to a live AI sales agent on WhatsApp. Leave your name and phone number, then watch it handle a real inquiry like a customer would send.',
+          'Talk to a live AI sales agent on WhatsApp. Leave your name, phone number and email, then watch it handle a real inquiry like a customer would send.',
         ogLocale: 'en_US',
       },
       hero: {
         title: 'Watch the agent sell. On WhatsApp, right now.',
-        sub: 'Leave your name and phone number, then open WhatsApp and talk to the agent like a customer would.',
+        sub: 'Leave your name, phone number and email, then open WhatsApp and talk to the agent like a customer would.',
       },
       form: {
         name: 'Your name',
@@ -200,6 +200,8 @@ export const COPY = {
         phone: 'Phone number',
         phonePlaceholder: '+52 81 1234 5678',
         phoneHint: 'Include the country code.',
+        email: 'Email',
+        emailPlaceholder: 'ana@company.com',
         submit: 'Continue to WhatsApp',
         saving: 'Saving…',
       },
@@ -211,8 +213,8 @@ export const COPY = {
       },
       errors: {
         invalid_phone: 'That phone number does not look right. Include the country code, like +52 81 1234 5678.',
-        invalid_input: 'Please fill in your name and phone number.',
-        rate_limited: 'Too many tries from this network today. Come back tomorrow, or write to us on WhatsApp directly.',
+        invalid_email: 'That email does not look right. Check it and try again.',
+        invalid_input: 'Please fill in your name, phone number and email.',
         generic: 'Something went wrong. Please try again.',
       },
     },
@@ -737,12 +739,12 @@ export const COPY = {
       meta: {
         title: 'Demo en Vivo | Anytrail',
         description:
-          'Habla con un agente de ventas con IA en vivo por WhatsApp. Deja tu nombre y tu teléfono y mira cómo atiende una consulta real, como la enviaría un cliente.',
+          'Habla con un agente de ventas con IA en vivo por WhatsApp. Deja tu nombre, tu teléfono y tu correo y mira cómo atiende una consulta real, como la enviaría un cliente.',
         ogLocale: 'es_ES',
       },
       hero: {
         title: 'Mira a Anytrail ayudarte a cerrar más, ahora mismo.',
-        sub: 'Déjanos tu nombre y tu teléfono, luego abre WhatsApp y habla con el agente como lo haría un cliente.',
+        sub: 'Déjanos tu nombre, tu teléfono y tu correo, luego abre WhatsApp y habla con el agente como lo haría un cliente.',
       },
       form: {
         name: 'Tu nombre',
@@ -750,6 +752,8 @@ export const COPY = {
         phone: 'Número de teléfono',
         phonePlaceholder: '+52 81 1234 5678',
         phoneHint: 'Incluye la lada del país.',
+        email: 'Correo electrónico',
+        emailPlaceholder: 'ana@empresa.com',
         submit: 'Continuar a WhatsApp',
         saving: 'Guardando…',
       },
@@ -761,8 +765,8 @@ export const COPY = {
       },
       errors: {
         invalid_phone: 'Ese número no parece correcto. Incluye la lada del país, como +52 81 1234 5678.',
-        invalid_input: 'Completa tu nombre y tu número de teléfono.',
-        rate_limited: 'Demasiados intentos desde esta red hoy. Vuelve mañana o escríbenos directo por WhatsApp.',
+        invalid_email: 'Ese correo no parece correcto. Revísalo e inténtalo de nuevo.',
+        invalid_input: 'Completa tu nombre, tu número de teléfono y tu correo.',
         generic: 'Algo salió mal. Inténtalo de nuevo.',
       },
     },

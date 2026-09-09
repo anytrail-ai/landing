@@ -6,8 +6,8 @@ import { track } from '../analytics'
 import { DEMO_WHATSAPP_MESSAGE, DEMO_WHATSAPP_NUMBER } from '../config'
 import './Demo.css'
 
-// Live demo: the visitor leaves a name and phone number, the backend records
-// them (DynamoDB row + Slack ping + CloudWatch line, see
+// Live demo: the visitor leaves a name, phone number and email, the backend
+// records them (DynamoDB row + Slack ping + CloudWatch line, see
 // demo-backend/src/api/lead.ts), and the page hands them to the WhatsApp
 // agent with a prefilled opener. Copy comes from copy.js, so /demo and
 // /es/demo are the same component in two languages.
@@ -15,11 +15,17 @@ const WHATSAPP_HREF = `https://wa.me/${DEMO_WHATSAPP_NUMBER}?text=${encodeURICom
   DEMO_WHATSAPP_MESSAGE,
 )}`
 
+// Deliberately loose: one "@" with something on both sides and a dot in the
+// domain. The backend's zod schema is the real gate; this only catches typos
+// before a round trip.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export default function Demo() {
   const { lang, copy } = useLanguage()
   const c = copy.demo
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
   // 'form' → 'saving' → 'done'; errors drop back to 'form'.
   const [stage, setStage] = useState('form')
   const [error, setError] = useState(null)
@@ -29,7 +35,8 @@ export default function Demo() {
     setError(null)
     const cleanName = name.trim()
     const cleanPhone = phone.trim()
-    if (!cleanName || !cleanPhone) {
+    const cleanEmail = email.trim()
+    if (!cleanName || !cleanPhone || !cleanEmail) {
       setError(c.errors.invalid_input)
       return
     }
@@ -37,9 +44,13 @@ export default function Demo() {
       setError(c.errors.invalid_phone)
       return
     }
+    if (!EMAIL_RE.test(cleanEmail)) {
+      setError(c.errors.invalid_email)
+      return
+    }
     setStage('saving')
     try {
-      await captureLead({ name: cleanName, phone: cleanPhone, lang })
+      await captureLead({ name: cleanName, phone: cleanPhone, email: cleanEmail, lang })
       track('demo_lead_saved', { lang })
       setStage('done')
     } catch (err) {
@@ -102,6 +113,20 @@ export default function Demo() {
                   disabled={saving}
                 />
                 <span className="demo-hint">{c.form.phoneHint}</span>
+              </label>
+              <label>
+                {c.form.email}
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  maxLength={320}
+                  autoComplete="email"
+                  inputMode="email"
+                  placeholder={c.form.emailPlaceholder}
+                  disabled={saving}
+                />
               </label>
               {error && <p className="demo-error">{error}</p>}
               <button className="demo-btn" type="submit" disabled={saving}>

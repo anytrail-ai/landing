@@ -27,4 +27,24 @@ export const LIMITS = {
   chatMaxTokens: 1024,
   /** Bedrock max output tokens for extraction / ICP / prospect calls. */
   pipelineMaxTokens: 4096,
+  // ---- /quote_demo (catalogue → chat → quote → supplier price request) ----
+  /** Catalogue parses (PDF/text → Bedrock) per IP per window. */
+  catalogPerIp: 20,
+  /** Quote generations per IP per window. */
+  quotePerIp: 60,
+  /** Supplier price-request emails per IP per window. The page emails any
+   * address typed into it, so this is the spam-relay cap. */
+  priceRequestPerIp: 10,
+  /** User messages per quote-demo chat session. */
+  quoteChatMessages: 20,
+  /** Items kept from one parsed catalogue. Bounds Bedrock output time too. */
+  catalogMaxItems: 120,
+  /** Bedrock max output tokens for a catalogue parse. */
+  catalogMaxTokens: 8000,
+  /** Bedrock's document-block limit is 4.5 MB; stay under it. */
+  catalogPdfMaxBytes: 4 * 1024 * 1024,
+  catalogTextMaxChars: 200_000,
+  /** Demo cadence: a reminder every 3 minutes, at most 5. */
+  priceReminderEveryMs: 3 * 60 * 1000,
+  priceReminderMax: 5,
 } as const;

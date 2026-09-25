@@ -8,6 +8,14 @@ import type { PriceRequest } from './types';
 // Runs every minute (QuoteReminderSchedule in lib/api-stack.ts). Unlike the
 // booking sweep there is no window arithmetic: a request is due once its
 // absolute nextReminderAt has passed, so a late or skipped sweep only delays.
+//
+// Claim before send (the house pattern in ../reminders/handler.ts): two
+// overlapping sweeps — the 1-minute rule re-firing while a prior run is
+// still in flight, or an async Lambda retry — can both read the same due
+// row. Only one conditional UpdateCommand can win; the loser sees
+// ConditionalCheckFailedException and sends nothing. A duplicate email to a
+// real supplier is worse than a reminder lost to a rare crash between the
+// claim and the send — the next one arrives 3 minutes later regardless.
 
 export function dueQuoteReminders(rows: PriceRequest[], nowMs: number): PriceRequest[] {
   return rows.filter(
@@ -30,9 +38,8 @@ export async function handler(): Promise<void> {
   for (const req of dueQuoteReminders(rows, now)) {
     const n = req.remindersSent + 1;
     try {
-      // Send before claiming: a failed send is retried next minute without
-      // spending one of the five reminders.
-      await sendPriceRequestEmail(req, n);
+      // Claim first: the conditional update is what makes an overlapping
+      // sweep or Lambda retry safe. Only the claim's winner ever sends.
       await docClient().send(
         new UpdateCommand({
           TableName: TABLE_NAME,
@@ -48,12 +55,28 @@ export async function handler(): Promise<void> {
           },
         }),
       );
-      if (n >= LIMITS.priceReminderMax) {
-        // Reminders stop; the supplier link keeps working (status stays pending).
-        await docClient().send(new DeleteCommand({ TableName: TABLE_NAME, Key: keys.pendingPriceRequest(req.token) }));
+    } catch (err) {
+      if ((err as Error).name !== 'ConditionalCheckFailedException') {
+        console.error('price_reminder_claim_failed', { quoteId: req.quoteId, n, err });
       }
+      // Another sweep already owns this reminder (or the claim itself
+      // failed): send nothing, retry naturally on the next sweep.
+      continue;
+    }
+
+    if (n >= LIMITS.priceReminderMax) {
+      // Reminders stop; the supplier link keeps working (status stays
+      // pending). This runs regardless of whether the send below succeeds —
+      // the claim, not the send, is what retired the cap.
+      await docClient().send(new DeleteCommand({ TableName: TABLE_NAME, Key: keys.pendingPriceRequest(req.token) }));
+    }
+
+    try {
+      await sendPriceRequestEmail(req, n);
       console.log('price_reminder_sent', JSON.stringify({ quoteId: req.quoteId, n }));
     } catch (err) {
+      // The reminder is already spent (claimed above); a failed send here is
+      // not retried until the next scheduled reminder, 3 minutes out.
       console.error('price_reminder_failed', { quoteId: req.quoteId, n, err });
     }
   }

@@ -7,7 +7,7 @@
 export const API_URL = 'https://3cyy3hfm3a.execute-api.us-east-1.amazonaws.com'
 const CHAT_URL = 'https://hf7g2sqkicab2s6bc3sci7t5gm0aretu.lambda-url.us-east-1.on.aws/'
 
-async function post(path, body) {
+export async function post(path, body) {
   const res = await fetch(`${API_URL}${path}`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -20,7 +20,7 @@ async function post(path, body) {
 
 export const startDemo = (input) => post('/demo/start', input)
 
-async function streamRequest(body, handlers) {
+export async function streamRequest(body, handlers) {
   const res = await fetch(CHAT_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -45,6 +45,13 @@ async function streamRequest(body, handlers) {
       handlers[eventLine]?.(data)
     }
   }
+}
+
+export async function get(path) {
+  const res = await fetch(`${API_URL}${path}`)
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error ?? `http_${res.status}`)
+  return data
 }
 
 export async function extract(sessionId, onStep) {

@@ -6,9 +6,10 @@ import { fileToBase64, money } from './quoteDemoUtil'
 import './QuoteDemo.css'
 
 const MAX_PDF = 4 * 1024 * 1024
+const MAX_TEXT = 200_000
 const CATALOG_ERRORS = {
   catalog_unreadable: 'No pudimos leer el catálogo. Prueba con otro archivo o usa el de ejemplo.',
-  catalog_too_large: 'El catálogo es muy grande (máximo 4 MB en PDF).',
+  catalog_too_large: 'El catálogo es muy grande (máximo 4 MB en PDF o 200 KB en texto).',
   rate_limited: 'Llegaste al límite de catálogos de la demo por hoy. Usa el de ejemplo.',
 }
 
@@ -46,16 +47,28 @@ export default function QuoteDemo() {
       if (file.size > MAX_PDF) return setError(CATALOG_ERRORS.catalog_too_large)
       return start({ pdfBase64: await fileToBase64(file) })
     }
+    if (file.size > MAX_TEXT) return setError(CATALOG_ERRORS.catalog_too_large)
     return start({ text: await file.text() })
   }
 
+  function onPastedText() {
+    if (text.length > MAX_TEXT) return setError(CATALOG_ERRORS.catalog_too_large)
+    return start({ text })
+  }
+
   async function quote(history) {
-    if (quotingRef.current || !history.some((m) => m.role === 'user')) return
+    if (quotingRef.current) return
+    setError(null)
     quotingRef.current = true
     setResult(null)
     setQuoting('Generando cotización…')
     try {
-      setResult(await generateQuote(session.sessionId, history, setQuoting))
+      // Drop the streaming placeholder (empty/whitespace text) a mid-turn
+      // click can capture; if nothing from the customer is left, there is
+      // nothing to quote.
+      const cleaned = history.filter((m) => m.text.trim())
+      if (!cleaned.some((m) => m.role === 'user')) return
+      setResult(await generateQuote(session.sessionId, cleaned, setQuoting))
     } catch {
       setError('No se pudo generar la cotización. Intenta de nuevo.')
     } finally {
@@ -87,7 +100,7 @@ export default function QuoteDemo() {
               disabled={Boolean(step)}
             />
             <div className="qd-upload-actions">
-              <button type="button" className="qd-btn" disabled={Boolean(step) || !text.trim()} onClick={() => start({ text })}>
+              <button type="button" className="qd-btn" disabled={Boolean(step) || !text.trim()} onClick={onPastedText}>
                 Usar texto pegado
               </button>
               <button type="button" className="qd-btn-ghost" disabled={Boolean(step)} onClick={() => start({ sample: true })}>

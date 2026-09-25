@@ -56,6 +56,7 @@ export async function handleQuoteAction(body: QuoteBody, ip: string, emit: Emit)
         emit('delta', { text: 'Con esto tengo lo necesario. Te preparo la cotización.' });
         return emit('done', { ready: true, ended: true });
       }
+      await assertWithinRateLimit(ip, Date.now(), { bucket: 'qchat', cap: LIMITS.quoteChatPerIp });
       const reply = await runQuoteChatTurn(catalog, body.messages, (text) => emit('delta', { text }));
       console.log('quote_chat_turn', JSON.stringify({ sessionId: body.sessionId, turn: userCount, reply: reply.slice(0, 1000) }));
       return emit('done', { ready: reply.includes(QUOTE_MARKER), ended: false });

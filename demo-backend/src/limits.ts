@@ -37,6 +37,10 @@ export const LIMITS = {
   priceRequestPerIp: 10,
   /** User messages per quote-demo chat session. */
   quoteChatMessages: 20,
+  /** Chat turns per IP per window, roughly 20 full sessions; the per-session
+   * cap alone is client-enforced (the history is client-held), so this is the
+   * real Bedrock bound. */
+  quoteChatPerIp: 400,
   /** Items kept from one parsed catalogue. Bounds Bedrock output time too. */
   catalogMaxItems: 120,
   /** Bedrock max output tokens for a catalogue parse. */

@@ -16,6 +16,9 @@ export default function SupplierPrice() {
     // setState here is async (react-hooks/set-state-in-effect); a missing
     // token just 404s into the 'missing' state.
     token.current = new URLSearchParams(window.location.search).get('t') ?? ''
+    // The token is a bearer credential for this price request: keep it out of
+    // the address bar (and therefore analytics/referrer capture) once read.
+    window.history.replaceState(null, '', window.location.pathname)
     getPriceRequest(token.current)
       .then((v) => {
         setView(v)

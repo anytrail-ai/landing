@@ -45,6 +45,7 @@
 .qd-quote { display: grid; gap: 12px; }
 .qd-quote-head { display: flex; justify-content: space-between; align-items: baseline; }
 .qd-quote h2 { margin: 0; font-size: 1.25rem; }
+.qd-table-wrap { overflow-x: auto; max-width: 100%; }
 .qd-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 .qd-table th, .qd-table td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border, #e7e2d1); vertical-align: top; }
 .qd-table th:nth-child(n + 2), .qd-table td:nth-child(n + 2) { text-align: right; white-space: nowrap; }

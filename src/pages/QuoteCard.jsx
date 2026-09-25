@@ -38,32 +38,39 @@ export default function QuoteCard({ result }) {
       {quote.lines.length === 0 ? (
         <p className="qd-hint">No encontramos productos en la conversación. Pide algo concreto y vuelve a generar.</p>
       ) : (
-        <table className="qd-table">
-          <thead>
-            <tr><th>Producto</th><th>Cant.</th><th>Precio unit.</th><th>Importe</th></tr>
-          </thead>
-          <tbody>
-            {quote.lines.map((l, i) => (
-              <tr key={i} className={l.status === 'priced' ? '' : 'qd-row-missing'}>
-                <td>
-                  {l.name}
-                  {l.sku && <span className="qd-meta"> {l.sku}</span>}
-                  {STATUS[l.status] && <span className="qd-badge qd-badge-warn">{STATUS[l.status]}</span>}
-                  {l.fromSupplier && <span className="qd-badge qd-badge-ok">Precio recibido del proveedor</span>}
-                </td>
-                <td>{l.qty}</td>
-                <td>{l.unitCents === null ? '—' : money(l.unitCents, quote.currency)}</td>
-                <td>{l.unitCents === null ? '—' : money(l.unitCents * l.qty, quote.currency)}</td>
+        <div className="qd-table-wrap">
+          <table className="qd-table">
+            <thead>
+              <tr>
+                <th scope="col">Producto</th>
+                <th scope="col">Cant.</th>
+                <th scope="col">Precio unit.</th>
+                <th scope="col">Importe</th>
               </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan={3}>{missing > 0 ? 'Total parcial' : 'Total'}</td>
-              <td>{money(total, quote.currency)}</td>
-            </tr>
-          </tfoot>
-        </table>
+            </thead>
+            <tbody>
+              {quote.lines.map((l, i) => (
+                <tr key={i} className={l.status === 'priced' ? '' : 'qd-row-missing'}>
+                  <td>
+                    {l.name}
+                    {l.sku && <span className="qd-meta"> {l.sku}</span>}
+                    {STATUS[l.status] && <span className="qd-badge qd-badge-warn">{STATUS[l.status]}</span>}
+                    {l.fromSupplier && <span className="qd-badge qd-badge-ok">Precio recibido del proveedor</span>}
+                  </td>
+                  <td>{l.qty}</td>
+                  <td>{l.unitCents === null ? '—' : money(l.unitCents, quote.currency)}</td>
+                  <td>{l.unitCents === null ? '—' : money(l.unitCents * l.qty, quote.currency)}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colSpan={3}>{missing > 0 ? 'Total parcial' : 'Total'}</td>
+                <td>{money(total, quote.currency)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       )}
 
       {missing > 0 && !request && (

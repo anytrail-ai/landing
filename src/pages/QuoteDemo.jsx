@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import QuoteCard from './QuoteCard'
 import QuoteChat from './QuoteChat'
 import { generateQuote, loadCatalog } from './quoteDemoApi'
@@ -20,6 +20,11 @@ export default function QuoteDemo() {
   const [messages, setMessages] = useState([])
   const [quoting, setQuoting] = useState(null) // step text while generating
   const [result, setResult] = useState(null)
+  // Synchronous single-flight guard: onReady/playSample capture quote() at the
+  // start of a chat turn, so the `quoting` state from that stale render can
+  // still read null when the button is also clicked mid-turn. A ref is read
+  // and written only inside the handler, never during render.
+  const quotingRef = useRef(false)
 
   async function start(source) {
     setError(null)
@@ -45,7 +50,8 @@ export default function QuoteDemo() {
   }
 
   async function quote(history) {
-    if (quoting || !history.some((m) => m.role === 'user')) return
+    if (quotingRef.current || !history.some((m) => m.role === 'user')) return
+    quotingRef.current = true
     setResult(null)
     setQuoting('Generando cotización…')
     try {
@@ -53,6 +59,7 @@ export default function QuoteDemo() {
     } catch {
       setError('No se pudo generar la cotización. Intenta de nuevo.')
     } finally {
+      quotingRef.current = false
       setQuoting(null)
     }
   }

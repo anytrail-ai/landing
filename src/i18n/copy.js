@@ -807,6 +807,20 @@ export const COPY = {
         generic: 'Algo salió mal. Inténtalo de nuevo.',
       },
     },
+    quoteDemo: {
+      meta: {
+        title: 'Demo de cotización automática | Anytrail',
+        description: 'Sube un catálogo, conversa con el agente de ventas y recibe una cotización generada al instante. Si falta un precio, el agente se lo pide al proveedor.',
+        ogLocale: 'es_ES',
+      },
+    },
+    supplierPrice: {
+      meta: {
+        title: 'Captura de precios | Anytrail',
+        description: 'Captura los precios solicitados para completar una cotización.',
+        ogLocale: 'es_ES',
+      },
+    },
     // "Speed to lead" no tiene equivalente de búsqueda en español. El comprador
     // industrial mexicano busca "tiempo de respuesta", así que la página se
     // escribe sobre ese término, no sobre la traducción del modismo inglés.
@@ -1196,6 +1210,8 @@ export const ROUTES = {
     speedToLead: '/es/tiempo-de-respuesta',
     manufacturingCrm: '/es/crm-para-manufactura',
     rfqAutomation: '/es/automatizacion-de-cotizaciones',
+    // Spanish-only unlisted demo; noindex.
+    quoteDemo: '/quote_demo',
   },
 }
 
@@ -1206,7 +1222,7 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 
 // Pages that must never be indexed. A thank-you page ranking in search would
 // pull people past the booking step into a dead end.
-export const NOINDEX_PAGES = ['thanks', 'inboundDemo']
+export const NOINDEX_PAGES = ['thanks', 'inboundDemo', 'quoteDemo', 'supplierPrice']
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

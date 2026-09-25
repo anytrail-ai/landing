@@ -6,6 +6,7 @@ import Demo from './pages/Demo'
 import InboundDemo from './pages/InboundDemo'
 import Schedule from './pages/Schedule'
 import PrivacyCopilot from './pages/PrivacyCopilot'
+import QuoteDemo from './pages/QuoteDemo'
 import ClusterPage from './components/ClusterPage'
 import { LanguageProvider } from './i18n/LanguageContext'
 import './App.css'
@@ -19,6 +20,7 @@ const PAGES = {
   inboundDemo: InboundDemo,
   schedule: Schedule,
   privacyCopilot: PrivacyCopilot,
+  quoteDemo: QuoteDemo,
   speedToLead: () => <ClusterPage copyKey="speedToLead" />,
   manufacturingCrm: () => <ClusterPage copyKey="manufacturingCrm" />,
   rfqAutomation: () => <ClusterPage copyKey="rfqAutomation" />,

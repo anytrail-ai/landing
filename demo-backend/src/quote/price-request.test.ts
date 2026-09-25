@@ -115,15 +115,22 @@ describe('sendPriceRequest', () => {
       sendPriceRequest({ quoteId: 'q1', to: 'p@acme.mx', subject: 's', body: 'b' }, '1.2.3.4'),
     ).rejects.toThrow('email_failed');
 
-    // IP cap checked before the send.
+    // IP cap AND the global relay cap (F4) are both checked before the send.
     expect(assertWithinRateLimit).toHaveBeenCalledWith(
       '1.2.3.4',
       expect.any(Number),
       { bucket: 'qpr', cap: LIMITS.priceRequestPerIp },
     );
-    const rateOrder = vi.mocked(assertWithinRateLimit).mock.invocationCallOrder[0];
+    expect(assertWithinRateLimit).toHaveBeenCalledWith(
+      'GLOBAL',
+      expect.any(Number),
+      { bucket: 'qpr', cap: LIMITS.priceRequestGlobal },
+    );
+    expect(assertWithinRateLimit).toHaveBeenCalledTimes(2);
+    const [ipOrder, globalOrder] = vi.mocked(assertWithinRateLimit).mock.invocationCallOrder;
     const emailOrder = vi.mocked(sendPriceRequestEmail).mock.invocationCallOrder[0];
-    expect(rateOrder).toBeLessThan(emailOrder);
+    expect(ipOrder).toBeLessThan(globalOrder);
+    expect(globalOrder).toBeLessThan(emailOrder);
 
     // A failed send must leave nothing behind that would later be reminded.
     expect(ddb.commandCalls(PutCommand)).toHaveLength(0);

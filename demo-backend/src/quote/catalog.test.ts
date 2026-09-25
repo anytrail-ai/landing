@@ -41,10 +41,10 @@ describe('sanitizeCatalog', () => {
     expect(c.supplierEmail).toBeNull();
   });
 
-  it('drops nameless items and caps the list at 120', () => {
+  it('drops nameless items and caps the list at 80', () => {
     const items = Array.from({ length: 200 }, (_, i) => ({ name: i === 0 ? '  ' : `p${i}`, price: 1 }));
     const c = sanitizeCatalog({ items });
-    expect(c.items).toHaveLength(120);
+    expect(c.items).toHaveLength(80);
     expect(c.items[0].name).toBe('p1');
   });
 

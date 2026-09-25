@@ -55,6 +55,9 @@ export async function sendPriceRequest(input: z.infer<typeof sendSchema>, ip: st
   const catalog = await getCatalog(quote.catalogId);
 
   await assertWithinRateLimit(ip, Date.now(), { bucket: 'qpr', cap: LIMITS.priceRequestPerIp });
+  // Global backstop on the public email relay (F4): the per-IP cap alone is
+  // not enough once booth Wi-Fi puts every visitor behind one NAT IP (F5).
+  await assertWithinRateLimit('GLOBAL', Date.now(), { bucket: 'qpr', cap: LIMITS.priceRequestGlobal });
 
   const now = Date.now();
   const req: PriceRequest = {

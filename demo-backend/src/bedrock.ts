@@ -49,6 +49,12 @@ export async function converseJsonContent(
     );
     const text =
       res.output?.message?.content?.find((b) => 'text' in b)?.text ?? '';
+    // A truncated response is not a parse fluke: the JSON is genuinely
+    // incomplete, so a retry would just be truncated again (F3). Fail fast
+    // instead of spending a second Bedrock call.
+    if (res.stopReason === 'max_tokens') {
+      throw new Error('bedrock_truncated');
+    }
     try {
       return extractJson(text);
     } catch (err) {

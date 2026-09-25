@@ -30,6 +30,24 @@ export function buildQuoteSystemText(catalog: Catalog): string {
   ].join('\n\n');
 }
 
+/** Bedrock Converse rejects consecutive same-role messages. The frontend
+ * should never send those (F2), but a client bug or a retried turn could
+ * still produce one, so merge defensively here too: consecutive messages
+ * with the same role are joined into one, texts separated by a blank line,
+ * in original order. */
+export function mergeConsecutiveSameRole(messages: ChatMessage[]): ChatMessage[] {
+  const out: ChatMessage[] = [];
+  for (const m of messages) {
+    const last = out[out.length - 1];
+    if (last && last.role === m.role) {
+      last.text = `${last.text}\n\n${m.text}`;
+    } else {
+      out.push({ role: m.role, text: m.text });
+    }
+  }
+  return out;
+}
+
 export async function runQuoteChatTurn(
   catalog: Catalog,
   messages: ChatMessage[],
@@ -39,7 +57,7 @@ export async function runQuoteChatTurn(
     new ConverseStreamCommand({
       modelId: MODEL_ID,
       system: [{ text: buildQuoteSystemText(catalog) }],
-      messages: messages.map((m): Message => ({ role: m.role, content: [{ text: m.text }] })),
+      messages: mergeConsecutiveSameRole(messages).map((m): Message => ({ role: m.role, content: [{ text: m.text }] })),
       inferenceConfig: { maxTokens: LIMITS.chatMaxTokens },
     }),
   );

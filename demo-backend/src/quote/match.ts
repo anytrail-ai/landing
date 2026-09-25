@@ -16,13 +16,24 @@ const STOP = new Set([
   'para', 'por', 'en', 'a', 'al', 'que', 'mi', 'me', 'the', 'of', 'and', 'for', 'with',
 ]);
 
+/** Crude Spanish singularisation: 'lanzas'→'lanza', 'presiones'→'presion',
+ * 'detergentes'→'detergent' (matches 'detergente'→'detergent' too). Only
+ * applied to tokens long enough that stripping a trailing letter or two
+ * still leaves a meaningful stem. */
+function singularize(t: string): string {
+  if (t.length > 4 && t.endsWith('s')) t = t.slice(0, -1);
+  if (t.length > 4 && t.endsWith('e')) t = t.slice(0, -1);
+  return t;
+}
+
 export function tokens(s: string): string[] {
   return s
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/[\u0300-\u036f]/g, '')
     .split(/[^a-z0-9]+/)
-    .filter((t) => t.length > 1 && !STOP.has(t));
+    .filter((t) => t.length > 1 && !STOP.has(t))
+    .map(singularize);
 }
 
 function score(queryTokens: string[], rawQuery: string, item: CatalogItem): number {

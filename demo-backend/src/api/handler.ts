@@ -18,6 +18,13 @@ import {
   openSlots,
   view,
 } from './schedule';
+import { totalCents } from '../quote/match';
+import { getPriceRequest, getQuote } from '../quote/store';
+import {
+  AlreadyAnsweredError, AlreadyRequestedError, InvalidAnswerError, NothingToRequestError,
+  UnknownQuoteError, UnknownRequestError, answerPriceRequest, answerSchema, getSupplierView,
+  publicState, sendPriceRequest, sendSchema,
+} from '../quote/price-request';
 
 // JSON API for /demo/*. Routes fill in as the pipeline lands:
 //   POST /demo/lead      — name + phone from the /demo page, then WhatsApp handoff
@@ -25,6 +32,10 @@ import {
 //   POST /demo/prospects — ICP + Apollo leads (ANY-115)
 //   GET  /schedule/slots — open call slots (ANY-66)
 //   GET  /schedule/manage, POST /schedule/book|cancel|move — booking lifecycle (ANY-66)
+//   GET  /demo/quote — quote + its price-request state
+//   POST /demo/quote/price-request/send — email the supplier a one-time price-capture link
+//   GET  /demo/quote/price-request — supplier's read view (by token)
+//   POST /demo/quote/price-request/answer — supplier's one-time answer, writes prices back
 export async function handler(
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> {
@@ -42,6 +53,10 @@ export async function handler(
     else if (route === 'GET /schedule/manage') res = await handleManage(event);
     else if (route === 'POST /schedule/cancel') res = await handleCancel(event);
     else if (route === 'POST /schedule/move') res = await handleMove(event);
+    else if (route === 'GET /demo/quote') res = await handleGetQuote(event);
+    else if (route === 'POST /demo/quote/price-request/send') res = await handleSendPriceRequest(event);
+    else if (route === 'GET /demo/quote/price-request') res = await handleGetPriceRequest(event);
+    else if (route === 'POST /demo/quote/price-request/answer') res = await handleAnswerPriceRequest(event);
     else res = json(404, { error: 'not_found' });
     const status = typeof res === 'object' && 'statusCode' in res ? res.statusCode : 200;
     if (status !== 200) {
@@ -257,6 +272,57 @@ export function scheduleError(err: unknown): APIGatewayProxyResultV2 {
   // a real defect, not caller input — let it reach the handler's catch-all
   // so it logs as `unhandled` and 500s, instead of masquerading as a 4xx.
   throw err;
+}
+
+function strip<T extends object>(row: T): Omit<T, 'pk' | 'sk' | 'expiresAt'> {
+  const { pk: _pk, sk: _sk, expiresAt: _e, ...rest } = row as T & { pk?: unknown; sk?: unknown; expiresAt?: unknown };
+  return rest;
+}
+
+async function handleGetQuote(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+  const id = event.queryStringParameters?.id ?? '';
+  const quote = id ? await getQuote(id) : null;
+  if (!quote) return json(404, { error: 'unknown_quote' });
+  const req = quote.priceRequestId ? await getPriceRequest(quote.priceRequestId) : null;
+  return json(200, { quote: strip(quote), totalCents: totalCents(quote.lines), request: publicState(req) });
+}
+
+async function handleSendPriceRequest(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+  const parsed = sendSchema.safeParse(parseBody(event));
+  if (!parsed.success) return json(422, { error: 'invalid_input', issues: parsed.error.issues });
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
+  try {
+    return json(200, { request: await sendPriceRequest(parsed.data, ip) });
+  } catch (err) {
+    if (err instanceof UnknownQuoteError) return json(404, { error: 'unknown_quote' });
+    if (err instanceof AlreadyRequestedError) return json(409, { error: 'already_requested' });
+    if (err instanceof NothingToRequestError) return json(422, { error: 'nothing_to_request' });
+    if (err instanceof RateLimitedError) return json(429, { error: 'rate_limited' });
+    if ((err as Error).message === 'email_failed' || (err as Error).name === 'OutboundDisabledError') {
+      return json(502, { error: 'email_failed' });
+    }
+    throw err;
+  }
+}
+
+async function handleGetPriceRequest(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+  const t = event.queryStringParameters?.t ?? '';
+  const view = t ? await getSupplierView(t) : null;
+  return view ? json(200, view) : json(404, { error: 'unknown_request' });
+}
+
+async function handleAnswerPriceRequest(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
+  const parsed = answerSchema.safeParse(parseBody(event));
+  if (!parsed.success) return json(422, { error: 'invalid_answer' });
+  try {
+    await answerPriceRequest(parsed.data);
+    return json(200, { ok: true });
+  } catch (err) {
+    if (err instanceof UnknownRequestError) return json(404, { error: 'unknown_request' });
+    if (err instanceof AlreadyAnsweredError) return json(409, { error: 'already_answered' });
+    if (err instanceof InvalidAnswerError) return json(422, { error: 'invalid_answer' });
+    throw err;
+  }
 }
 
 function parseBody(event: APIGatewayProxyEventV2): unknown {

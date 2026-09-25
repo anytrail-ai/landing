@@ -13,6 +13,17 @@ export const LIMITS = {
    * burn through the ~224-slot calendar well inside the general 300 cap,
    * firing a Resend send and a Slack ping for each one. */
   bookPerIp: 5,
+  /** POST /demo/siniestros/classify per IP per window. One Bedrock multimodal
+   * call per simulated WhatsApp message; a live Delpur demo meeting sends
+   * ~30-60 messages, so 300 leaves room for rehearsals while the daily
+   * per-IP cap still bounds what a scripted abuser can spend on Bedrock. */
+  siniestrosPerIp: 300,
+  /** Bedrock max output tokens per siniestro classification (small JSON). */
+  siniestrosMaxTokens: 1024,
+  /** Max base64 characters in a siniestro attachment (~3.4 MB decoded). Keeps
+   * the request under Lambda's 6 MB invoke payload and the decoded file under
+   * Bedrock Converse's 3.75 MB per-image / 4.5 MB per-document limits. */
+  siniestrosMaxAttachmentChars: 4_500_000,
   // POST /demo/lead (the /demo name + phone form) has no cap on purpose: no AI
   // cost behind it, and a per-IP cap locked out visitors on shared networks.
   /** Rate-limit window in seconds (one day). */

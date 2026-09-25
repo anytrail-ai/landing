@@ -31,11 +31,15 @@ export function extractJson(text: string): unknown {
   return JSON.parse(cleaned.slice(start, end + 1));
 }
 
-export async function converseJsonContent(
+// `accept` lets a caller fold its own validation into the retry: if it
+// throws, the attempt counts as failed exactly like unparseable JSON, so a
+// wrong-shaped answer also gets the one retry.
+export async function converseJsonContent<T = unknown>(
   system: string,
   content: ContentBlock[],
   maxTokens: number,
-): Promise<unknown> {
+  accept: (raw: unknown) => T = (raw) => raw as T,
+): Promise<T> {
   const messages: Message[] = [{ role: 'user', content }];
   let lastError: unknown;
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -56,7 +60,7 @@ export async function converseJsonContent(
       throw new Error('bedrock_truncated');
     }
     try {
-      return extractJson(text);
+      return accept(extractJson(text));
     } catch (err) {
       lastError = err;
       console.warn('converse_json_retry', {

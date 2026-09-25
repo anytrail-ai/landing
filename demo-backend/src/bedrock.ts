@@ -1,6 +1,7 @@
 import {
   BedrockRuntimeClient,
   ConverseCommand,
+  type ContentBlock,
   type Message,
 } from '@aws-sdk/client-bedrock-runtime';
 
@@ -30,12 +31,12 @@ export function extractJson(text: string): unknown {
   return JSON.parse(cleaned.slice(start, end + 1));
 }
 
-export async function converseJson(
+export async function converseJsonContent(
   system: string,
-  user: string,
+  content: ContentBlock[],
   maxTokens: number,
 ): Promise<unknown> {
-  const messages: Message[] = [{ role: 'user', content: [{ text: user }] }];
+  const messages: Message[] = [{ role: 'user', content }];
   let lastError: unknown;
   for (let attempt = 0; attempt < 2; attempt++) {
     const res = await bedrock().send(
@@ -48,6 +49,12 @@ export async function converseJson(
     );
     const text =
       res.output?.message?.content?.find((b) => 'text' in b)?.text ?? '';
+    // A truncated response is not a parse fluke: the JSON is genuinely
+    // incomplete, so a retry would just be truncated again (F3). Fail fast
+    // instead of spending a second Bedrock call.
+    if (res.stopReason === 'max_tokens') {
+      throw new Error('bedrock_truncated');
+    }
     try {
       return extractJson(text);
     } catch (err) {
@@ -60,4 +67,8 @@ export async function converseJson(
     }
   }
   throw lastError instanceof Error ? lastError : new Error('bedrock_no_json');
+}
+
+export function converseJson(system: string, user: string, maxTokens: number): Promise<unknown> {
+  return converseJsonContent(system, [{ text: user }], maxTokens);
 }

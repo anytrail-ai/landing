@@ -10,6 +10,7 @@ import { CTA_TEXT, runChatTurn } from './agent';
 import { UnknownSessionError, extractForSession } from '../api/extract';
 import { prospectsForSession } from '../api/prospects';
 import { postSlackMessage } from '../notify';
+import { handleQuoteAction, quoteBodySchema } from '../quote/stream-actions';
 
 function pipelineError(err: unknown): string {
   if (err instanceof UnknownSessionError) return 'unknown_session';
@@ -23,7 +24,10 @@ function pipelineError(err: unknown): string {
 
 declare const awslambda: {
   streamifyResponse: (
-    fn: (event: { body?: string; isBase64Encoded?: boolean }, responseStream: NodeJS.WritableStream) => Promise<void>,
+    fn: (
+      event: { body?: string; isBase64Encoded?: boolean; requestContext?: { http?: { sourceIp?: string } } },
+      responseStream: NodeJS.WritableStream,
+    ) => Promise<void>,
   ) => unknown;
   HttpResponseStream: {
     from: (
@@ -63,7 +67,21 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
     const raw = event.isBase64Encoded
       ? Buffer.from(event.body ?? '', 'base64').toString('utf8')
       : (event.body ?? '');
-    const parsed = bodySchema.safeParse(JSON.parse(raw || '{}'));
+    const json = JSON.parse(raw || '{}');
+    // Quote-demo actions (/quote_demo) have their own schema and session model;
+    // everything else below is the original /inbound_demo flow, untouched.
+    if (['catalog', 'quote_chat', 'quote'].includes(json?.action)) {
+      const quoteParsed = quoteBodySchema.safeParse(json);
+      if (!quoteParsed.success) {
+        sse(stream, 'error', { error: 'invalid_input' });
+        return;
+      }
+      const ip = event.requestContext?.http?.sourceIp ?? 'unknown';
+      await handleQuoteAction(quoteParsed.data, ip, (e, d) => sse(stream, e, d));
+      return;
+    }
+
+    const parsed = bodySchema.safeParse(json);
     if (!parsed.success) {
       sse(stream, 'error', { error: 'invalid_input' });
       return;

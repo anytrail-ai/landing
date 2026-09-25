@@ -67,6 +67,7 @@ export class ApiStack extends cdk.Stack {
         APOLLO_SECRET_ARN: apolloSecret.secretArn,
         RESEND_SECRET_ARN: resendSecret.secretArn,
         EMAIL_SENDER: 'Anytrail <agent@demo.anytrail.ai>',
+        SITE_URL: 'https://www.anytrail.ai',
         // The standing video room every booking is held in (ANY-66).
         MEET_URL: 'https://meet.google.com/kzk-tpgh-sbm',
         EMAIL_TEAM_COPY: 'root@anytrail.ai',
@@ -158,6 +159,22 @@ export class ApiStack extends cdk.Stack {
     new events.Rule(this, 'ReminderSchedule', {
       schedule: events.Schedule.rate(cdk.Duration.minutes(15)),
       targets: [new targets.LambdaFunction(reminderFn)],
+    });
+
+    // Quote-demo supplier price reminders (/quote_demo). Separate from the
+    // booking sweep above, whose 15-minute rate is load-bearing for its window
+    // math. This one compares against an absolute nextReminderAt, so the rate
+    // only sets how late a reminder can be.
+    const quoteReminderFn = new NodejsFunction(this, 'QuoteReminderFn', {
+      ...common,
+      entry: path.join(__dirname, '../src/quote/reminder-handler.ts'),
+      timeout: cdk.Duration.minutes(1),
+    });
+    props.table.grantReadWriteData(quoteReminderFn);
+    resendSecret.grantRead(quoteReminderFn);
+    new events.Rule(this, 'QuoteReminderSchedule', {
+      schedule: events.Schedule.rate(cdk.Duration.minutes(1)),
+      targets: [new targets.LambdaFunction(quoteReminderFn)],
     });
 
     const httpApi = new apigwv2.HttpApi(this, 'DemoHttpApi', {

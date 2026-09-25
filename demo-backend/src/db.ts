@@ -24,6 +24,11 @@ export function setDocClientForTests(c: DynamoDBDocumentClient | undefined): voi
 //   IP#<ip>                / RATE#<window> — rate-limit bucket (expiresAt TTL)
 //   BOOKINGDAY#<yyyy-mm-dd>/ SLOT#<hh:mm>  — a booked call (day = New York date)
 //   EMAIL#<lowercased>     / ACTIVE    — guard: one active booking per address
+//   QCAT#<catalogId>       / META      — quote demo: parsed supplier catalogue
+//   QSESS#<sessionId>      / META      — quote demo: chat session → catalogue
+//   QUOTE#<quoteId>        / META      — quote demo: generated quote
+//   QPR#<token>            / META      — quote demo: supplier price request
+//   QPR_PENDING            / <token>   — index: requests still being reminded
 export const keys = {
   lead: (sessionId: string) => ({ pk: `LEAD#${sessionId}`, sk: 'META' }),
   whatsappLead: (id: string) => ({ pk: `WALEAD#${id}`, sk: 'META' }),
@@ -44,4 +49,15 @@ export const keys = {
     pk: `EMAIL#${email.trim().toLowerCase()}`,
     sk: 'ACTIVE',
   }),
+  quoteCatalog: (id: string) => ({ pk: `QCAT#${id}`, sk: 'META' }),
+  quoteSession: (id: string) => ({ pk: `QSESS#${id}`, sk: 'META' }),
+  quote: (id: string) => ({ pk: `QUOTE#${id}`, sk: 'META' }),
+  priceRequest: (token: string) => ({ pk: `QPR#${token}`, sk: 'META' }),
+  pendingPriceRequest: (token: string) => ({ pk: 'QPR_PENDING', sk: token }),
 } as const;
+
+/** Quote-demo rows live a week: long enough for a slow supplier, short enough
+ * that uploaded catalogues do not pile up. */
+export function ttlSeconds(nowMs = Date.now()): number {
+  return Math.floor(nowMs / 1000) + 7 * 86400;
+}

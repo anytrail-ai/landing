@@ -27,4 +27,37 @@ export const LIMITS = {
   chatMaxTokens: 1024,
   /** Bedrock max output tokens for extraction / ICP / prospect calls. */
   pipelineMaxTokens: 4096,
+  // ---- /quote_demo (catalogue → chat → quote → supplier price request) ----
+  /** Catalogue parses (PDF/text → Bedrock) per IP per window. Raised for demo
+   * day (F5): booth Wi-Fi puts every visitor behind one NAT IP, and F4's
+   * global cap now protects the relay if that IP is abused. */
+  catalogPerIp: 40,
+  /** Quote generations per IP per window. */
+  quotePerIp: 60,
+  /** Supplier price-request emails per IP per window. The page emails any
+   * address typed into it, so this is the spam-relay cap. Raised for demo
+   * day (F5): booth Wi-Fi is one NAT IP; F4's global cap is now the backstop. */
+  priceRequestPerIp: 30,
+  /** Supplier price-request emails across ALL IPs per window — the backstop
+   * for the public relay once a single NAT IP's cap (priceRequestPerIp) is
+   * no longer enough on its own (F4). */
+  priceRequestGlobal: 100,
+  /** User messages per quote-demo chat session. */
+  quoteChatMessages: 20,
+  /** Chat turns per IP per window, roughly 20 full sessions; the per-session
+   * cap alone is client-enforced (the history is client-held), so this is the
+   * real Bedrock bound. */
+  quoteChatPerIp: 400,
+  /** Items kept from one parsed catalogue. Bounds Bedrock output time too:
+   * 80 items ≈ 5k tokens typical, and catalogMaxTokens' 12k headroom keeps
+   * a parse well inside ChatFn's 5-minute timeout (F3). */
+  catalogMaxItems: 80,
+  /** Bedrock max output tokens for a catalogue parse (F3). */
+  catalogMaxTokens: 12000,
+  /** Bedrock's document-block limit is 4.5 MB; stay under it. */
+  catalogPdfMaxBytes: 4 * 1024 * 1024,
+  catalogTextMaxChars: 200_000,
+  /** Demo cadence: a reminder every 3 minutes, at most 5. */
+  priceReminderEveryMs: 3 * 60 * 1000,
+  priceReminderMax: 5,
 } as const;

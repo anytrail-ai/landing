@@ -1,18 +1,20 @@
-import { DynamoDBDocumentClient, QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { setDocClientForTests } from '../db';
+import { TABLE_NAME, setDocClientForTests } from '../db';
+import type { PriceRequest, Quote } from '../quote/types';
 import { handler, scheduleError } from './handler';
 
 function event(
   method: string,
   path: string,
-  opts: { sourceIp?: string; body?: unknown } = {},
+  opts: { sourceIp?: string; body?: unknown; query?: Record<string, string> } = {},
 ) {
   return {
     rawPath: path,
     body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
     requestContext: { http: { method, path, sourceIp: opts.sourceIp } },
+    queryStringParameters: opts.query,
   } as never;
 }
 
@@ -90,5 +92,58 @@ describe('scheduling rate limit', () => {
 
     const call = ddb.commandCalls(UpdateCommand)[0].args[0].input;
     expect(call.Key!.pk).toBe('IP#9.9.9.9#book');
+  });
+});
+
+describe('GET /demo/quote', () => {
+  const ddb = mockClient(DynamoDBDocumentClient);
+
+  beforeEach(() => {
+    ddb.reset();
+    setDocClientForTests(ddb as unknown as DynamoDBDocumentClient);
+  });
+
+  // Finding 1: priceRequestId IS the supplier's one-time capability token for
+  // GET /demo/quote/price-request?t=<token>. It must never reach the public
+  // quote response — its status is already carried in `request`.
+  it('never leaks the supplier price-request token', async () => {
+    const quote: Quote = {
+      quoteId: 'q1',
+      sessionId: 's1',
+      catalogId: 'c1',
+      currency: 'MXN',
+      lines: [],
+      priceRequestId: 'secret-token',
+      createdAt: '2026-09-24T00:00:00Z',
+    };
+    const req: PriceRequest = {
+      token: 'secret-token',
+      quoteId: 'q1',
+      catalogId: 'c1',
+      supplier: 'Acme',
+      currency: 'MXN',
+      to: 'p@acme.mx',
+      subject: 's',
+      body: 'b',
+      items: [],
+      status: 'pending',
+      remindersSent: 0,
+      nextReminderAt: 0,
+      createdAt: '2026-09-24T00:00:00Z',
+    };
+    ddb
+      .on(GetCommand, { TableName: TABLE_NAME, Key: { pk: 'QUOTE#q1', sk: 'META' } })
+      .resolves({ Item: quote })
+      .on(GetCommand, { TableName: TABLE_NAME, Key: { pk: 'QPR#secret-token', sk: 'META' } })
+      .resolves({ Item: req });
+
+    const res = (await handler(
+      event('GET', '/demo/quote', { sourceIp: '1.2.3.4', query: { id: 'q1' } }),
+    )) as { statusCode: number; body: string };
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).not.toContain('secret-token');
+    const parsed = JSON.parse(res.body) as { request: { status: string } | null };
+    expect(parsed.request?.status).toBe('pending');
   });
 });

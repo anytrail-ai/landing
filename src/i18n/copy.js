@@ -1212,6 +1212,7 @@ export const ROUTES = {
     rfqAutomation: '/es/automatizacion-de-cotizaciones',
     // Spanish-only unlisted demo; noindex.
     quoteDemo: '/quote_demo',
+    supplierPrice: '/supplier_price',
   },
 }
 

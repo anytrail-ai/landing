@@ -8,6 +8,7 @@ import { InvalidPhoneError, captureLead, leadSchema } from './lead';
 import { RateLimitedError, assertWithinRateLimit } from './rate-limit';
 import { UnknownSessionError, extractForSession } from './extract';
 import { prospectsForSession } from './prospects';
+import { ClassifyFailedError, classifyMessage, parseClassifyRequest } from './siniestros';
 import {
   book,
   bookSchema,
@@ -31,6 +32,7 @@ import {
 //   POST /demo/lead      — name + phone from the /demo page, then WhatsApp handoff
 //   POST /demo/start     — lead capture + extraction kickoff (ANY-113/114)
 //   POST /demo/prospects — ICP + Apollo leads (ANY-115)
+//   POST /demo/siniestros/classify — Delpur claims demo: classify one WhatsApp message/file
 //   GET  /schedule/slots — open call slots (ANY-66)
 //   GET  /schedule/manage, POST /schedule/book|cancel|move — booking lifecycle (ANY-66)
 //   GET  /demo/quote — quote + its price-request state
@@ -49,6 +51,7 @@ export async function handler(
     else if (route === 'POST /demo/start') res = await handleStart(event);
     else if (route === 'POST /demo/extract') res = await handleExtract(event);
     else if (route === 'POST /demo/prospects') res = await handleProspects(event);
+    else if (route === 'POST /demo/siniestros/classify') res = await handleClassify(event);
     else if (route === 'GET /schedule/slots') res = await handleSlots(event);
     else if (route === 'POST /schedule/book') res = await handleBook(event);
     else if (route === 'GET /schedule/manage') res = await handleManage(event);
@@ -153,6 +156,45 @@ async function handleProspects(
     const msg = (err as Error).message;
     if (msg === 'not_profiled') return json(409, { error: 'not_profiled' });
     if (msg.startsWith('apollo_')) return json(502, { error: 'lead_search_failed' });
+    throw err;
+  }
+}
+
+// Delpur claims demo. Its own bucket so a demo meeting's 30-60 messages never
+// eat into /demo/start's allowance on the same office network.
+async function handleClassify(
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> {
+  const parsed = parseClassifyRequest(parseBody(event));
+  if (!parsed.ok) {
+    return parsed.status === 413
+      ? json(413, { error: 'too_large' })
+      : json(422, { error: 'invalid_input', issues: parsed.issues });
+  }
+  const ip = event.requestContext.http.sourceIp ?? 'unknown';
+  try {
+    await assertWithinRateLimit(ip, Date.now(), {
+      bucket: 'siniestros',
+      cap: LIMITS.siniestrosPerIp,
+    });
+    return json(200, await classifyMessage(parsed.data));
+  } catch (err) {
+    if (err instanceof RateLimitedError) return json(429, { error: 'rate_limited' });
+    if (err instanceof ClassifyFailedError) return json(502, { error: 'classify_failed' });
+    const name = (err as Error).name;
+    // Bedrock refused the file itself (corrupt image, encrypted PDF, bytes
+    // that do not match the declared mime).
+    if (name === 'ValidationException') return json(422, { error: 'invalid_attachment' });
+    // Transient model-side trouble: same answer as bad output, the browser
+    // treats 502 as "could not classify, let the user retry or file by hand".
+    if (
+      name === 'ThrottlingException' ||
+      name === 'ModelTimeoutException' ||
+      name === 'ServiceUnavailableException' ||
+      name === 'ModelNotReadyException'
+    ) {
+      return json(502, { error: 'classify_failed' });
+    }
     throw err;
   }
 }

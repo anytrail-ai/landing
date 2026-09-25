@@ -84,6 +84,12 @@ export class ApiStack extends cdk.Stack {
       },
     };
 
+    // Behind the HTTP API, the effective ceiling is the gateway's 30 s
+    // integration timeout, not this Lambda's 120 s: a slow Bedrock call (e.g.
+    // POST /demo/siniestros/classify, multimodal, typically 5-20 s) that runs
+    // past 30 s reaches the browser as a 503 while the Lambda keeps running.
+    // Request bodies are capped by Lambda's 6 MB invoke payload (the gateway
+    // allows 10 MB), which is why siniestro attachments stop at ~4.5 MB of base64.
     const apiFn = new NodejsFunction(this, 'ApiFn', {
       ...common,
       entry: path.join(__dirname, '../src/api/handler.ts'),

@@ -1,12 +1,22 @@
-import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { setDocClientForTests } from '../db';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { assertWithinRateLimit } from '../api/rate-limit';
+import { TABLE_NAME, setDocClientForTests } from '../db';
+import { LIMITS } from '../limits';
+import { sendPriceRequestEmail } from './email';
 import {
   AlreadyAnsweredError, InvalidAnswerError, answerPriceRequest, applyAnswerToCatalog,
-  applyAnswerToLines, validateAnswer,
+  applyAnswerToLines, sendPriceRequest, validateAnswer,
 } from './price-request';
-import type { CatalogItem, PriceRequest, QuoteLine } from './types';
+import type { Catalog, CatalogItem, PriceRequest, Quote, QuoteLine } from './types';
+
+// Finding 2: mock the two side effects of sendPriceRequest — the outbound
+// email and the IP cap — so the test can pin (a) send order and (b) that a
+// failed send leaves no DynamoDB write behind. Neither mock affects
+// answerPriceRequest below: it never imports these two functions.
+vi.mock('./email', () => ({ sendPriceRequestEmail: vi.fn() }));
+vi.mock('../api/rate-limit', () => ({ assertWithinRateLimit: vi.fn() }));
 
 const req = (over: Partial<PriceRequest> = {}): PriceRequest => ({
   token: 't'.repeat(43), quoteId: 'q', catalogId: 'c', supplier: 'S', currency: 'MXN', to: 'a@b.co',
@@ -65,5 +75,58 @@ describe('answerPriceRequest', () => {
       answerPriceRequest({ t: 't'.repeat(43), prices: [{ lineIndex: 1, unitCents: 1 }, { lineIndex: 2, unitCents: 1 }] }),
     ).rejects.toBeInstanceOf(AlreadyAnsweredError);
     expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0); // rejected before the conditional write
+  });
+});
+
+describe('sendPriceRequest', () => {
+  const ddb = mockClient(DynamoDBDocumentClient);
+  beforeEach(() => {
+    ddb.reset();
+    setDocClientForTests(ddb as unknown as DynamoDBDocumentClient);
+    vi.mocked(assertWithinRateLimit).mockReset().mockResolvedValue(undefined);
+    vi.mocked(sendPriceRequestEmail).mockReset().mockRejectedValue(new Error('email_failed'));
+  });
+  afterEach(() => setDocClientForTests(undefined));
+
+  it('checks the IP cap before sending, and a failed send writes nothing', async () => {
+    const quote: Quote = {
+      quoteId: 'q1',
+      sessionId: 's1',
+      catalogId: 'c1',
+      currency: 'MXN',
+      lines: [{ itemId: 'i1', query: 'a', name: 'A', sku: null, qty: 1, unitCents: null, status: 'unpriced' }],
+      priceRequestId: null,
+      createdAt: '2026-09-24T00:00:00Z',
+    };
+    const catalog: Catalog = {
+      catalogId: 'c1',
+      supplier: 'Acme',
+      supplierEmail: null,
+      currency: 'MXN',
+      items: [{ id: 'i1', sku: null, name: 'A', description: null, priceCents: null }],
+    };
+    ddb
+      .on(GetCommand, { TableName: TABLE_NAME, Key: { pk: 'QUOTE#q1', sk: 'META' } })
+      .resolves({ Item: quote })
+      .on(GetCommand, { TableName: TABLE_NAME, Key: { pk: 'QCAT#c1', sk: 'META' } })
+      .resolves({ Item: catalog });
+
+    await expect(
+      sendPriceRequest({ quoteId: 'q1', to: 'p@acme.mx', subject: 's', body: 'b' }, '1.2.3.4'),
+    ).rejects.toThrow('email_failed');
+
+    // IP cap checked before the send.
+    expect(assertWithinRateLimit).toHaveBeenCalledWith(
+      '1.2.3.4',
+      expect.any(Number),
+      { bucket: 'qpr', cap: LIMITS.priceRequestPerIp },
+    );
+    const rateOrder = vi.mocked(assertWithinRateLimit).mock.invocationCallOrder[0];
+    const emailOrder = vi.mocked(sendPriceRequestEmail).mock.invocationCallOrder[0];
+    expect(rateOrder).toBeLessThan(emailOrder);
+
+    // A failed send must leave nothing behind that would later be reminded.
+    expect(ddb.commandCalls(PutCommand)).toHaveLength(0);
+    expect(ddb.commandCalls(UpdateCommand)).toHaveLength(0);
   });
 });

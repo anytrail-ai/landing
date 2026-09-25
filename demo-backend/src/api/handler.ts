@@ -20,6 +20,7 @@ import {
 } from './schedule';
 import { totalCents } from '../quote/match';
 import { getPriceRequest, getQuote } from '../quote/store';
+import type { Quote } from '../quote/types';
 import {
   AlreadyAnsweredError, AlreadyRequestedError, InvalidAnswerError, NothingToRequestError,
   UnknownQuoteError, UnknownRequestError, answerPriceRequest, answerSchema, getSupplierView,
@@ -279,12 +280,21 @@ function strip<T extends object>(row: T): Omit<T, 'pk' | 'sk' | 'expiresAt'> {
   return rest;
 }
 
+// `priceRequestId` IS the supplier's one-time capability token for
+// GET /demo/quote/price-request?t=<token> — the public quote response must
+// never carry it. Its state is already exposed via `request: publicState(req)`.
+function publicQuote(quote: Quote): Omit<Quote, 'pk' | 'sk' | 'expiresAt' | 'priceRequestId'> {
+  const stripped = strip(quote);
+  const { priceRequestId: _t, ...rest } = stripped;
+  return rest;
+}
+
 async function handleGetQuote(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {
   const id = event.queryStringParameters?.id ?? '';
   const quote = id ? await getQuote(id) : null;
   if (!quote) return json(404, { error: 'unknown_quote' });
   const req = quote.priceRequestId ? await getPriceRequest(quote.priceRequestId) : null;
-  return json(200, { quote: strip(quote), totalCents: totalCents(quote.lines), request: publicState(req) });
+  return json(200, { quote: publicQuote(quote), totalCents: totalCents(quote.lines), request: publicState(req) });
 }
 
 async function handleSendPriceRequest(event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> {

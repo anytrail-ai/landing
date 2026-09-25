@@ -3,13 +3,22 @@ import QuoteCard from './QuoteCard'
 import QuoteChat from './QuoteChat'
 import { generateQuote, loadCatalog } from './quoteDemoApi'
 import { fileToBase64, money } from './quoteDemoUtil'
+import { extractPdfText } from './pdfText'
 import './QuoteDemo.css'
 
-const MAX_PDF = 4 * 1024 * 1024
+// PDFs up to this size go to Bedrock whole (its document limit is 4.5 MB, and
+// base64 must also fit the Function URL's 6 MB request cap). Bigger ones,
+// usually a catalogue full of product photos, are read in the browser and
+// only their text is sent.
+const MAX_PDF_WHOLE = 4 * 1024 * 1024
+const MAX_PDF_FILE = 50 * 1024 * 1024
 const MAX_TEXT = 200_000
+// Less text than this from a big PDF means it has no text layer (a scan).
+const MIN_PDF_TEXT = 200
 const CATALOG_ERRORS = {
   catalog_unreadable: 'No pudimos leer el catálogo. Prueba con otro archivo o usa el de ejemplo.',
-  catalog_too_large: 'El catálogo es muy grande (máximo 4 MB en PDF o 200 KB en texto).',
+  catalog_too_large: 'El catálogo es muy grande (máximo 50 MB en PDF o 200 KB en texto).',
+  catalog_scanned: 'Este PDF no tiene texto seleccionable (parece escaneado). Pega la lista de precios como texto.',
   rate_limited: 'Llegaste al límite de catálogos de la demo por hoy. Usa el de ejemplo.',
 }
 
@@ -44,11 +53,35 @@ export default function QuoteDemo() {
     e.target.value = ''
     if (!file) return
     if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
-      if (file.size > MAX_PDF) return setError(CATALOG_ERRORS.catalog_too_large)
-      return start({ pdfBase64: await fileToBase64(file) })
+      if (file.size > MAX_PDF_FILE) return setError(CATALOG_ERRORS.catalog_too_large)
+      if (file.size <= MAX_PDF_WHOLE) return start({ pdfBase64: await fileToBase64(file) })
+      return startFromBigPdf(file)
     }
     if (file.size > MAX_TEXT) return setError(CATALOG_ERRORS.catalog_too_large)
     return start({ text: await file.text() })
+  }
+
+  async function startFromBigPdf(file) {
+    setError(null)
+    setStep('Leyendo el PDF en tu navegador…')
+    let extracted
+    try {
+      extracted = await extractPdfText(file, {
+        maxChars: MAX_TEXT,
+        onProgress: (n, total) => setStep(`Leyendo el PDF en tu navegador… página ${n} de ${total}`),
+      })
+    } catch (err) {
+      console.error('pdf_text_extract_failed', err)
+      setStep(null)
+      return setError(CATALOG_ERRORS.catalog_unreadable)
+    }
+    if (extracted.text.length < MIN_PDF_TEXT) {
+      setStep(null)
+      return setError(CATALOG_ERRORS.catalog_scanned)
+    }
+    // A catalogue longer than MAX_TEXT is cut there; the backend keeps the
+    // first 80 products anyway, so the tail would not be used.
+    return start({ text: extracted.text })
   }
 
   function onPastedText() {
@@ -90,7 +123,7 @@ export default function QuoteDemo() {
             <label className="qd-drop">
               <input type="file" accept=".pdf,.txt,.csv,.md,application/pdf,text/plain,text/csv" onChange={onFile} disabled={Boolean(step)} />
               <strong>Subir catálogo (PDF o texto)</strong>
-              <span>Máximo 4 MB</span>
+              <span>PDF hasta 50 MB, texto hasta 200 KB</span>
             </label>
             <textarea
               rows={5}

@@ -770,6 +770,14 @@ export const COPY = {
         generic: 'Algo salió mal. Inténtalo de nuevo.',
       },
     },
+    siniestrosDemo: {
+      meta: {
+        title: 'Siniestros en orden | Anytrail',
+        description:
+          'Demostración: cada foto, póliza y reporte que llega por WhatsApp se organiza solo en el expediente de su siniestro.',
+        ogLocale: 'es_ES',
+      },
+    },
     schedule: {
       meta: {
         title: 'Agenda una revisión de tu proceso comercial | Anytrail',
@@ -1213,6 +1221,9 @@ export const ROUTES = {
     // Spanish-only unlisted demo; noindex.
     quoteDemo: '/quote_demo',
     supplierPrice: '/supplier_price',
+    // Spanish only and unlisted: the claims demo built for a Delpur (seguros)
+    // meeting. Full-screen app, no marketing chrome (see App.jsx).
+    siniestrosDemo: '/es/siniestros_demo',
   },
 }
 
@@ -1223,7 +1234,7 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 
 // Pages that must never be indexed. A thank-you page ranking in search would
 // pull people past the booking step into a dead end.
-export const NOINDEX_PAGES = ['thanks', 'inboundDemo', 'quoteDemo', 'supplierPrice']
+export const NOINDEX_PAGES = ['thanks', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo']
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

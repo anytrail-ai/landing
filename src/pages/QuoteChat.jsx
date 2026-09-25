@@ -25,10 +25,14 @@ export default function QuoteChat({ sessionId, supplier, messages, setMessages, 
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: 'smooth' })
   }, [messages])
 
-  // One customer turn through the real agent. Returns true when the agent
-  // asked for the quote (marker seen) or the session hit its cap.
+  // One customer turn through the real agent. Returns { ok: false } on
+  // failure (history/messages rolled back to their pre-turn state, distinct
+  // from a successful turn that simply isn't ready to quote yet) or
+  // { ok: true, final } where final is the full transcript once the agent
+  // asked for the quote (marker seen) or the session hit its cap, else null.
   async function sendTurn(text) {
-    const next = [...history.current, { role: 'user', text }]
+    const prev = history.current
+    const next = [...prev, { role: 'user', text }]
     setMessages([...next, { role: 'assistant', text: '' }])
     setBusy(true)
     setError(null)
@@ -42,12 +46,19 @@ export default function QuoteChat({ sessionId, supplier, messages, setMessages, 
       const final = [...next, { role: 'assistant', text: stripQuoteMarker(raw).text || '…' }]
       setMessages(final)
       history.current = final
-      return ready || ended ? final : null
-    } catch {
-      setError('El agente no respondió. Intenta de nuevo.')
-      setMessages(next)
-      history.current = next
-      return null
+      return { ok: true, final: ready || ended ? final : null }
+    } catch (err) {
+      setError(
+        err?.message === 'rate_limited'
+          ? 'Llegaste al límite de mensajes de la demo por hoy.'
+          : 'El agente no respondió. Intenta de nuevo.',
+      )
+      // Roll BOTH the history and the displayed messages back to before this
+      // turn: leaving the unanswered user message would send user,user next
+      // turn and Bedrock Converse rejects consecutive same-role messages.
+      setMessages(prev)
+      history.current = prev
+      return { ok: false }
     } finally {
       setBusy(false)
     }
@@ -58,16 +69,21 @@ export default function QuoteChat({ sessionId, supplier, messages, setMessages, 
     const text = draft.trim()
     if (!text || busy) return
     setDraft('')
-    const final = await sendTurn(text)
-    if (final) onReady(final)
+    const result = await sendTurn(text)
+    if (!result.ok) {
+      setDraft(text)
+      return
+    }
+    if (result.final) onReady(result.final)
   }
 
   async function playSample(sample) {
     setPlaying(true)
     try {
       for (const line of sample.lines) {
-        const final = await sendTurn(line)
-        if (final) return onReady(final)
+        const result = await sendTurn(line)
+        if (!result.ok) return // stop the script on a failed line
+        if (result.final) return onReady(result.final)
       }
       onReady(history.current)
     } finally {

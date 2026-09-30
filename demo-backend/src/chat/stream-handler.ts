@@ -11,6 +11,7 @@ import { UnknownSessionError, extractForSession } from '../api/extract';
 import { prospectsForSession } from '../api/prospects';
 import { postSlackMessage } from '../notify';
 import { handleQuoteAction, quoteBodySchema } from '../quote/stream-actions';
+import { celdasBodySchema, handleCeldasAction } from '../celdas/stream-actions';
 
 function pipelineError(err: unknown): string {
   if (err instanceof UnknownSessionError) return 'unknown_session';
@@ -78,6 +79,18 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
       }
       const ip = event.requestContext?.http?.sourceIp ?? 'unknown';
       await handleQuoteAction(quoteParsed.data, ip, (e, d) => sse(stream, e, d));
+      return;
+    }
+
+    // Load-cell quoting agent (/es/celdas_demo): server-held session.
+    if (json?.action === 'celdas_chat') {
+      const celdasParsed = celdasBodySchema.safeParse(json);
+      if (!celdasParsed.success) {
+        sse(stream, 'error', { error: 'invalid_input' });
+        return;
+      }
+      const ip = event.requestContext?.http?.sourceIp ?? 'unknown';
+      await handleCeldasAction(celdasParsed.data, ip, (e, d) => sse(stream, e, d));
       return;
     }
 

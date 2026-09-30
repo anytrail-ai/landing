@@ -29,6 +29,7 @@ export function setDocClientForTests(c: DynamoDBDocumentClient | undefined): voi
 //   QUOTE#<quoteId>        / META      — quote demo: generated quote
 //   QPR#<token>            / META      — quote demo: supplier price request
 //   QPR_PENDING            / <token>   — index: requests still being reminded
+//   CELDAS#<sessionId>     / META      — celdas demo: agent session + quote
 export const keys = {
   lead: (sessionId: string) => ({ pk: `LEAD#${sessionId}`, sk: 'META' }),
   whatsappLead: (id: string) => ({ pk: `WALEAD#${id}`, sk: 'META' }),
@@ -54,6 +55,7 @@ export const keys = {
   quote: (id: string) => ({ pk: `QUOTE#${id}`, sk: 'META' }),
   priceRequest: (token: string) => ({ pk: `QPR#${token}`, sk: 'META' }),
   pendingPriceRequest: (token: string) => ({ pk: 'QPR_PENDING', sk: token }),
+  celdasSession: (id: string) => ({ pk: `CELDAS#${id}`, sk: 'META' }),
 } as const;
 
 /** Quote-demo rows live a week: long enough for a slow supplier, short enough

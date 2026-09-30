@@ -71,4 +71,19 @@ export const LIMITS = {
   /** Demo cadence: a reminder every 3 minutes, at most 5. */
   priceReminderEveryMs: 3 * 60 * 1000,
   priceReminderMax: 5,
+  // ---- /es/celdas_demo (load-cell quoting agent with visible reasoning) ----
+  /** Customer messages per celdas chat session. A full qualification runs
+   * ~6-10 messages; the cap stops one tab from looping the agent forever. */
+  celdasMessagesPerSession: 30,
+  /** Agent turns per IP per window. Each turn is up to celdasModelCallsPerTurn
+   * Bedrock calls; a live customer meeting plus rehearsals stays well under. */
+  celdasTurnsPerIp: 300,
+  /** Bedrock calls inside one turn (thinking → tool → thinking → reply). */
+  celdasModelCallsPerTurn: 6,
+  /** Max output tokens per Bedrock call in the celdas agent loop. */
+  celdasMaxTokens: 8000,
+  /** Quote emails per IP / across all IPs per window. The page emails any
+   * address the visitor types, so these are the spam-relay caps. */
+  celdasEmailPerIp: 20,
+  celdasEmailGlobal: 100,
 } as const;

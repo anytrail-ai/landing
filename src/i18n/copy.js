@@ -770,6 +770,14 @@ export const COPY = {
         generic: 'Algo salió mal. Inténtalo de nuevo.',
       },
     },
+    celdasDemo: {
+      meta: {
+        title: 'Agente de cotización de celdas de carga | Anytrail',
+        description:
+          'Demostración: un agente de ventas califica al cliente por WhatsApp, elige la celda Utilcell 350N correcta y envía la cotización en PDF.',
+        ogLocale: 'es_ES',
+      },
+    },
     siniestrosDemo: {
       meta: {
         title: 'Siniestros en orden | Anytrail',
@@ -1224,6 +1232,9 @@ export const ROUTES = {
     // Spanish only and unlisted: the claims demo built for a Delpur (seguros)
     // meeting. Full-screen app, no marketing chrome (see App.jsx).
     siniestrosDemo: '/es/siniestros_demo',
+    // Spanish only and unlisted: the Utilcell 350N load-cell quoting agent
+    // demo. Full-screen app like siniestrosDemo.
+    celdasDemo: '/es/celdas_demo',
   },
 }
 
@@ -1234,7 +1245,7 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 
 // Pages that must never be indexed. A thank-you page ranking in search would
 // pull people past the booking step into a dead end.
-export const NOINDEX_PAGES = ['thanks', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo']
+export const NOINDEX_PAGES = ['thanks', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo']
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

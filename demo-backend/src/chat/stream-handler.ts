@@ -83,7 +83,7 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
     }
 
     // Load-cell quoting agent (/es/celdas_demo): server-held session.
-    if (json?.action === 'celdas_chat') {
+    if (json?.action === 'celdas_chat' || json?.action === 'celdas_followup') {
       const celdasParsed = celdasBodySchema.safeParse(json);
       if (!celdasParsed.success) {
         sse(stream, 'error', { error: 'invalid_input' });

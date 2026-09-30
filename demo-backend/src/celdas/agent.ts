@@ -62,12 +62,11 @@ export class MessageBuilder {
   }
 }
 
-/** Runs one customer turn: appends the message, loops model ↔ tools until
+/** Runs one turn (a customer message or a follow-up event): appends it, loops model ↔ tools until
  * the model ends its turn, streaming reasoning, text and tool events. The
  * caller persists `session` afterwards; it is mutated in place. */
 export async function runCeldasTurn(session: CeldasSession, text: string, ip: string, emit: Emit): Promise<void> {
   session.messages.push({ role: 'user', content: [{ text }] });
-  session.userTurns += 1;
   let wroteText = false;
   let textKey = '';
 

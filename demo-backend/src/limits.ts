@@ -86,4 +86,12 @@ export const LIMITS = {
    * address the visitor types, so these are the spam-relay caps. */
   celdasEmailPerIp: 20,
   celdasEmailGlobal: 100,
+  /** In-chat follow-ups after a quote (demo cadence, compressed so a meeting
+   * sees the whole sequence): first after 3 min of silence, then every 5. */
+  celdasFollowUpMax: 3,
+  celdasFollowUpFirstMs: 3 * 60 * 1000,
+  celdasFollowUpEveryMs: 5 * 60 * 1000,
+  /** Server-side floor between follow-ups. The page's "Enviar ahora" skips
+   * the cadence for a live meeting; this still stops a loop from spamming. */
+  celdasFollowUpMinGapMs: 20 * 1000,
 } as const;

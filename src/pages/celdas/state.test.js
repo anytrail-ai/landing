@@ -49,3 +49,30 @@ describe('celdas reducer', () => {
     expect(s.sessionId).toBe('s1')
   })
 })
+
+describe('follow-ups', () => {
+  it('adds an automatic turn with no customer bubble, then takes the server schedule', () => {
+    const s = run([
+      { type: 'send', text: 'hola' },
+      { type: 'delta', text: 'Listo, ahí va su PDF.' },
+      { type: 'done' },
+      { type: 'followup_state', followUp: { count: 0, max: 3, closed: false, dueAt: '2026-09-30T20:00:00Z' } },
+      { type: 'followup_start', number: 1 },
+      { type: 'delta', text: '¿Pudo revisar la cotización?' },
+      { type: 'followup_state', followUp: { count: 1, max: 3, closed: false, dueAt: '2026-09-30T20:05:00Z' } },
+      { type: 'done' },
+    ])
+    expect(s.chat.map((c) => c.text)).toEqual(['hola', 'Listo, ahí va su PDF.', '¿Pudo revisar la cotización?'])
+    expect(s.trace[1]).toMatchObject({ auto: 1, userText: null })
+    expect(s.followUp).toMatchObject({ count: 1, dueAt: '2026-09-30T20:05:00Z' })
+  })
+
+  it('clears the pending timer while a follow-up runs so it cannot fire twice', () => {
+    const s = run([
+      { type: 'followup_state', followUp: { count: 0, max: 3, closed: false, dueAt: '2026-09-30T20:00:00Z' } },
+      { type: 'followup_start', number: 1 },
+    ])
+    expect(s.followUp.dueAt).toBeNull()
+    expect(s.busy).toBe(true)
+  })
+})

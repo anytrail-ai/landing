@@ -5,9 +5,19 @@
 // chat:  what the customer sees in WhatsApp, in order
 //   { kind: 'user' | 'agent', text } | { kind: 'pdf', folio, filename, url, totalUsd } | { kind: 'email', to, folio }
 // trace: what the reasoning panel shows, one entry per customer turn
-//   { userText, steps: [{ kind: 'thinking', text, done } | { kind: 'tool', id, name, input, calc, ok, label, result }] }
+//   { userText, auto, steps: [{ kind: 'thinking', text, done } | { kind: 'tool', id, name, input, calc, ok, label, result }] }
+//   auto is the follow-up number when the turn was an automatic follow-up, not a customer message.
+// followUp: the server's follow-up schedule, { count, max, closed, dueAt } (dueAt null = none pending)
 
-export const initialState = { sessionId: null, chat: [], trace: [], handoff: null, quote: null, busy: false }
+export const initialState = {
+  sessionId: null,
+  chat: [],
+  trace: [],
+  handoff: null,
+  quote: null,
+  busy: false,
+  followUp: { count: 0, max: 3, closed: false, dueAt: null },
+}
 
 const lastTurn = (trace) => trace[trace.length - 1]
 
@@ -33,9 +43,23 @@ export function reducer(state, action) {
       return {
         ...state,
         busy: true,
+        // The customer answered: the server sends the new schedule when done.
+        followUp: { ...state.followUp, dueAt: null },
         chat: [...state.chat, { kind: 'user', text: action.text, time: action.time }],
         trace: [...state.trace, { userText: action.text, steps: [] }],
       }
+    case 'followup_start':
+      return {
+        ...state,
+        busy: true,
+        followUp: { ...state.followUp, dueAt: null },
+        // A fresh (empty) agent message, so the follow-up's text does not
+        // append to the agent's previous bubble. Empty renders as nothing.
+        chat: [...state.chat, { kind: 'agent', text: '' }],
+        trace: [...state.trace, { userText: null, auto: action.number, steps: [] }],
+      }
+    case 'followup_state':
+      return { ...state, followUp: action.followUp }
     case 'session':
       return { ...state, sessionId: action.sessionId }
     case 'thinking_start':

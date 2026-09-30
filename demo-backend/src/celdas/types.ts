@@ -18,6 +18,9 @@ export interface Handoff {
   quoteFolio: string | null;
   pending: string[];
   alerts: string[];
+  /** Set when the customer agreed to buy: what they accepted and what the
+   * salesperson does next. Stops the follow-ups. */
+  accepted: { detail: string; nextStep: string } | null;
 }
 
 export interface CeldasQuote {
@@ -41,4 +44,12 @@ export interface CeldasSession {
   quote: CeldasQuote | null;
   emailedTo: string[];
   createdAt: string;
+  /** Latest handoff, so a later acceptance can extend it. */
+  handoff?: Handoff | null;
+  /** Automatic follow-ups sent since the quote. Optional: sessions from
+   * before follow-ups existed read as 0 / open. */
+  followUps?: number;
+  closed?: boolean;
+  /** ISO time of the last customer message or agent follow-up. */
+  lastActivityAt?: string;
 }

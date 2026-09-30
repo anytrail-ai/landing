@@ -8,6 +8,10 @@ export function celdasTurn({ sessionId, text }, handlers) {
   return streamRequest({ action: 'celdas_chat', ...(sessionId ? { sessionId } : {}), text }, handlers)
 }
 
+export function celdasFollowUp(sessionId, handlers) {
+  return streamRequest({ action: 'celdas_followup', sessionId }, handlers)
+}
+
 export function pdfUrl(base64) {
   const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
   return URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }))

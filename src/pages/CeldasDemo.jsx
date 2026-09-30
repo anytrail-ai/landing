@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
-import { Brain, Calculator, Check, FileText, Mail, RotateCcw, Send, TriangleAlert, UserRound, X } from 'lucide-react'
-import { celdasTurn, pdfUrl, usd } from './celdas/api'
+import { BadgeCheck, BellRing, Brain, Calculator, Check, FileText, Mail, RotateCcw, Send, TriangleAlert, UserRound, X } from 'lucide-react'
+import { celdasFollowUp, celdasTurn, pdfUrl, usd } from './celdas/api'
 import { bubbles, initialState, reducer } from './celdas/state'
 import './CeldasDemo.css'
 
@@ -23,8 +23,9 @@ const TOOL_NAMES = {
   generar_cotizacion: 'Generar cotización PDF',
   enviar_cotizacion_por_correo: 'Enviar por correo',
   entregar_a_vendedor: 'Entregar a vendedor',
+  registrar_aceptacion: 'Registrar aceptación',
 }
-const TOOL_ICONS = { dimensionar_celdas: Calculator, generar_cotizacion: FileText, enviar_cotizacion_por_correo: Mail, entregar_a_vendedor: UserRound }
+const TOOL_ICONS = { dimensionar_celdas: Calculator, generar_cotizacion: FileText, enviar_cotizacion_por_correo: Mail, entregar_a_vendedor: UserRound, registrar_aceptacion: BadgeCheck }
 
 const ERRORS = {
   rate_limited: 'Se alcanzó el límite de mensajes de la demo por hoy.',
@@ -47,6 +48,7 @@ function toolSummary(name, input) {
     return [lines, input.cliente?.email].filter(Boolean).join(' · ')
   }
   if (name === 'enviar_cotizacion_por_correo') return input.folio
+  if (name === 'registrar_aceptacion') return input.siguiente_paso
   if (name === 'entregar_a_vendedor') return [input.decision, input.producto_referido].filter(Boolean).join(' → ')
   return null
 }
@@ -223,8 +225,17 @@ function Handoff({ handoff, quote }) {
     <section className={`cd-handoff is-${tone}`} aria-label="Entrega al vendedor">
       <div className="cd-handoff-top">
         <span className="cd-kicker">Entrega al vendedor</span>
-        <span className="cd-decision">{handoff.decision}</span>
+        <span className="cd-decision">{handoff.accepted ? 'Cliente aceptó' : handoff.decision}</span>
       </div>
+      {handoff.accepted && (
+        <div className="cd-accepted">
+          <BadgeCheck size={16} aria-hidden="true" />
+          <div>
+            <strong>{handoff.accepted.detail}</strong>
+            <span>Siguiente paso: {handoff.accepted.nextStep}</span>
+          </div>
+        </div>
+      )}
       <dl>
         <dt>Aplicación</dt>
         <dd>{handoff.summary.application}</dd>
@@ -301,9 +312,15 @@ function Reasoning({ state }) {
           const live = state.busy && i === state.trace.length - 1
           return (
             <article key={i} className="cd-turn">
-              <div className="cd-turn-user">
-                <span>Cliente</span> {turn.userText}
-              </div>
+              {turn.auto ? (
+                <div className="cd-turn-user is-auto">
+                  <BellRing size={13} aria-hidden="true" /> <span>Seguimiento automático {turn.auto}/{state.followUp.max}</span> el cliente no ha respondido
+                </div>
+              ) : (
+                <div className="cd-turn-user">
+                  <span>Cliente</span> {turn.userText}
+                </div>
+              )}
               {turn.steps.map((s, j) => (
                 <Step key={j} step={s} live={live} />
               ))}
@@ -318,32 +335,72 @@ function Reasoning({ state }) {
   )
 }
 
+function useNow(active) {
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    if (!active) return
+    const t = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(t)
+  }, [active])
+  return now
+}
+
+// Presenter control: shows when the agent will follow up on its own and lets
+// the meeting skip the wait.
+function FollowUpStatus({ followUp, busy, onSendNow }) {
+  const now = useNow(Boolean(followUp.dueAt))
+  if (followUp.closed)
+    return (
+      <div className="cd-fu is-done">
+        <BadgeCheck size={15} aria-hidden="true" /> Cliente aceptó · seguimiento detenido
+      </div>
+    )
+  if (!followUp.dueAt) {
+    if (followUp.count >= followUp.max)
+      return <div className="cd-fu is-done">Seguimientos completos ({followUp.max}/{followUp.max})</div>
+    return null
+  }
+  const left = Math.max(0, Math.round((Date.parse(followUp.dueAt) - now) / 1000))
+  const mmss = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`
+  return (
+    <div className="cd-fu">
+      <BellRing size={15} aria-hidden="true" />
+      <span>
+        Seguimiento {followUp.count + 1}/{followUp.max} en <strong>{mmss}</strong>
+      </span>
+      <button type="button" onClick={onSendNow} disabled={busy}>
+        Enviar ahora
+      </button>
+    </div>
+  )
+}
+
 export default function CeldasDemo() {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [error, setError] = useState(null)
   const [tab, setTab] = useState('chat')
+
+  const handlers = {
+    session: (d) => dispatch({ type: 'session', sessionId: d.sessionId }),
+    thinking_start: () => dispatch({ type: 'thinking_start' }),
+    thinking: (d) => dispatch({ type: 'thinking', text: d.text }),
+    thinking_end: () => dispatch({ type: 'thinking_end' }),
+    delta: (d) => dispatch({ type: 'delta', text: d.text }),
+    tool: (d) => dispatch({ type: 'tool', ...d }),
+    calc: (d) => dispatch({ type: 'calc', explanation: d.explanation }),
+    tool_result: (d) => dispatch({ type: 'tool_result', ...d }),
+    quote: (d) => dispatch({ type: 'quote', quote: d.quote, filename: d.filename, url: pdfUrl(d.pdfBase64) }),
+    email: (d) => dispatch({ type: 'email', ...d }),
+    handoff: (d) => dispatch({ type: 'handoff', handoff: d }),
+    followup_state: (d) => dispatch({ type: 'followup_state', followUp: d }),
+  }
 
   async function send(text) {
     const snapshot = state
     setError(null)
     dispatch({ type: 'send', text, time: time() })
     try {
-      await celdasTurn(
-        { sessionId: snapshot.sessionId, text },
-        {
-          session: (d) => dispatch({ type: 'session', sessionId: d.sessionId }),
-          thinking_start: () => dispatch({ type: 'thinking_start' }),
-          thinking: (d) => dispatch({ type: 'thinking', text: d.text }),
-          thinking_end: () => dispatch({ type: 'thinking_end' }),
-          delta: (d) => dispatch({ type: 'delta', text: d.text }),
-          tool: (d) => dispatch({ type: 'tool', ...d }),
-          calc: (d) => dispatch({ type: 'calc', explanation: d.explanation }),
-          tool_result: (d) => dispatch({ type: 'tool_result', ...d }),
-          quote: (d) => dispatch({ type: 'quote', quote: d.quote, filename: d.filename, url: pdfUrl(d.pdfBase64) }),
-          email: (d) => dispatch({ type: 'email', ...d }),
-          handoff: (d) => dispatch({ type: 'handoff', handoff: d }),
-        },
-      )
+      await celdasTurn({ sessionId: snapshot.sessionId, text }, handlers)
       dispatch({ type: 'done' })
       return true
     } catch (err) {
@@ -352,6 +409,33 @@ export default function CeldasDemo() {
       return false
     }
   }
+
+  // Fired by the timer when it is due, or by "Enviar ahora". A refusal from
+  // the server (e.g. the customer already accepted) rolls back silently and
+  // leaves the schedule the server sent with it.
+  async function followUp() {
+    if (state.busy || !state.sessionId) return
+    const snapshot = state
+    setError(null)
+    dispatch({ type: 'followup_start', number: state.followUp.count + 1 })
+    let latest = null
+    try {
+      await celdasFollowUp(state.sessionId, { ...handlers, followup_state: (d) => { latest = d; handlers.followup_state(d) } })
+      dispatch({ type: 'done' })
+    } catch (err) {
+      dispatch({ type: 'rollback', snapshot: latest ? { ...snapshot, followUp: latest } : snapshot })
+      if (!String(err?.message).startsWith('followup_')) setError('El seguimiento no se pudo enviar. Intente de nuevo.')
+    }
+  }
+
+  const dueAt = state.followUp.dueAt
+  useEffect(() => {
+    if (!dueAt || state.busy) return
+    const t = setTimeout(followUp, Math.max(0, Date.parse(dueAt) - Date.now()))
+    return () => clearTimeout(t)
+    // followUp is recreated each render; the schedule is what matters.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dueAt, state.busy])
 
   function reset() {
     for (const m of state.chat) if (m.kind === 'pdf') URL.revokeObjectURL(m.url)
@@ -370,6 +454,7 @@ export default function CeldasDemo() {
           <strong>Agente de cotización</strong>
           <span>Celdas de carga Utilcell 350N</span>
         </div>
+        <FollowUpStatus followUp={state.followUp} busy={state.busy} onSendNow={followUp} />
         <button type="button" className="cd-reset" onClick={reset} disabled={state.busy}>
           <RotateCcw size={15} aria-hidden="true" /> Reiniciar
         </button>

@@ -48,6 +48,11 @@ const handoffInput = z.object({
   alertas: list,
 });
 
+const acceptInput = z.object({
+  detalle: z.string().min(1).max(400),
+  siguiente_paso: z.string().min(1).max(400),
+});
+
 const schema = (properties: Record<string, unknown>, required: string[]): ToolInputSchema => ({
   json: { type: 'object', properties, required, additionalProperties: false } as never,
 });
@@ -138,6 +143,20 @@ export const TOOLS: Tool[] = [
       ),
     },
   },
+  {
+    toolSpec: {
+      name: 'registrar_aceptacion',
+      description:
+        'Cuando el cliente acepta comprar lo cotizado (dice que sí, pide que se levante el pedido, pregunta cómo pagar o manda orden de compra). Avisa al vendedor para cerrar y detiene los seguimientos. No la uses si solo agradece o dice que lo va a revisar.',
+      inputSchema: schema(
+        {
+          detalle: { type: 'string', description: 'Qué aceptó el cliente, con folio, partidas y condiciones que mencionó.' },
+          siguiente_paso: { type: 'string', description: 'Qué debe hacer el vendedor ahora (p. ej. enviar datos de pago, confirmar entrega urgente).' },
+        },
+        ['detalle', 'siguiente_paso'],
+      ),
+    },
+  },
 ];
 
 /** What a tool run produces: the JSON the model reads back, and the events
@@ -160,6 +179,7 @@ function handoff(decision: Decision, s: z.infer<typeof summary>, extra: Partial<
     quoteFolio: null,
     pending: [],
     alerts: [],
+    accepted: null,
     ...extra,
   };
 }
@@ -214,14 +234,17 @@ export async function runTool(name: string, raw: unknown, session: CeldasSession
     };
     const pdf = await renderQuotePdf(quote);
     session.quote = quote;
+    // A new or revised quote restarts the follow-up sequence.
+    session.followUps = 0;
     const alerts = [...new Set([...priced.alerts, ...d.alertas])];
+    session.handoff = handoff('Cotizar 350N', d.resumen, { quoteFolio: quote.folio, pending: d.pendientes, alerts });
     return {
       ok: true,
       result: { folio: quote.folio, total_usd: quote.totalUsd, partidas: priced.lines.map((l) => `${l.qty} × ${l.partNumber} = $${l.totalUsd}`), mostrado_al_cliente: true },
       label: `Folio ${quote.folio} · $${quote.totalUsd.toLocaleString('en-US')} USD`,
       events: [
         { event: 'quote', data: { quote, pdfBase64: Buffer.from(pdf).toString('base64'), filename: quoteFilename(quote) } },
-        { event: 'handoff', data: handoff('Cotizar 350N', d.resumen, { quoteFolio: quote.folio, pending: d.pendientes, alerts }) },
+        { event: 'handoff', data: session.handoff },
       ],
     };
   }
@@ -258,7 +281,24 @@ export async function runTool(name: string, raw: unknown, session: CeldasSession
       pending: p.data.pendientes,
       alerts: p.data.alertas,
     });
+    session.handoff = h;
     return { ok: true, result: { entregado: true }, label: p.data.decision, events: [{ event: 'handoff', data: h }] };
+  }
+
+  if (name === 'registrar_aceptacion') {
+    const p = acceptInput.safeParse(raw);
+    if (!p.success) return fail('Aceptación: datos incompletos', 'invalid_input: detalle y siguiente_paso son obligatorios');
+    if (!session.quote) return fail('Aceptación sin cotización', 'Todavía no hay cotización generada: primero cotiza.');
+    session.closed = true;
+    const accepted = { detail: p.data.detalle, nextStep: p.data.siguiente_paso };
+    const base = session.handoff ?? handoff('Cotizar 350N', { aplicacion: session.quote.summary.application, ambiente: session.quote.summary.environment, reemplazo_o_nuevo: session.quote.summary.replacementOrNew }, { quoteFolio: session.quote.folio });
+    session.handoff = { ...base, accepted };
+    return {
+      ok: true,
+      result: { registrado: true, seguimientos_detenidos: true },
+      label: 'Cliente aceptó · seguimiento detenido',
+      events: [{ event: 'handoff', data: session.handoff }],
+    };
   }
 
   return fail(`Herramienta desconocida: ${name}`, 'unknown_tool');

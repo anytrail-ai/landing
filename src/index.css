@@ -1,6 +1,7 @@
 :root {
   --sans: 'Funnel Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
   --display: 'Funnel Display', 'Funnel Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   /* Palette: page */
   --page-bg: #fefdf6;
@@ -42,9 +43,14 @@
   --space-32: 128px;
 
   /* Section rhythm */
-  --section-pad-y: 96px;
-  --section-pad-y-mobile: 64px;
+  /* Adjacent sections stack top + bottom padding, so the gap between them is
+     twice this. 96px made a 192px void on wide screens. */
+  --section-pad-y: 72px;
+  --section-pad-y-mobile: 48px;
   --content-max: 929px;
+  /* Homepage bands run wider than content pages */
+  --band-max: 1200px;
+  --ink-band: #0c0c0b;
 
   font: 16px/1.5 var(--sans);
   color: var(--text);

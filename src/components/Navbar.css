@@ -136,6 +136,7 @@
   min-height: 44px;
   padding: 0 18px;
   border-radius: 999px;
+  white-space: nowrap;
   transition: background-color 0.2s ease-out;
 }
 

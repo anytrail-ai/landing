@@ -1,110 +1,204 @@
-.problem__group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.problem__group-label {
-  margin: 0;
-  font-family: var(--sans);
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-}
-
-.problem__grid {
-  margin: var(--space-2) 0 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-}
-
-/* three leaks in two columns left one card stranded on its own row */
-.problem__grid--three {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-/* the group already supplies the gap under its label */
-.problem__group .problem__grid {
-  margin-top: 0;
-}
-
-.problem__card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: var(--space-4) var(--space-6);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.problem__card-title {
-  margin: 0;
-  font-family: var(--sans);
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 22px;
-  color: var(--text-strong);
-}
-
-.problem__card-body {
-  margin: 0;
-  font-size: 14px;
-  line-height: 21px;
-  color: var(--text-muted);
-}
-
 .problem__stats {
-  margin: 0 0 var(--space-6);
+  margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-6);
+  border-top: 1px solid var(--band-rule-strong);
 }
 
 .problem__stat {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border);
+  gap: 12px;
+  padding: 28px 24px 0 0;
+}
+
+.problem__stat + .problem__stat {
+  padding-left: 24px;
+  border-left: 1px solid var(--band-rule);
 }
 
 .problem__stat-value {
-  font-family: var(--display);
-  font-size: 34px;
-  line-height: 40px;
-  letter-spacing: -0.6px;
-  color: var(--text-strong);
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: clamp(44px, 6vw, 84px);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: var(--band-fg);
 }
 
 .problem__stat-body {
-  font-size: 14px;
-  line-height: 21px;
-  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--band-muted);
 }
 
 .problem__stat-source {
-  font-size: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
   line-height: 16px;
-  color: var(--text-faint);
+  color: var(--band-faint);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
 }
 
 .problem__stat-source:hover {
-  color: var(--text);
+  color: var(--band-fg);
 }
 
-@media (max-width: 700px) {
-  .problem__grid,
+/* ledger */
+.ledger {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.ledger__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.ledger__group-label {
+  margin: 0 0 12px;
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--band-faint);
+}
+
+.ledger__rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--band-rule-strong);
+}
+
+.ledger__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 8fr) minmax(0, 3fr);
+  gap: 24px;
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--band-rule);
+}
+
+.ledger__no {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--band-faint);
+}
+
+.ledger__text {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px 24px;
+  align-items: baseline;
+}
+
+.ledger__title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(22px, 2.2vw, 30px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--band-fg);
+}
+
+/* the strike is a background line so it can draw left to right */
+.ledger__strike {
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position: 0 58%;
+  background-size: 100% 2px;
+  transition: background-size 0.7s cubic-bezier(0.65, 0, 0.35, 1) 0.25s;
+}
+
+.ledger__body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--band-muted);
+}
+
+.ledger__stamp {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 16px;
+  white-space: nowrap;
+  color: var(--accent);
+  transition:
+    opacity 0.3s ease-out 0.85s,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) 0.85s;
+}
+
+.ledger__stamp svg {
+  width: 11px;
+  height: 11px;
+}
+
+/* armed state: the line is open until it scrolls in */
+.js-reveal .ledger__row:not(.is-in) .ledger__strike {
+  background-size: 0% 2px;
+}
+
+.js-reveal .ledger__row:not(.is-in) .ledger__stamp {
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+/* the row itself slides in via [data-reveal]; the strike and stamp follow */
+
+@media (prefers-reduced-motion: reduce) {
+  .ledger__strike,
+  .ledger__stamp {
+    transition: none;
+  }
+
+  .js-reveal .ledger__row:not(.is-in) .ledger__strike {
+    background-size: 100% 2px;
+  }
+
+  .js-reveal .ledger__row:not(.is-in) .ledger__stamp {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (max-width: 820px) {
   .problem__stats {
     grid-template-columns: 1fr;
+  }
+
+  .problem__stat,
+  .problem__stat + .problem__stat {
+    padding: 24px 0;
+    border-left: none;
+    border-bottom: 1px solid var(--band-rule);
+  }
+
+  .ledger__row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .ledger__text {
+    grid-template-columns: 1fr;
+  }
+
+  .ledger__stamp {
+    grid-column: 2;
+    justify-self: start;
   }
 }

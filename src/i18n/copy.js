@@ -4,21 +4,31 @@ export const COPY = {
   en: {
     meta: {
       title:
-        'Anytrail | AI Sales Agents for Industrial Equipment Companies',
+        'Anytrail | Find the Revenue Your Business Is Already Losing',
       description:
-        'Anytrail works demand in both directions for manufacturers and industrial distributors. It surfaces the accounts that are about to buy, reaches out on WhatsApp, email, and LinkedIn, and answers every inbound inquiry with AI sales agents trained on your product catalog: diagnosing the application, preparing quotes, and following up.',
+        'Anytrail finds the sales that distributors, wholesalers, and industrial equipment companies are missing. It works across WhatsApp, email, your CRM, and your ERP to answer every inquiry, revive stalled quotes, win back past customers, and show you what customers want that you don’t stock.',
       ogLocale: 'en_US',
     },
     navbar: {
-      cta: 'Book a review',
+      cta: 'Free revenue review',
     },
     hero: {
-      title: 'AI sales agents trained on what your industrial company actually sells.',
+      title: 'Find the revenue your business is already losing.',
       subtitle:
-        'Anytrail works demand in both directions, finding the accounts that are about to buy and answering every inquiry the moment it lands. Same agent, same catalog knowledge: it diagnoses the application, collects what’s needed to quote, and follows up until your sales team steps in.',
-      cta: 'Review my commercial process',
+        'Every quote, chat, and order holds a clue to your next sale. Anytrail watches your whole operation, across WhatsApp, email, your CRM, and your ERP, and surfaces the deals falling through the cracks: which customers to call, which quotes to revive, and which products to stock.',
+      cta: 'Show me my hidden sales',
       ctaNote:
-        'For manufacturers, distributors, and industrial equipment companies. Outbound on WhatsApp, email, and LinkedIn. Inbound from WhatsApp, ads, and your website. Both handled the way your best salesperson would.',
+        'For distributors, wholesalers, and industrial equipment companies. Works with Salesforce, HubSpot, and SAP.',
+    },
+    benefits: {
+      label: 'WHAT YOU GET BACK',
+      title: 'The sales your team is too busy to catch.',
+      items: [
+        { title: 'Never lose a lead to a slow reply', body: 'Every inquiry on WhatsApp or email is answered and qualified right away, at any hour, before the buyer moves on to the next supplier.' },
+        { title: 'Win back past customers', body: 'Anytrail spots repeat-buy moments, like equipment due for replacement or a plant ready to expand, and starts the conversation.' },
+        { title: 'No more forgotten quotes', body: 'It tracks every quote you send and follows up on the ones that stall, so you know exactly which deals need attention.' },
+        { title: 'Stock what customers ask for', body: 'See the products customers keep requesting that you don’t carry, and stop turning orders away.' },
+      ],
     },
     conversation: {
       ariaLabel:
@@ -39,10 +49,17 @@ export const COPY = {
       ],
     },
     problem: {
-      label: 'THE PROBLEM',
-      title: 'You pay to generate demand. Then sales are lost deciding who to chase and how fast you answer.',
+      label: 'WHERE THE MONEY GOES',
+      title: 'Your business should be making more. The leaks are just hard to see.',
       intro:
-        "Most industrial equipment sales don't fail at the ad or the website. They fail in the gap between the signal and the quote.",
+        'Revenue rarely disappears in one place. It leaks between systems: an inquiry on WhatsApp nobody answered, a quote in email nobody chased, a customer in the ERP nobody called back.',
+      // Figures quoted from the original HBR articles; keep the source links
+      // with them.
+      stats: [
+        { value: '7×', body: 'more likely to qualify a lead when you reply within an hour instead of later.', source: 'Harvard Business Review, 2011', url: 'https://hbr.org/2011/03/the-short-life-of-online-sales-leads' },
+        { value: '42 hrs', body: 'average response time across 2,241 U.S. companies, and 23% never responded at all.', source: 'Harvard Business Review, 2011', url: 'https://hbr.org/2011/03/the-short-life-of-online-sales-leads' },
+        { value: '5–25×', body: 'more expensive to win a new customer than to keep one you already have.', source: 'Harvard Business Review, 2014', url: 'https://hbr.org/2014/10/the-value-of-keeping-the-right-customers' },
+      ],
       groups: [
         {
           label: 'Demand you never found',
@@ -82,7 +99,7 @@ export const COPY = {
     },
     different: {
       label: "WHY IT'S DIFFERENT",
-      title: 'Not a chatbot. Not a database. Not a sequence tool. Part of your sales operation.',
+      title: 'Not another chatbot or CRM. A revenue auditor that never clocks out.',
       intro:
         "Anytrail learns what you sell, asks your team's qualification questions, and works each opportunity through a real sales process, in both directions. It knows when to keep the conversation going and when your salespeople should take over.",
       comparisons: [
@@ -94,20 +111,30 @@ export const COPY = {
     },
     proof: {
       label: 'PROOF',
-      title: 'Built inside a real industrial equipment sales team.',
-      p1: 'Anytrail was built and runs inside the sales process of an industrial equipment company, from the first contact through diagnosis, product recommendation, quotation, and follow-up. Last month alone, inbound conversations handled by the agent contributed to more than $20,000 USD in equipment sold.',
+      title: 'Built inside real sales teams. Already finding money.',
+      stat: '+$50,000 USD',
+      statLabel: 'in value found for our customers last month.',
       p2:
-        'It was developed around the way industrial equipment is actually diagnosed, quoted, followed up, and sold, not around a generic chatbot script.',
+        'Anytrail was built inside a working industrial sales team, around the way products are actually diagnosed, quoted, followed up, and sold, not around a generic chatbot script.',
+      customersLabel: 'Trusted by',
+      // A testimonial renders only once its quote is filled in, so an empty
+      // slot never ships as a blank card.
+      testimonials: [
+        { company: 'Hidrorey', quote: '', name: '', role: '' },
+        { company: 'Toshiba', quote: '', name: '', role: '' },
+      ],
+      integrationsLabel: 'Works with',
+      integrations: ['Salesforce', 'HubSpot', 'SAP', 'WhatsApp', 'Email'],
     },
     closing: {
-      title: 'Review your commercial process',
+      title: 'Find your first revenue leak',
       body:
-        "We'll look at how your company currently finds and responds to new opportunities, and identify where potential sales may be getting lost.",
-      cta: 'Review my commercial process',
+        "In a free revenue review, we look at how your business finds and answers opportunities today and show you where sales are slipping away.",
+      cta: 'Start free revenue review',
     },
     whatsapp: {
-      cta: 'Or ask our agent on WhatsApp',
-      prefill: "Hi, I'd like to see how Anytrail could work our opportunities, inbound and outbound.",
+      cta: 'Or text us on WhatsApp',
+      prefill: "Hi, I'd like to find the sales we're missing.",
     },
     privacyCopilot: {
       meta: {
@@ -609,7 +636,7 @@ export const COPY = {
       },
     },
     footer: {
-      tagline: 'AI sales agents for industrial equipment companies. © 2026 Anytrail',
+      tagline: 'Finds the revenue distributors and industrial companies are missing. © 2026 Anytrail',
       linksLabel: 'Reading',
     },
   },
@@ -617,21 +644,31 @@ export const COPY = {
   es: {
     meta: {
       title:
-        'Anytrail | Agentes de Ventas con IA para Empresas de Equipo Industrial',
+        'Anytrail | Encuentra los Ingresos que tu Empresa Ya Está Perdiendo',
       description:
-        'Anytrail trabaja la demanda en ambas direcciones para fabricantes y distribuidores industriales. Detecta las cuentas que están por comprar, las contacta por WhatsApp, correo y LinkedIn, y responde cada consulta entrante con agentes de IA entrenados en tu catálogo: diagnostica la aplicación, prepara cotizaciones y da seguimiento.',
+        'Anytrail encuentra las ventas que distribuidores, mayoristas y empresas de equipo industrial están dejando ir. Trabaja sobre WhatsApp, correo, tu CRM y tu ERP para responder cada consulta, revivir cotizaciones atoradas, recuperar clientes anteriores y mostrarte lo que tus clientes piden y no tienes en inventario.',
       ogLocale: 'es_ES',
     },
     navbar: {
-      cta: 'Agenda una revisión',
+      cta: 'Revisión de ingresos gratis',
     },
     hero: {
-      title: 'Agentes de ventas con IA entrenados en lo que tu empresa industrial realmente vende.',
+      title: 'Encuentra los ingresos que tu empresa ya está perdiendo.',
       subtitle:
-        'Anytrail trabaja la demanda en ambas direcciones, encuentra las cuentas que están por comprar y responde cada consulta en el momento en que llega. El mismo agente, el mismo conocimiento de tu catálogo: diagnostica la aplicación, reúne los datos para cotizar y da seguimiento hasta que tu equipo de ventas entra.',
-      cta: 'Revisa mi proceso comercial',
+        'Cada cotización, chat y pedido guarda una pista de tu próxima venta. Anytrail vigila toda tu operación, en WhatsApp, correo, tu CRM y tu ERP, y saca a la luz las ventas que se están escapando: a qué clientes llamar, qué cotizaciones revivir y qué productos tener en inventario.',
+      cta: 'Muéstrame mis ventas ocultas',
       ctaNote:
-        'Para fabricantes, distribuidores y empresas de equipo industrial. Prospección por WhatsApp, correo y LinkedIn. Consultas entrantes de WhatsApp, anuncios y tu sitio web. Ambas atendidas como lo haría tu mejor vendedor.',
+        'Para distribuidores, mayoristas y empresas de equipo industrial. Funciona con Salesforce, HubSpot y SAP.',
+    },
+    benefits: {
+      label: 'LO QUE RECUPERAS',
+      title: 'Las ventas que tu equipo está demasiado ocupado para atender.',
+      items: [
+        { title: 'Ningún lead perdido por responder tarde', body: 'Cada consulta por WhatsApp o correo se responde y califica de inmediato, a cualquier hora, antes de que el comprador se vaya con otro proveedor.' },
+        { title: 'Recupera clientes anteriores', body: 'Anytrail detecta los momentos de recompra, como equipo que ya toca reemplazar o una planta lista para crecer, y abre la conversación.' },
+        { title: 'Ninguna cotización olvidada', body: 'Registra cada cotización que envías y da seguimiento a las que se atoran, para que sepas exactamente qué tratos necesitan atención.' },
+        { title: 'Ten lo que tus clientes piden', body: 'Ve los productos que tus clientes siguen pidiendo y no manejas, y deja de rechazar pedidos.' },
+      ],
     },
     conversation: {
       ariaLabel:
@@ -652,10 +689,15 @@ export const COPY = {
       ],
     },
     problem: {
-      label: 'EL PROBLEMA',
-      title: 'Pagas por generar demanda. Y las ventas se pierden decidiendo a quién perseguir y qué tan rápido respondes.',
+      label: 'A DÓNDE SE VA EL DINERO',
+      title: 'Tu empresa debería estar ganando más. Las fugas solo son difíciles de ver.',
       intro:
-        'La mayoría de las ventas de equipo industrial no se pierden en el anuncio ni en el sitio web. Se pierden en el hueco entre la señal y la cotización.',
+        'Los ingresos casi nunca se pierden en un solo lugar. Se escapan entre sistemas: una consulta en WhatsApp que nadie contestó, una cotización en el correo que nadie persiguió, un cliente en el ERP al que nadie volvió a llamar.',
+      stats: [
+        { value: '7×', body: 'más probable calificar un lead si respondes en menos de una hora que si tardas más.', source: 'Harvard Business Review, 2011', url: 'https://hbr.org/2011/03/the-short-life-of-online-sales-leads' },
+        { value: '42 h', body: 'tiempo promedio de respuesta en 2,241 empresas de EE. UU., y el 23% nunca respondió.', source: 'Harvard Business Review, 2011', url: 'https://hbr.org/2011/03/the-short-life-of-online-sales-leads' },
+        { value: '5–25×', body: 'más caro conseguir un cliente nuevo que conservar uno que ya tienes.', source: 'Harvard Business Review, 2014', url: 'https://hbr.org/2014/10/the-value-of-keeping-the-right-customers' },
+      ],
       groups: [
         {
           label: 'Demanda que nunca encontraste',
@@ -695,7 +737,7 @@ export const COPY = {
     },
     different: {
       label: 'POR QUÉ ES DIFERENTE',
-      title: 'No es un chatbot. No es una base de datos. No es una herramienta de secuencias. Es parte de tu operación de ventas.',
+      title: 'No es otro chatbot ni otro CRM. Es un auditor de ingresos que nunca se va a casa.',
       intro:
         'Anytrail aprende lo que vendes, hace las preguntas de calificación de tu equipo y trabaja cada oportunidad dentro de un proceso de ventas real, en ambas direcciones. Sabe cuándo seguir la conversación y cuándo deben entrar tus vendedores.',
       comparisons: [
@@ -707,20 +749,28 @@ export const COPY = {
     },
     proof: {
       label: 'PRUEBA',
-      title: 'Construido dentro de un equipo de ventas de equipo industrial real.',
-      p1: 'Anytrail se construyó y opera dentro del proceso comercial de una empresa de equipo industrial, desde el primer contacto hasta el diagnóstico, la recomendación de producto, la cotización y el seguimiento. Solo el mes pasado, las conversaciones entrantes atendidas por el agente contribuyeron a más de $400,000 MXN en equipo vendido.',
+      title: 'Construido dentro de equipos de ventas reales. Ya está encontrando dinero.',
+      stat: '+$50,000 USD',
+      statLabel: 'en valor encontrado para nuestros clientes el mes pasado.',
       p2:
-        'Se desarrolló alrededor de cómo realmente se diagnostica, cotiza, da seguimiento y vende el equipo industrial, no alrededor de un guion genérico de chatbot.',
+        'Anytrail se construyó dentro de un equipo de ventas industrial en operación, alrededor de cómo realmente se diagnostican, cotizan, se les da seguimiento y se venden los productos, no alrededor de un guion genérico de chatbot.',
+      customersLabel: 'Confían en nosotros',
+      testimonials: [
+        { company: 'Hidrorey', quote: '', name: '', role: '' },
+        { company: 'Toshiba', quote: '', name: '', role: '' },
+      ],
+      integrationsLabel: 'Funciona con',
+      integrations: ['Salesforce', 'HubSpot', 'SAP', 'WhatsApp', 'Correo'],
     },
     closing: {
-      title: 'Revisa tu proceso comercial',
+      title: 'Encuentra tu primera fuga de ingresos',
       body:
-        'Revisamos cómo tu empresa encuentra y responde hoy a las nuevas oportunidades, e identificamos dónde se pueden estar perdiendo ventas.',
-      cta: 'Revisa mi proceso comercial',
+        'En una revisión de ingresos gratuita, vemos cómo tu empresa encuentra y responde hoy a las oportunidades y te mostramos dónde se están escapando las ventas.',
+      cta: 'Empieza tu revisión gratis',
     },
     whatsapp: {
-      cta: 'O pregúntale a nuestro agente por WhatsApp',
-      prefill: 'Hola, quiero ver cómo Anytrail podría trabajar nuestras oportunidades, entrantes y de prospección.',
+      cta: 'O escríbenos por WhatsApp',
+      prefill: 'Hola, quiero encontrar las ventas que estamos dejando ir.',
     },
     thanks: {
       meta: {
@@ -1183,7 +1233,7 @@ export const COPY = {
       },
     },
     footer: {
-      tagline: 'Agentes de ventas con IA para empresas de equipo industrial. © 2026 Anytrail',
+      tagline: 'Encuentra los ingresos que distribuidores y empresas industriales están dejando ir. © 2026 Anytrail',
       linksLabel: 'Lectura',
     },
   },

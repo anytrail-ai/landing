@@ -155,7 +155,7 @@ export const COPY = {
       title: 'Find your first revenue leak',
       body:
         "In a free revenue review, we look at how your business finds and answers opportunities today and show you where sales are slipping away.",
-      cta: 'Start free revenue review',
+      cta: 'See my revenue report',
     },
     whatsapp: {
       cta: 'Or text us on WhatsApp',
@@ -816,7 +816,7 @@ export const COPY = {
       title: 'Encuentra tu primera fuga de ingresos',
       body:
         'En una revisión de ingresos gratuita, vemos cómo tu empresa encuentra y responde hoy a las oportunidades y te mostramos dónde se están escapando las ventas.',
-      cta: 'Empieza tu revisión gratis',
+      cta: 'Ver mi reporte de ingresos',
     },
     whatsapp: {
       cta: 'O escríbenos por WhatsApp',

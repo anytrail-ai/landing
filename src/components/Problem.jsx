@@ -9,6 +9,17 @@ function Problem() {
   return (
     <Section label={c.label} title={c.title} className="problem" wide>
       <p>{c.intro}</p>
+      <ul className="problem__stats">
+        {c.stats.map((stat) => (
+          <li key={stat.value} className="problem__stat">
+            <span className="problem__stat-value">{stat.value}</span>
+            <span className="problem__stat-body">{stat.body}</span>
+            <a className="problem__stat-source" href={stat.url} target="_blank" rel="noopener noreferrer">
+              {stat.source}
+            </a>
+          </li>
+        ))}
+      </ul>
       {/* Two groups: demand that was never found, and demand that was answered
           too late. The split is the positioning: outbound and inbound are the
           same leak seen from two ends. */}

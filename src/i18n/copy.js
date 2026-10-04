@@ -10,7 +10,7 @@ export const COPY = {
       ogLocale: 'en_US',
     },
     navbar: {
-      cta: 'Free revenue review',
+      cta: 'See my report',
     },
     hero: {
       clockLead: 'You’ve been on this page for',
@@ -675,7 +675,7 @@ export const COPY = {
       ogLocale: 'es_ES',
     },
     navbar: {
-      cta: 'Revisión de ingresos gratis',
+      cta: 'Ver mi reporte',
     },
     hero: {
       clockLead: 'Llevas en esta página',

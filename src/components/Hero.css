@@ -18,9 +18,9 @@
   margin: 0;
   font-family: var(--display);
   font-weight: 400;
-  font-size: 34px;
-  line-height: 40px;
-  letter-spacing: -0.6px;
+  font-size: 38px;
+  line-height: 44px;
+  letter-spacing: -0.8px;
   color: var(--text);
 }
 
@@ -50,7 +50,8 @@
   color: var(--btn-text);
   background-color: var(--btn-bg);
   text-decoration: none;
-  padding: 10px 16px;
+  min-height: 44px;
+  padding: 0 20px;
   border-radius: 6px;
   transition: background-color 0.2s ease-out;
 }

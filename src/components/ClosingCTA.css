@@ -71,7 +71,8 @@
   color: var(--text-strong);
   background-color: #ffffff;
   text-decoration: none;
-  padding: 10px 16px;
+  min-height: 44px;
+  padding: 0 20px;
   border-radius: 6px;
   transition: background-color 0.2s ease-out;
 }

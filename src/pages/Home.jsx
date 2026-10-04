@@ -10,11 +10,12 @@ function Home() {
   return (
     <>
       <Hero />
+      {/* Proof right under the hero: buyers want evidence before the pitch. */}
+      <Proof />
       <Benefits />
       <Problem />
       <HowItWorks />
       <Different />
-      <Proof />
       <ClosingCTA />
     </>
   )

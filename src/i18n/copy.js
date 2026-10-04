@@ -16,7 +16,7 @@ export const COPY = {
       title: 'Find the revenue your business is already losing.',
       subtitle:
         'Every quote, chat, and order holds a clue to your next sale. Anytrail watches your whole operation, across WhatsApp, email, your CRM, and your ERP, and surfaces the deals falling through the cracks: which customers to call, which quotes to revive, and which products to stock.',
-      cta: 'Show me my hidden sales',
+      cta: 'See my revenue report',
       ctaNote:
         'For distributors, wholesalers, and industrial equipment companies. Works with Salesforce, HubSpot, and SAP.',
     },
@@ -29,6 +29,24 @@ export const COPY = {
         { title: 'No more forgotten quotes', body: 'It tracks every quote you send and follows up on the ones that stall, so you know exactly which deals need attention.' },
         { title: 'Stock what customers ask for', body: 'See the products customers keep requesting that you don’t carry, and stop turning orders away.' },
       ],
+    },
+    audit: {
+      ariaLabel:
+        'Sample revenue review for an example distributor: unanswered inquiries, stalled quotes, silent accounts, and unstocked requests, each with an estimated value.',
+      headerTitle: 'Revenue review',
+      sample: 'Sample',
+      company: 'Example Industrial Supply',
+      period: 'Last 90 days',
+      colFinding: 'Found',
+      colValue: 'Est. value',
+      lines: [
+        { text: '14 WhatsApp inquiries with no reply after 24 hours', value: '$18,400', recovered: '9 answered' },
+        { text: '6 quotes sent with no follow-up', value: '$22,100', recovered: '4 followed up' },
+        { text: '23 past customers silent for 18+ months', value: '$31,500' },
+        { text: '9 requests for products you don’t stock', value: '$7,200' },
+      ],
+      totalLabel: 'Revenue at risk',
+      total: '$79,200',
     },
     conversation: {
       ariaLabel:
@@ -656,7 +674,7 @@ export const COPY = {
       title: 'Encuentra los ingresos que tu empresa ya está perdiendo.',
       subtitle:
         'Cada cotización, chat y pedido guarda una pista de tu próxima venta. Anytrail vigila toda tu operación, en WhatsApp, correo, tu CRM y tu ERP, y saca a la luz las ventas que se están escapando: a qué clientes llamar, qué cotizaciones revivir y qué productos tener en inventario.',
-      cta: 'Muéstrame mis ventas ocultas',
+      cta: 'Ver mi reporte de ingresos',
       ctaNote:
         'Para distribuidores, mayoristas y empresas de equipo industrial. Funciona con Salesforce, HubSpot y SAP.',
     },
@@ -669,6 +687,24 @@ export const COPY = {
         { title: 'Ninguna cotización olvidada', body: 'Registra cada cotización que envías y da seguimiento a las que se atoran, para que sepas exactamente qué tratos necesitan atención.' },
         { title: 'Ten lo que tus clientes piden', body: 'Ve los productos que tus clientes siguen pidiendo y no manejas, y deja de rechazar pedidos.' },
       ],
+    },
+    audit: {
+      ariaLabel:
+        'Revisión de ingresos de ejemplo para un distribuidor ficticio: consultas sin respuesta, cotizaciones detenidas, cuentas inactivas y pedidos de productos que no manejas, cada uno con un valor estimado.',
+      headerTitle: 'Revisión de ingresos',
+      sample: 'Ejemplo',
+      company: 'Suministros Industriales Ejemplo',
+      period: 'Últimos 90 días',
+      colFinding: 'Hallazgo',
+      colValue: 'Valor est.',
+      lines: [
+        { text: '14 consultas de WhatsApp sin respuesta después de 24 horas', value: '$18,400', recovered: '9 respondidas' },
+        { text: '6 cotizaciones enviadas sin seguimiento', value: '$22,100', recovered: '4 con seguimiento' },
+        { text: '23 clientes anteriores sin comprar en 18+ meses', value: '$31,500' },
+        { text: '9 pedidos de productos que no manejas', value: '$7,200' },
+      ],
+      totalLabel: 'Ingresos en riesgo',
+      total: '$79,200',
     },
     conversation: {
       ariaLabel:

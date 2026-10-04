@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react'
 import CtaLink from './CtaLink'
 import WhatsAppLink from './WhatsAppLink'
 import './ClosingCTA.css'
@@ -6,9 +7,31 @@ import { useLanguage } from '../i18n/useLanguage'
 // Defaults to the site-wide closing copy. Content pages pass their own, so the
 // page can close on the argument the reader just finished rather than on the
 // generic pitch. `location` keeps the CTA analytics distinguishable per page.
-function ClosingCTA({ title, body, cta, location = 'closing' }) {
+// `variant="band"` is the homepage's full-bleed ink close; content pages keep
+// the photo card.
+function ClosingCTA({ title, body, cta, location = 'closing', variant = 'card' }) {
   const { copy } = useLanguage()
   const c = copy.closing
+
+  if (variant === 'band') {
+    return (
+      <section className="closingband">
+        <div className="closingband__inner">
+          <h2 className="closingband__title">{title ?? c.title}</h2>
+          <div className="closingband__foot">
+            <p className="closingband__body">{body ?? c.body}</p>
+            <div className="closingband__actions">
+              <CtaLink className="closingband__cta" location={location}>
+                {cta ?? c.cta}
+                <ArrowRight size={18} aria-hidden="true" />
+              </CtaLink>
+              <WhatsAppLink location={location} className="whatsapp-link--onDark" />
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="closingcta">

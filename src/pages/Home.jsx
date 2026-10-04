@@ -5,8 +5,12 @@ import HowItWorks from '../components/HowItWorks'
 import Different from '../components/Different'
 import Proof from '../components/Proof'
 import ClosingCTA from '../components/ClosingCTA'
+import { useReveal } from '../hooks/useReveal'
 
+// Bands alternate paper, ink, and moss so the page changes gear as it scrolls.
 function Home() {
+  useReveal()
+
   return (
     <>
       <Hero />
@@ -16,7 +20,7 @@ function Home() {
       <Problem />
       <HowItWorks />
       <Different />
-      <ClosingCTA />
+      <ClosingCTA variant="band" />
     </>
   )
 }

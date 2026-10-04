@@ -10,9 +10,12 @@ export const COPY = {
       ogLocale: 'en_US',
     },
     navbar: {
-      cta: 'Free revenue review',
+      cta: 'See my report',
     },
     hero: {
+      clockLead: 'You’ve been on this page for',
+      clockTail: 'The average company takes 42 hours to answer an inquiry.',
+      clockSource: 'Harvard Business Review, 2011',
       title: 'Find the revenue your business is already losing.',
       subtitle:
         'Every quote, chat, and order holds a clue to your next sale. Anytrail watches your whole operation, across WhatsApp, email, your CRM, and your ERP, and surfaces the deals falling through the cracks: which customers to call, which quotes to revive, and which products to stock.',
@@ -67,6 +70,8 @@ export const COPY = {
       ],
     },
     problem: {
+      caught: 'Caught by Anytrail',
+      linePrefix: 'L-',
       label: 'WHERE THE MONEY GOES',
       title: 'Your business should be making more. The leaks are just hard to see.',
       intro:
@@ -97,6 +102,7 @@ export const COPY = {
       ],
     },
     how: {
+      stepLabel: 'Step',
       label: 'HOW IT WORKS',
       title: 'Two ways an opportunity starts. One way it gets worked.',
       intro:
@@ -116,6 +122,7 @@ export const COPY = {
       ],
     },
     different: {
+      usLabel: 'Anytrail',
       label: "WHY IT'S DIFFERENT",
       title: 'Not another chatbot or CRM. A revenue auditor that never clocks out.',
       intro:
@@ -148,7 +155,7 @@ export const COPY = {
       title: 'Find your first revenue leak',
       body:
         "In a free revenue review, we look at how your business finds and answers opportunities today and show you where sales are slipping away.",
-      cta: 'Start free revenue review',
+      cta: 'See my revenue report',
     },
     whatsapp: {
       cta: 'Or text us on WhatsApp',
@@ -668,9 +675,12 @@ export const COPY = {
       ogLocale: 'es_ES',
     },
     navbar: {
-      cta: 'Revisión de ingresos gratis',
+      cta: 'Ver mi reporte',
     },
     hero: {
+      clockLead: 'Llevas en esta página',
+      clockTail: 'La empresa promedio tarda 42 horas en responder una consulta.',
+      clockSource: 'Harvard Business Review, 2011',
       title: 'Encuentra los ingresos que tu empresa ya está perdiendo.',
       subtitle:
         'Cada cotización, chat y pedido guarda una pista de tu próxima venta. Anytrail vigila toda tu operación, en WhatsApp, correo, tu CRM y tu ERP, y saca a la luz las ventas que se están escapando: a qué clientes llamar, qué cotizaciones revivir y qué productos tener en inventario.',
@@ -725,6 +735,8 @@ export const COPY = {
       ],
     },
     problem: {
+      caught: 'Lo atrapa Anytrail',
+      linePrefix: 'L-',
       label: 'A DÓNDE SE VA EL DINERO',
       title: 'Tu empresa debería estar ganando más. Las fugas solo son difíciles de ver.',
       intro:
@@ -753,6 +765,7 @@ export const COPY = {
       ],
     },
     how: {
+      stepLabel: 'Paso',
       label: 'CÓMO FUNCIONA',
       title: 'Dos formas de que empiece una oportunidad. Una sola forma de trabajarla.',
       intro:
@@ -772,6 +785,7 @@ export const COPY = {
       ],
     },
     different: {
+      usLabel: 'Anytrail',
       label: 'POR QUÉ ES DIFERENTE',
       title: 'No es otro chatbot ni otro CRM. Es un auditor de ingresos que nunca se va a casa.',
       intro:
@@ -802,7 +816,7 @@ export const COPY = {
       title: 'Encuentra tu primera fuga de ingresos',
       body:
         'En una revisión de ingresos gratuita, vemos cómo tu empresa encuentra y responde hoy a las oportunidades y te mostramos dónde se están escapando las ventas.',
-      cta: 'Empieza tu revisión gratis',
+      cta: 'Ver mi reporte de ingresos',
     },
     whatsapp: {
       cta: 'O escríbenos por WhatsApp',

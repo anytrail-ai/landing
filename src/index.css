@@ -1,6 +1,7 @@
 :root {
   --sans: 'Funnel Sans', system-ui, 'Segoe UI', Roboto, sans-serif;
   --display: 'Funnel Display', 'Funnel Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
   /* Palette: page */
   --page-bg: #fefdf6;
@@ -47,6 +48,9 @@
   --section-pad-y: 72px;
   --section-pad-y-mobile: 48px;
   --content-max: 929px;
+  /* Homepage bands run wider than content pages */
+  --band-max: 1200px;
+  --ink-band: #0c0c0b;
 
   font: 16px/1.5 var(--sans);
   color: var(--text);

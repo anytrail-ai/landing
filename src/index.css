@@ -42,8 +42,10 @@
   --space-32: 128px;
 
   /* Section rhythm */
-  --section-pad-y: 96px;
-  --section-pad-y-mobile: 64px;
+  /* Adjacent sections stack top + bottom padding, so the gap between them is
+     twice this. 96px made a 192px void on wide screens. */
+  --section-pad-y: 72px;
+  --section-pad-y-mobile: 48px;
   --content-max: 929px;
 
   font: 16px/1.5 var(--sans);

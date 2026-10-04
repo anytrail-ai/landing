@@ -1,7 +1,7 @@
 import './Hero.css'
 import CtaLink from './CtaLink'
 import WhatsAppLink from './WhatsAppLink'
-import InboundConversation from './mockups/InboundConversation'
+import AuditReport from './mockups/AuditReport'
 import { useLanguage } from '../i18n/useLanguage'
 
 function Hero() {
@@ -23,7 +23,7 @@ function Hero() {
       </div>
 
       <div className="hero__media">
-        <InboundConversation />
+        <AuditReport />
       </div>
     </section>
   )

@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding: 132px 16px 72px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
   align-items: center;
   gap: var(--space-12);
 }

@@ -10,7 +10,7 @@ colors:
   ink-soft: "#1f1f1f"
   ink-text: "#111827"
   graphite: "#6b7280"
-  ash: "#9ca3af"
+  ash: "#78716c"
   signal-moss: "#2f6f4f"
   moss-soft: "#e8f0eb"
 typography:

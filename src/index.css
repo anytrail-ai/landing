@@ -15,7 +15,8 @@
   --text: #111827;
   --text-strong: #111827;
   --text-muted: #6b7280;
-  --text-faint: #9ca3af;
+  /* 4.5:1 on --page-bg; the old #9ca3af was ~2.5:1 and failed AA */
+  --text-faint: #78716c;
 
   /* Navbar */
   --nav-text: #111827;

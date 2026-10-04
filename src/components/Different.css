@@ -1,8 +1,8 @@
 .different__grid {
   margin-top: var(--space-2);
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8) var(--space-6);
 }
 
 .different__card {

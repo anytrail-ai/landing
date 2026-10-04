@@ -23,6 +23,11 @@
   gap: var(--space-4);
 }
 
+/* three leaks in two columns left one card stranded on its own row */
+.problem__grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 /* the group already supplies the gap under its label */
 .problem__group .problem__grid {
   margin-top: 0;
@@ -55,7 +60,7 @@
 }
 
 .problem__stats {
-  margin: 0;
+  margin: 0 0 var(--space-6);
   padding: 0;
   list-style: none;
   display: grid;

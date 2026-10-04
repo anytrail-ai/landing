@@ -26,7 +26,11 @@ function Problem() {
       {c.groups.map((group) => (
         <div key={group.label} className="problem__group">
           <h3 className="problem__group-label">{group.label}</h3>
-          <ul className="problem__grid">
+          <ul
+              className={`problem__grid${
+                group.leaks.length === 3 ? ' problem__grid--three' : ''
+              }`}
+            >
             {group.leaks.map((leak) => (
               <li key={leak.title} className="problem__card">
                 <h4 className="problem__card-title">{leak.title}</h4>

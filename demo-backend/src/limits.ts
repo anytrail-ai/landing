@@ -94,4 +94,16 @@ export const LIMITS = {
   /** Server-side floor between follow-ups. The page's "Enviar ahora" skips
    * the cadence for a live meeting; this still stops a loop from spamming. */
   celdasFollowUpMinGapMs: 20 * 1000,
+  // ---- /es/grubpak_demo (packaging sales agent → Shopify, simulated clock) ----
+  /** Customer messages per grubpak session (chat plus WhatsApp replies). */
+  grubpakMessagesPerSession: 40,
+  /** Agent turns per IP per window, customer messages and follow-ups alike. */
+  grubpakTurnsPerIp: 400,
+  /** Bedrock calls inside one turn. */
+  grubpakModelCallsPerTurn: 6,
+  /** Max output tokens per Bedrock call. */
+  grubpakMaxTokens: 4000,
+  /** Real-time floor between follow-ups. The page's clock is simulated, so
+   * it can fire a day of follow-ups in seconds; this stops a loop. */
+  grubpakFollowUpMinGapMs: 2 * 1000,
 } as const;

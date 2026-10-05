@@ -10,6 +10,7 @@ import QuoteDemo from './pages/QuoteDemo'
 import SupplierPrice from './pages/SupplierPrice'
 import SiniestrosDemo from './pages/SiniestrosDemo'
 import CeldasDemo from './pages/CeldasDemo'
+import GrubpakDemo from './pages/GrubpakDemo'
 import ClusterPage from './components/ClusterPage'
 import { LanguageProvider } from './i18n/LanguageContext'
 import './App.css'
@@ -27,13 +28,14 @@ const PAGES = {
   supplierPrice: SupplierPrice,
   siniestrosDemo: SiniestrosDemo,
   celdasDemo: CeldasDemo,
+  grubpakDemo: GrubpakDemo,
   speedToLead: () => <ClusterPage copyKey="speedToLead" />,
   manufacturingCrm: () => <ClusterPage copyKey="manufacturingCrm" />,
   rfqAutomation: () => <ClusterPage copyKey="rfqAutomation" />,
 }
 
 // App-like demos that fill the window and bring their own header.
-const FULLSCREEN_PAGES = ['siniestrosDemo', 'celdasDemo']
+const FULLSCREEN_PAGES = ['siniestrosDemo', 'celdasDemo', 'grubpakDemo']
 
 function App({ lang = 'en', page = 'home' }) {
   const Page = PAGES[page] ?? Home

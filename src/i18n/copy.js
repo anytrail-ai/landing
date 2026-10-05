@@ -828,6 +828,14 @@ export const COPY = {
         ogLocale: 'es_ES',
       },
     },
+    grubpakDemo: {
+      meta: {
+        title: 'Vendedor de Grubpak | Anytrail',
+        description:
+          'Demostración: un vendedor con IA califica al cliente, arma su paquete de empaques, lo manda a pagar a Shopify y le da seguimiento según si compró.',
+        ogLocale: 'es_ES',
+      },
+    },
     siniestrosDemo: {
       meta: {
         title: 'Siniestros en orden | Anytrail',
@@ -1285,6 +1293,9 @@ export const ROUTES = {
     // Spanish only and unlisted: the Utilcell 350N load-cell quoting agent
     // demo. Full-screen app like siniestrosDemo.
     celdasDemo: '/es/celdas_demo',
+    // Spanish only and unlisted: packaging sales agent demo for Grubpak
+    // (Shopify store). Full-screen app like celdasDemo.
+    grubpakDemo: '/es/grubpak_demo',
   },
 }
 
@@ -1295,7 +1306,7 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 
 // Pages that must never be indexed. A thank-you page ranking in search would
 // pull people past the booking step into a dead end.
-export const NOINDEX_PAGES = ['thanks', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo']
+export const NOINDEX_PAGES = ['thanks', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo']
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

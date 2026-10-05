@@ -12,6 +12,7 @@ import { prospectsForSession } from '../api/prospects';
 import { postSlackMessage } from '../notify';
 import { handleQuoteAction, quoteBodySchema } from '../quote/stream-actions';
 import { celdasBodySchema, handleCeldasAction } from '../celdas/stream-actions';
+import { grubpakBodySchema, handleGrubpakAction } from '../grubpak/stream-actions';
 
 function pipelineError(err: unknown): string {
   if (err instanceof UnknownSessionError) return 'unknown_session';
@@ -91,6 +92,18 @@ export const handler = awslambda.streamifyResponse(async (event, responseStream)
       }
       const ip = event.requestContext?.http?.sourceIp ?? 'unknown';
       await handleCeldasAction(celdasParsed.data, ip, (e, d) => sse(stream, e, d));
+      return;
+    }
+
+    // Packaging sales agent (/es/grubpak_demo): server-held session.
+    if (typeof json?.action === 'string' && json.action.startsWith('grubpak_')) {
+      const grubpakParsed = grubpakBodySchema.safeParse(json);
+      if (!grubpakParsed.success) {
+        sse(stream, 'error', { error: 'invalid_input' });
+        return;
+      }
+      const ip = event.requestContext?.http?.sourceIp ?? 'unknown';
+      await handleGrubpakAction(grubpakParsed.data, ip, (e, d) => sse(stream, e, d));
       return;
     }
 

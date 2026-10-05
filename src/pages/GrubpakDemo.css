@@ -182,7 +182,7 @@
 .gp-score { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 0.8rem; color: var(--text-muted); }
 .gp-score b { color: var(--text); font-variant-numeric: tabular-nums; }
 .gp-bar { height: 8px; border-radius: 99px; background: var(--surface-muted); overflow: hidden; }
-.gp-bar i { display: block; height: 100%; background: var(--gp-leaf); transition: width 0.4s ease; }
+.gp-bar i { display: block; height: 100%; width: 100%; background: var(--gp-leaf); transform-origin: left; transition: transform 0.4s ease; }
 .gp-kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 14px; margin: 0; font-size: 0.85rem; }
 .gp-kv dt { color: var(--text-muted); }
 .gp-kv dd { margin: 0; }
@@ -214,7 +214,7 @@
 .gp-turn-who svg { flex: none; color: var(--text-muted); transform: translateY(2px); }
 .gp-turn-who span { overflow-wrap: anywhere; }
 .gp-turn-who.is-auto { color: var(--gp-kraft); font-weight: 600; }
-.gp-think { font-size: 0.8rem; color: var(--text-muted); border-left: 2px solid var(--border); padding-left: 10px; }
+.gp-think { font-size: 0.8rem; color: var(--text-muted); padding: 6px 10px; border-radius: 8px; background: var(--gp-ground); }
 .gp-think summary { cursor: pointer; display: inline-flex; gap: 6px; align-items: center; font-weight: 600; }
 .gp-think p { margin: 4px 0 0; white-space: pre-line; line-height: 1.45; }
 .gp-tool { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: start; font-size: 0.82rem; padding: 8px 10px; border-radius: 8px; background: var(--surface-muted); }

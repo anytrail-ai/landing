@@ -330,7 +330,7 @@ function LeadCard({ state }) {
           </div>
           <div className="gp-score">
             <span>Score</span>
-            <div className="gp-bar"><i style={{ width: `${L.score}%` }} /></div>
+            <div className="gp-bar"><i style={{ transform: `scaleX(${L.score / 100})` }} /></div>
             <b>{L.score}</b>
           </div>
           <dl className="gp-kv">

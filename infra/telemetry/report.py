@@ -27,6 +27,10 @@ events = Counter()
 cta = Counter()
 depth = Counter()
 sessions = set()
+# Booking page funnel: sessions that reached each step, plus error codes.
+FUNNEL = ("schedule_slot_pick", "schedule_form_start", "schedule_submit")
+funnel = {step: set() for step in FUNNEL}
+errors = Counter()
 clicks = []
 
 for it in items:
@@ -36,6 +40,10 @@ for it in items:
         sessions.add(s)
     if ev in ("demo_cta_click", "whatsapp_cta_click"):
         cta[f"{ev}:{val(it, 'location') or '?'}"] += 1
+    if ev in funnel:
+        funnel[ev].add(val(it, "session"))
+    if ev == "schedule_error":
+        errors[f"{val(it, 'step') or '?'}:{val(it, 'code') or '?'}"] += 1
     if ev == "scroll_depth":
         depth[int(val(it, "depth") or 0)] += 1
     if ev == "click":
@@ -57,6 +65,14 @@ if cta:
         print(f"    {k:<34} {n:>5}  ({rate} of views)")
 else:
     print("    (none yet)")
+
+if page.startswith("schedule-"):
+    print("\n  Booking funnel (sessions; success = thanks pageviews):")
+    print(f"    {'pageview':<22} {len(sessions):>5}")
+    for step in FUNNEL:
+        print(f"    {step:<22} {len(funnel[step]):>5}")
+    for k, n in errors.most_common():
+        print(f"    error {k:<16} {n:>5}")
 
 print("\n  Scroll depth reach:")
 if depth:

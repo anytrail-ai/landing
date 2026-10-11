@@ -199,6 +199,8 @@
 }
 
 .schedule-error {
+  /* Scrolled into view on failure; clear the 64px fixed navbar. */
+  scroll-margin-top: 80px;
   font-size: 14px;
   line-height: 21px;
   color: #b42318;

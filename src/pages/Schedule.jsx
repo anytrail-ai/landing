@@ -1,5 +1,6 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useLanguage } from '../i18n/useLanguage'
+import { track } from '../analytics'
 import { ROUTES } from '../i18n/copy'
 import { bookSlot, cancelBooking, moveBooking, openSlots, viewBooking } from './scheduleApi'
 import SlotPicker from './SlotPicker'
@@ -35,6 +36,13 @@ function reconcileDay(prevDay, freshSlots) {
   return freshSlots.length ? localDateKey(freshSlots[0]) : null
 }
 
+// Smooth unless the visitor asked for less motion.
+function reveal(el) {
+  if (!el) return
+  const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'nearest' })
+}
+
 function Schedule() {
   const { lang, copy } = useLanguage()
   const c = copy.schedule
@@ -50,6 +58,22 @@ function Schedule() {
   const [form, setForm] = useState({ name: '', email: '', website: '', note: '' })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
+  const formRef = useRef(null)
+  const errorRef = useRef(null)
+  const formStarted = useRef(false)
+
+  // On a phone the form opens below the slot grid, out of view, so picking a
+  // time looked like nothing happened. Bring it on screen; 'nearest' leaves
+  // the desktop layout alone when it is already visible.
+  useEffect(() => {
+    if (picked) reveal(formRef.current)
+  }, [picked])
+
+  // The error banner sits above the grid while the submit button sits below
+  // the form, so a failed booking on mobile was invisible.
+  useEffect(() => {
+    if (error) reveal(errorRef.current)
+  }, [error])
 
   // The visitor's zone abbreviation. Read via useSyncExternalStore, not at
   // render time directly and not via setState-in-an-effect: read directly
@@ -93,7 +117,10 @@ function Schedule() {
         setSlots(data.slots)
         setDay(data.slots.length ? localDateKey(data.slots[0]) : null)
       })
-      .catch(() => setError(c.errors.generic))
+      .catch((err) => {
+        track('schedule_error', { step: 'slots', code: err.message })
+        setError(c.errors.generic)
+      })
       .finally(() => setLoaded(true))
   }, [manage, c.errors])
 
@@ -102,10 +129,25 @@ function Schedule() {
     setPicked(null)
   }
 
+  // Funnel events, so telemetry can tell which step people stop at: picked a
+  // time, started typing, submitted, and the error code if the booking
+  // failed. The thanks pageview is the success event.
+  function pick(slot) {
+    setPicked(slot)
+    track('schedule_slot_pick', { lang })
+  }
+
+  function startForm() {
+    if (formStarted.current) return
+    formStarted.current = true
+    track('schedule_form_start', { lang })
+  }
+
   async function submit(e) {
     e.preventDefault()
     setBusy(true)
     setError(null)
+    track('schedule_submit', { lang })
     try {
       const result = await bookSlot({ ...form, slotStartUtc: picked, lang })
       // The manage link is the visitor's only proof of ownership, and it
@@ -120,6 +162,7 @@ function Schedule() {
       }
       window.location.href = ROUTES[lang].thanks
     } catch (err) {
+      track('schedule_error', { step: 'book', code: err.message })
       setError(c.errors[err.message] ?? c.errors.generic)
       // A taken slot means the grid is stale: refresh it.
       if (err.message === 'slot_taken') {
@@ -280,7 +323,7 @@ function Schedule() {
 
         <div className="schedule-picker">
           {error && (
-            <p className="schedule-error" role="alert">
+            <p className="schedule-error" role="alert" ref={errorRef}>
               {error}
             </p>
           )}
@@ -290,7 +333,7 @@ function Schedule() {
             day={day}
             onDayChange={selectDay}
             picked={picked}
-            onPick={setPicked}
+            onPick={pick}
             locale={locale}
             zone={zone}
             c={c}
@@ -301,7 +344,7 @@ function Schedule() {
           />
 
           {picked && (
-            <form className="schedule-form" onSubmit={submit}>
+            <form className="schedule-form" onSubmit={submit} onFocus={startForm} ref={formRef}>
               <label>
                 {c.form.name}
                 <input

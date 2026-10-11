@@ -1356,7 +1356,12 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 
 // Pages that must never be indexed. A thank-you page ranking in search would
 // pull people past the booking step into a dead end.
-export const NOINDEX_PAGES = ['thanks', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo']
+// demo and schedule are form-only conversion pages: too little text to rank,
+// and Semrush flags them for low word count and text-HTML ratio. They stay
+// linked from every page (noindex, follow). privacyCopilot exists for the
+// Chrome Web Store listing; nothing on the site links to it, so listing it in
+// the sitemap made it an orphan.
+export const NOINDEX_PAGES = ['thanks', 'demo', 'schedule', 'privacyCopilot', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo']
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

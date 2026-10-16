@@ -11,6 +11,7 @@ import SupplierPrice from './pages/SupplierPrice'
 import SiniestrosDemo from './pages/SiniestrosDemo'
 import CeldasDemo from './pages/CeldasDemo'
 import GrubpakDemo from './pages/GrubpakDemo'
+import WhatsappGuide from './pages/WhatsappGuide'
 import ClusterPage from './components/ClusterPage'
 import { LanguageProvider } from './i18n/LanguageContext'
 import './App.css'
@@ -30,6 +31,7 @@ const PAGES = {
   siniestrosDemo: SiniestrosDemo,
   celdasDemo: CeldasDemo,
   grubpakDemo: GrubpakDemo,
+  whatsappGuide: WhatsappGuide,
   speedToLead: () => <ClusterPage copyKey="speedToLead" />,
   manufacturingCrm: () => <ClusterPage copyKey="manufacturingCrm" />,
   rfqAutomation: () => <ClusterPage copyKey="rfqAutomation" />,

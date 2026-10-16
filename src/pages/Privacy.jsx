@@ -1,16 +1,20 @@
 import { useLanguage } from '../i18n/useLanguage'
-import './PrivacyCopilot.css'
+import './Privacy.css'
 
 /**
- * Privacy notice for the Anytrail Copilot Chrome extension. The Chrome Web
- * Store listing links to this exact URL, so the route must stay stable.
+ * Privacy notice page. One component, two copy blocks:
+ *
+ * - `privacy`: the site-wide policy. Linked from the footer, and the URL Meta
+ *   lead forms point at, so /privacy must stay stable.
+ * - `privacyCopilot`: the Anytrail Copilot Chrome extension notice. The Chrome
+ *   Web Store listing links to /privacy/copilot, so that one must stay too.
  *
  * Content is data in copy.js (heading + paragraphs), so the page has no prose
  * baked into the markup and stays a single map.
  */
-function PrivacyCopilot() {
+function Privacy({ copyKey = 'privacy' }) {
   const { copy } = useLanguage()
-  const c = copy.privacyCopilot
+  const c = copy[copyKey]
 
   return (
     <article className="privacy">
@@ -34,9 +38,15 @@ function PrivacyCopilot() {
             ))}
           </section>
         ))}
+
+        {c.related && (
+          <p className="privacy__body">
+            {c.related.text} <a href={c.related.href}>{c.related.label}</a>
+          </p>
+        )}
       </div>
     </article>
   )
 }
 
-export default PrivacyCopilot
+export default Privacy

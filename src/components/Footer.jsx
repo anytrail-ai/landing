@@ -31,6 +31,10 @@ function Footer() {
             </ul>
           </nav>
         )}
+
+        <a className="footer__privacy" href={ROUTES[lang].privacy}>
+          {copy.footer.privacyLabel}
+        </a>
       </div>
     </footer>
   )

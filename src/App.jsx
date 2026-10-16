@@ -5,7 +5,7 @@ import Thanks from './pages/Thanks'
 import Demo from './pages/Demo'
 import InboundDemo from './pages/InboundDemo'
 import Schedule from './pages/Schedule'
-import PrivacyCopilot from './pages/PrivacyCopilot'
+import Privacy from './pages/Privacy'
 import QuoteDemo from './pages/QuoteDemo'
 import SupplierPrice from './pages/SupplierPrice'
 import SiniestrosDemo from './pages/SiniestrosDemo'
@@ -23,7 +23,8 @@ const PAGES = {
   demo: Demo,
   inboundDemo: InboundDemo,
   schedule: Schedule,
-  privacyCopilot: PrivacyCopilot,
+  privacy: () => <Privacy copyKey="privacy" />,
+  privacyCopilot: () => <Privacy copyKey="privacyCopilot" />,
   quoteDemo: QuoteDemo,
   supplierPrice: SupplierPrice,
   siniestrosDemo: SiniestrosDemo,

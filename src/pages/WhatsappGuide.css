@@ -1,0 +1,399 @@
+/* WhatsApp coexistence guide. A long-form how-to: one column of prose with
+   numbered steps, screenshots in rows, and the same two callout kinds the PDF
+   uses (moss for information, amber for warnings). */
+
+.wag {
+  padding-bottom: calc(var(--section-pad-y) * 1.5);
+}
+
+.wag__inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Head: type only, like the cluster pages. */
+.wag__head {
+  padding: calc(var(--section-pad-y) + 32px) 0 var(--space-8, 32px);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+
+.wag__eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.wag__title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 38px;
+  line-height: 44px;
+  letter-spacing: -0.8px;
+  color: var(--text-strong);
+}
+
+.wag__lede {
+  margin: 20px 0 0;
+  max-width: 640px;
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 28px;
+  color: var(--text-muted);
+}
+
+.wag__pdf {
+  margin: 28px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+.wag__pdf-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.wag__pdf-link:hover {
+  background: var(--btn-bg-hover);
+}
+
+.wag__pdf-note {
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-faint);
+}
+
+/* Section headings and body copy share the privacy page's ramp. */
+.wag__h2 {
+  margin: 0 0 12px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 30px;
+  letter-spacing: -0.4px;
+  color: var(--text-strong);
+}
+
+.wag__body,
+.wag__bullets li,
+.wag__list li {
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--text);
+}
+
+.wag__body {
+  margin: 12px 0 0;
+}
+
+.wag__bullets,
+.wag__list {
+  margin: 12px 0 0;
+  padding-left: 22px;
+}
+
+.wag__bullets li,
+.wag__list li {
+  margin: 6px 0;
+  padding-left: 4px;
+}
+
+.wag__list li::marker {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.wag strong {
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+/* Steps */
+.wag__step {
+  margin-top: 56px;
+}
+
+.wag__step-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.wag__badge {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 17px;
+  margin-top: 2px;
+}
+
+.wag__step-title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 32px;
+  letter-spacing: -0.4px;
+  color: var(--text-strong);
+}
+
+.wag__step-where {
+  margin: 4px 0 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-faint);
+}
+
+.wag__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Screenshots: one row, equal-width columns, captions underneath. */
+.wag__figures {
+  display: grid;
+  gap: 16px;
+  margin: 20px 0 0;
+}
+
+.wag__figures--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.wag__figures--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.wag__figure {
+  margin: 0;
+  min-width: 0;
+}
+
+/* Phone captures are tall and narrow; next to a desktop capture they would
+   dwarf it. Cap the height and let them centre in their column instead. */
+.wag__figure img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 560px;
+  height: auto;
+  margin: 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.wag__figure figcaption {
+  margin: 8px 0 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
+}
+
+/* "On the phone" card */
+.wag__phone {
+  margin: 20px 0 0;
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-muted);
+}
+
+.wag__phone-title {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-strong);
+}
+
+.wag__phone-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.wag__phone-list li {
+  margin: 4px 0;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 23px;
+  color: var(--text);
+}
+
+/* Callouts */
+.wag__note {
+  margin: 20px 0 0;
+  padding: 12px 18px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--accent-soft);
+}
+
+.wag__note--warn {
+  border-left-color: #e0a93a;
+  background: #fff7e6;
+}
+
+.wag__note-title {
+  margin: 0;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-strong);
+}
+
+.wag__note-body {
+  margin: 4px 0 0;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 23px;
+  color: var(--text);
+}
+
+/* After connecting: note beside the disconnect screenshot */
+.wag__after {
+  margin-top: 56px;
+}
+
+.wag__after-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.wag__after-row .wag__note,
+.wag__after-row .wag__figures {
+  margin-top: 0;
+}
+
+/* Troubleshooting table */
+.wag__trouble {
+  margin-top: 56px;
+}
+
+.wag__table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.wag__table th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--surface-muted);
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.wag__table td {
+  vertical-align: top;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.wag__table td:first-child {
+  width: 42%;
+  color: var(--text-strong);
+}
+
+.wag__source {
+  margin: 40px 0 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-faint);
+}
+
+.wag__source a {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .wag__head {
+    padding-top: var(--section-pad-y-mobile);
+  }
+
+  .wag__title {
+    font-size: 30px;
+    line-height: 36px;
+  }
+
+  .wag__step-title {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  /* Phone screenshots stay side by side (they are tall and narrow); the
+     wide desktop captures stack. */
+  .wag__figures--2:has(img[src*='meta-']),
+  .wag__figures--2:has(img[src*='inbox']) {
+    grid-template-columns: 1fr;
+  }
+
+  .wag__after-row {
+    grid-template-columns: 1fr;
+  }
+
+  .wag__table thead {
+    display: none;
+  }
+
+  .wag__table tr {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .wag__table td {
+    display: block;
+    width: auto;
+    padding: 2px 0;
+    border: 0;
+  }
+
+  .wag__table td:first-child {
+    width: auto;
+    font-weight: 600;
+  }
+}

@@ -1431,6 +1431,267 @@ export const COPY = {
         label: 'Política de privacidad de Anytrail Copilot',
       },
     },
+    // Customer how-to: connect a WhatsApp Business number to the CRM in
+    // coexistence mode. Spanish only (our customers' sales teams); the PDF in
+    // public/guias/ is the same content for sending over email or WhatsApp.
+    // Inline **bold** is rendered by the page, so the block stays plain data.
+    whatsappGuide: {
+      meta: {
+        title: 'Conectar su WhatsApp al CRM manteniendo el número en el teléfono | Anytrail',
+        description:
+          'Guía paso a paso para conectar su número de WhatsApp Business al Inbox de Anytrail en modo coexistencia: el número sigue en su teléfono y las conversaciones llegan al CRM.',
+        ogLocale: 'es_ES',
+      },
+      eyebrow: 'Guía de conexión · WhatsApp',
+      title: 'Conectar su WhatsApp al CRM',
+      lede: [
+        'Guía paso a paso para la conexión en modo **coexistencia**: su número sigue funcionando en la app WhatsApp Business del teléfono y, al mismo tiempo, todas las conversaciones llegan al Inbox de Anytrail.',
+      ],
+      pdf: {
+        label: 'Descargar la guía en PDF',
+        file: 'Guia-conectar-WhatsApp-coexistencia.pdf',
+        note: '6 páginas · 3 MB',
+      },
+      before: {
+        title: 'Antes de empezar',
+        items: [
+          '**Tenga el teléfono a la mano.** Varios pasos se confirman desde la app WhatsApp Business.',
+          '**Actualice WhatsApp Business** en el teléfono a la última versión disponible en la tienda.',
+          '**Use una cuenta de administrador** de Anytrail. El botón Conectar número solo aparece para administradores.',
+          '**Tenga a la mano el acceso a Facebook** de la persona dueña del negocio (o con permiso en el portafolio empresarial de Meta).',
+          '**Desactive bloqueadores de anuncios** o extensiones de privacidad en el navegador: la ventana de Meta se abre como ventana emergente.',
+          'Reserve unos **10 minutos** sin interrupciones. El proceso completo se hace de corrido.',
+        ],
+        note: {
+          kind: 'info',
+          title: '¿Qué cambia después de conectar?',
+          body:
+            'Nada en su forma de trabajar desde el teléfono: sigue enviando y recibiendo mensajes en WhatsApp Business como siempre. Lo nuevo es que esas mismas conversaciones aparecen en el Inbox de Anytrail, donde su equipo puede leerlas, responderlas y dejar que el agente ayude. Lo que no se sincroniza: grupos, mensajes temporales, mensajes de una sola vez, ubicación en tiempo real, listas de difusión y llamadas.',
+        },
+      },
+      steps: [
+        {
+          number: '0',
+          title: 'Desvincular todos los dispositivos en WhatsApp Business',
+          where: 'En el teléfono',
+          paras: [
+            'La conexión desvincula automáticamente cualquier WhatsApp Web o de escritorio que tenga abierto. Si lo hace usted primero, el proceso avanza sin errores a la mitad del camino.',
+          ],
+          phone: {
+            title: 'En la app WhatsApp Business',
+            items: [
+              'Android: toque el menú de tres puntos (arriba a la derecha) y luego **Dispositivos vinculados**.',
+              'iPhone: toque **Configuración** (abajo a la derecha) y luego **Dispositivos vinculados**.',
+              'Toque cada dispositivo de la lista y elija **Cerrar sesión**.',
+              'Repita hasta que la lista quede vacía.',
+            ],
+          },
+          note: {
+            kind: 'warn',
+            title: 'Importante',
+            body:
+              'WhatsApp para Windows y para reloj (WearOS) no son compatibles con la conexión. Después de terminar la guía puede volver a vincular WhatsApp Web o la app de escritorio de Mac sin problema.',
+          },
+        },
+        {
+          number: '1',
+          title: 'Abrir el Inbox',
+          where: 'En la computadora',
+          paras: [
+            'Inicie sesión en Anytrail con su cuenta de administrador y entre a **platform.anytrail.ai/inbox** (también puede hacer clic en el icono de chat de la barra izquierda).',
+          ],
+          figures: [
+            {
+              src: 'inbox.jpg',
+              alt: 'Inbox de Anytrail: lista de chats a la izquierda y botón Conectar número en el encabezado',
+              caption:
+                'El Inbox. Arriba a la izquierda, junto al logotipo, está el botón **Conectar número**.',
+            },
+          ],
+        },
+        {
+          number: '2',
+          title: 'Hacer clic en "Conectar número"',
+          where: 'En el Inbox',
+          paras: [
+            'Haga clic en el botón **+ Conectar número**. Se abre un menú con dos opciones.',
+            'Si no ve el botón, su usuario no es administrador de la cuenta. Pida a un administrador que haga la conexión o que le asigne ese rol.',
+          ],
+        },
+        {
+          number: '3',
+          title: 'Elegir "Mantener WhatsApp en mi teléfono"',
+          where: 'En el menú',
+          paras: [
+            'Seleccione la primera opción: **Mantener WhatsApp en mi teléfono**. Esa es la conexión en modo coexistencia.',
+          ],
+          figures: [
+            {
+              src: 'menu.jpg',
+              alt: 'Menú Conectar número con las opciones Mantener WhatsApp en mi teléfono y Mover mi número a la nube',
+              caption: 'Menú de **Conectar número**. Elija la primera opción.',
+            },
+          ],
+          parasAfter: [
+            'Al hacer clic, el botón muestra un indicador de carga y se abre una **ventana emergente de Meta**. Si no aparece, revise que el navegador no la haya bloqueado (icono de ventana bloqueada en la barra de direcciones) y vuelva a intentar.',
+          ],
+          note: {
+            kind: 'warn',
+            title: 'No elija "Mover mi número a la nube"',
+            body:
+              'Esa opción migra el número por completo a la nube de Meta: dejaría de funcionar en la app del teléfono. Solo se usa para números nuevos dedicados al CRM.',
+          },
+        },
+        {
+          number: '4',
+          title: 'Completar el flujo de Meta (coexistencia)',
+          where: 'Ventana emergente de Meta',
+          paras: [
+            'Esta parte la controla Meta. Las pantallas de abajo son las de la documentación oficial de Meta (en inglés); en su computadora y teléfono aparecen en español con los mismos textos.',
+          ],
+          list: [
+            '**Inicie sesión en Facebook** con la cuenta de la persona dueña del negocio y haga clic en **Continuar** cuando Meta muestre la información que compartirá con Anytrail.',
+            '**Seleccione o cree el portafolio empresarial** de su empresa. Si es la primera vez, Meta pedirá el nombre legal, sitio web o perfil y dirección del negocio.',
+            'En **"Seleccione su configuración"** elija **Conectar su app de WhatsApp Business existente** y haga clic en **Siguiente**.',
+            'Escriba el **número de teléfono** que usa en la app WhatsApp Business (con el código de país) y haga clic en **Siguiente**.',
+          ],
+          figures: [
+            {
+              src: 'meta-setup.jpg',
+              alt: 'Pantalla de Meta "Select your setup" con la tarjeta "Connect your existing WhatsApp Business App" seleccionada',
+              caption: 'Elija **Conectar su app de WhatsApp Business existente** (la primera tarjeta).',
+            },
+            {
+              src: 'meta-telefono.jpg',
+              alt: 'Pantalla de Meta "Add a phone number for WhatsApp" con el número escrito',
+              caption: 'Escriba el número tal como está en la app del teléfono.',
+            },
+          ],
+          parasAfter: [
+            'Meta muestra entonces la pantalla **"Comparta sus contactos y chats"** con un **código de verificación**. Déjela abierta: ese código se escribe en el teléfono en el siguiente paso. Si prefiere, el enlace **"Usar un código QR"** muestra un QR para escanear desde la app.',
+          ],
+          figuresAfter: [
+            {
+              src: 'meta-codigo.jpg',
+              alt: 'Pantalla de Meta "Share your contacts and chats" con el código de verificación y los pasos a seguir en el teléfono',
+              caption: 'Copie el código de verificación. Debajo, Meta resume los pasos a hacer en el teléfono.',
+            },
+            {
+              src: 'app-mensaje.jpg',
+              alt: 'Chat de Facebook Business en WhatsApp Business con el mensaje "Connect to the Business Platform" y el botón Connect',
+              caption: 'En el teléfono: mensaje de **Facebook Business** en WhatsApp Business. Toque **Conectar**.',
+            },
+          ],
+        },
+        {
+          number: '5',
+          title: 'Conectar y compartir sus chats',
+          where: 'En el teléfono',
+          paras: [
+            'Al tocar **Conectar** en el mensaje de Facebook Business, la app abre la pantalla **"Conectar a la Plataforma de empresas"**. Si no recibió el mensaje, llegue a la misma pantalla desde **Menú** (Android) o **Configuración** (iPhone), luego **Cuenta** y **Conectar a la Plataforma de empresas**.',
+          ],
+          list: [
+            'Toque el botón **Conectar a la Plataforma de empresas**.',
+            'En el cuadro **"Compartir historial de chats"** toque **Compartir chats**. Así el Inbox de Anytrail arranca con las conversaciones de los últimos 6 meses y los nombres de sus contactos. **Esta decisión no se puede cambiar después.**',
+            'En **"Ingresar código de verificación"** pegue el código que copió de la ventana de Meta (o toque **Escanear código QR**).',
+            'Regrese a la computadora: la ventana de Meta avanza sola. Haga clic en **Finalizar**.',
+          ],
+          figures: [
+            {
+              src: 'app-conectar.jpg',
+              alt: 'Pantalla "Connect to the Business Platform" en WhatsApp Business con el botón para conectar',
+              caption: 'Toque **Conectar a la Plataforma de empresas**.',
+            },
+            {
+              src: 'app-compartir.jpg',
+              alt: 'Cuadro "Share chat history" con las opciones Share chats, Don\'t share chats y Cancel',
+              caption: 'Toque **Compartir chats**.',
+            },
+            {
+              src: 'app-codigo.jpg',
+              alt: 'Pantalla "Enter verification code" con el campo para el código y el enlace Scan QR code instead',
+              caption: 'Pegue el código o escanee el QR.',
+            },
+          ],
+          note: {
+            kind: 'warn',
+            title: 'Hay 24 horas para hacerlo',
+            body:
+              'La sincronización de chats y contactos solo puede completarse dentro de las 24 horas siguientes a la conexión. Si en ese plazo no se compartieron los chats, hay que desconectar el número y repetir todo el proceso.',
+          },
+        },
+        {
+          number: '6',
+          title: 'Verificar que quedó conectado',
+          where: 'En el Inbox',
+          paras: [
+            'Al cerrarse la ventana de Meta, el Inbox muestra el aviso **"Número conectado"**. En los minutos siguientes:',
+          ],
+          list: [
+            'Las conversaciones de los últimos 6 meses van apareciendo en la lista de chats (el historial se importa por partes y puede tardar un rato en completarse).',
+            'Los nombres de sus contactos del teléfono se muestran en el Inbox.',
+            'Envíe un mensaje de prueba desde el teléfono a un cliente: debe verse en el Inbox en segundos.',
+            'Responda ese chat desde el Inbox: el mensaje debe verse también en el teléfono.',
+          ],
+        },
+      ],
+      after: {
+        title: 'Después de conectar',
+        note: {
+          kind: 'info',
+          title: 'Puede seguir usando WhatsApp Web',
+          body:
+            'Puede volver a vincular WhatsApp Web o la app de escritorio. El número queda con un límite de 20 mensajes por segundo entre la app y el CRM, suficiente para la operación diaria. Si en algún momento desea desconectar el CRM, se hace desde WhatsApp Business en el teléfono: **Configuración**, **Cuenta**, **Plataforma de empresas**, botón **Desconectar**.',
+        },
+        figure: {
+          src: 'app-desconectar.jpg',
+          alt: 'Pantalla "Business Platform" en WhatsApp Business con la cuenta conectada y el botón Disconnect',
+          caption: 'Pantalla **Plataforma de empresas** en WhatsApp Business, con el botón **Desconectar**.',
+        },
+      },
+      trouble: {
+        title: 'Si algo sale mal',
+        colMessage: 'Mensaje en pantalla',
+        colAction: 'Qué hacer',
+        rows: [
+          {
+            message: '"Su navegador bloqueó la ventana de Meta"',
+            action:
+              'Desactive el bloqueador de anuncios o la extensión de privacidad para platform.anytrail.ai, recargue la página y repita desde el Paso 2.',
+          },
+          {
+            message: '"Se canceló la conexión"',
+            action:
+              'Se cerró la ventana de Meta antes de terminar. Repita desde el Paso 2 y complete todas las pantallas hasta Finalizar.',
+          },
+          {
+            message: '"Ese número ya está conectado a otra cuenta"',
+            action:
+              'El número ya está vinculado a otra cuenta de Anytrail. Escríbanos para resolverlo antes de volver a intentar.',
+          },
+          {
+            message: '"No se pudo conectar el número"',
+            action:
+              'Espere un minuto y repita desde el Paso 2. Si persiste, envíenos una captura de pantalla de la ventana de Meta.',
+          },
+          {
+            message: 'Meta muestra "Función no disponible" justo después de Continuar',
+            action:
+              'Es una restricción del lado de Meta sobre la cuenta de Facebook usada. Avísenos: lo revisamos con usted.',
+          },
+          {
+            message: 'El número aparece como "No elegible" en la lista de Meta',
+            action:
+              'Se eligió "Mover mi número a la nube" en vez de "Mantener WhatsApp en mi teléfono". Cierre la ventana y repita desde el Paso 3.',
+          },
+        ],
+      },
+      source: {
+        text: 'Las capturas de la ventana de Meta y de la app provienen de la documentación oficial de Meta:',
+        href: 'https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users',
+        label: 'Onboard WhatsApp Business app users',
+      },
+    },
     footer: {
       tagline: 'Encuentra los ingresos que distribuidores y empresas industriales están dejando ir. © 2026 Anytrail',
       linksLabel: 'Lectura',
@@ -1492,6 +1753,11 @@ export const ROUTES = {
     // Spanish only and unlisted: packaging sales agent demo for Grubpak
     // (Shopify store). Full-screen app like celdasDemo.
     grubpakDemo: '/es/grubpak_demo',
+    // Spanish only: customer how-to for connecting WhatsApp in coexistence
+    // mode. Sent to customers as a link; nothing on the site links to it yet,
+    // so it is noindex like privacyCopilot. Drop it from NOINDEX_PAGES to
+    // let it rank once a page links to it.
+    whatsappGuide: '/es/guias/conectar-whatsapp',
   },
 }
 
@@ -1507,7 +1773,7 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 // linked from every page (noindex, follow). privacyCopilot exists for the
 // Chrome Web Store listing; nothing on the site links to it, so listing it in
 // the sitemap made it an orphan.
-export const NOINDEX_PAGES = ['thanks', 'demo', 'schedule', 'privacyCopilot', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo']
+export const NOINDEX_PAGES = ['thanks', 'demo', 'schedule', 'privacyCopilot', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo', 'whatsappGuide']
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

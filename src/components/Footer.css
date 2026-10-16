@@ -74,3 +74,18 @@
   color: var(--text-strong);
   text-decoration: underline;
 }
+
+.footer__privacy {
+  margin-top: var(--space-4);
+  align-self: flex-start;
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-faint);
+  text-decoration: none;
+}
+
+.footer__privacy:hover {
+  color: var(--text-strong);
+  text-decoration: underline;
+}

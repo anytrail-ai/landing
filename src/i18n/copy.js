@@ -161,6 +161,76 @@ export const COPY = {
       cta: 'Or text us on WhatsApp',
       prefill: "Hi, I'd like to find the sales we're missing.",
     },
+    privacy: {
+      meta: {
+        title: 'Privacy Policy | Anytrail',
+        description:
+          'What personal data Anytrail collects through its website, ads and messaging channels, what it is used for, who processes it, and how to request access or deletion.',
+        ogLocale: 'en_US',
+      },
+      title: 'Privacy Policy',
+      updated: 'Last updated: October 16, 2026',
+      intro:
+        'Anytrail builds AI sales agents for industrial companies and distributors. This policy covers the personal data we handle when you visit this site, fill in one of our forms, reach us through an ad, or message us. It does not cover the data our customers load into their own Anytrail accounts, which they control.',
+      contactHeading: 'Who is responsible',
+      contactBody: 'Anytrail. Contact:',
+      contactEmail: 'root@anytrail.ai',
+      sections: [
+        {
+          heading: 'What we collect',
+          paragraphs: [
+            'What you send us. When you book a review, request a demo or fill in any form on this site, we keep what you type: usually your name, work email, phone number, company, and what you told us about your sales process.',
+            'Lead forms on Facebook and Instagram. If you reach us through a Meta lead form, Meta sends us the fields you submitted: your name, email, phone number, and your answers to the questions on the form. Meta handles that form under its own data policy, which you see before you submit.',
+            'WhatsApp and email. If you message us, we keep your number or address and the conversation so we can follow it up.',
+            'How you use this site. We record page views and clicks ourselves, with no third-party script: which page, your language, the referring site, any campaign tags in the link, your window size, and where on the page you clicked. A random id in your browser tab groups one visit together and disappears when the tab closes. It is never linked to your name unless you fill in a form.',
+          ],
+        },
+        {
+          heading: 'What we use it for',
+          paragraphs: [
+            'To answer you: book the review, run the demo, send what you asked for, and follow up on that specific request by email, phone or WhatsApp. If you would rather we stopped, reply saying so or write to root@anytrail.ai and we will.',
+            'To understand which pages and campaigns bring people who go on to talk to us, so we spend less on the ones that do not.',
+          ],
+        },
+        {
+          heading: 'What we never do',
+          paragraphs: [
+            'We do not sell your data, and we do not share it with third parties for their own marketing.',
+            'We do not use your contact details or your messages to train models.',
+            'This site sets no cookies and loads no advertising or analytics scripts from other companies.',
+          ],
+        },
+        {
+          heading: 'Who processes it on our behalf',
+          paragraphs: [
+            'Our infrastructure runs on Amazon Web Services in the US East region (us-east-1); that is where form submissions, conversations and site telemetry are stored. Meta processes lead forms and WhatsApp messages when you reach us through those channels. Our email provider carries the email we exchange with you. Each of them acts under our instructions and its own privacy commitments.',
+          ],
+        },
+        {
+          heading: 'How long we keep it',
+          paragraphs: [
+            'We keep your request and the conversation around it for as long as we need to handle it and follow up, and we delete it when you ask. Site usage data is kept in aggregate and is not tied to you.',
+          ],
+        },
+        {
+          heading: 'Your rights',
+          paragraphs: [
+            'You can ask us what we hold about you, correct it, have it deleted, or tell us to stop contacting you, by writing to root@anytrail.ai. If you are in Mexico this includes your rights of access, rectification, cancellation and opposition under the federal data protection law. We answer within the time the applicable law requires.',
+          ],
+        },
+        {
+          heading: 'Changes',
+          paragraphs: [
+            'When this policy changes, the date at the top changes with it. Material changes will also be noted on this page for a period after they take effect.',
+          ],
+        },
+      ],
+      related: {
+        text: 'The Anytrail Copilot Chrome extension has its own notice:',
+        href: '/privacy/copilot',
+        label: 'Anytrail Copilot privacy policy',
+      },
+    },
     privacyCopilot: {
       meta: {
         title: 'Anytrail Copilot Privacy Policy | Anytrail',
@@ -663,6 +733,7 @@ export const COPY = {
     footer: {
       tagline: 'Finds the revenue distributors and industrial companies are missing. © 2026 Anytrail',
       linksLabel: 'Reading',
+      privacyLabel: 'Privacy policy',
     },
   },
 
@@ -1290,9 +1361,80 @@ export const COPY = {
         cta: 'Revisa mi proceso comercial',
       },
     },
+    privacy: {
+      meta: {
+        title: 'Aviso de Privacidad | Anytrail',
+        description:
+          'Qué datos personales recaba Anytrail a través de su sitio web, anuncios y canales de mensajería, para qué los usa, quién los procesa y cómo solicitar acceso o eliminación.',
+        ogLocale: 'es_MX',
+      },
+      title: 'Aviso de Privacidad',
+      updated: 'Última actualización: 16 de octubre de 2026',
+      intro:
+        'Anytrail desarrolla agentes de ventas con IA para empresas industriales y distribuidores. Este aviso cubre los datos personales que manejamos cuando visitas este sitio, llenas uno de nuestros formularios, nos contactas desde un anuncio o nos escribes. No cubre los datos que nuestros clientes cargan en sus propias cuentas de Anytrail, que ellos controlan.',
+      contactHeading: 'Responsable',
+      contactBody: 'Anytrail. Contacto:',
+      contactEmail: 'root@anytrail.ai',
+      sections: [
+        {
+          heading: 'Qué recabamos',
+          paragraphs: [
+            'Lo que nos envías. Cuando agendas una revisión, pides una demo o llenas cualquier formulario de este sitio, guardamos lo que escribes: normalmente tu nombre, correo de trabajo, teléfono, empresa y lo que nos contaste sobre tu proceso de ventas.',
+            'Formularios en Facebook e Instagram. Si nos contactas a través de un formulario de clientes potenciales de Meta, Meta nos envía los campos que llenaste: tu nombre, correo, teléfono y tus respuestas a las preguntas del formulario. Meta maneja ese formulario bajo su propia política de datos, que ves antes de enviarlo.',
+            'WhatsApp y correo. Si nos escribes, guardamos tu número o dirección y la conversación para poder darle seguimiento.',
+            'Cómo usas este sitio. Registramos nosotros mismos las vistas de página y los clics, sin scripts de terceros: qué página, tu idioma, el sitio de origen, las etiquetas de campaña del enlace, el tamaño de tu ventana y en qué parte de la página hiciste clic. Un identificador aleatorio en la pestaña de tu navegador agrupa una visita y desaparece al cerrarla. Nunca se vincula con tu nombre a menos que llenes un formulario.',
+          ],
+        },
+        {
+          heading: 'Para qué lo usamos',
+          paragraphs: [
+            'Para responderte: agendar la revisión, hacer la demo, enviarte lo que pediste y dar seguimiento a esa solicitud por correo, teléfono o WhatsApp. Si prefieres que dejemos de hacerlo, respóndenos diciéndolo o escribe a root@anytrail.ai y lo haremos.',
+            'Para entender qué páginas y campañas traen a personas que luego hablan con nosotros, y gastar menos en las que no.',
+          ],
+        },
+        {
+          heading: 'Lo que nunca hacemos',
+          paragraphs: [
+            'No vendemos tus datos ni los compartimos con terceros para su propia publicidad.',
+            'No usamos tus datos de contacto ni tus mensajes para entrenar modelos.',
+            'Este sitio no instala cookies ni carga scripts de publicidad o analítica de otras empresas.',
+          ],
+        },
+        {
+          heading: 'Quién los procesa por nosotros',
+          paragraphs: [
+            'Nuestra infraestructura corre en Amazon Web Services en la región US East (us-east-1); ahí se almacenan los formularios, las conversaciones y la telemetría del sitio. Meta procesa los formularios de clientes potenciales y los mensajes de WhatsApp cuando nos contactas por esos canales. Nuestro proveedor de correo transporta los correos que intercambiamos contigo. Cada uno actúa bajo nuestras instrucciones y sus propios compromisos de privacidad.',
+          ],
+        },
+        {
+          heading: 'Cuánto tiempo los conservamos',
+          paragraphs: [
+            'Conservamos tu solicitud y la conversación relacionada mientras la atendemos y le damos seguimiento, y los eliminamos cuando nos lo pides. Los datos de uso del sitio se conservan de forma agregada y no están ligados a ti.',
+          ],
+        },
+        {
+          heading: 'Tus derechos',
+          paragraphs: [
+            'Puedes pedirnos qué datos tenemos sobre ti, corregirlos, que los eliminemos o que dejemos de contactarte, escribiendo a root@anytrail.ai. Si estás en México, esto incluye tus derechos de acceso, rectificación, cancelación y oposición (derechos ARCO) conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Respondemos dentro del plazo que exige la ley aplicable.',
+          ],
+        },
+        {
+          heading: 'Cambios',
+          paragraphs: [
+            'Cuando este aviso cambie, cambiará la fecha que aparece arriba. Los cambios relevantes también se señalarán en esta página durante un tiempo después de entrar en vigor.',
+          ],
+        },
+      ],
+      related: {
+        text: 'La extensión de Chrome Anytrail Copilot tiene su propio aviso (en inglés):',
+        href: '/privacy/copilot',
+        label: 'Política de privacidad de Anytrail Copilot',
+      },
+    },
     footer: {
       tagline: 'Encuentra los ingresos que distribuidores y empresas industriales están dejando ir. © 2026 Anytrail',
       linksLabel: 'Lectura',
+      privacyLabel: 'Aviso de privacidad',
     },
   },
 }
@@ -1314,6 +1456,9 @@ export const ROUTES = {
     speedToLead: '/speed-to-lead',
     manufacturingCrm: '/manufacturing-crm',
     rfqAutomation: '/rfq-automation',
+    // Site-wide privacy policy. Linked from the footer, and the URL our Meta
+    // lead forms point at, so the path must stay stable.
+    privacy: '/privacy',
     // English only: it is the privacy notice for the Chrome extension, and the
     // Chrome Web Store listing points at this exact URL. Pages missing from a
     // language are skipped by prerender.js rather than faked.
@@ -1334,6 +1479,7 @@ export const ROUTES = {
     speedToLead: '/es/tiempo-de-respuesta',
     manufacturingCrm: '/es/crm-para-manufactura',
     rfqAutomation: '/es/automatizacion-de-cotizaciones',
+    privacy: '/es/privacidad',
     // Spanish-only unlisted demo; noindex.
     quoteDemo: '/quote_demo',
     supplierPrice: '/supplier_price',

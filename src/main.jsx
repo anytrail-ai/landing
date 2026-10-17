@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.jsx'
 import { routeFromPath } from './i18n/copy'
 import { initAnalytics } from './analytics'
+import { initMetaPixel } from './metaPixel'
 
 const { lang, page } = routeFromPath(window.location.pathname)
 const container = document.getElementById('root')
@@ -22,3 +23,4 @@ if (container.hasChildNodes()) {
 }
 
 initAnalytics({ page, lang })
+initMetaPixel()

@@ -182,7 +182,8 @@ export const COPY = {
             'What you send us. When you book a review, request a demo or fill in any form on this site, we keep what you type: usually your name, work email, phone number, company, and what you told us about your sales process.',
             'Lead forms on Facebook and Instagram. If you reach us through a Meta lead form, Meta sends us the fields you submitted: your name, email, phone number, and your answers to the questions on the form. Meta handles that form under its own data policy, which you see before you submit.',
             'WhatsApp and email. If you message us, we keep your number or address and the conversation so we can follow it up.',
-            'How you use this site. We record page views and clicks ourselves, with no third-party script: which page, your language, the referring site, any campaign tags in the link, your window size, and where on the page you clicked. A random id in your browser tab groups one visit together and disappears when the tab closes. It is never linked to your name unless you fill in a form.',
+            'How you use this site. We record page views and clicks ourselves: which page, your language, the referring site, any campaign tags in the link, your window size, and where on the page you clicked. A random id in your browser tab groups one visit together and disappears when the tab closes. It is never linked to your name unless you fill in a form.',
+            'Google Analytics and the Meta Pixel. The site also loads these two third-party tags. Google Analytics gives us aggregate traffic statistics. The Meta Pixel tells Meta when someone visits this site or books a review, so we can measure our Facebook and Instagram ads and stop showing them to people who are not interested. Each sets a cookie in your browser (Google: _ga, Meta: _fbp) and receives your IP address, browser details and the pages you view; Meta may link that activity to your Meta account under its own data policy. Browser tracking protection or an ad blocker stops both, and the site works the same without them.',
           ],
         },
         {
@@ -197,13 +198,13 @@ export const COPY = {
           paragraphs: [
             'We do not sell your data, and we do not share it with third parties for their own marketing.',
             'We do not use your contact details or your messages to train models.',
-            'This site sets no cookies and loads no advertising or analytics scripts from other companies.',
+            'Apart from Google Analytics and the Meta Pixel described above, this site sets no cookies and loads no advertising or analytics scripts from other companies.',
           ],
         },
         {
           heading: 'Who processes it on our behalf',
           paragraphs: [
-            'Our infrastructure runs on Amazon Web Services in the US East region (us-east-1); that is where form submissions, conversations and site telemetry are stored. Meta processes lead forms and WhatsApp messages when you reach us through those channels. Our email provider carries the email we exchange with you. Each of them acts under our instructions and its own privacy commitments.',
+            'Our infrastructure runs on Amazon Web Services in the US East region (us-east-1); that is where form submissions, conversations and site telemetry are stored. Meta processes lead forms and WhatsApp messages when you reach us through those channels, and receives the Meta Pixel signals described above. Google receives the Google Analytics signals. Our email provider carries the email we exchange with you. Each of them acts under our instructions and its own privacy commitments.',
           ],
         },
         {
@@ -1382,7 +1383,8 @@ export const COPY = {
             'Lo que nos envías. Cuando agendas una revisión, pides una demo o llenas cualquier formulario de este sitio, guardamos lo que escribes: normalmente tu nombre, correo de trabajo, teléfono, empresa y lo que nos contaste sobre tu proceso de ventas.',
             'Formularios en Facebook e Instagram. Si nos contactas a través de un formulario de clientes potenciales de Meta, Meta nos envía los campos que llenaste: tu nombre, correo, teléfono y tus respuestas a las preguntas del formulario. Meta maneja ese formulario bajo su propia política de datos, que ves antes de enviarlo.',
             'WhatsApp y correo. Si nos escribes, guardamos tu número o dirección y la conversación para poder darle seguimiento.',
-            'Cómo usas este sitio. Registramos nosotros mismos las vistas de página y los clics, sin scripts de terceros: qué página, tu idioma, el sitio de origen, las etiquetas de campaña del enlace, el tamaño de tu ventana y en qué parte de la página hiciste clic. Un identificador aleatorio en la pestaña de tu navegador agrupa una visita y desaparece al cerrarla. Nunca se vincula con tu nombre a menos que llenes un formulario.',
+            'Cómo usas este sitio. Registramos nosotros mismos las vistas de página y los clics: qué página, tu idioma, el sitio de origen, las etiquetas de campaña del enlace, el tamaño de tu ventana y en qué parte de la página hiciste clic. Un identificador aleatorio en la pestaña de tu navegador agrupa una visita y desaparece al cerrarla. Nunca se vincula con tu nombre a menos que llenes un formulario.',
+            'Google Analytics y el Píxel de Meta. El sitio también carga estas dos etiquetas de terceros. Google Analytics nos da estadísticas agregadas de tráfico. El Píxel de Meta le avisa a Meta cuando alguien visita este sitio o agenda una revisión, para que podamos medir nuestros anuncios en Facebook e Instagram y dejar de mostrárselos a quien no le interesan. Cada una instala una cookie en tu navegador (Google: _ga, Meta: _fbp) y recibe tu dirección IP, datos de tu navegador y las páginas que ves; Meta puede vincular esa actividad con tu cuenta de Meta bajo su propia política de datos. La protección contra rastreo de tu navegador o un bloqueador de anuncios detiene ambas, y el sitio funciona igual sin ellas.',
           ],
         },
         {
@@ -1397,13 +1399,13 @@ export const COPY = {
           paragraphs: [
             'No vendemos tus datos ni los compartimos con terceros para su propia publicidad.',
             'No usamos tus datos de contacto ni tus mensajes para entrenar modelos.',
-            'Este sitio no instala cookies ni carga scripts de publicidad o analítica de otras empresas.',
+            'Fuera de Google Analytics y el Píxel de Meta descritos arriba, este sitio no instala cookies ni carga scripts de publicidad o analítica de otras empresas.',
           ],
         },
         {
           heading: 'Quién los procesa por nosotros',
           paragraphs: [
-            'Nuestra infraestructura corre en Amazon Web Services en la región US East (us-east-1); ahí se almacenan los formularios, las conversaciones y la telemetría del sitio. Meta procesa los formularios de clientes potenciales y los mensajes de WhatsApp cuando nos contactas por esos canales. Nuestro proveedor de correo transporta los correos que intercambiamos contigo. Cada uno actúa bajo nuestras instrucciones y sus propios compromisos de privacidad.',
+            'Nuestra infraestructura corre en Amazon Web Services en la región US East (us-east-1); ahí se almacenan los formularios, las conversaciones y la telemetría del sitio. Meta procesa los formularios de clientes potenciales y los mensajes de WhatsApp cuando nos contactas por esos canales, y recibe las señales del Píxel de Meta descritas arriba. Google recibe las señales de Google Analytics. Nuestro proveedor de correo transporta los correos que intercambiamos contigo. Cada uno actúa bajo nuestras instrucciones y sus propios compromisos de privacidad.',
           ],
         },
         {

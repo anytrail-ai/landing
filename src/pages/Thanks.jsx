@@ -1,7 +1,8 @@
-import { useSyncExternalStore } from 'react'
+import { useEffect, useSyncExternalStore } from 'react'
 import { useLanguage } from '../i18n/useLanguage'
 import { LANG_PATH, ROUTES } from '../i18n/copy'
 import { track } from '../analytics'
+import { metaTrack } from '../metaPixel'
 import './Thanks.css'
 
 // Written by Schedule.jsx right before the redirect here. Read via
@@ -24,6 +25,12 @@ function Thanks() {
   const { lang, copy } = useLanguage()
   const c = copy.thanks
   const manageUrl = useSyncExternalStore(subscribeNever, readManageUrl, getServerManageUrl)
+
+  // A booking landed here, so tell Meta it was a lead. Standard event name on
+  // purpose: it is what the ad account optimises on.
+  useEffect(() => {
+    metaTrack('Lead', { content_name: 'commercial_process_review' })
+  }, [])
 
   return (
     <section className="thanks">

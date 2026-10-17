@@ -21,3 +21,7 @@ export const DEMO_WHATSAPP_MESSAGE = 'Hola, me interesa una hidrolavadora.'
 // Leave empty to disable telemetry cleanly; analytics.js no-ops rather than
 // throwing.
 export const TELEMETRY_URL = import.meta.env?.VITE_TELEMETRY_URL ?? ''
+
+// Meta Pixel (dataset) id from Events Manager. Leave empty to ship the site
+// without any Meta script; metaPixel.js no-ops rather than throwing.
+export const META_PIXEL_ID = import.meta.env?.VITE_META_PIXEL_ID ?? ''

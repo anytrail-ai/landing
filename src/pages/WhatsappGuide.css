@@ -397,3 +397,43 @@
     font-weight: 600;
   }
 }
+
+/* Print: the guide PDFs are this page printed by headless Chrome (see
+   docs/guias-pdf.md), so drop the site chrome and keep steps whole. */
+@media print {
+  @page {
+    size: Letter;
+    margin: 16mm 14mm;
+  }
+
+  .navbar,
+  .footer,
+  .wag__pdf {
+    display: none;
+  }
+
+  .wag {
+    padding-bottom: 0;
+  }
+
+  .wag__head {
+    padding-top: 0;
+    margin-bottom: 24px;
+  }
+
+  /* The cream page background prints as a box inside the page margins. */
+  :root {
+    --page-bg: #fff;
+  }
+
+  .wag__step,
+  .wag__after,
+  .wag__note,
+  .wag__table tr {
+    break-inside: avoid;
+  }
+
+  .wag__h2 {
+    break-after: avoid;
+  }
+}

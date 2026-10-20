@@ -2,13 +2,15 @@ import { useLanguage } from '../i18n/useLanguage'
 import './WhatsappGuide.css'
 
 /**
- * Customer-facing how-to: connecting a WhatsApp Business number to the CRM in
- * coexistence mode (the number stays on the phone). Spanish only; the same
- * content ships as a PDF under public/guias/, which the page links to.
+ * Customer-facing how-to guides (Spanish only): the WhatsApp coexistence
+ * connection by default, and any other guide that shares its shape via
+ * `copyKey` + `assets` (see App.jsx). Each guide ships the same content as a
+ * PDF under public/guias/<folder>/, which the page links to.
  *
  * Prose lives in copy.js like the other content pages. Inline emphasis uses
  * `**double asterisks**` in the copy strings and is rendered by `rich()` so
- * the copy block stays plain data rather than JSX.
+ * the copy block stays plain data rather than JSX. The after, trouble and
+ * source sections are optional.
  */
 const ASSETS = '/guias/whatsapp-coexistencia'
 
@@ -30,14 +32,14 @@ function Note({ note }) {
   )
 }
 
-function Figures({ figures }) {
+function Figures({ figures, assets }) {
   if (!figures?.length) return null
   return (
     <div className={`wag__figures wag__figures--${figures.length}`}>
       {figures.map((f) => (
         <figure key={f.src} className="wag__figure">
           <img
-            src={`${ASSETS}/${f.src}`}
+            src={`${assets}/${f.src}`}
             alt={f.alt}
             loading="lazy"
             decoding="async"
@@ -63,7 +65,7 @@ function PhoneCard({ card }) {
   )
 }
 
-function Step({ step }) {
+function Step({ step, assets }) {
   return (
     <section className="wag__step" id={`paso-${step.number}`}>
       <header className="wag__step-head">
@@ -93,7 +95,7 @@ function Step({ step }) {
         </ol>
       )}
 
-      <Figures figures={step.figures} />
+      <Figures figures={step.figures} assets={assets} />
       <PhoneCard card={step.phone} />
 
       {step.parasAfter?.map((p) => (
@@ -102,15 +104,15 @@ function Step({ step }) {
         </p>
       ))}
 
-      <Figures figures={step.figuresAfter} />
+      <Figures figures={step.figuresAfter} assets={assets} />
       <Note note={step.note} />
     </section>
   )
 }
 
-function WhatsappGuide() {
+function WhatsappGuide({ copyKey = 'whatsappGuide', assets = ASSETS }) {
   const { copy } = useLanguage()
-  const c = copy.whatsappGuide
+  const c = copy[copyKey]
 
   return (
     <article className="wag">
@@ -124,7 +126,7 @@ function WhatsappGuide() {
             </p>
           ))}
           <p className="wag__pdf">
-            <a className="wag__pdf-link" href={`${ASSETS}/${c.pdf.file}`} download>
+            <a className="wag__pdf-link" href={`${assets}/${c.pdf.file}`} download>
               {c.pdf.label}
             </a>
             <span className="wag__pdf-note">{c.pdf.note}</span>
@@ -144,43 +146,51 @@ function WhatsappGuide() {
         </section>
 
         {c.steps.map((step) => (
-          <Step key={step.number} step={step} />
+          <Step key={step.number} step={step} assets={assets} />
         ))}
 
-        <section className="wag__after">
-          <h2 className="wag__h2">{c.after.title}</h2>
-          <div className="wag__after-row">
-            <Note note={c.after.note} />
-            <Figures figures={[c.after.figure]} />
-          </div>
-        </section>
+        {c.after && (
+          <section className="wag__after">
+            <h2 className="wag__h2">{c.after.title}</h2>
+            <div className={c.after.figure ? 'wag__after-row' : undefined}>
+              <Note note={c.after.note} />
+              {c.after.figure && (
+                <Figures figures={[c.after.figure]} assets={assets} />
+              )}
+            </div>
+          </section>
+        )}
 
-        <section className="wag__trouble">
-          <h2 className="wag__h2">{c.trouble.title}</h2>
-          <table className="wag__table">
-            <thead>
-              <tr>
-                <th scope="col">{c.trouble.colMessage}</th>
-                <th scope="col">{c.trouble.colAction}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {c.trouble.rows.map((row) => (
-                <tr key={row.message}>
-                  <td data-label={c.trouble.colMessage}>{rich(row.message)}</td>
-                  <td data-label={c.trouble.colAction}>{rich(row.action)}</td>
+        {c.trouble && (
+          <section className="wag__trouble">
+            <h2 className="wag__h2">{c.trouble.title}</h2>
+            <table className="wag__table">
+              <thead>
+                <tr>
+                  <th scope="col">{c.trouble.colMessage}</th>
+                  <th scope="col">{c.trouble.colAction}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+              </thead>
+              <tbody>
+                {c.trouble.rows.map((row) => (
+                  <tr key={row.message}>
+                    <td data-label={c.trouble.colMessage}>{rich(row.message)}</td>
+                    <td data-label={c.trouble.colAction}>{rich(row.action)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
 
-        <p className="wag__source">
-          {c.source.text}{' '}
-          <a href={c.source.href} rel="noopener noreferrer" target="_blank">
-            {c.source.label}
-          </a>
-        </p>
+        {c.source && (
+          <p className="wag__source">
+            {c.source.text}{' '}
+            <a href={c.source.href} rel="noopener noreferrer" target="_blank">
+              {c.source.label}
+            </a>
+          </p>
+        )}
       </div>
     </article>
   )

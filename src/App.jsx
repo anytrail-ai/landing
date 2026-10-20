@@ -32,6 +32,9 @@ const PAGES = {
   celdasDemo: CeldasDemo,
   grubpakDemo: GrubpakDemo,
   whatsappGuide: WhatsappGuide,
+  metaGuide: () => (
+    <WhatsappGuide copyKey="metaGuide" assets="/guias/anuncios-meta" />
+  ),
   speedToLead: () => <ClusterPage copyKey="speedToLead" />,
   manufacturingCrm: () => <ClusterPage copyKey="manufacturingCrm" />,
   rfqAutomation: () => <ClusterPage copyKey="rfqAutomation" />,

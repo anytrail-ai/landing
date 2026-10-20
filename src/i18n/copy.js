@@ -1694,6 +1694,186 @@ export const COPY = {
         label: 'Onboard WhatsApp Business app users',
       },
     },
+    // Customer how-to: give Anytrail partner access to the customer's Meta ad
+    // account and Page from their own business portfolio, so the operator can
+    // connect ads and Instant Form leads from the admin console. Spanish only,
+    // same component and PDF convention as whatsappGuide.
+    metaGuide: {
+      meta: {
+        title: 'Conectar sus anuncios de Meta con Anytrail | Anytrail',
+        description:
+          'Guía paso a paso para dar acceso a Anytrail, como socio, a su cuenta publicitaria y a su página de Facebook, para que sus campañas y los leads de sus formularios lleguen al CRM.',
+        ogLocale: 'es_ES',
+      },
+      eyebrow: 'Guía de conexión · Anuncios de Meta',
+      title: 'Conectar sus anuncios de Meta con Anytrail',
+      lede: [
+        'En esta guía usted da acceso a Anytrail, como **socio**, a su cuenta publicitaria y a su página de Facebook desde el portafolio empresarial de Meta de su empresa. Con ese acceso, nuestro equipo conecta sus campañas al CRM: los leads de sus formularios instantáneos llegan solos y el agente responde a quien escribe desde sus anuncios.',
+        'Usted conserva la propiedad de todo: la cuenta publicitaria, la página y el método de pago siguen siendo suyos, y puede retirar el acceso cuando quiera.',
+      ],
+      pdf: {
+        label: 'Descargar la guía en PDF',
+        file: 'Guia-conectar-anuncios-Meta.pdf',
+        note: '5 páginas · 255 KB',
+      },
+      before: {
+        title: 'Antes de empezar',
+        items: [
+          '**Use la cuenta de Facebook de un administrador** del portafolio empresarial de su empresa (antes llamado Business Manager). Solo un administrador con control total puede agregar socios.',
+          '**Tenga a la mano el ID del portafolio de Anytrail:** **4027857450851371** (Anytrail Inc.).',
+          '**Use una computadora.** Estos pasos se hacen en **business.facebook.com**; la app del teléfono no muestra todas las opciones.',
+          'Reserve unos **10 minutos**.',
+        ],
+        note: {
+          kind: 'info',
+          title: '¿Qué podrá hacer Anytrail con este acceso?',
+          body:
+            'Ver el rendimiento de sus campañas, crear y ajustar anuncios junto con usted y recibir en el CRM los leads de sus formularios instantáneos. No podrá ver ni cambiar su método de pago, ni eliminar su cuenta publicitaria o su página.',
+        },
+      },
+      steps: [
+        {
+          number: '1',
+          title: 'Revisar que su cuenta publicitaria esté al corriente',
+          where: 'Facturación y pagos',
+          paras: [
+            'Meta no permite compartir una cuenta publicitaria que tenga un pago rechazado o una revisión pendiente, y el error aparece hasta el final del proceso. Revíselo primero.',
+          ],
+          list: [
+            'Entre a **business.facebook.com** y abra **Facturación y pagos** (en el menú de la izquierda o en **Todas las herramientas**).',
+            'En **Cuentas**, elija su cuenta publicitaria y confirme que el **saldo actual** no tenga pagos vencidos.',
+            'En **Actividad de pagos**, revise que no haya movimientos con estado **Fallido** sin un pago **Pagado** después.',
+            'Confirme que el **método de pago predeterminado** esté vigente (por ejemplo, que la tarjeta no haya vencido).',
+          ],
+          note: {
+            kind: 'warn',
+            title: 'Si hubo un pago fallido',
+            body:
+              'Liquídelo desde **Facturación y pagos** y espere de **24 a 48 horas** antes de continuar con el Paso 2. Aunque el saldo quede en cero, Meta puede tardar en retirar el aviso de la cuenta.',
+          },
+        },
+        {
+          number: '2',
+          title: 'Agregar a Anytrail como socio',
+          where: 'Configuración del portafolio',
+          list: [
+            'En **business.facebook.com** abra **Configuración** (icono de engrane, abajo a la izquierda).',
+            'Arriba a la izquierda, verifique que esté seleccionado el **portafolio de su empresa**.',
+            'En el menú, abra **Usuarios** y luego **Socios**.',
+            'Haga clic en **Agregar** y elija **Dar acceso a sus activos a un socio**.',
+            'Escriba el ID **4027857450851371** y haga clic en **Siguiente**.',
+          ],
+          note: {
+            kind: 'info',
+            title: 'Si los nombres no coinciden exactamente',
+            body:
+              'Meta cambia los textos de sus menús con frecuencia. Busque siempre la sección **Socios** dentro de **Usuarios**; si no la encuentra, escriba "Socios" en el buscador de Configuración.',
+          },
+        },
+        {
+          number: '3',
+          title: 'Compartir su cuenta publicitaria',
+          where: 'Configuración › Socios',
+          paras: [
+            'Después de escribir el ID, Meta le pide elegir qué activos compartir con **Anytrail Inc.**',
+          ],
+          list: [
+            'Como tipo de activo, elija **Cuentas publicitarias**.',
+            'Marque la cuenta publicitaria de su empresa.',
+            'En los permisos, active **Administrar campañas** y **Ver rendimiento**. Si prefiere que nosotros administremos todo, elija **Control total**.',
+            'Haga clic en **Guardar cambios**.',
+          ],
+        },
+        {
+          number: '4',
+          title: 'Compartir su página de Facebook',
+          where: 'Configuración › Socios',
+          paras: [
+            'La página es la que firma sus anuncios y la dueña de sus formularios instantáneos. Sin acceso a ella no podemos traer los leads al CRM.',
+          ],
+          list: [
+            'Con **Anytrail Inc.** seleccionado en **Socios**, haga clic en **Asignar activos** y elija **Páginas**.',
+            'Marque la página de su empresa.',
+            'Active los permisos de **Anuncios**, **Leads** (clientes potenciales) y **Rendimiento**.',
+            'Haga clic en **Guardar cambios**.',
+          ],
+        },
+        {
+          number: '5',
+          title: 'Dar acceso a los leads de sus formularios',
+          where: 'Configuración › Integraciones',
+          paras: [
+            'Meta pide un permiso adicional para que una herramienta externa reciba los leads de sus formularios instantáneos.',
+          ],
+          list: [
+            'En **Configuración**, abra **Integraciones** y luego **Acceso a clientes potenciales** (en inglés, "Leads Access").',
+            'Seleccione la página de su empresa.',
+            'En la pestaña **Socios**, agregue a **Anytrail Inc.**',
+            'En la pestaña **CRM**, agregue **anytrail-leads-crm** si aparece en la lista.',
+          ],
+          note: {
+            kind: 'info',
+            title: 'Si no hay restricciones',
+            body:
+              'Si Meta indica que todas las personas y herramientas con acceso a la página ya pueden ver los leads, no hace falta hacer nada más en este paso.',
+          },
+        },
+        {
+          number: '6',
+          title: 'Avisarnos para terminar la conexión',
+          where: 'Por correo o WhatsApp',
+          paras: [
+            'Escríbale a su contacto en Anytrail cuando termine, con el **nombre de su cuenta publicitaria** y el de su **página**. A partir de ahí, nosotros:',
+          ],
+          list: [
+            'Conectamos su cuenta publicitaria al CRM desde nuestra consola.',
+            'Dejamos sus campañas visibles en **Campañas**, dentro de Anytrail, con gasto, alcance y leads.',
+            'Activamos la llegada automática de los leads de sus formularios al CRM.',
+            'Si su WhatsApp todavía no está conectado, lo hacemos juntos con la guía **Conectar su WhatsApp al CRM** (anytrail.ai/es/guias/conectar-whatsapp).',
+          ],
+        },
+      ],
+      after: {
+        title: 'Después de conectar',
+        note: {
+          kind: 'info',
+          title: 'Puede retirar el acceso cuando quiera',
+          body:
+            'En **Configuración**, **Usuarios**, **Socios**, seleccione **Anytrail Inc.** y elija **Eliminar**. Sus campañas, su página y sus leads siguen siendo suyos; solo dejan de verse en el CRM.',
+        },
+      },
+      trouble: {
+        title: 'Si algo sale mal',
+        colMessage: 'Lo que ve',
+        colAction: 'Qué hacer',
+        rows: [
+          {
+            message: '"Estado de cuenta existente no válido": una o más cuentas publicitarias tienen problemas o están en revisión',
+            action:
+              'Hay un pago pendiente o una revisión en alguna cuenta publicitaria de su portafolio. Revise el Paso 1, liquide cualquier pago fallido y espere de 24 a 48 horas antes de volver a intentar.',
+          },
+          {
+            message: 'No aparece la sección **Socios** o el botón **Agregar**',
+            action:
+              'Su usuario no es administrador con control total del portafolio. Pida a un administrador que haga los pasos, o que le asigne ese rol en **Usuarios › Personas**.',
+          },
+          {
+            message: 'Meta no encuentra el portafolio al escribir el ID',
+            action: 'Revise que el ID sea exactamente **4027857450851371**, sin espacios.',
+          },
+          {
+            message: 'Su cuenta publicitaria no aparece al compartir activos',
+            action:
+              'La cuenta es personal o pertenece a otro portafolio. Agréguela primero a su portafolio en **Cuentas › Cuentas publicitarias › Agregar**, o avísenos y lo vemos juntos.',
+          },
+          {
+            message: 'Meta pide verificar su negocio',
+            action:
+              'Siga las indicaciones de Meta en **Centro de seguridad**. La verificación es de su empresa y requiere sus documentos, así que no podemos hacerla por usted.',
+          },
+        ],
+      },
+    },
     footer: {
       tagline: 'Encuentra los ingresos que distribuidores y empresas industriales están dejando ir. © 2026 Anytrail',
       linksLabel: 'Lectura',
@@ -1760,6 +1940,9 @@ export const ROUTES = {
     // so it is noindex like privacyCopilot. Drop it from NOINDEX_PAGES to
     // let it rank once a page links to it.
     whatsappGuide: '/es/guias/conectar-whatsapp',
+    // Spanish only, unlinked like whatsappGuide: partner-access guide sent to
+    // customers before we connect their ads from the admin console.
+    metaGuide: '/es/guias/conectar-anuncios-meta',
   },
 }
 
@@ -1775,7 +1958,7 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 // linked from every page (noindex, follow). privacyCopilot exists for the
 // Chrome Web Store listing; nothing on the site links to it, so listing it in
 // the sitemap made it an orphan.
-export const NOINDEX_PAGES = ['thanks', 'demo', 'schedule', 'privacyCopilot', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo', 'whatsappGuide']
+export const NOINDEX_PAGES = ['thanks', 'demo', 'schedule', 'privacyCopilot', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo', 'whatsappGuide', 'metaGuide']
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

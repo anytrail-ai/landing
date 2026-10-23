@@ -28,9 +28,12 @@ describe('renderConfirmation', () => {
     expect(html).toContain('#2f6f4f');
     expect(html).toContain(MEET);
     expect(html).toContain(MANAGE_ESCAPED);
-    expect(html).toContain('/demo');
+    expect(html).toContain('https://www.anytrail.ai/');
+    expect(html).toContain('customer portals');
+    expect(html).not.toContain('/demo');
     expect(text).toContain(MEET);
     expect(text).toContain(MANAGE);
+    expect(text).toContain('customer portals');
     // Regex, not a literal substring: ICU may separate the time from the
     // meridiem with a narrow no-break space (U+202F) on some Node/ICU
     // builds instead of a plain space, and a literal "2:30 PM" would then

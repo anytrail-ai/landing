@@ -79,7 +79,7 @@
 
 .ledger__row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 8fr) minmax(0, 3fr);
+  grid-template-columns: 44px minmax(0, 1fr);
   gap: 24px;
   align-items: baseline;
   padding: 24px 0;

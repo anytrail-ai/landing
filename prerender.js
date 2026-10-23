@@ -189,13 +189,12 @@ const llms = `# Anytrail
 
 > ${COPY.en.meta.description}
 
-Anytrail is an AI sales agent platform for industrial equipment companies,
-manufacturers, and distributors. It works demand in both directions: outbound,
-where it surfaces accounts that match what the company sells and opens the
-conversation on WhatsApp, email, or LinkedIn; and inbound, where it answers
-every inquiry the moment it lands. Either way the same agent diagnoses the
-application, collects the technical details needed to quote, follows up, and
-hands qualified opportunities to the sales team.
+Anytrail is building a product for B2B accounts receivable and finance teams
+that manage invoices across their customers' accounts payable portals.
+The product direction covers customer portal requirements, invoice rejections,
+payment terms, payment runs and follow-ups. It is in early development.
+The early-access demo is a 30-minute discussion of the team's workflow,
+product direction, portal coverage and fit.
 
 ## Pages
 
@@ -215,8 +214,7 @@ ${LANGS.flatMap((l) =>
 
 ## Contact
 
-- Book a commercial process review: ${urlFor('en', 'schedule')}
-- Try the live demo: ${urlFor('en', 'demo')}
+- Book an early-access demo: ${urlFor('en', 'schedule')}
 `
 await fs.writeFile(path.join(DIST, 'llms.txt'), llms)
 console.log('wrote llms.txt')

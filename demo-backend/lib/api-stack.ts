@@ -71,6 +71,7 @@ export class ApiStack extends cdk.Stack {
         // The standing video room every booking is held in (ANY-66).
         MEET_URL: 'https://meet.google.com/kzk-tpgh-sbm',
         EMAIL_TEAM_COPY: 'root@anytrail.ai',
+        SCHEDULE_TEAM_COPY: 'root@anytrail.ai,miguel@anytrail.ai',
         SLACK_WEBHOOK_SECRET_ARN: slackWebhookSecret.secretArn,
         SLACK_BOT_SECRET_ARN: slackBotSecret.secretArn,
         SCHEDULE_SECRET_ARN: scheduleSecret.secretArn,

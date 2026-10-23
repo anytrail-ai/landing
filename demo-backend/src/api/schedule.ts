@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { getSecret } from '../secrets';
 import { postSlack } from '../notify';
 import { SCHEDULE } from '../schedule/config';
-import { formatSlot, sendBookingEmails } from '../schedule/email';
+import { formatSlot, sendBookingEmails, sendCancellationEmail } from '../schedule/email';
 import { manageUrlFor } from '../schedule/links';
 import { generateSlots } from '../schedule/slots';
 import {
@@ -142,6 +142,11 @@ export async function view(slotStartUtc: string, sig: string): Promise<Booking> 
 export async function cancel(slotStartUtc: string, sig: string): Promise<void> {
   const booking = await authorize(slotStartUtc, sig);
   await deleteBooking(booking);
+  try {
+    await sendCancellationEmail(booking);
+  } catch (err) {
+    console.error('notify_cancel_email_failed', err);
+  }
   // Book and move both ping Slack; cancel must too, or the founder keeps a
   // calendar entry with no signal it is dead. Fire-and-forget, same style as
   // sendBookingEmails/notify.ts: postSlack never throws on its own, but this
@@ -190,6 +195,6 @@ export async function move(
   };
   await moveBooking(existing, moved);
   const manageUrl = await manageUrlFor(moved);
-  await sendBookingEmails(moved, manageUrl, 'moved');
+  await sendBookingEmails(moved, manageUrl, 'moved', existing.slotStartUtc);
   return { slotStartUtc: toSlotStartUtc, manageUrl };
 }

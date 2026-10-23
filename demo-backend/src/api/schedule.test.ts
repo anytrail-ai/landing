@@ -14,6 +14,8 @@ import { signBooking } from '../schedule/token';
 // above these imports at transform time, so cancel() always sees the mock.
 const mocks = vi.hoisted(() => ({
   postSlack: vi.fn(async (_text: string): Promise<void> => {}),
+  sendCancellationEmail: vi.fn(async (): Promise<void> => {}),
+  sendBookingEmails: vi.fn(async (): Promise<void> => {}),
   // sendBookingEmails (book/move) also imports notifyBooking from '../notify';
   // stubbed here too so mocking this module for the cancel tests below
   // doesn't turn book/move's already-caught Slack ping into console noise.
@@ -22,6 +24,12 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../notify', () => ({
   postSlack: mocks.postSlack,
   notifyBooking: mocks.notifyBooking,
+}));
+
+vi.mock('../schedule/email', async (importOriginal) => ({
+  ...await importOriginal<typeof import('../schedule/email')>(),
+  sendCancellationEmail: mocks.sendCancellationEmail,
+  sendBookingEmails: mocks.sendBookingEmails,
 }));
 
 import { book, bookSchema, cancel, cancelSchema, move, moveSchema, view } from './schedule';
@@ -220,6 +228,10 @@ describe('move', () => {
     const put = call.TransactItems![1].Put!.Item as { createdAt: string; sequence: number };
     expect(put.createdAt).toBe(existing.createdAt);
     expect(put.sequence).toBe(1);
+    expect(mocks.sendBookingEmails).toHaveBeenLastCalledWith(
+      expect.objectContaining({ slotStartUtc: to }),
+      expect.any(String), 'moved', existing.slotStartUtc,
+    );
   });
 });
 
@@ -229,6 +241,8 @@ describe('cancel', () => {
     secretsManager.reset();
     mocks.postSlack.mockClear();
     mocks.postSlack.mockResolvedValue(undefined);
+    mocks.sendCancellationEmail.mockReset();
+    mocks.sendCancellationEmail.mockResolvedValue(undefined);
     process.env.SCHEDULE_SECRET_ARN = 'arn:aws:secretsmanager:test:schedule';
     secretsManager.on(GetSecretValueCommand).resolves({ SecretString: SECRET });
     ddb.on(GetCommand).resolves({ Item: existing });
@@ -241,6 +255,7 @@ describe('cancel', () => {
     const sig = signBooking(existing.slotStartUtc, existing.email, SECRET);
     await cancel(existing.slotStartUtc, sig);
 
+    expect(mocks.sendCancellationEmail).toHaveBeenCalledWith(existing);
     expect(mocks.postSlack).toHaveBeenCalledTimes(1);
     const [text] = mocks.postSlack.mock.calls[0] as [string];
     expect(text).toContain(existing.name);
@@ -258,4 +273,22 @@ describe('cancel', () => {
     await expect(cancel(existing.slotStartUtc, sig)).resolves.toBeUndefined();
     expect(ddb.commandCalls(TransactWriteCommand)).toHaveLength(1);
   });
+});
+
+
+it('keeps cancellation committed and still posts Slack if host email unexpectedly throws', async () => {
+  ddb.reset();
+  secretsManager.reset();
+  process.env.SCHEDULE_SECRET_ARN = 'arn:aws:secretsmanager:test:schedule';
+  secretsManager.on(GetSecretValueCommand).resolves({ SecretString: SECRET });
+  ddb.on(GetCommand).resolves({ Item: existing });
+  ddb.on(TransactWriteCommand).resolves({});
+  mocks.postSlack.mockReset();
+  mocks.postSlack.mockResolvedValue(undefined);
+  mocks.sendCancellationEmail.mockRejectedValueOnce(new Error('host mail failed'));
+  const sig = signBooking(existing.slotStartUtc, existing.email, SECRET);
+
+  await expect(cancel(existing.slotStartUtc, sig)).resolves.toBeUndefined();
+  expect(ddb.commandCalls(TransactWriteCommand)).toHaveLength(1);
+  expect(mocks.postSlack).toHaveBeenCalledTimes(1);
 });

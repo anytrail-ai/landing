@@ -8,7 +8,15 @@ import { buildIcs } from './ics';
 import type { Booking } from './store';
 
 const SENDER = process.env.EMAIL_SENDER ?? 'Anytrail <agent@demo.anytrail.ai>';
-const TEAM = process.env.EMAIL_TEAM_COPY ?? '';
+/** Scheduling uses plain comma-separated mailbox addresses, not display names. */
+export function parseTeamRecipients(value: string): string[] {
+  return [...new Set(value.split(',').map((address) => address.trim().toLowerCase()).filter(Boolean))];
+}
+
+function bookingTeamRecipients(): string[] {
+  // A scheduling-only override preserves the recipients of unrelated lead emails.
+  return parseTeamRecipients(process.env.SCHEDULE_TEAM_COPY ?? process.env.EMAIL_TEAM_COPY ?? '');
+}
 const SITE = 'https://www.anytrail.ai';
 
 // Landing palette, same values as src/email.ts.
@@ -176,6 +184,57 @@ async function send(payload: Record<string, unknown>, label: 'visitor' | 'team')
   }
 }
 
+type TeamBookingKind = 'booked' | 'moved' | 'cancelled';
+
+async function sendTeamBookingEmail(
+  b: Booking,
+  kind: TeamBookingKind,
+  attachments?: Array<{ filename: string; content: string }>,
+  previousSlotStartUtc?: string,
+): Promise<void> {
+  const recipients = bookingTeamRecipients();
+  if (recipients.length === 0) return;
+  // Each channel is best-effort and independent. Mail must not roll back a
+  // committed book/move/cancel or suppress its separate Slack notification.
+  try {
+    const labels = {
+      booked: { subject: 'New booking', status: 'CONFIRMED', slot: 'Slot' },
+      moved: { subject: 'Rescheduled', status: 'RESCHEDULED', slot: 'New slot' },
+      cancelled: { subject: 'Cancelled booking', status: 'CANCELLED', slot: 'Cancelled slot' },
+    } as const;
+    const label = labels[kind];
+    const when = formatSlot(b.slotStartUtc, 'en');
+    const text = [
+      `Booking status: ${label.status}`,
+      `Booking ID: ${icsUidFor(b)}`,
+      `Prospect: ${b.name} <${b.email}>`,
+      `Company website: ${b.website}`,
+      `Booking created (UTC): ${b.createdAt}`,
+      ...(previousSlotStartUtc ? [`Previous slot (UTC): ${previousSlotStartUtc}`] : []),
+      `${label.slot} (UTC): ${b.slotStartUtc}`,
+      `${label.slot} (America/New_York): ${when}`,
+      `Duration: ${SCHEDULE.slotMinutes} minutes`,
+      `Note: ${b.note || '(none)'}`,
+      kind === 'cancelled'
+        ? 'Calendar action: remove this booking from the host calendar.'
+        : `Join: ${MEET_URL}`,
+    ].join('\n');
+    await send({
+      to: recipients,
+      subject: `${label.subject}: ${b.name} (${b.website}) ${when}`,
+      text,
+      ...(attachments ? { attachments } : {}),
+    }, 'team');
+  } catch (err) {
+    console.error(`schedule_team_${kind}_email_failed`, err);
+  }
+}
+
+/** Host notification only; the existing visitor cancellation response is unchanged. */
+export async function sendCancellationEmail(b: Booking): Promise<void> {
+  await sendTeamBookingEmail(b, 'cancelled');
+}
+
 /**
  * Visitor confirmation plus a team copy, both carrying the .ics. Best-effort:
  * a mail failure logs and never fails the booking the visitor already made.
@@ -188,6 +247,7 @@ export async function sendBookingEmails(
   b: Booking,
   manageUrl: string,
   kind: 'booked' | 'moved' = 'booked',
+  previousSlotStartUtc?: string,
 ): Promise<void> {
   // Everything through the mail send is inside the try: formatSlot/buildIcs
   // can throw (e.g. Intl.DateTimeFormat's RangeError on an unparseable
@@ -214,19 +274,12 @@ export async function sendBookingEmails(
       { filename: 'anytrail-call.ics', content: Buffer.from(ics).toString('base64') },
     ];
 
-    await send({ to: [b.email], subject, html, text, attachments }, 'visitor');
-    if (TEAM) {
-      const teamVerb = kind === 'moved' ? 'Rescheduled' : 'New booking';
-      await send(
-        {
-          to: [TEAM],
-          subject: `${teamVerb}: ${b.name} (${b.website}) ${formatSlot(b.slotStartUtc, 'en')}`,
-          text: `${b.name} <${b.email}>\n${b.website}\n${b.note}\n\n${formatSlot(b.slotStartUtc, 'en')}`,
-          attachments,
-        },
-        'team',
-      );
+    try {
+      await send({ to: [b.email], subject, html, text, attachments }, 'visitor');
+    } catch (err) {
+      console.error('schedule_visitor_email_failed', err);
     }
+    await sendTeamBookingEmail(b, kind, attachments, previousSlotStartUtc);
   } catch (err) {
     console.error('send_booking_emails_failed', err);
   }

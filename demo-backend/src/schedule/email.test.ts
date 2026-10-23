@@ -1,5 +1,16 @@
-import { describe, expect, it } from 'vitest';
-import { formatSlot, icsUidFor, renderConfirmation, renderReminder } from './email';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+const delivery = vi.hoisted(() => ({
+  fetch: vi.fn(),
+  notifyBooking: vi.fn(async () => {}),
+}));
+vi.mock('../net/outbound-fetch', () => ({ outboundFetch: delivery.fetch }));
+vi.mock('../secrets', () => ({ getSecret: vi.fn(async () => 'test-mail-key') }));
+vi.mock('../notify', () => ({ notifyBooking: delivery.notifyBooking }));
+
+import {
+  formatSlot, icsUidFor, parseTeamRecipients, renderConfirmation, renderReminder,
+  sendBookingEmails, sendCancellationEmail,
+} from './email';
 
 const booking = {
   slotStartUtc: '2026-08-20T18:30:00.000Z',
@@ -104,5 +115,83 @@ describe('icsUidFor', () => {
   it('differs for a different booking (different createdAt)', () => {
     const otherBooking = { ...booking, createdAt: '2026-08-19T13:00:00.000Z' };
     expect(icsUidFor(otherBooking)).not.toBe(icsUidFor(booking));
+  });
+});
+
+
+describe('booking team notifications', () => {
+  beforeEach(() => {
+    vi.stubEnv('SCHEDULE_TEAM_COPY', 'root@anytrail.ai, miguel@anytrail.ai');
+    vi.stubEnv('EMAIL_TEAM_COPY', 'root@anytrail.ai');
+    delivery.fetch.mockReset();
+    delivery.fetch.mockResolvedValue({ ok: true });
+    delivery.notifyBooking.mockClear();
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  function sentMessages() {
+    return delivery.fetch.mock.calls.map(([, init]) => JSON.parse(init.body));
+  }
+
+  it('trims and deduplicates comma-separated recipient addresses', () => {
+    expect(parseTeamRecipients(' root@anytrail.ai, MIGUEL@anytrail.ai, ,root@anytrail.ai '))
+      .toEqual(['root@anytrail.ai', 'miguel@anytrail.ai']);
+    expect(parseTeamRecipients('')).toEqual([]);
+  });
+
+  it('sends host copies to root and Miguel with stable identity, slot and prospect context', async () => {
+    const withNote = { ...booking, note: 'Customer portal: Coupa' };
+    await sendBookingEmails(withNote, MANAGE);
+    const messages = sentMessages();
+    expect(messages[0].to).toEqual([booking.email]);
+    expect(messages[1].to).toEqual(['root@anytrail.ai', 'miguel@anytrail.ai']);
+    expect(messages[1].text).toContain('Booking status: CONFIRMED');
+    expect(messages[1].text).toContain(icsUidFor(booking));
+    expect(messages[1].text).toContain(booking.email);
+    expect(messages[1].text).toContain(booking.slotStartUtc);
+    expect(messages[1].text).toContain(withNote.note);
+    expect(messages[1].attachments[0].filename).toBe('anytrail-call.ics');
+  });
+
+  it('includes previous and new UTC slots for a move', async () => {
+    const previous = '2026-08-19T18:30:00.000Z';
+    await sendBookingEmails(booking, MANAGE, 'moved', previous);
+    const team = sentMessages()[1];
+    expect(team.text).toContain('Booking status: RESCHEDULED');
+    expect(team.text).toContain(`Previous slot (UTC): ${previous}`);
+    expect(team.text).toContain(`New slot (UTC): ${booking.slotStartUtc}`);
+  });
+
+  it('still sends the host copy if the visitor mail transport throws', async () => {
+    delivery.fetch.mockRejectedValueOnce(new Error('visitor mail failed'));
+    await expect(sendBookingEmails(booking, MANAGE)).resolves.toBeUndefined();
+    expect(sentMessages()[1].to).toEqual(['root@anytrail.ai', 'miguel@anytrail.ai']);
+  });
+
+  it('emails both hosts when cancelled with enough context to remove the calendar event', async () => {
+    await sendCancellationEmail({ ...booking, note: 'Portal follow-up' });
+    const [team] = sentMessages();
+    expect(team.to).toEqual(['root@anytrail.ai', 'miguel@anytrail.ai']);
+    expect(team.subject).toContain('Cancelled booking');
+    expect(team.text).toContain('Booking status: CANCELLED');
+    expect(team.text).toContain(icsUidFor(booking));
+    expect(team.text).toContain(booking.email);
+    expect(team.text).toContain(`Cancelled slot (UTC): ${booking.slotStartUtc}`);
+    expect(team.text).toContain('Portal follow-up');
+    expect(team.attachments).toBeUndefined();
+  });
+
+  it('falls back to the existing single team recipient when no schedule list is configured', async () => {
+    vi.stubEnv('SCHEDULE_TEAM_COPY', undefined);
+    await sendCancellationEmail(booking);
+    expect(sentMessages()[0].to).toEqual(['root@anytrail.ai']);
+  });
+
+  it('does not reject the completed cancellation when the mail transport fails', async () => {
+    delivery.fetch.mockRejectedValueOnce(new Error('mail unavailable'));
+    await expect(sendCancellationEmail(booking)).resolves.toBeUndefined();
   });
 });

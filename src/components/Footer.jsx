@@ -8,7 +8,7 @@ function Footer() {
   // Content pages are linked from every page on the site, including each
   // other. A page reachable from one place only is a page Google treats as an
   // afterthought.
-  const isPortalPage = ['home', 'schedule', 'thanks'].includes(page)
+  const isPortalPage = ['home', 'schedule', 'thanks', 'privacy'].includes(page)
   const links = isPortalPage ? [] : CLUSTER_PAGES.filter((p) => p !== page)
 
   return (

@@ -4,8 +4,8 @@ import './Privacy.css'
 /**
  * Privacy notice page. One component, two copy blocks:
  *
- * - `privacy`: the site-wide policy. Linked from the footer, and the URL Meta
- *   lead forms point at, so /privacy must stay stable.
+ * - `privacy`: the site-wide policy. Linked from the footer and advertising
+ *   lead forms, so /privacy must stay stable.
  * - `privacyCopilot`: the Anytrail Copilot Chrome extension notice. The Chrome
  *   Web Store listing links to /privacy/copilot, so that one must stay too.
  *

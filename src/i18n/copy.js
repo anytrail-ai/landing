@@ -3,19 +3,19 @@
 export const COPY = {
   en: {
     meta: {
-      "title": "Anytrail | Keep Up with Every Customer AP Portal",
-      "description": "For B2B accounts receivable teams juggling customer payment portals. Explore what we are building to track invoice rejections, payment terms, payment runs and follow-ups in one place. Book an early-access demo.",
+      "title": "Anytrail | Customer AP Portal Work for Industrial Distributors",
+      "description": "Building Anytrail for industrial distributors managing customer AP portals. Review invoice rejections, missing documents, approval status and payment dates in a 30-minute portal-to-cash review.",
       "ogLocale": "en_US"
     },
     navbar: {
-      "cta": "Book a demo"
+      "cta": "Book a portal review"
     },
     hero: {
-      "title": "Stop chasing invoices across customer portals.",
-      "subtitle": "One customer wants invoices uploaded. Another rejects a missing PO. A third only pays on Fridays. We’re building Anytrail to help B2B finance teams keep track of the work between sending an invoice and getting paid.",
-      "cta": "Book an early-access demo",
-      "ctaNote": "30-minute video call for accounts receivable, credit and finance teams. Bring the customer portals that take up your week.",
-      "scope": "In early development. Help shape the workflow around your team’s real payment process."
+      "title": "Your goods shipped. Is the invoice ready for payment?",
+      "subtitle": "For industrial distributors selling to enterprise customers. We’re building Anytrail to help your AR team track customer AP portal requirements, rejected invoices, missing documents and payment dates—so each blocked invoice has a clear owner and next action.",
+      "cta": "Book a portal-to-cash review",
+      "ctaNote": "A 30-minute video call for distributor AR, credit and billing teams. Bring one recurring portal delay; leave with a one-page map of the blocker, owner and next step.",
+      "scope": "Anytrail is in development. The review is founder-led and helps shape the workflow around your team’s real payment process."
     },
     benefits: {
       "label": "What we’re building",
@@ -43,7 +43,7 @@ export const COPY = {
       "ariaLabel": "Illustrative invoice follow-up worklist, not a live product screenshot. Four sample customer portal issues and their next actions.",
       "headerTitle": "Invoice follow-up",
       "sample": "Illustration",
-      "company": "Example B2B supplier",
+      "company": "Example industrial distributor",
       "period": "Across customer portals",
       "colFinding": "What needs attention",
       "colValue": "Next step",
@@ -123,33 +123,33 @@ export const COPY = {
     },
     how: {
       "stepLabel": "Step",
-      "label": "Your early-access demo",
-      "title": "Bring your portal headaches. Let’s work through them.",
-      "intro": "Anytrail is in early development. This is a focused conversation about your workflow, what we are building and whether it could fit your team.",
+      "label": "Your portal-to-cash review",
+      "title": "Bring one blocked invoice. Leave with a clear next step.",
+      "intro": "We’ll trace one anonymized invoice through submission, acceptance, approval and the customer’s payment process. Anytrail is in development; we’ll discuss the proposed workflow where it could help.",
       "entriesLabel": "Who this is for",
       "entries": [
         {
-          "title": "Accounts receivable and credit teams",
-          "body": "You handle invoice submissions, rejection fixes and payment follow-ups across several customer portals."
+          "title": "Distributor AR, credit and billing teams",
+          "body": "You submit invoices and delivery documents into customers’ AP portals, fix rejections and keep track of approvals and payment follow-ups."
         },
         {
-          "title": "Finance leaders at B2B suppliers",
+          "title": "Finance leaders at industrial distributors",
           "body": "You need a clearer view of expected cash and the operational work behind the receivables balance."
         }
       ],
       "sharedLabel": "What we’ll cover in 30 minutes",
       "steps": [
         {
-          "title": "Map your customer portals",
-          "body": "Walk us through the portals, invoice volume and payment processes your team manages today."
+          "title": "Trace one invoice",
+          "body": "Walk us through one customer portal, the invoice requirements and the point where work stopped. Use anonymized references."
         },
         {
-          "title": "Find the recurring blockers",
-          "body": "Pick one rejection or delayed payment and trace the missing information, handoffs and follow-ups."
+          "title": "Find the recurring blocker",
+          "body": "Identify the missing PO or delivery document, rejection reason, approval owner or payment-run cutoff that needs attention."
         },
         {
-          "title": "Review the product direction",
-          "body": "See the workflow we are designing, discuss your must-haves and decide whether to continue into early access."
+          "title": "Leave with a bottleneck map",
+          "body": "We’ll send a one-page summary of the blocker, owner and next action. Discuss whether the proposed Anytrail workflow could fit a future pilot."
         }
       ]
     },
@@ -157,7 +157,7 @@ export const COPY = {
       "usLabel": "Anytrail’s direction",
       "label": "Where it fits",
       "title": "Built around your customers’ payment processes.",
-      "intro": "We’re building a shared working view of customer portal requirements, invoice issues and payment follow-ups for the supplier’s finance team. Portal coverage and implementation requirements will be discussed in the demo.",
+      "intro": "We’re building a shared working view of customer portal requirements, invoice issues and payment follow-ups for distributor finance teams. Portal coverage and implementation requirements will be discussed in the review.",
       "comparisons": [
         {
           "label": "Your accounting system",
@@ -191,84 +191,83 @@ export const COPY = {
       integrations: ['Salesforce', 'HubSpot', 'SAP', 'WhatsApp', 'Email'],
     },
     closing: {
-      "title": "Which customer portal takes up the most of your week?",
-      "body": "Show us where invoices get stuck. We’ll walk through what we’re building and see whether Anytrail could help your team.",
-      "cta": "Book an early-access demo"
+      "title": "Which customer portal is holding up your next invoice?",
+      "body": "Bring one recurring portal delay to a 30-minute review. We’ll map the blocker, owner and next step, then discuss whether the workflow we’re building could fit your team.",
+      "cta": "Book a portal-to-cash review"
     },
     whatsapp: {
       cta: 'Or text us on WhatsApp',
       prefill: "Hi, I'd like to find the sales we're missing.",
     },
     privacy: {
-      meta: {
-        title: 'Privacy Policy | Anytrail',
-        description:
-          'What personal data Anytrail collects through its website, ads and messaging channels, what it is used for, who processes it, and how to request access or deletion.',
-        ogLocale: 'en_US',
+      "meta": {
+        "title": "Privacy Policy | Anytrail",
+        "description": "What personal data Anytrail collects through its website, ads and messaging channels, what it is used for, who processes it, and how to request access or deletion.",
+        "ogLocale": "en_US"
       },
-      title: 'Privacy Policy',
-      updated: 'Last updated: October 16, 2026',
-      intro:
-        'Anytrail builds AI sales agents for industrial companies and distributors. This policy covers the personal data we handle when you visit this site, fill in one of our forms, reach us through an ad, or message us. It does not cover the data our customers load into their own Anytrail accounts, which they control.',
-      contactHeading: 'Who is responsible',
-      contactBody: 'Anytrail. Contact:',
-      contactEmail: 'root@anytrail.ai',
-      sections: [
+      "title": "Privacy Policy",
+      "updated": "Last updated: October 23, 2026",
+      "intro": "Anytrail develops software for B2B companies, including customer AP portal work for industrial distributors. The portal product is in development. This policy covers the personal data we handle when you visit this site, request a review or demo, submit an ad form, or message us. It does not cover the data our customers load into their own Anytrail accounts, which they control.",
+      "contactHeading": "Who is responsible",
+      "contactBody": "Anytrail. Contact:",
+      "contactEmail": "root@anytrail.ai",
+      "sections": [
         {
-          heading: 'What we collect',
-          paragraphs: [
-            'What you send us. When you book a review, request a demo or fill in any form on this site, we keep what you type: usually your name, work email, phone number, company, and what you told us about your sales process.',
-            'Lead forms on Facebook and Instagram. If you reach us through a Meta lead form, Meta sends us the fields you submitted: your name, email, phone number, and your answers to the questions on the form. Meta handles that form under its own data policy, which you see before you submit.',
-            'WhatsApp and email. If you message us, we keep your number or address and the conversation so we can follow it up.',
-            'How you use this site. We record page views and clicks ourselves: which page, your language, the referring site, any campaign tags in the link, your window size, and where on the page you clicked. A random id in your browser tab groups one visit together and disappears when the tab closes. It is never linked to your name unless you fill in a form.',
-            'Google Analytics and the Meta Pixel. The site also loads these two third-party tags. Google Analytics gives us aggregate traffic statistics. The Meta Pixel tells Meta when someone visits this site or books a review, so we can measure our Facebook and Instagram ads and stop showing them to people who are not interested. Each sets a cookie in your browser (Google: _ga, Meta: _fbp) and receives your IP address, browser details and the pages you view; Meta may link that activity to your Meta account under its own data policy. Browser tracking protection or an ad blocker stops both, and the site works the same without them.',
-          ],
+          "heading": "What we collect",
+          "paragraphs": [
+            "What you send us. When you book a review, request a demo or fill in a form on this site, we keep the details you submit, such as your name, work email, company or website, and your answers about customer portals or other business workflows. Some forms or messaging channels may also ask for a phone number.",
+            "Lead forms on Facebook and Instagram. If you reach us through a Meta lead form, Meta sends us the fields you submitted: your name, email, phone number, and your answers to the questions on the form. Meta handles that form under its own data policy, which you see before you submit.",
+            "LinkedIn lead forms. If you submit one of our LinkedIn forms, we receive the details you provide, such as your name, work email, company, job title and answers about customer portals and invoice blockers. We keep available lead or form identifiers and campaign details with the request so we can identify its source and avoid duplicate follow-ups. LinkedIn handles the form under its own privacy policy.",
+            "WhatsApp and email. If you message us, we keep your number or address and the conversation so we can follow it up.",
+            "How you use this site. We record page views and clicks ourselves: which page, your language, the referring site, any campaign tags in the link, your window size, and where on the page you clicked. A random id in your browser tab groups one visit together and disappears when the tab closes. It is never linked to your name unless you fill in a form.",
+            "Google Analytics and, when configured, the Meta Pixel. The site uses these third-party analytics tools. Google Analytics gives us aggregate traffic statistics. The Meta Pixel tells Meta when someone visits this site or books a review, so we can measure our Facebook and Instagram ads and stop showing them to people who are not interested. Each sets a cookie in your browser (Google: _ga, Meta: _fbp) and receives your IP address, browser details and the pages you view; Meta may link that activity to your Meta account under its own data policy. Browser tracking protection or an ad blocker stops both, and the site works the same without them."
+          ]
         },
         {
-          heading: 'What we use it for',
-          paragraphs: [
-            'To answer you: book the review, run the demo, send what you asked for, and follow up on that specific request by email, phone or WhatsApp. If you would rather we stopped, reply saying so or write to root@anytrail.ai and we will.',
-            'To understand which pages and campaigns bring people who go on to talk to us, so we spend less on the ones that do not.',
-          ],
+          "heading": "What we use it for",
+          "paragraphs": [
+            "To respond to your request: check the workflow and company fit, arrange the review or demo, prepare the summary you requested, and follow up on that request using the contact details you provided. For LinkedIn review requests we use email. If you would rather we stopped, reply saying so or write to root@anytrail.ai and we will.",
+            "To understand which pages and campaigns bring people who go on to talk to us, so we spend less on the ones that do not."
+          ]
         },
         {
-          heading: 'What we never do',
-          paragraphs: [
-            'We do not sell your data, and we do not share it with third parties for their own marketing.',
-            'We do not use your contact details or your messages to train models.',
-            'Apart from Google Analytics and the Meta Pixel described above, this site sets no cookies and loads no advertising or analytics scripts from other companies.',
-          ],
+          "heading": "What we never do",
+          "paragraphs": [
+            "We do not sell your data, and we do not share it with third parties for their own marketing.",
+            "We do not use your contact details or your messages to train models.",
+            "Apart from Google Analytics and the Meta Pixel described above, this site sets no cookies and loads no advertising or analytics scripts from other companies."
+          ]
         },
         {
-          heading: 'Who processes it on our behalf',
-          paragraphs: [
-            'Our infrastructure runs on Amazon Web Services in the US East region (us-east-1); that is where form submissions, conversations and site telemetry are stored. Meta processes lead forms and WhatsApp messages when you reach us through those channels, and receives the Meta Pixel signals described above. Google receives the Google Analytics signals. Our email provider carries the email we exchange with you. Each of them acts under our instructions and its own privacy commitments.',
-          ],
+          "heading": "Who processes it on our behalf",
+          "paragraphs": [
+            "Our infrastructure runs on Amazon Web Services in the US East region (us-east-1), where website form submissions, conversations and site telemetry are stored. LinkedIn processes its lead forms on its platform and makes submitted lead details available to us. Meta processes its lead forms and WhatsApp messages and receives any configured Meta Pixel signals. Google receives Google Analytics signals. Our email provider carries the email we exchange with you. These providers process information under their applicable service terms and privacy policies."
+          ]
         },
         {
-          heading: 'How long we keep it',
-          paragraphs: [
-            'We keep your request and the conversation around it for as long as we need to handle it and follow up, and we delete it when you ask. Site usage data is kept in aggregate and is not tied to you.',
-          ],
+          "heading": "How long we keep it",
+          "paragraphs": [
+            "We keep your request and the conversation around it for as long as we need to handle it and follow up, and we delete it when you ask. Site usage data is kept in aggregate and is not tied to you."
+          ]
         },
         {
-          heading: 'Your rights',
-          paragraphs: [
-            'You can ask us what we hold about you, correct it, have it deleted, or tell us to stop contacting you, by writing to root@anytrail.ai. If you are in Mexico this includes your rights of access, rectification, cancellation and opposition under the federal data protection law. We answer within the time the applicable law requires.',
-          ],
+          "heading": "Your rights",
+          "paragraphs": [
+            "You can ask us what we hold about you, correct it, have it deleted, or tell us to stop contacting you, by writing to root@anytrail.ai. If you are in Mexico this includes your rights of access, rectification, cancellation and opposition under the federal data protection law. We answer within the time the applicable law requires."
+          ]
         },
         {
-          heading: 'Changes',
-          paragraphs: [
-            'When this policy changes, the date at the top changes with it. Material changes will also be noted on this page for a period after they take effect.',
-          ],
-        },
+          "heading": "Changes",
+          "paragraphs": [
+            "When this policy changes, the date at the top changes with it. Material changes will also be noted on this page for a period after they take effect."
+          ]
+        }
       ],
-      related: {
-        text: 'The Anytrail Copilot Chrome extension has its own notice:',
-        href: '/privacy/copilot',
-        label: 'Anytrail Copilot privacy policy',
-      },
+      "related": {
+        "text": "The Anytrail Copilot Chrome extension has its own notice:",
+        "href": "/privacy/copilot",
+        "label": "Anytrail Copilot privacy policy"
+      }
     },
     privacyCopilot: {
       meta: {
@@ -388,41 +387,44 @@ export const COPY = {
       },
     },
     schedule: {
-      meta: {
-        title: 'Book an early-access demo | Anytrail',
-        description:
-          'Book a 30-minute video call about managing invoice rejections, payment terms and follow-ups across customer AP portals.',
-        ogLocale: 'en_US',
+      "meta": {
+        "title": "Book a distributor portal-to-cash review | Anytrail",
+        "description": "Book a 30-minute distributor portal-to-cash review. Map one recurring invoice delay, its owner and next action while discussing the workflow Anytrail is building.",
+        "ogLocale": "en_US"
       },
-      title: 'Let’s talk about your customer portals',
-      intro:
-        'Thirty minutes, by video. Walk us through your customer payment portals and see the direction we’re building for accounts receivable teams.',
-      bullets: [
-        'Map your portals, invoice volume and the work your team repeats each week.',
-        'Review a rejection or delayed payment and the follow-up it needs.',
-        'Discuss the early-access product direction, portal coverage and whether there is a fit.',
+      "title": "Let’s review one customer-portal delay",
+      "intro": "Thirty minutes, by video, for industrial distributor AR, credit and billing teams. Bring one anonymized invoice delay and leave with a one-page bottleneck map. Anytrail is in development.",
+      "bullets": [
+        "Trace submission, acceptance, approval and the customer’s payment process.",
+        "Identify the blocker, missing information, owner and next action.",
+        "Receive the one-page map and discuss whether the proposed workflow could fit a pilot."
       ],
-      pickDay: 'Pick a day',
-      pickTime: 'Pick a time',
-      yourZone: 'Times shown in your timezone',
-      noSlots: 'No open times that day. Try another one.',
-      form: { name: 'Your name', email: 'Work email', website: 'Company website', note: 'Which customer portals do you manage? (optional)' },
-      submit: 'Book the call',
-      booking: 'Booking...',
-      manageTitle: 'Your booking',
-      cancel: 'Cancel this call',
-      move: 'Move to another time',
-      cancelled: 'Your call is cancelled. You can book another any time.',
-      errors: {
-        invalid_website: "We couldn't use that website address. Check the URL and try again.",
-        invalid_input: "That didn't look right. Check the form and try again.",
-        slot_taken: 'Someone just took that time. Pick another one.',
-        already_booked: 'You already have a call booked. Use the link in your confirmation email to change it.',
-        rate_limited: 'Too many attempts. Try again later.',
-        invalid_link: 'That link is not valid. Check the one in your confirmation email.',
-        unknown_booking: 'We could not find that booking. It may already be cancelled.',
-        generic: 'Something went wrong. Try again.',
+      "pickDay": "Pick a day",
+      "pickTime": "Pick a time",
+      "yourZone": "Times shown in your timezone",
+      "noSlots": "No open times that day. Try another one.",
+      "form": {
+        "name": "Your name",
+        "email": "Work email",
+        "website": "Company website",
+        "note": "Which customer portals do you manage? (optional)"
       },
+      "submit": "Book the call",
+      "booking": "Booking...",
+      "manageTitle": "Your booking",
+      "cancel": "Cancel this call",
+      "move": "Move to another time",
+      "cancelled": "Your call is cancelled. You can book another any time.",
+      "errors": {
+        "invalid_website": "We couldn't use that website address. Check the URL and try again.",
+        "invalid_input": "That didn't look right. Check the form and try again.",
+        "slot_taken": "Someone just took that time. Pick another one.",
+        "already_booked": "You already have a call booked. Use the link in your confirmation email to change it.",
+        "rate_limited": "Too many attempts. Try again later.",
+        "invalid_link": "That link is not valid. Check the one in your confirmation email.",
+        "unknown_booking": "We could not find that booking. It may already be cancelled.",
+        "generic": "Something went wrong. Try again."
+      }
     },
     // Cluster page. Structure is read by ClusterPage.jsx, so the two remaining
     // cluster pages are a copy block and a ROUTES entry, nothing more.
@@ -770,7 +772,7 @@ export const COPY = {
       },
     },
     footer: {
-      "tagline": "Building a clearer way to manage customer payment portals. © 2026 Anytrail",
+      "tagline": "Building a clearer way for industrial distributors to manage customer AP portal work. © 2026 Anytrail",
       "linksLabel": "Reading",
       "privacyLabel": "Privacy policy"
     },
@@ -1441,75 +1443,74 @@ export const COPY = {
       },
     },
     privacy: {
-      meta: {
-        title: 'Aviso de Privacidad | Anytrail',
-        description:
-          'Qué datos personales recaba Anytrail a través de su sitio web, anuncios y canales de mensajería, para qué los usa, quién los procesa y cómo solicitar acceso o eliminación.',
-        ogLocale: 'es_MX',
+      "meta": {
+        "title": "Aviso de Privacidad | Anytrail",
+        "description": "Qué datos personales recaba Anytrail a través de su sitio web, anuncios y canales de mensajería, para qué los usa, quién los procesa y cómo solicitar acceso o eliminación.",
+        "ogLocale": "es_MX"
       },
-      title: 'Aviso de Privacidad',
-      updated: 'Última actualización: 16 de octubre de 2026',
-      intro:
-        'Anytrail desarrolla agentes de ventas con IA para empresas industriales y distribuidores. Este aviso cubre los datos personales que manejamos cuando visitas este sitio, llenas uno de nuestros formularios, nos contactas desde un anuncio o nos escribes. No cubre los datos que nuestros clientes cargan en sus propias cuentas de Anytrail, que ellos controlan.',
-      contactHeading: 'Responsable',
-      contactBody: 'Anytrail. Contacto:',
-      contactEmail: 'root@anytrail.ai',
-      sections: [
+      "title": "Aviso de Privacidad",
+      "updated": "Última actualización: 23 de octubre de 2026",
+      "intro": "Anytrail desarrolla software para empresas B2B, incluido el trabajo en portales de cuentas por pagar de clientes para distribuidores industriales. El producto de portales está en desarrollo. Este aviso cubre los datos personales que manejamos cuando visitas este sitio, solicitas una revisión o demo, envías un formulario de un anuncio o nos escribes. No cubre los datos que nuestros clientes cargan en sus propias cuentas de Anytrail, que ellos controlan.",
+      "contactHeading": "Responsable",
+      "contactBody": "Anytrail. Contacto:",
+      "contactEmail": "root@anytrail.ai",
+      "sections": [
         {
-          heading: 'Qué recabamos',
-          paragraphs: [
-            'Lo que nos envías. Cuando agendas una revisión, pides una demo o llenas cualquier formulario de este sitio, guardamos lo que escribes: normalmente tu nombre, correo de trabajo, teléfono, empresa y lo que nos contaste sobre tu proceso de ventas.',
-            'Formularios en Facebook e Instagram. Si nos contactas a través de un formulario de clientes potenciales de Meta, Meta nos envía los campos que llenaste: tu nombre, correo, teléfono y tus respuestas a las preguntas del formulario. Meta maneja ese formulario bajo su propia política de datos, que ves antes de enviarlo.',
-            'WhatsApp y correo. Si nos escribes, guardamos tu número o dirección y la conversación para poder darle seguimiento.',
-            'Cómo usas este sitio. Registramos nosotros mismos las vistas de página y los clics: qué página, tu idioma, el sitio de origen, las etiquetas de campaña del enlace, el tamaño de tu ventana y en qué parte de la página hiciste clic. Un identificador aleatorio en la pestaña de tu navegador agrupa una visita y desaparece al cerrarla. Nunca se vincula con tu nombre a menos que llenes un formulario.',
-            'Google Analytics y el Píxel de Meta. El sitio también carga estas dos etiquetas de terceros. Google Analytics nos da estadísticas agregadas de tráfico. El Píxel de Meta le avisa a Meta cuando alguien visita este sitio o agenda una revisión, para que podamos medir nuestros anuncios en Facebook e Instagram y dejar de mostrárselos a quien no le interesan. Cada una instala una cookie en tu navegador (Google: _ga, Meta: _fbp) y recibe tu dirección IP, datos de tu navegador y las páginas que ves; Meta puede vincular esa actividad con tu cuenta de Meta bajo su propia política de datos. La protección contra rastreo de tu navegador o un bloqueador de anuncios detiene ambas, y el sitio funciona igual sin ellas.',
-          ],
+          "heading": "Qué recabamos",
+          "paragraphs": [
+            "Lo que nos envías. Cuando agendas una revisión, pides una demo o llenas un formulario de este sitio, guardamos los datos que envías, como tu nombre, correo de trabajo, empresa o sitio web y tus respuestas sobre portales de clientes u otros procesos de negocio. Algunos formularios o canales de mensajería también pueden pedir un teléfono.",
+            "Formularios en Facebook e Instagram. Si nos contactas a través de un formulario de clientes potenciales de Meta, Meta nos envía los campos que llenaste: tu nombre, correo, teléfono y tus respuestas a las preguntas del formulario. Meta maneja ese formulario bajo su propia política de datos, que ves antes de enviarlo.",
+            "Formularios en LinkedIn. Si envías uno de nuestros formularios en LinkedIn, recibimos los datos que proporcionas, como nombre, correo de trabajo, empresa, cargo y respuestas sobre portales de clientes y bloqueos de facturas. Conservamos los identificadores de formulario o solicitud y los datos de campaña disponibles para reconocer el origen y evitar seguimientos duplicados. LinkedIn maneja el formulario conforme a su propia política de privacidad.",
+            "WhatsApp y correo. Si nos escribes, guardamos tu número o dirección y la conversación para poder darle seguimiento.",
+            "Cómo usas este sitio. Registramos nosotros mismos las vistas de página y los clics: qué página, tu idioma, el sitio de origen, las etiquetas de campaña del enlace, el tamaño de tu ventana y en qué parte de la página hiciste clic. Un identificador aleatorio en la pestaña de tu navegador agrupa una visita y desaparece al cerrarla. Nunca se vincula con tu nombre a menos que llenes un formulario.",
+            "Google Analytics y, cuando está configurado, el Píxel de Meta. El sitio usa estas herramientas de analítica de terceros. Google Analytics nos da estadísticas agregadas de tráfico. El Píxel de Meta le avisa a Meta cuando alguien visita este sitio o agenda una revisión, para que podamos medir nuestros anuncios en Facebook e Instagram y dejar de mostrárselos a quien no le interesan. Cada una instala una cookie en tu navegador (Google: _ga, Meta: _fbp) y recibe tu dirección IP, datos de tu navegador y las páginas que ves; Meta puede vincular esa actividad con tu cuenta de Meta bajo su propia política de datos. La protección contra rastreo de tu navegador o un bloqueador de anuncios detiene ambas, y el sitio funciona igual sin ellas."
+          ]
         },
         {
-          heading: 'Para qué lo usamos',
-          paragraphs: [
-            'Para responderte: agendar la revisión, hacer la demo, enviarte lo que pediste y dar seguimiento a esa solicitud por correo, teléfono o WhatsApp. Si prefieres que dejemos de hacerlo, respóndenos diciéndolo o escribe a root@anytrail.ai y lo haremos.',
-            'Para entender qué páginas y campañas traen a personas que luego hablan con nosotros, y gastar menos en las que no.',
-          ],
+          "heading": "Para qué lo usamos",
+          "paragraphs": [
+            "Para responder a tu solicitud: confirmar el proceso y la empresa, agendar la revisión o demo, preparar el resumen que pediste y dar seguimiento a esa solicitud con los datos de contacto que proporcionaste. Para solicitudes de revisión en LinkedIn usamos correo. Si prefieres que dejemos de hacerlo, respóndenos diciéndolo o escribe a root@anytrail.ai y lo haremos.",
+            "Para entender qué páginas y campañas traen a personas que luego hablan con nosotros, y gastar menos en las que no."
+          ]
         },
         {
-          heading: 'Lo que nunca hacemos',
-          paragraphs: [
-            'No vendemos tus datos ni los compartimos con terceros para su propia publicidad.',
-            'No usamos tus datos de contacto ni tus mensajes para entrenar modelos.',
-            'Fuera de Google Analytics y el Píxel de Meta descritos arriba, este sitio no instala cookies ni carga scripts de publicidad o analítica de otras empresas.',
-          ],
+          "heading": "Lo que nunca hacemos",
+          "paragraphs": [
+            "No vendemos tus datos ni los compartimos con terceros para su propia publicidad.",
+            "No usamos tus datos de contacto ni tus mensajes para entrenar modelos.",
+            "Fuera de Google Analytics y el Píxel de Meta descritos arriba, este sitio no instala cookies ni carga scripts de publicidad o analítica de otras empresas."
+          ]
         },
         {
-          heading: 'Quién los procesa por nosotros',
-          paragraphs: [
-            'Nuestra infraestructura corre en Amazon Web Services en la región US East (us-east-1); ahí se almacenan los formularios, las conversaciones y la telemetría del sitio. Meta procesa los formularios de clientes potenciales y los mensajes de WhatsApp cuando nos contactas por esos canales, y recibe las señales del Píxel de Meta descritas arriba. Google recibe las señales de Google Analytics. Nuestro proveedor de correo transporta los correos que intercambiamos contigo. Cada uno actúa bajo nuestras instrucciones y sus propios compromisos de privacidad.',
-          ],
+          "heading": "Quién los procesa por nosotros",
+          "paragraphs": [
+            "Nuestra infraestructura corre en Amazon Web Services en la región US East (us-east-1), donde se almacenan los formularios del sitio, las conversaciones y la telemetría. LinkedIn procesa sus formularios en su plataforma y nos permite acceder a los datos que envías. Meta procesa sus formularios y mensajes de WhatsApp y recibe las señales del Píxel de Meta cuando está configurado. Google recibe las señales de Google Analytics. Nuestro proveedor de correo transporta los correos que intercambiamos contigo. Estos proveedores procesan información conforme a sus condiciones de servicio y políticas de privacidad aplicables."
+          ]
         },
         {
-          heading: 'Cuánto tiempo los conservamos',
-          paragraphs: [
-            'Conservamos tu solicitud y la conversación relacionada mientras la atendemos y le damos seguimiento, y los eliminamos cuando nos lo pides. Los datos de uso del sitio se conservan de forma agregada y no están ligados a ti.',
-          ],
+          "heading": "Cuánto tiempo los conservamos",
+          "paragraphs": [
+            "Conservamos tu solicitud y la conversación relacionada mientras la atendemos y le damos seguimiento, y los eliminamos cuando nos lo pides. Los datos de uso del sitio se conservan de forma agregada y no están ligados a ti."
+          ]
         },
         {
-          heading: 'Tus derechos',
-          paragraphs: [
-            'Puedes pedirnos qué datos tenemos sobre ti, corregirlos, que los eliminemos o que dejemos de contactarte, escribiendo a root@anytrail.ai. Si estás en México, esto incluye tus derechos de acceso, rectificación, cancelación y oposición (derechos ARCO) conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Respondemos dentro del plazo que exige la ley aplicable.',
-          ],
+          "heading": "Tus derechos",
+          "paragraphs": [
+            "Puedes pedirnos qué datos tenemos sobre ti, corregirlos, que los eliminemos o que dejemos de contactarte, escribiendo a root@anytrail.ai. Si estás en México, esto incluye tus derechos de acceso, rectificación, cancelación y oposición (derechos ARCO) conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Respondemos dentro del plazo que exige la ley aplicable."
+          ]
         },
         {
-          heading: 'Cambios',
-          paragraphs: [
-            'Cuando este aviso cambie, cambiará la fecha que aparece arriba. Los cambios relevantes también se señalarán en esta página durante un tiempo después de entrar en vigor.',
-          ],
-        },
+          "heading": "Cambios",
+          "paragraphs": [
+            "Cuando este aviso cambie, cambiará la fecha que aparece arriba. Los cambios relevantes también se señalarán en esta página durante un tiempo después de entrar en vigor."
+          ]
+        }
       ],
-      related: {
-        text: 'La extensión de Chrome Anytrail Copilot tiene su propio aviso (en inglés):',
-        href: '/privacy/copilot',
-        label: 'Política de privacidad de Anytrail Copilot',
-      },
+      "related": {
+        "text": "La extensión de Chrome Anytrail Copilot tiene su propio aviso (en inglés):",
+        "href": "/privacy/copilot",
+        "label": "Política de privacidad de Anytrail Copilot"
+      }
     },
     // Customer how-to: connect a WhatsApp Business number to the CRM in
     // coexistence mode. Spanish only (our customers' sales teams); the PDF in

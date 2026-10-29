@@ -3,70 +3,53 @@
 export const COPY = {
   en: {
     meta: {
-      "title": "Anytrail | Customer AP Portal Work for Industrial Distributors",
-      "description": "Building Anytrail for industrial distributors managing customer AP portals. Review invoice rejections, missing documents, approval status and payment dates in a 30-minute portal-to-cash review.",
-      "ogLocale": "en_US"
+      title:
+        'Anytrail | Find the Revenue Your Business Is Already Losing',
+      description:
+        'Anytrail finds the sales that distributors, wholesalers, and industrial equipment companies are missing. It works across WhatsApp, email, your CRM, and your ERP to answer every inquiry, revive stalled quotes, win back past customers, and show you what customers want that you don’t stock.',
+      ogLocale: 'en_US',
     },
     navbar: {
-      "cta": "Book a portal review"
+      cta: 'See my report',
     },
     hero: {
-      "title": "Your goods shipped. Is the invoice ready for payment?",
-      "subtitle": "For industrial distributors selling to enterprise customers. We’re building Anytrail to help your AR team track customer AP portal requirements, rejected invoices, missing documents and payment dates—so each blocked invoice has a clear owner and next action.",
-      "cta": "Book a portal-to-cash review",
-      "ctaNote": "A 30-minute video call for distributor AR, credit and billing teams. Bring one recurring portal delay; leave with a one-page map of the blocker, owner and next step.",
-      "scope": "Anytrail is in development. The review is founder-led and helps shape the workflow around your team’s real payment process."
+      clockLead: 'You’ve been on this page for',
+      clockTail: 'The average company takes 42 hours to answer an inquiry.',
+      clockSource: 'Harvard Business Review, 2011',
+      title: 'Find the revenue your business is already losing.',
+      subtitle:
+        'Every quote, chat, and order holds a clue to your next sale. Anytrail watches your whole operation, across WhatsApp, email, your CRM, and your ERP, and surfaces the deals falling through the cracks: which customers to call, which quotes to revive, and which products to stock.',
+      cta: 'See my revenue report',
+      ctaNote:
+        'For distributors, wholesalers, and industrial equipment companies. Works with Salesforce, HubSpot, and SAP.',
     },
     benefits: {
-      "label": "What we’re building",
-      "title": "One place for the details that decide when you get paid.",
-      "items": [
-        {
-          "title": "Know what needs attention",
-          "body": "An invoice can be submitted, rejected, approved or waiting on the customer. We’re designing a shared view of status and the next action for each one."
-        },
-        {
-          "title": "Keep payment terms separate from payment dates",
-          "body": "Net 30 is one piece of the picture. Customer approval rules, payment runs and cutoffs also matter. Our goal is to keep that context alongside the invoice."
-        },
-        {
-          "title": "Get rejections back into the queue",
-          "body": "Missing purchase orders, mismatched amounts and incomplete documents create work. We want to make the reason, owner and follow-up easy to see."
-        },
-        {
-          "title": "Keep customer requirements out of people’s heads",
-          "body": "Document the portal, submission steps and payment contacts for each customer, so the next follow-up does not start from scratch."
-        }
-      ]
+      label: 'WHAT YOU GET BACK',
+      title: 'The sales your team is too busy to catch.',
+      items: [
+        { title: 'Never lose a lead to a slow reply', body: 'Every inquiry on WhatsApp or email is answered and qualified right away, at any hour, before the buyer moves on to the next supplier.' },
+        { title: 'Win back past customers', body: 'Anytrail spots repeat-buy moments, like equipment due for replacement or a plant ready to expand, and starts the conversation.' },
+        { title: 'No more forgotten quotes', body: 'It tracks every quote you send and follows up on the ones that stall, so you know exactly which deals need attention.' },
+        { title: 'Stock what customers ask for', body: 'See the products customers keep requesting that you don’t carry, and stop turning orders away.' },
+      ],
     },
     audit: {
-      "ariaLabel": "Illustrative invoice follow-up worklist, not a live product screenshot. Four sample customer portal issues and their next actions.",
-      "headerTitle": "Invoice follow-up",
-      "sample": "Illustration",
-      "company": "Example industrial distributor",
-      "period": "Across customer portals",
-      "colFinding": "What needs attention",
-      "colValue": "Next step",
-      "lines": [
-        {
-          "text": "Customer A: invoice rejected for missing PO",
-          "value": "Confirm PO"
-        },
-        {
-          "text": "Customer B: Net 60, approval still pending",
-          "value": "Check approval"
-        },
-        {
-          "text": "Customer C: approved, Friday payment run",
-          "value": "Confirm cutoff"
-        },
-        {
-          "text": "Customer D: invoice past expected payment date",
-          "value": "Follow up"
-        }
+      ariaLabel:
+        'Sample revenue review for an example distributor: unanswered inquiries, stalled quotes, silent accounts, and unstocked requests, each with an estimated value.',
+      headerTitle: 'Revenue review',
+      sample: 'Sample',
+      company: 'Example Industrial Supply',
+      period: 'Last 90 days',
+      colFinding: 'Found',
+      colValue: 'Est. value',
+      lines: [
+        { text: '14 WhatsApp inquiries with no reply after 24 hours', value: '$18,400', recovered: '9 answered' },
+        { text: '6 quotes sent with no follow-up', value: '$22,100', recovered: '4 followed up' },
+        { text: '23 past customers silent for 18+ months', value: '$31,500' },
+        { text: '9 requests for products you don’t stock', value: '$7,200' },
       ],
-      "totalLabel": "Illustrative workflow",
-      "total": "4 next actions"
+      totalLabel: 'Revenue at risk',
+      total: '$79,200',
     },
     conversation: {
       ariaLabel:
@@ -87,91 +70,69 @@ export const COPY = {
       ],
     },
     problem: {
-      "linePrefix": "",
-      "label": "The work behind getting paid",
-      "title": "Every customer has a process. Your team has to remember all of them.",
-      "intro": "As invoice volume grows, checking another portal becomes a daily job. The hard part is knowing what changed, what is stuck and who needs to act.",
-      "stats": [],
-      "groups": [
+      caught: 'Caught by Anytrail',
+      linePrefix: 'L-',
+      label: 'WHERE THE MONEY GOES',
+      title: 'Your business should be making more. The leaks are just hard to see.',
+      intro:
+        'Revenue rarely disappears in one place. It leaks between systems: an inquiry on WhatsApp nobody answered, a quote in email nobody chased, a customer in the ERP nobody called back.',
+      // Figures quoted from the original HBR articles; keep the source links
+      // with them.
+      stats: [
+        { value: '7×', body: 'more likely to qualify a lead when you reply within an hour instead of later.', source: 'Harvard Business Review, 2011', url: 'https://hbr.org/2011/03/the-short-life-of-online-sales-leads' },
+        { value: '42 hrs', body: 'average response time across 2,241 U.S. companies, and 23% never responded at all.', source: 'Harvard Business Review, 2011', url: 'https://hbr.org/2011/03/the-short-life-of-online-sales-leads' },
+        { value: '5–25×', body: 'more expensive to win a new customer than to keep one you already have.', source: 'Harvard Business Review, 2014', url: 'https://hbr.org/2014/10/the-value-of-keeping-the-right-customers' },
+      ],
+      groups: [
         {
-          "label": "Before payment is approved",
-          "leaks": [
-            {
-              "title": "Submitted does not mean accepted",
-              "body": "A missing PO or attachment can send an invoice back. The rejection needs an owner before the clock keeps running."
-            },
-            {
-              "title": "Each portal has its own rules",
-              "body": "Different upload formats, approval steps and supporting documents make the same invoice a different job at every customer."
-            }
-          ]
+          label: 'Demand you never found',
+          leaks: [
+            { title: 'No view of who is in market', body: 'Every account looks the same in the CRM, so the team works whoever shouted loudest instead of who is actually ready to buy.' },
+            { title: 'Your own customer base goes cold', body: 'Plants that bought two years ago, lines that expanded, equipment due for replacement. Nobody ever went back to ask.' },
+          ],
         },
         {
-          "label": "After the invoice is accepted",
-          "leaks": [
-            {
-              "title": "Terms are not the whole payment story",
-              "body": "An invoice’s due date and the customer’s next payment run may be different dates. Your cash forecast needs both."
-            },
-            {
-              "title": "Follow-ups get scattered",
-              "body": "Portal notes, emails and spreadsheets tell parts of the story. Someone still has to put them together before contacting the customer."
-            }
-          ]
-        }
-      ]
+          label: 'Demand you answered too late',
+          leaks: [
+            { title: 'Slow first response', body: 'An interested buyer writes in, waits, and buys from whoever answers first.' },
+            { title: 'Incomplete information', body: 'Quotes stall because nobody collected the application details, power supply, or usage before pricing.' },
+            { title: 'Forgotten follow-up', body: 'A lead goes quiet, the salesperson moves on, and the opportunity dies without a decision.' },
+          ],
+        },
+      ],
     },
     how: {
-      "stepLabel": "Step",
-      "label": "Your portal-to-cash review",
-      "title": "Bring one blocked invoice. Leave with a clear next step.",
-      "intro": "We’ll trace one anonymized invoice through submission, acceptance, approval and the customer’s payment process. Anytrail is in development; we’ll discuss the proposed workflow where it could help.",
-      "entriesLabel": "Who this is for",
-      "entries": [
-        {
-          "title": "Distributor AR, credit and billing teams",
-          "body": "You submit invoices and delivery documents into customers’ AP portals, fix rejections and keep track of approvals and payment follow-ups."
-        },
-        {
-          "title": "Finance leaders at industrial distributors",
-          "body": "You need a clearer view of expected cash and the operational work behind the receivables balance."
-        }
+      stepLabel: 'Step',
+      label: 'HOW IT WORKS',
+      title: 'Two ways an opportunity starts. One way it gets worked.',
+      intro:
+        'Anytrail runs your commercial process, step by step, whether the opportunity came to you or you went and found it. Your team keeps control of pricing, technical recommendations, quotes, and the final sale.',
+      entriesLabel: 'How the opportunity starts',
+      entries: [
+        { title: 'Anytrail finds it', body: 'It surfaces accounts that match what you sell, both net-new companies in your market and customers already in your base worth going back to, then opens the conversation on WhatsApp, email, or LinkedIn.' },
+        { title: 'The opportunity finds you', body: 'An inquiry lands from WhatsApp, an ad, or your website. Anytrail answers immediately, at any hour, instead of leaving it until Monday.' },
       ],
-      "sharedLabel": "What we’ll cover in 30 minutes",
-      "steps": [
-        {
-          "title": "Trace one invoice",
-          "body": "Walk us through one customer portal, the invoice requirements and the point where work stopped. Use anonymized references."
-        },
-        {
-          "title": "Find the recurring blocker",
-          "body": "Identify the missing PO or delivery document, rejection reason, approval owner or payment-run cutoff that needs attention."
-        },
-        {
-          "title": "Leave with a bottleneck map",
-          "body": "We’ll send a one-page summary of the blocker, owner and next action. Discuss whether the proposed Anytrail workflow could fit a future pilot."
-        }
-      ]
+      sharedLabel: 'Then the same path, every time',
+      steps: [
+        { title: 'Diagnosis', body: 'It asks the qualification questions your sales team uses: application, usage, site conditions.' },
+        { title: 'Recommendation', body: 'It helps identify the right equipment from your catalog for that application.' },
+        { title: 'Quote preparation', body: 'It collects the technical and commercial details your team needs to prepare the quotation.' },
+        { title: 'Follow-up', body: 'It keeps the conversation alive over days or weeks, so no opportunity is forgotten.' },
+        { title: 'Sales team handoff', body: 'Qualified opportunities go to your salespeople with the full context, ready to close.' },
+      ],
     },
     different: {
-      "usLabel": "Anytrail’s direction",
-      "label": "Where it fits",
-      "title": "Built around your customers’ payment processes.",
-      "intro": "We’re building a shared working view of customer portal requirements, invoice issues and payment follow-ups for distributor finance teams. Portal coverage and implementation requirements will be discussed in the review.",
-      "comparisons": [
-        {
-          "label": "Your accounting system",
-          "body": "The receivables ledger is the starting point. The work in customer portals adds approval status, rejection reasons and payment-process details."
-        },
-        {
-          "label": "Your customers’ AP portals",
-          "body": "Each portal shows one customer’s process. Your team needs to follow work across all of them."
-        },
-        {
-          "label": "Your spreadsheets and inbox",
-          "body": "They hold useful context, but keeping that context current depends on someone checking and updating it."
-        }
-      ]
+      usLabel: 'Anytrail',
+      label: "WHY IT'S DIFFERENT",
+      title: 'Not another chatbot or CRM. A revenue auditor that never clocks out.',
+      intro:
+        "Anytrail learns what you sell, asks your team's qualification questions, and works each opportunity through a real sales process, in both directions. It knows when to keep the conversation going and when your salespeople should take over.",
+      comparisons: [
+        { label: 'A chatbot', body: 'Answers isolated questions. It doesn’t diagnose the application, collect quote details, or follow up next week.' },
+        { label: 'A CRM or contact database', body: 'Sells you records and generic intent scores, then organizes leads after someone types the information in. It doesn’t know your products and it doesn’t move the deal forward.' },
+        { label: 'An outbound or sequence tool', body: 'Sends the message and stops there. Anyone can send the message. Almost nobody can answer the reply when a plant manager asks which model handles their duty cycle.' },
+        { label: 'A lead agency', body: 'Sends you more inquiries. It doesn’t handle what happens after they arrive, which is where sales are lost.' },
+      ],
     },
     proof: {
       label: 'PROOF',
@@ -185,89 +146,90 @@ export const COPY = {
       // slot never ships as a blank card.
       testimonials: [
         { company: 'Hidrorey', quote: '', name: '', role: '' },
-        { company: 'Toshiba', quote: '', name: '', role: '' },
       ],
       integrationsLabel: 'Works with',
       integrations: ['Salesforce', 'HubSpot', 'SAP', 'WhatsApp', 'Email'],
     },
     closing: {
-      "title": "Which customer portal is holding up your next invoice?",
-      "body": "Bring one recurring portal delay to a 30-minute review. We’ll map the blocker, owner and next step, then discuss whether the workflow we’re building could fit your team.",
-      "cta": "Book a portal-to-cash review"
+      title: 'Find your first revenue leak',
+      body:
+        "In a free revenue review, we look at how your business finds and answers opportunities today and show you where sales are slipping away.",
+      cta: 'See my revenue report',
     },
     whatsapp: {
       cta: 'Or text us on WhatsApp',
       prefill: "Hi, I'd like to find the sales we're missing.",
     },
     privacy: {
-      "meta": {
-        "title": "Privacy Policy | Anytrail",
-        "description": "What personal data Anytrail collects through its website, ads and messaging channels, what it is used for, who processes it, and how to request access or deletion.",
-        "ogLocale": "en_US"
+      meta: {
+        title: 'Privacy Policy | Anytrail',
+        description:
+          'What personal data Anytrail collects through its website, ads and messaging channels, what it is used for, who processes it, and how to request access or deletion.',
+        ogLocale: 'en_US',
       },
-      "title": "Privacy Policy",
-      "updated": "Last updated: October 23, 2026",
-      "intro": "Anytrail develops software for B2B companies, including customer AP portal work for industrial distributors. The portal product is in development. This policy covers the personal data we handle when you visit this site, request a review or demo, submit an ad form, or message us. It does not cover the data our customers load into their own Anytrail accounts, which they control.",
-      "contactHeading": "Who is responsible",
-      "contactBody": "Anytrail. Contact:",
-      "contactEmail": "root@anytrail.ai",
-      "sections": [
+      title: 'Privacy Policy',
+      updated: 'Last updated: October 16, 2026',
+      intro:
+        'Anytrail builds AI sales agents for industrial companies and distributors. This policy covers the personal data we handle when you visit this site, fill in one of our forms, reach us through an ad, or message us. It does not cover the data our customers load into their own Anytrail accounts, which they control.',
+      contactHeading: 'Who is responsible',
+      contactBody: 'Anytrail. Contact:',
+      contactEmail: 'root@anytrail.ai',
+      sections: [
         {
-          "heading": "What we collect",
-          "paragraphs": [
-            "What you send us. When you book a review, request a demo or fill in a form on this site, we keep the details you submit, such as your name, work email, company or website, and your answers about customer portals or other business workflows. Some forms or messaging channels may also ask for a phone number.",
-            "Lead forms on Facebook and Instagram. If you reach us through a Meta lead form, Meta sends us the fields you submitted: your name, email, phone number, and your answers to the questions on the form. Meta handles that form under its own data policy, which you see before you submit.",
-            "LinkedIn lead forms. If you submit one of our LinkedIn forms, we receive the details you provide, such as your name, work email, company, job title and answers about customer portals and invoice blockers. We keep available lead or form identifiers and campaign details with the request so we can identify its source and avoid duplicate follow-ups. LinkedIn handles the form under its own privacy policy.",
-            "WhatsApp and email. If you message us, we keep your number or address and the conversation so we can follow it up.",
-            "How you use this site. We record page views and clicks ourselves: which page, your language, the referring site, any campaign tags in the link, your window size, and where on the page you clicked. A random id in your browser tab groups one visit together and disappears when the tab closes. It is never linked to your name unless you fill in a form.",
-            "Google Analytics and, when configured, the Meta Pixel. The site uses these third-party analytics tools. Google Analytics gives us aggregate traffic statistics. The Meta Pixel tells Meta when someone visits this site or books a review, so we can measure our Facebook and Instagram ads and stop showing them to people who are not interested. Each sets a cookie in your browser (Google: _ga, Meta: _fbp) and receives your IP address, browser details and the pages you view; Meta may link that activity to your Meta account under its own data policy. Browser tracking protection or an ad blocker stops both, and the site works the same without them."
-          ]
+          heading: 'What we collect',
+          paragraphs: [
+            'What you send us. When you book a review, request a demo or fill in any form on this site, we keep what you type: usually your name, work email, phone number, company, and what you told us about your sales process.',
+            'Lead forms on Facebook and Instagram. If you reach us through a Meta lead form, Meta sends us the fields you submitted: your name, email, phone number, and your answers to the questions on the form. Meta handles that form under its own data policy, which you see before you submit.',
+            'WhatsApp and email. If you message us, we keep your number or address and the conversation so we can follow it up.',
+            'How you use this site. We record page views and clicks ourselves: which page, your language, the referring site, any campaign tags in the link, your window size, and where on the page you clicked. A random id in your browser tab groups one visit together and disappears when the tab closes. It is never linked to your name unless you fill in a form.',
+            'Google Analytics and the Meta Pixel. The site also loads these two third-party tags. Google Analytics gives us aggregate traffic statistics. The Meta Pixel tells Meta when someone visits this site or books a review, so we can measure our Facebook and Instagram ads and stop showing them to people who are not interested. Each sets a cookie in your browser (Google: _ga, Meta: _fbp) and receives your IP address, browser details and the pages you view; Meta may link that activity to your Meta account under its own data policy. Browser tracking protection or an ad blocker stops both, and the site works the same without them.',
+          ],
         },
         {
-          "heading": "What we use it for",
-          "paragraphs": [
-            "To respond to your request: check the workflow and company fit, arrange the review or demo, prepare the summary you requested, and follow up on that request using the contact details you provided. For LinkedIn review requests we use email. If you would rather we stopped, reply saying so or write to root@anytrail.ai and we will.",
-            "To understand which pages and campaigns bring people who go on to talk to us, so we spend less on the ones that do not."
-          ]
+          heading: 'What we use it for',
+          paragraphs: [
+            'To answer you: book the review, run the demo, send what you asked for, and follow up on that specific request by email, phone or WhatsApp. If you would rather we stopped, reply saying so or write to root@anytrail.ai and we will.',
+            'To understand which pages and campaigns bring people who go on to talk to us, so we spend less on the ones that do not.',
+          ],
         },
         {
-          "heading": "What we never do",
-          "paragraphs": [
-            "We do not sell your data, and we do not share it with third parties for their own marketing.",
-            "We do not use your contact details or your messages to train models.",
-            "Apart from Google Analytics and the Meta Pixel described above, this site sets no cookies and loads no advertising or analytics scripts from other companies."
-          ]
+          heading: 'What we never do',
+          paragraphs: [
+            'We do not sell your data, and we do not share it with third parties for their own marketing.',
+            'We do not use your contact details or your messages to train models.',
+            'Apart from Google Analytics and the Meta Pixel described above, this site sets no cookies and loads no advertising or analytics scripts from other companies.',
+          ],
         },
         {
-          "heading": "Who processes it on our behalf",
-          "paragraphs": [
-            "Our infrastructure runs on Amazon Web Services in the US East region (us-east-1), where website form submissions, conversations and site telemetry are stored. LinkedIn processes its lead forms on its platform and makes submitted lead details available to us. Meta processes its lead forms and WhatsApp messages and receives any configured Meta Pixel signals. Google receives Google Analytics signals. Our email provider carries the email we exchange with you. These providers process information under their applicable service terms and privacy policies."
-          ]
+          heading: 'Who processes it on our behalf',
+          paragraphs: [
+            'Our infrastructure runs on Amazon Web Services in the US East region (us-east-1); that is where form submissions, conversations and site telemetry are stored. Meta processes lead forms and WhatsApp messages when you reach us through those channels, and receives the Meta Pixel signals described above. Google receives the Google Analytics signals. Our email provider carries the email we exchange with you. Each of them acts under our instructions and its own privacy commitments.',
+          ],
         },
         {
-          "heading": "How long we keep it",
-          "paragraphs": [
-            "We keep your request and the conversation around it for as long as we need to handle it and follow up, and we delete it when you ask. Site usage data is kept in aggregate and is not tied to you."
-          ]
+          heading: 'How long we keep it',
+          paragraphs: [
+            'We keep your request and the conversation around it for as long as we need to handle it and follow up, and we delete it when you ask. Site usage data is kept in aggregate and is not tied to you.',
+          ],
         },
         {
-          "heading": "Your rights",
-          "paragraphs": [
-            "You can ask us what we hold about you, correct it, have it deleted, or tell us to stop contacting you, by writing to root@anytrail.ai. If you are in Mexico this includes your rights of access, rectification, cancellation and opposition under the federal data protection law. We answer within the time the applicable law requires."
-          ]
+          heading: 'Your rights',
+          paragraphs: [
+            'You can ask us what we hold about you, correct it, have it deleted, or tell us to stop contacting you, by writing to root@anytrail.ai. If you are in Mexico this includes your rights of access, rectification, cancellation and opposition under the federal data protection law. We answer within the time the applicable law requires.',
+          ],
         },
         {
-          "heading": "Changes",
-          "paragraphs": [
-            "When this policy changes, the date at the top changes with it. Material changes will also be noted on this page for a period after they take effect."
-          ]
-        }
+          heading: 'Changes',
+          paragraphs: [
+            'When this policy changes, the date at the top changes with it. Material changes will also be noted on this page for a period after they take effect.',
+          ],
+        },
       ],
-      "related": {
-        "text": "The Anytrail Copilot Chrome extension has its own notice:",
-        "href": "/privacy/copilot",
-        "label": "Anytrail Copilot privacy policy"
-      }
+      related: {
+        text: 'The Anytrail Copilot Chrome extension has its own notice:',
+        href: '/privacy/copilot',
+        label: 'Anytrail Copilot privacy policy',
+      },
     },
     privacyCopilot: {
       meta: {
@@ -333,15 +295,15 @@ export const COPY = {
     thanks: {
       meta: {
         title: 'Booking confirmed | Anytrail',
-        description: 'Your Anytrail early-access demo is booked.',
+        description: 'Your commercial process review is booked.',
         ogLocale: 'en_US',
       },
-      title: 'Your demo is booked.',
-      body: "Check your email for the calendar invite. Bring the names of your customer portals and one example of a rejection or delayed payment. No portal credentials or customer documents needed.",
+      title: 'Your review is booked.',
+      body: "Check your email for the calendar invite. Before we meet, we'll send an inquiry through your own inbound channels and time how long a reply takes, so we can show you exactly where opportunities are being lost today.",
       manageSave: 'Save this link in case the confirmation email does not arrive. It is the only way to cancel or move your call:',
       back: 'Back to home',
-      demoLead: 'Follow our progress while you wait.',
-      demoCta: 'Anytrail on LinkedIn',
+      demoLead: 'While you wait, run the agent on your own catalog.',
+      demoCta: 'Try the live demo',
     },
     demo: {
       meta: {
@@ -387,44 +349,41 @@ export const COPY = {
       },
     },
     schedule: {
-      "meta": {
-        "title": "Book a distributor portal-to-cash review | Anytrail",
-        "description": "Book a 30-minute distributor portal-to-cash review. Map one recurring invoice delay, its owner and next action while discussing the workflow Anytrail is building.",
-        "ogLocale": "en_US"
+      meta: {
+        title: 'Book a commercial process review | Anytrail',
+        description:
+          'Book a 30 minute video call. We look at how your company finds and answers new opportunities today, and show you where sales are being lost.',
+        ogLocale: 'en_US',
       },
-      "title": "Let’s review one customer-portal delay",
-      "intro": "Thirty minutes, by video, for industrial distributor AR, credit and billing teams. Bring one anonymized invoice delay and leave with a one-page bottleneck map. Anytrail is in development.",
-      "bullets": [
-        "Trace submission, acceptance, approval and the customer’s payment process.",
-        "Identify the blocker, missing information, owner and next action.",
-        "Receive the one-page map and discuss whether the proposed workflow could fit a pilot."
+      title: 'Review my commercial process',
+      intro:
+        'Thirty minutes, by video. We look at how opportunities reach you today, how fast they get answered, and what happens to the ones nobody follows up on.',
+      bullets: [
+        'Before the call we send an inquiry through your own channels and time the reply.',
+        'You get the timings and the gaps, whether or not you buy anything.',
+        'No slides. Bring the questions your sales team argues about.',
       ],
-      "pickDay": "Pick a day",
-      "pickTime": "Pick a time",
-      "yourZone": "Times shown in your timezone",
-      "noSlots": "No open times that day. Try another one.",
-      "form": {
-        "name": "Your name",
-        "email": "Work email",
-        "website": "Company website",
-        "note": "Which customer portals do you manage? (optional)"
+      pickDay: 'Pick a day',
+      pickTime: 'Pick a time',
+      yourZone: 'Times shown in your timezone',
+      noSlots: 'No open times that day. Try another one.',
+      form: { name: 'Your name', email: 'Work email', website: 'Company website', note: 'Anything we should know? (optional)' },
+      submit: 'Book the call',
+      booking: 'Booking...',
+      manageTitle: 'Your booking',
+      cancel: 'Cancel this call',
+      move: 'Move to another time',
+      cancelled: 'Your call is cancelled. You can book another any time.',
+      errors: {
+        invalid_website: "We couldn't use that website address. Check the URL and try again.",
+        invalid_input: "That didn't look right. Check the form and try again.",
+        slot_taken: 'Someone just took that time. Pick another one.',
+        already_booked: 'You already have a call booked. Use the link in your confirmation email to change it.',
+        rate_limited: 'Too many attempts. Try again later.',
+        invalid_link: 'That link is not valid. Check the one in your confirmation email.',
+        unknown_booking: 'We could not find that booking. It may already be cancelled.',
+        generic: 'Something went wrong. Try again.',
       },
-      "submit": "Book the call",
-      "booking": "Booking...",
-      "manageTitle": "Your booking",
-      "cancel": "Cancel this call",
-      "move": "Move to another time",
-      "cancelled": "Your call is cancelled. You can book another any time.",
-      "errors": {
-        "invalid_website": "We couldn't use that website address. Check the URL and try again.",
-        "invalid_input": "That didn't look right. Check the form and try again.",
-        "slot_taken": "Someone just took that time. Pick another one.",
-        "already_booked": "You already have a call booked. Use the link in your confirmation email to change it.",
-        "rate_limited": "Too many attempts. Try again later.",
-        "invalid_link": "That link is not valid. Check the one in your confirmation email.",
-        "unknown_booking": "We could not find that booking. It may already be cancelled.",
-        "generic": "Something went wrong. Try again."
-      }
     },
     // Cluster page. Structure is read by ClusterPage.jsx, so the two remaining
     // cluster pages are a copy block and a ROUTES entry, nothing more.
@@ -772,78 +731,61 @@ export const COPY = {
       },
     },
     footer: {
-      "tagline": "Building a clearer way for industrial distributors to manage customer AP portal work. © 2026 Anytrail",
-      "linksLabel": "Reading",
-      "privacyLabel": "Privacy policy"
+      tagline: 'Finds the revenue distributors and industrial companies are missing. © 2026 Anytrail',
+      linksLabel: 'Reading',
+      privacyLabel: 'Privacy policy',
     },
   },
 
   es: {
     meta: {
-      "title": "Anytrail | Tus Portales de Cobro, Bajo Control",
-      "description": "Para equipos de cuentas por cobrar B2B que trabajan en múltiples portales de clientes. Estamos construyendo una forma de dar seguimiento a rechazos, plazos, días de pago y pendientes. Agenda una demo de acceso anticipado.",
-      "ogLocale": "es_ES"
+      title:
+        'Anytrail | Encuentra los Ingresos que tu Empresa Ya Está Perdiendo',
+      description:
+        'Anytrail encuentra las ventas que distribuidores, mayoristas y empresas de equipo industrial están dejando ir. Trabaja sobre WhatsApp, correo, tu CRM y tu ERP para responder cada consulta, revivir cotizaciones atoradas, recuperar clientes anteriores y mostrarte lo que tus clientes piden y no tienes en inventario.',
+      ogLocale: 'es_ES',
     },
     navbar: {
-      "cta": "Agendar demo"
+      cta: 'Ver mi reporte',
     },
     hero: {
-      "title": "Deja de perseguir facturas entre portales de clientes.",
-      "subtitle": "Un cliente pide cargar la factura. Otro la rechaza porque falta la orden de compra. Un tercero solo paga los viernes. Estamos construyendo Anytrail para que los equipos de finanzas B2B sigan el trabajo entre enviar una factura y cobrarla.",
-      "cta": "Agendar demo de acceso anticipado",
-      "ctaNote": "Videollamada de 30 minutos para equipos de cuentas por cobrar, crédito y finanzas. Trae los portales que ocupan tu semana.",
-      "scope": "En desarrollo inicial. Ayúdanos a diseñar el flujo con el proceso de cobro real de tu equipo."
+      clockLead: 'Llevas en esta página',
+      clockTail: 'La empresa promedio tarda 42 horas en responder una consulta.',
+      clockSource: 'Harvard Business Review, 2011',
+      title: 'Encuentra los ingresos que tu empresa ya está perdiendo.',
+      subtitle:
+        'Cada cotización, chat y pedido guarda una pista de tu próxima venta. Anytrail vigila toda tu operación, en WhatsApp, correo, tu CRM y tu ERP, y saca a la luz las ventas que se están escapando: a qué clientes llamar, qué cotizaciones revivir y qué productos tener en inventario.',
+      cta: 'Ver mi reporte de ingresos',
+      ctaNote:
+        'Para distribuidores, mayoristas y empresas de equipo industrial. Funciona con Salesforce, HubSpot y SAP.',
     },
     benefits: {
-      "label": "Lo que estamos construyendo",
-      "title": "Un lugar para los detalles que definen cuándo cobras.",
-      "items": [
-        {
-          "title": "Saber qué necesita atención",
-          "body": "Una factura puede estar enviada, rechazada, aprobada o esperando al cliente. Estamos diseñando una vista compartida del estado y la siguiente acción de cada una."
-        },
-        {
-          "title": "Distinguir el plazo de la fecha de pago",
-          "body": "El crédito a 30 días es solo una parte. También importan las aprobaciones, los días de pago y las fechas de corte del cliente. Queremos reunir ese contexto junto a la factura."
-        },
-        {
-          "title": "Dar seguimiento a cada rechazo",
-          "body": "Las órdenes de compra faltantes, diferencias de importes y documentos incompletos generan trabajo. Queremos que el motivo, el responsable y el siguiente paso sean claros."
-        },
-        {
-          "title": "Documentar los requisitos de cada cliente",
-          "body": "Reúne el portal, los pasos de entrega y los contactos de pago de cada cliente para que el siguiente seguimiento no empiece desde cero."
-        }
-      ]
+      label: 'LO QUE RECUPERAS',
+      title: 'Las ventas que tu equipo está demasiado ocupado para atender.',
+      items: [
+        { title: 'Ningún lead perdido por responder tarde', body: 'Cada consulta por WhatsApp o correo se responde y califica de inmediato, a cualquier hora, antes de que el comprador se vaya con otro proveedor.' },
+        { title: 'Recupera clientes anteriores', body: 'Anytrail detecta los momentos de recompra, como equipo que ya toca reemplazar o una planta lista para crecer, y abre la conversación.' },
+        { title: 'Ninguna cotización olvidada', body: 'Registra cada cotización que envías y da seguimiento a las que se atoran, para que sepas exactamente qué tratos necesitan atención.' },
+        { title: 'Ten lo que tus clientes piden', body: 'Ve los productos que tus clientes siguen pidiendo y no manejas, y deja de rechazar pedidos.' },
+      ],
     },
     audit: {
-      "ariaLabel": "Ejemplo ilustrativo de seguimiento de facturas, no es una captura de un producto en operación. Cuatro pendientes en portales de clientes y su siguiente acción.",
-      "headerTitle": "Seguimiento de facturas",
-      "sample": "Ilustración",
-      "company": "Proveedor B2B de ejemplo",
-      "period": "Portales de clientes",
-      "colFinding": "Pendiente",
-      "colValue": "Siguiente paso",
-      "lines": [
-        {
-          "text": "Cliente A: rechazo por falta de orden de compra",
-          "value": "Confirmar OC"
-        },
-        {
-          "text": "Cliente B: crédito a 60 días, sin aprobar",
-          "value": "Revisar aprobación"
-        },
-        {
-          "text": "Cliente C: aprobada, paga los viernes",
-          "value": "Confirmar corte"
-        },
-        {
-          "text": "Cliente D: pasó la fecha esperada de pago",
-          "value": "Dar seguimiento"
-        }
+      ariaLabel:
+        'Revisión de ingresos de ejemplo para un distribuidor ficticio: consultas sin respuesta, cotizaciones detenidas, cuentas inactivas y pedidos de productos que no manejas, cada uno con un valor estimado.',
+      headerTitle: 'Revisión de ingresos',
+      sample: 'Ejemplo',
+      company: 'Suministros Industriales Ejemplo',
+      period: 'Últimos 90 días',
+      colFinding: 'Hallazgo',
+      colValue: 'Valor est.',
+      lines: [
+        { text: '14 consultas de WhatsApp sin respuesta después de 24 horas', value: '$18,400', recovered: '9 respondidas' },
+        { text: '6 cotizaciones enviadas sin seguimiento', value: '$22,100', recovered: '4 con seguimiento' },
+        { text: '23 clientes anteriores sin comprar en 18+ meses', value: '$31,500' },
+        { text: '9 pedidos de productos que no manejas', value: '$7,200' },
       ],
-      "totalLabel": "Flujo ilustrativo",
-      "total": "4 pendientes"
+      totalLabel: 'Ingresos en riesgo',
+      total: '$79,200',
     },
     conversation: {
       ariaLabel:
@@ -864,91 +806,67 @@ export const COPY = {
       ],
     },
     problem: {
-      "linePrefix": "",
-      "label": "El trabajo detrás del cobro",
-      "title": "Cada cliente tiene su proceso. Tu equipo debe recordar todos.",
-      "intro": "Cuando crece el volumen de facturas, revisar otro portal se vuelve una tarea diaria. Lo difícil es saber qué cambió, qué está detenido y quién debe actuar.",
-      "stats": [],
-      "groups": [
+      caught: 'Lo atrapa Anytrail',
+      linePrefix: 'L-',
+      label: 'A DÓNDE SE VA EL DINERO',
+      title: 'Tu empresa debería estar ganando más. Las fugas solo son difíciles de ver.',
+      intro:
+        'Los ingresos casi nunca se pierden en un solo lugar. Se escapan entre sistemas: una consulta en WhatsApp que nadie contestó, una cotización en el correo que nadie persiguió, un cliente en el ERP al que nadie volvió a llamar.',
+      stats: [
+        { value: '7×', body: 'más probable calificar un lead si respondes en menos de una hora que si tardas más.', source: 'Harvard Business Review, 2011', url: 'https://hbr.org/2011/03/the-short-life-of-online-sales-leads' },
+        { value: '42 h', body: 'tiempo promedio de respuesta en 2,241 empresas de EE. UU., y el 23% nunca respondió.', source: 'Harvard Business Review, 2011', url: 'https://hbr.org/2011/03/the-short-life-of-online-sales-leads' },
+        { value: '5–25×', body: 'más caro conseguir un cliente nuevo que conservar uno que ya tienes.', source: 'Harvard Business Review, 2014', url: 'https://hbr.org/2014/10/the-value-of-keeping-the-right-customers' },
+      ],
+      groups: [
         {
-          "label": "Antes de que aprueben el pago",
-          "leaks": [
-            {
-              "title": "Enviada no significa aceptada",
-              "body": "Una orden de compra o un anexo faltante puede causar un rechazo. Alguien debe atenderlo mientras siguen pasando los días."
-            },
-            {
-              "title": "Cada portal tiene sus reglas",
-              "body": "Distintos formatos, aprobaciones y documentos de soporte convierten la misma factura en un trabajo diferente con cada cliente."
-            }
-          ]
+          label: 'Demanda que nunca encontraste',
+          leaks: [
+            { title: 'Sin visibilidad de quién está en mercado', body: 'Todas las cuentas se ven iguales en el CRM, así que el equipo atiende al que más insiste en lugar del que realmente está listo para comprar.' },
+            { title: 'Tu propia cartera se enfría', body: 'Plantas que compraron hace dos años, líneas que crecieron, equipo que ya toca reemplazar. Nadie volvió a preguntar.' },
+          ],
         },
         {
-          "label": "Después de aceptar la factura",
-          "leaks": [
-            {
-              "title": "El plazo no cuenta toda la historia",
-              "body": "El vencimiento y el próximo día de pago del cliente pueden ser fechas distintas. Tu pronóstico de caja necesita ambas."
-            },
-            {
-              "title": "El seguimiento queda disperso",
-              "body": "Las notas del portal, el correo y las hojas de cálculo cuentan partes de la historia. Alguien tiene que unirlas antes de contactar al cliente."
-            }
-          ]
-        }
-      ]
+          label: 'Demanda que respondiste demasiado tarde',
+          leaks: [
+            { title: 'Respuesta lenta', body: 'Un comprador interesado escribe, espera, y le compra al primero que contesta.' },
+            { title: 'Información incompleta', body: 'Las cotizaciones se atoran porque nadie reunió la aplicación, la alimentación eléctrica o el uso antes de dar precio.' },
+            { title: 'Seguimiento olvidado', body: 'Un lead deja de contestar, el vendedor sigue con otra cosa, y la oportunidad muere sin decisión.' },
+          ],
+        },
+      ],
     },
     how: {
-      "stepLabel": "Paso",
-      "label": "Tu demo de acceso anticipado",
-      "title": "Trae los portales que te complican el cobro. Revisémoslos juntos.",
-      "intro": "Anytrail está en desarrollo inicial. La llamada se centra en tu proceso, lo que estamos construyendo y si podría encajar con tu equipo.",
-      "entriesLabel": "Para quién es",
-      "entries": [
-        {
-          "title": "Equipos de cuentas por cobrar y crédito",
-          "body": "Gestionas la entrega de facturas, la corrección de rechazos y el seguimiento de pagos en varios portales de clientes."
-        },
-        {
-          "title": "Líderes de finanzas en proveedores B2B",
-          "body": "Necesitas entender el efectivo esperado y el trabajo operativo que hay detrás del saldo por cobrar."
-        }
+      stepLabel: 'Paso',
+      label: 'CÓMO FUNCIONA',
+      title: 'Dos formas de que empiece una oportunidad. Una sola forma de trabajarla.',
+      intro:
+        'Anytrail lleva tu proceso comercial, paso a paso, ya sea que la oportunidad haya llegado sola o que la hayas salido a buscar. Tu equipo mantiene el control de precios, recomendaciones técnicas, cotizaciones y la venta final.',
+      entriesLabel: 'Cómo empieza la oportunidad',
+      entries: [
+        { title: 'Anytrail la encuentra', body: 'Detecta cuentas que embonan con lo que vendes, tanto empresas nuevas en tu mercado como clientes que ya están en tu cartera y vale la pena retomar, y abre la conversación por WhatsApp, correo o LinkedIn.' },
+        { title: 'La oportunidad te encuentra', body: 'Llega una consulta por WhatsApp, un anuncio o tu sitio web. Anytrail responde de inmediato, a cualquier hora, en lugar de dejarla para el lunes.' },
       ],
-      "sharedLabel": "Lo que veremos en 30 minutos",
-      "steps": [
-        {
-          "title": "Mapear tus portales",
-          "body": "Cuéntanos qué portales, volumen de facturas y procesos de pago maneja hoy tu equipo."
-        },
-        {
-          "title": "Identificar los bloqueos recurrentes",
-          "body": "Elige un rechazo o un pago atrasado y revisemos la información faltante, los responsables y el seguimiento."
-        },
-        {
-          "title": "Revisar la dirección del producto",
-          "body": "Conoce el flujo que estamos diseñando, comparte lo indispensable para tu equipo y decide si seguimos hacia el acceso anticipado."
-        }
-      ]
+      sharedLabel: 'Después, el mismo camino, siempre',
+      steps: [
+        { title: 'Diagnóstico', body: 'Hace las preguntas de calificación que usa tu equipo: aplicación, uso, condiciones del sitio.' },
+        { title: 'Recomendación', body: 'Ayuda a identificar el equipo adecuado de tu catálogo para esa aplicación.' },
+        { title: 'Preparación de cotización', body: 'Reúne los datos técnicos y comerciales que tu equipo necesita para cotizar.' },
+        { title: 'Seguimiento', body: 'Mantiene viva la conversación durante días o semanas, para que ninguna oportunidad se olvide.' },
+        { title: 'Entrega al equipo de ventas', body: 'Las oportunidades calificadas llegan a tus vendedores con todo el contexto, listas para cerrar.' },
+      ],
     },
     different: {
-      "usLabel": "La dirección de Anytrail",
-      "label": "Dónde encaja",
-      "title": "Diseñado alrededor de los procesos de pago de tus clientes.",
-      "intro": "Estamos construyendo una vista compartida de requisitos de portales, problemas de facturas y seguimiento de pagos para el equipo de finanzas del proveedor. En la demo hablaremos de la cobertura de portales y los requisitos de implementación.",
-      "comparisons": [
-        {
-          "label": "Tu sistema contable",
-          "body": "La cartera por cobrar es el punto de partida. El trabajo en portales agrega estados de aprobación, motivos de rechazo y detalles del proceso de pago."
-        },
-        {
-          "label": "Los portales de tus clientes",
-          "body": "Cada portal muestra el proceso de un cliente. Tu equipo necesita dar seguimiento al trabajo en todos."
-        },
-        {
-          "label": "Tus hojas de cálculo y correo",
-          "body": "Guardan contexto útil, pero mantenerlo al día depende de que alguien lo revise y lo actualice."
-        }
-      ]
+      usLabel: 'Anytrail',
+      label: 'POR QUÉ ES DIFERENTE',
+      title: 'No es otro chatbot ni otro CRM. Es un auditor de ingresos que nunca se va a casa.',
+      intro:
+        'Anytrail aprende lo que vendes, hace las preguntas de calificación de tu equipo y trabaja cada oportunidad dentro de un proceso de ventas real, en ambas direcciones. Sabe cuándo seguir la conversación y cuándo deben entrar tus vendedores.',
+      comparisons: [
+        { label: 'Un chatbot', body: 'Contesta preguntas sueltas. No diagnostica la aplicación, no reúne datos para cotizar y no da seguimiento la próxima semana.' },
+        { label: 'Un CRM o base de contactos', body: 'Te vende registros y scores genéricos de intención, y organiza leads después de que alguien captura la información. No conoce tus productos ni avanza el trato.' },
+        { label: 'Una herramienta de prospección o secuencias', body: 'Manda el mensaje y ahí se queda. Cualquiera puede mandar el mensaje. Casi nadie puede contestar la respuesta cuando un jefe de planta pregunta qué modelo aguanta su ciclo de trabajo.' },
+        { label: 'Una agencia de leads', body: 'Te manda más consultas. No se encarga de lo que pasa después de que llegan, que es donde se pierden las ventas.' },
+      ],
     },
     proof: {
       label: 'PRUEBA',
@@ -960,15 +878,15 @@ export const COPY = {
       customersLabel: 'Confían en nosotros',
       testimonials: [
         { company: 'Hidrorey', quote: '', name: '', role: '' },
-        { company: 'Toshiba', quote: '', name: '', role: '' },
       ],
       integrationsLabel: 'Funciona con',
       integrations: ['Salesforce', 'HubSpot', 'SAP', 'WhatsApp', 'Correo'],
     },
     closing: {
-      "title": "¿Qué portal de cliente ocupa más tiempo de tu semana?",
-      "body": "Muéstranos dónde se detienen las facturas. Revisaremos lo que estamos construyendo y si Anytrail podría ayudar a tu equipo.",
-      "cta": "Agendar demo de acceso anticipado"
+      title: 'Encuentra tu primera fuga de ingresos',
+      body:
+        'En una revisión de ingresos gratuita, vemos cómo tu empresa encuentra y responde hoy a las oportunidades y te mostramos dónde se están escapando las ventas.',
+      cta: 'Ver mi reporte de ingresos',
     },
     whatsapp: {
       cta: 'O escríbenos por WhatsApp',
@@ -977,15 +895,15 @@ export const COPY = {
     thanks: {
       meta: {
         title: 'Reunión confirmada | Anytrail',
-        description: 'Tu demo de acceso anticipado de Anytrail está agendada.',
+        description: 'Tu revisión del proceso comercial está agendada.',
         ogLocale: 'es_ES',
       },
-      title: 'Tu demo está agendada.',
-      body: 'Revisa tu correo para la invitación. Trae los nombres de tus portales de clientes y un ejemplo de un rechazo o pago atrasado. No necesitas compartir contraseñas ni documentos de clientes.',
+      title: 'Tu revisión está agendada.',
+      body: 'Revisa tu correo para la invitación. Antes de la reunión, enviaremos una consulta por tus propios canales de ventas entrantes y mediremos cuánto tarda la respuesta, para mostrarte exactamente dónde se están perdiendo oportunidades hoy.',
       manageSave: 'Guarda este enlace por si el correo de confirmación no llega. Es la única forma de cancelar o mover tu llamada:',
       back: 'Volver al inicio',
-      demoLead: 'Sigue nuestros avances mientras llega la reunión.',
-      demoCta: 'Anytrail en LinkedIn',
+      demoLead: 'Mientras tanto, prueba el agente con tu propio catálogo.',
+      demoCta: 'Probar la demo',
     },
     demo: {
       meta: {
@@ -1048,24 +966,24 @@ export const COPY = {
     },
     schedule: {
       meta: {
-        title: 'Agenda una demo de acceso anticipado | Anytrail',
+        title: 'Agenda una revisión de tu proceso comercial | Anytrail',
         description:
-          'Agenda una videollamada de 30 minutos sobre rechazos de facturas, plazos y seguimiento en los portales de pago de tus clientes.',
+          'Agenda una videollamada de 30 minutos. Revisamos cómo tu empresa encuentra y responde nuevas oportunidades hoy, y dónde se están perdiendo ventas.',
         ogLocale: 'es_ES',
       },
-      title: 'Hablemos de tus portales de clientes',
+      title: 'Revisa mi proceso comercial',
       intro:
-        'Treinta minutos, por video. Cuéntanos cómo gestionas los portales de cobro de tus clientes y conoce lo que estamos construyendo para cuentas por cobrar.',
+        'Treinta minutos, por video. Revisamos cómo te llegan las oportunidades hoy, qué tan rápido se responden, y qué pasa con las que nadie sigue.',
       bullets: [
-        'Mapear tus portales, el volumen de facturas y las tareas que tu equipo repite cada semana.',
-        'Revisar un rechazo o un pago atrasado y el seguimiento que necesita.',
-        'Conversar sobre el acceso anticipado, la cobertura de portales y si encaja con tu equipo.',
+        'Antes de la llamada enviamos una consulta por tus propios canales y medimos cuánto tarda la respuesta.',
+        'Te entregamos los tiempos y las fugas, compres algo o no.',
+        'Sin presentaciones. Trae las preguntas que tu equipo comercial discute.',
       ],
       pickDay: 'Elige un día',
       pickTime: 'Elige una hora',
       yourZone: 'Horarios en tu zona horaria',
       noSlots: 'No hay horarios disponibles ese día. Prueba con otro.',
-      form: { name: 'Tu nombre', email: 'Correo de trabajo', website: 'Sitio web de la empresa', note: '¿Qué portales de clientes manejas? (opcional)' },
+      form: { name: 'Tu nombre', email: 'Correo de trabajo', website: 'Sitio web de la empresa', note: '¿Algo que debamos saber? (opcional)' },
       submit: 'Agendar la llamada',
       booking: 'Agendando...',
       manageTitle: 'Tu cita',
@@ -1443,74 +1361,75 @@ export const COPY = {
       },
     },
     privacy: {
-      "meta": {
-        "title": "Aviso de Privacidad | Anytrail",
-        "description": "Qué datos personales recaba Anytrail a través de su sitio web, anuncios y canales de mensajería, para qué los usa, quién los procesa y cómo solicitar acceso o eliminación.",
-        "ogLocale": "es_MX"
+      meta: {
+        title: 'Aviso de Privacidad | Anytrail',
+        description:
+          'Qué datos personales recaba Anytrail a través de su sitio web, anuncios y canales de mensajería, para qué los usa, quién los procesa y cómo solicitar acceso o eliminación.',
+        ogLocale: 'es_MX',
       },
-      "title": "Aviso de Privacidad",
-      "updated": "Última actualización: 23 de octubre de 2026",
-      "intro": "Anytrail desarrolla software para empresas B2B, incluido el trabajo en portales de cuentas por pagar de clientes para distribuidores industriales. El producto de portales está en desarrollo. Este aviso cubre los datos personales que manejamos cuando visitas este sitio, solicitas una revisión o demo, envías un formulario de un anuncio o nos escribes. No cubre los datos que nuestros clientes cargan en sus propias cuentas de Anytrail, que ellos controlan.",
-      "contactHeading": "Responsable",
-      "contactBody": "Anytrail. Contacto:",
-      "contactEmail": "root@anytrail.ai",
-      "sections": [
+      title: 'Aviso de Privacidad',
+      updated: 'Última actualización: 16 de octubre de 2026',
+      intro:
+        'Anytrail desarrolla agentes de ventas con IA para empresas industriales y distribuidores. Este aviso cubre los datos personales que manejamos cuando visitas este sitio, llenas uno de nuestros formularios, nos contactas desde un anuncio o nos escribes. No cubre los datos que nuestros clientes cargan en sus propias cuentas de Anytrail, que ellos controlan.',
+      contactHeading: 'Responsable',
+      contactBody: 'Anytrail. Contacto:',
+      contactEmail: 'root@anytrail.ai',
+      sections: [
         {
-          "heading": "Qué recabamos",
-          "paragraphs": [
-            "Lo que nos envías. Cuando agendas una revisión, pides una demo o llenas un formulario de este sitio, guardamos los datos que envías, como tu nombre, correo de trabajo, empresa o sitio web y tus respuestas sobre portales de clientes u otros procesos de negocio. Algunos formularios o canales de mensajería también pueden pedir un teléfono.",
-            "Formularios en Facebook e Instagram. Si nos contactas a través de un formulario de clientes potenciales de Meta, Meta nos envía los campos que llenaste: tu nombre, correo, teléfono y tus respuestas a las preguntas del formulario. Meta maneja ese formulario bajo su propia política de datos, que ves antes de enviarlo.",
-            "Formularios en LinkedIn. Si envías uno de nuestros formularios en LinkedIn, recibimos los datos que proporcionas, como nombre, correo de trabajo, empresa, cargo y respuestas sobre portales de clientes y bloqueos de facturas. Conservamos los identificadores de formulario o solicitud y los datos de campaña disponibles para reconocer el origen y evitar seguimientos duplicados. LinkedIn maneja el formulario conforme a su propia política de privacidad.",
-            "WhatsApp y correo. Si nos escribes, guardamos tu número o dirección y la conversación para poder darle seguimiento.",
-            "Cómo usas este sitio. Registramos nosotros mismos las vistas de página y los clics: qué página, tu idioma, el sitio de origen, las etiquetas de campaña del enlace, el tamaño de tu ventana y en qué parte de la página hiciste clic. Un identificador aleatorio en la pestaña de tu navegador agrupa una visita y desaparece al cerrarla. Nunca se vincula con tu nombre a menos que llenes un formulario.",
-            "Google Analytics y, cuando está configurado, el Píxel de Meta. El sitio usa estas herramientas de analítica de terceros. Google Analytics nos da estadísticas agregadas de tráfico. El Píxel de Meta le avisa a Meta cuando alguien visita este sitio o agenda una revisión, para que podamos medir nuestros anuncios en Facebook e Instagram y dejar de mostrárselos a quien no le interesan. Cada una instala una cookie en tu navegador (Google: _ga, Meta: _fbp) y recibe tu dirección IP, datos de tu navegador y las páginas que ves; Meta puede vincular esa actividad con tu cuenta de Meta bajo su propia política de datos. La protección contra rastreo de tu navegador o un bloqueador de anuncios detiene ambas, y el sitio funciona igual sin ellas."
-          ]
+          heading: 'Qué recabamos',
+          paragraphs: [
+            'Lo que nos envías. Cuando agendas una revisión, pides una demo o llenas cualquier formulario de este sitio, guardamos lo que escribes: normalmente tu nombre, correo de trabajo, teléfono, empresa y lo que nos contaste sobre tu proceso de ventas.',
+            'Formularios en Facebook e Instagram. Si nos contactas a través de un formulario de clientes potenciales de Meta, Meta nos envía los campos que llenaste: tu nombre, correo, teléfono y tus respuestas a las preguntas del formulario. Meta maneja ese formulario bajo su propia política de datos, que ves antes de enviarlo.',
+            'WhatsApp y correo. Si nos escribes, guardamos tu número o dirección y la conversación para poder darle seguimiento.',
+            'Cómo usas este sitio. Registramos nosotros mismos las vistas de página y los clics: qué página, tu idioma, el sitio de origen, las etiquetas de campaña del enlace, el tamaño de tu ventana y en qué parte de la página hiciste clic. Un identificador aleatorio en la pestaña de tu navegador agrupa una visita y desaparece al cerrarla. Nunca se vincula con tu nombre a menos que llenes un formulario.',
+            'Google Analytics y el Píxel de Meta. El sitio también carga estas dos etiquetas de terceros. Google Analytics nos da estadísticas agregadas de tráfico. El Píxel de Meta le avisa a Meta cuando alguien visita este sitio o agenda una revisión, para que podamos medir nuestros anuncios en Facebook e Instagram y dejar de mostrárselos a quien no le interesan. Cada una instala una cookie en tu navegador (Google: _ga, Meta: _fbp) y recibe tu dirección IP, datos de tu navegador y las páginas que ves; Meta puede vincular esa actividad con tu cuenta de Meta bajo su propia política de datos. La protección contra rastreo de tu navegador o un bloqueador de anuncios detiene ambas, y el sitio funciona igual sin ellas.',
+          ],
         },
         {
-          "heading": "Para qué lo usamos",
-          "paragraphs": [
-            "Para responder a tu solicitud: confirmar el proceso y la empresa, agendar la revisión o demo, preparar el resumen que pediste y dar seguimiento a esa solicitud con los datos de contacto que proporcionaste. Para solicitudes de revisión en LinkedIn usamos correo. Si prefieres que dejemos de hacerlo, respóndenos diciéndolo o escribe a root@anytrail.ai y lo haremos.",
-            "Para entender qué páginas y campañas traen a personas que luego hablan con nosotros, y gastar menos en las que no."
-          ]
+          heading: 'Para qué lo usamos',
+          paragraphs: [
+            'Para responderte: agendar la revisión, hacer la demo, enviarte lo que pediste y dar seguimiento a esa solicitud por correo, teléfono o WhatsApp. Si prefieres que dejemos de hacerlo, respóndenos diciéndolo o escribe a root@anytrail.ai y lo haremos.',
+            'Para entender qué páginas y campañas traen a personas que luego hablan con nosotros, y gastar menos en las que no.',
+          ],
         },
         {
-          "heading": "Lo que nunca hacemos",
-          "paragraphs": [
-            "No vendemos tus datos ni los compartimos con terceros para su propia publicidad.",
-            "No usamos tus datos de contacto ni tus mensajes para entrenar modelos.",
-            "Fuera de Google Analytics y el Píxel de Meta descritos arriba, este sitio no instala cookies ni carga scripts de publicidad o analítica de otras empresas."
-          ]
+          heading: 'Lo que nunca hacemos',
+          paragraphs: [
+            'No vendemos tus datos ni los compartimos con terceros para su propia publicidad.',
+            'No usamos tus datos de contacto ni tus mensajes para entrenar modelos.',
+            'Fuera de Google Analytics y el Píxel de Meta descritos arriba, este sitio no instala cookies ni carga scripts de publicidad o analítica de otras empresas.',
+          ],
         },
         {
-          "heading": "Quién los procesa por nosotros",
-          "paragraphs": [
-            "Nuestra infraestructura corre en Amazon Web Services en la región US East (us-east-1), donde se almacenan los formularios del sitio, las conversaciones y la telemetría. LinkedIn procesa sus formularios en su plataforma y nos permite acceder a los datos que envías. Meta procesa sus formularios y mensajes de WhatsApp y recibe las señales del Píxel de Meta cuando está configurado. Google recibe las señales de Google Analytics. Nuestro proveedor de correo transporta los correos que intercambiamos contigo. Estos proveedores procesan información conforme a sus condiciones de servicio y políticas de privacidad aplicables."
-          ]
+          heading: 'Quién los procesa por nosotros',
+          paragraphs: [
+            'Nuestra infraestructura corre en Amazon Web Services en la región US East (us-east-1); ahí se almacenan los formularios, las conversaciones y la telemetría del sitio. Meta procesa los formularios de clientes potenciales y los mensajes de WhatsApp cuando nos contactas por esos canales, y recibe las señales del Píxel de Meta descritas arriba. Google recibe las señales de Google Analytics. Nuestro proveedor de correo transporta los correos que intercambiamos contigo. Cada uno actúa bajo nuestras instrucciones y sus propios compromisos de privacidad.',
+          ],
         },
         {
-          "heading": "Cuánto tiempo los conservamos",
-          "paragraphs": [
-            "Conservamos tu solicitud y la conversación relacionada mientras la atendemos y le damos seguimiento, y los eliminamos cuando nos lo pides. Los datos de uso del sitio se conservan de forma agregada y no están ligados a ti."
-          ]
+          heading: 'Cuánto tiempo los conservamos',
+          paragraphs: [
+            'Conservamos tu solicitud y la conversación relacionada mientras la atendemos y le damos seguimiento, y los eliminamos cuando nos lo pides. Los datos de uso del sitio se conservan de forma agregada y no están ligados a ti.',
+          ],
         },
         {
-          "heading": "Tus derechos",
-          "paragraphs": [
-            "Puedes pedirnos qué datos tenemos sobre ti, corregirlos, que los eliminemos o que dejemos de contactarte, escribiendo a root@anytrail.ai. Si estás en México, esto incluye tus derechos de acceso, rectificación, cancelación y oposición (derechos ARCO) conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Respondemos dentro del plazo que exige la ley aplicable."
-          ]
+          heading: 'Tus derechos',
+          paragraphs: [
+            'Puedes pedirnos qué datos tenemos sobre ti, corregirlos, que los eliminemos o que dejemos de contactarte, escribiendo a root@anytrail.ai. Si estás en México, esto incluye tus derechos de acceso, rectificación, cancelación y oposición (derechos ARCO) conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Respondemos dentro del plazo que exige la ley aplicable.',
+          ],
         },
         {
-          "heading": "Cambios",
-          "paragraphs": [
-            "Cuando este aviso cambie, cambiará la fecha que aparece arriba. Los cambios relevantes también se señalarán en esta página durante un tiempo después de entrar en vigor."
-          ]
-        }
+          heading: 'Cambios',
+          paragraphs: [
+            'Cuando este aviso cambie, cambiará la fecha que aparece arriba. Los cambios relevantes también se señalarán en esta página durante un tiempo después de entrar en vigor.',
+          ],
+        },
       ],
-      "related": {
-        "text": "La extensión de Chrome Anytrail Copilot tiene su propio aviso (en inglés):",
-        "href": "/privacy/copilot",
-        "label": "Política de privacidad de Anytrail Copilot"
-      }
+      related: {
+        text: 'La extensión de Chrome Anytrail Copilot tiene su propio aviso (en inglés):',
+        href: '/privacy/copilot',
+        label: 'Política de privacidad de Anytrail Copilot',
+      },
     },
     // Customer how-to: connect a WhatsApp Business number to the CRM in
     // coexistence mode. Spanish only (our customers' sales teams); the PDF in
@@ -1954,9 +1873,9 @@ export const COPY = {
       },
     },
     footer: {
-      "tagline": "Construyendo una forma más clara de gestionar los portales de cobro de tus clientes. © 2026 Anytrail",
-      "linksLabel": "Lecturas",
-      "privacyLabel": "Aviso de privacidad"
+      tagline: 'Encuentra los ingresos que distribuidores y empresas industriales están dejando ir. © 2026 Anytrail',
+      linksLabel: 'Lectura',
+      privacyLabel: 'Aviso de privacidad',
     },
   },
 }

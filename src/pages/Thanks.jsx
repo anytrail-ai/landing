@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import { useLanguage } from '../i18n/useLanguage'
-import { LANG_PATH } from '../i18n/copy'
+import { LANG_PATH, ROUTES } from '../i18n/copy'
 import { track } from '../analytics'
 import { metaTrack } from '../metaPixel'
 import './Thanks.css'
@@ -29,7 +29,7 @@ function Thanks() {
   // A booking landed here, so tell Meta it was a lead. Standard event name on
   // purpose: it is what the ad account optimises on.
   useEffect(() => {
-    metaTrack('Lead', { content_name: 'ap_portal_demo' })
+    metaTrack('Lead', { content_name: 'commercial_process_review' })
   }, [])
 
   return (
@@ -45,8 +45,8 @@ function Thanks() {
         <p className="thanks__demo-lead">{c.demoLead}</p>
         <a
           className="thanks__demo"
-          href="https://www.linkedin.com/company/anytrail"
-          onClick={() => track('demo_cta_click', { location: 'thanks', lang, dest: 'linkedin' })}
+          href={ROUTES[lang].demo}
+          onClick={() => track('demo_cta_click', { location: 'thanks', lang, dest: 'demo' })}
         >
           {c.demoCta}
         </a>

@@ -25,6 +25,7 @@ function ClosingCTA({ title, body, cta, location = 'closing', variant = 'card' }
                 {cta ?? c.cta}
                 <ArrowRight size={18} aria-hidden="true" />
               </CtaLink>
+              <WhatsAppLink location={location} className="whatsapp-link--onDark" />
             </div>
           </div>
         </div>

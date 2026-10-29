@@ -8,16 +8,15 @@ function Footer() {
   // Content pages are linked from every page on the site, including each
   // other. A page reachable from one place only is a page Google treats as an
   // afterthought.
-  const isPortalPage = ['home', 'schedule', 'thanks', 'privacy'].includes(page)
-  const links = isPortalPage ? [] : CLUSTER_PAGES.filter((p) => p !== page)
+  const links = CLUSTER_PAGES.filter((p) => p !== page)
 
   return (
     <footer className="footer">
       <div className="footer__inner">
         <span className="footer__logo">anytrail</span>
         <p className="footer__tagline">{copy.footer.tagline}</p>
-        <a className="footer__demo" href={isPortalPage ? ROUTES[lang].schedule : ROUTES[lang].demo}>
-          {isPortalPage ? copy.navbar.cta : (lang === 'es' ? 'Probar la demo' : 'Try the live demo')}
+        <a className="footer__demo" href={ROUTES[lang].demo}>
+          {copy.thanks.demoCta}
         </a>
 
         {links.length > 0 && (

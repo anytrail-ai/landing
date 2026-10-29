@@ -71,8 +71,8 @@ const T = {
     headingMoved: 'Your call has been moved.',
     join: 'Join the call',
     manage: 'Need to change it? Cancel or move your call',
-    demoLead: 'bring the names of your customer portals and one rejection or delayed payment to discuss.',
-    demoCta: 'What we’re building',
+    demoLead: 'While you wait, run the agent on your own catalog:',
+    demoCta: 'Try the live demo',
     minutes: `${SCHEDULE.slotMinutes} minutes, by video.`,
     remind24: (when: string) => `Reminder: your Anytrail call is tomorrow, ${when}`,
     remind1: (when: string) => `Starting in an hour: your Anytrail call at ${when}`,
@@ -84,8 +84,8 @@ const T = {
     headingMoved: 'Tu llamada cambió de horario.',
     join: 'Entrar a la llamada',
     manage: '¿Necesitas cambiarla? Cancela o mueve tu llamada',
-    demoLead: 'trae los nombres de tus portales de clientes y un ejemplo de rechazo o pago atrasado para revisar.',
-    demoCta: 'Lo que estamos construyendo',
+    demoLead: 'Mientras tanto, prueba el agente con tu propio catálogo:',
+    demoCta: 'Probar la demo',
     minutes: `${SCHEDULE.slotMinutes} minutos, por video.`,
     remind24: (when: string) => `Recordatorio: tu llamada con Anytrail es mañana, ${when}`,
     remind1: (when: string) => `Comienza en una hora: tu llamada con Anytrail a las ${when}`,
@@ -121,7 +121,7 @@ export function renderConfirmation(
 ): { subject: string; html: string; text: string } {
   const t = T[b.lang];
   const when = formatSlot(b.slotStartUtc, b.lang);
-  const demoUrl = `${SITE}${b.lang === 'es' ? '/es' : '/'}`;
+  const demoUrl = `${SITE}${b.lang === 'es' ? '/es/demo' : '/demo'}`;
   const heading = kind === 'moved' ? t.headingMoved : t.heading;
   const subject = kind === 'moved' ? t.subjectMoved(when) : t.subject(when);
 
@@ -142,7 +142,6 @@ export function renderConfirmation(
     t.minutes,
     `${t.join}: ${meetUrl}`,
     `${t.manage}: ${manageUrl}`,
-    `${b.name}, ${t.demoLead}`,
     `${t.demoCta}: ${demoUrl}`,
   ].join('\n\n');
 
@@ -267,7 +266,7 @@ export async function sendBookingEmails(
       attendeeName: b.name,
       organizerEmail: (SENDER.match(/<(.+)>/) ?? [, SENDER])[1] as string,
       meetUrl: MEET_URL,
-      summary: 'Anytrail: customer AP portal early-access demo',
+      summary: 'Anytrail: commercial process review',
       description: `${SCHEDULE.slotMinutes} minutes by video. Join: ${MEET_URL}`,
     });
     const attachments = [

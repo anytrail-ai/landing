@@ -1,8 +1,8 @@
 import './AuditReport.css'
 import { useLanguage } from '../../i18n/useLanguage'
 
-/* Illustrative invoice worklist. This explains the workflow being designed;
-   the visible label and accessible description identify it as an illustration. */
+/* Illustrative revenue review: the deliverable the hero CTA offers, drawn as a
+   paper document. Figures are a sample, not a customer's, and the copy says so. */
 function AuditReport() {
   const { copy } = useLanguage()
   const c = copy.audit

@@ -206,8 +206,8 @@ export const COPY = {
         "ogLocale": "en_US"
       },
       "title": "Privacy Policy",
-      "updated": "Last updated: October 23, 2026",
-      "intro": "Anytrail develops software for B2B companies, including customer AP portal work for industrial distributors. The portal product is in development. This policy covers the personal data we handle when you visit this site, request a review or demo, submit an ad form, or message us. It does not cover the data our customers load into their own Anytrail accounts, which they control.",
+      "updated": "Last updated: November 6, 2026",
+      "intro": "Anytrail develops software for B2B companies, including customer AP portal work for industrial distributors. The portal product is in development. This policy covers the personal data we handle when you visit this site, request a review or demo, submit an ad form, or message us. Except for the connected mailboxes described below, it does not cover the data our customers load into their own Anytrail accounts, which they control.",
       "contactHeading": "Who is responsible",
       "contactBody": "Anytrail. Contact:",
       "contactEmail": "root@anytrail.ai",
@@ -236,6 +236,17 @@ export const COPY = {
             "We do not sell your data, and we do not share it with third parties for their own marketing.",
             "We do not use your contact details or your messages to train models.",
             "Apart from Google Analytics and the Meta Pixel described above, this site sets no cookies and loads no advertising or analytics scripts from other companies."
+          ]
+        },
+        {
+          "heading": "Connected mailboxes (Gmail, Google Workspace, Outlook and Microsoft 365)",
+          "paragraphs": [
+            "A user of the Anytrail platform (platform.anytrail.ai) can connect their own work mailbox with Sign in with Google or Sign in with Microsoft, or with an app password. Connecting is always the mailbox owner's choice and can be undone at any time.",
+            "What we access. With Google we request full Gmail access (https://mail.google.com/), plus your email address. It is the only Google permission that allows the IMAP and SMTP connections Anytrail uses to read your mail and send mail as you. With Microsoft we request IMAP and SMTP access to the mailbox (IMAP.AccessAsUser.All and SMTP.Send) and offline access.",
+            "What we store. We keep a secure, encrypted sign-in token (never your password) and a copy of messages from your inbox and Sent folder: senders, recipients, subjects, dates, message bodies, and the PDF attachments that carry quotes and orders. They are stored in your company's Anytrail account on Amazon Web Services (us-east-1).",
+            "What we use it for. Only to provide features you see in Anytrail: showing your customer emails next to their WhatsApp conversations and deals, linking messages to the right customer and quote, flagging customers who are waiting for an answer, suggesting replies that you review before sending, and sending quotes and replies from your own address when you click send. Some of these features have an AI model read the relevant messages, only to produce that result for you.",
+            "Google user data and Limited Use. Anytrail's use and transfer of information received from Google APIs to any other app will adhere to the Google API Services User Data Policy, including the Limited Use requirements. We do not use Gmail data to serve advertising, we do not sell it, we do not use it to train or improve general AI or machine learning models, and no person at Anytrail reads it except with your explicit permission (for example, to resolve a support request you send us), when needed for security or to comply with the law. Gmail data is shared only with the service providers that run Anytrail on our behalf (Amazon Web Services for hosting and its Bedrock service for AI processing), under contracts that forbid them from using it for anything else.",
+            "Disconnecting and deletion. You can disconnect your mailbox on the Email page in Anytrail. Disconnecting stops all access; your company's administrator can also delete the stored messages, and we delete them on request to root@anytrail.ai. You can revoke Anytrail's access at any time from your Google Account (myaccount.google.com/permissions) or your Microsoft account (account.microsoft.com/privacy/app-access) as well."
           ]
         },
         {
@@ -1449,8 +1460,8 @@ export const COPY = {
         "ogLocale": "es_MX"
       },
       "title": "Aviso de Privacidad",
-      "updated": "Última actualización: 23 de octubre de 2026",
-      "intro": "Anytrail desarrolla software para empresas B2B, incluido el trabajo en portales de cuentas por pagar de clientes para distribuidores industriales. El producto de portales está en desarrollo. Este aviso cubre los datos personales que manejamos cuando visitas este sitio, solicitas una revisión o demo, envías un formulario de un anuncio o nos escribes. No cubre los datos que nuestros clientes cargan en sus propias cuentas de Anytrail, que ellos controlan.",
+      "updated": "Última actualización: 6 de noviembre de 2026",
+      "intro": "Anytrail desarrolla software para empresas B2B, incluido el trabajo en portales de cuentas por pagar de clientes para distribuidores industriales. El producto de portales está en desarrollo. Este aviso cubre los datos personales que manejamos cuando visitas este sitio, solicitas una revisión o demo, envías un formulario de un anuncio o nos escribes. Salvo los buzones conectados que se describen abajo, no cubre los datos que nuestros clientes cargan en sus propias cuentas de Anytrail, que ellos controlan.",
       "contactHeading": "Responsable",
       "contactBody": "Anytrail. Contacto:",
       "contactEmail": "root@anytrail.ai",
@@ -1479,6 +1490,17 @@ export const COPY = {
             "No vendemos tus datos ni los compartimos con terceros para su propia publicidad.",
             "No usamos tus datos de contacto ni tus mensajes para entrenar modelos.",
             "Fuera de Google Analytics y el Píxel de Meta descritos arriba, este sitio no instala cookies ni carga scripts de publicidad o analítica de otras empresas."
+          ]
+        },
+        {
+          "heading": "Buzones conectados (Gmail, Google Workspace, Outlook y Microsoft 365)",
+          "paragraphs": [
+            "Un usuario de la plataforma Anytrail (platform.anytrail.ai) puede conectar su propio buzón de trabajo con Iniciar sesión con Google o Iniciar sesión con Microsoft, o con una contraseña de aplicación. Conectarlo siempre es decisión del dueño del buzón y puede deshacerse en cualquier momento.",
+            "A qué accedemos. Con Google solicitamos acceso completo a Gmail (https://mail.google.com/) y tu dirección de correo. Es el único permiso de Google que permite las conexiones IMAP y SMTP con las que Anytrail lee tu correo y envía correo a tu nombre. Con Microsoft solicitamos acceso IMAP y SMTP al buzón (IMAP.AccessAsUser.All y SMTP.Send) y acceso sin conexión.",
+            "Qué guardamos. Un token de acceso cifrado (nunca tu contraseña) y una copia de los mensajes de tu bandeja de entrada y de enviados: remitentes, destinatarios, asuntos, fechas, el cuerpo de los mensajes y los PDF adjuntos con cotizaciones y pedidos. Se guardan en la cuenta de Anytrail de tu empresa en Amazon Web Services (us-east-1).",
+            "Para qué lo usamos. Solo para funciones que ves en Anytrail: mostrar los correos de tus clientes junto a sus conversaciones de WhatsApp y oportunidades, ligar los mensajes al cliente y la cotización correctos, señalar a los clientes que esperan respuesta, sugerir respuestas que tú revisas antes de enviar, y enviar cotizaciones y respuestas desde tu propia dirección cuando das clic en enviar. Algunas de estas funciones usan un modelo de IA que lee los mensajes relevantes, solo para darte ese resultado.",
+            "Datos de usuarios de Google y Uso Limitado. El uso y la transferencia a cualquier otra aplicación de la información que Anytrail recibe de las API de Google se apegan a la Política de Datos de Usuario de los Servicios de API de Google (Google API Services User Data Policy), incluidos los requisitos de Uso Limitado (Limited Use). No usamos los datos de Gmail para publicidad, no los vendemos, no los usamos para entrenar ni mejorar modelos generales de IA o aprendizaje automático, y ninguna persona de Anytrail los lee salvo con tu permiso explícito (por ejemplo, para atender una solicitud de soporte que nos envíes), cuando sea necesario por seguridad o para cumplir la ley. Los datos de Gmail solo se comparten con los proveedores que operan Anytrail por nosotros (Amazon Web Services para el alojamiento y su servicio Bedrock para el procesamiento con IA), bajo contratos que les prohíben usarlos para cualquier otro fin.",
+            "Desconexión y eliminación. Puedes desconectar tu buzón en la página de Correo de Anytrail. Al desconectarlo se detiene todo acceso; el administrador de tu empresa también puede borrar los mensajes guardados, y los borramos si lo pides a root@anytrail.ai. También puedes revocar el acceso de Anytrail en cualquier momento desde tu Cuenta de Google (myaccount.google.com/permissions) o tu cuenta Microsoft (account.microsoft.com/privacy/app-access)."
           ]
         },
         {

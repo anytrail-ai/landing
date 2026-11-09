@@ -169,7 +169,7 @@ td.fc{color:var(--graphite)}
 .field select,.field input{font:inherit;font-weight:400;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);min-width:0;width:100%}
 .lines{display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:8px}
 .actions{display:flex;justify-content:flex-end;gap:8px}
-.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--text);color:#fff;padding:11px 18px;border-radius:999px;font-size:13.5px;opacity:0;transition:.25s;z-index:40;max-width:calc(100% - 32px)}
+.toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);background:var(--text);color:#fff;padding:11px 18px;border-radius:999px;font-size:13.5px;opacity:0;transition:.25s;z-index:40;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
 .rep-head{display:flex;flex-direction:column;gap:6px;padding-bottom:18px;border-bottom:1px solid var(--line)}
@@ -191,25 +191,101 @@ details.card[open] summary{margin-bottom:12px}
 .ledger div:first-child{border-top:0}
 .ledger .tot{font-weight:600}
 .check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--graphite)}
-@media (max-width:900px){.o2c,.assume{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px}.o2c>div::after{display:none}.asof{grid-template-columns:1fr}}
+.o2c.o5{grid-template-columns:repeat(5,minmax(0,1fr))}
+
+/* v2: team, orders, inventory, notes, deductions, portal */
+.nav-g{font-size:11px;line-height:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--ash);padding:14px 10px 4px}
+.nav-g:first-child{padding-top:0}
+nav .count.hot{background:var(--brick-soft);color:var(--brick)}
+.who{display:flex;flex-direction:column;gap:5px}
+.who .select{width:100%}
+.side{overflow-y:auto}
+a.kpi{text-decoration:none;color:inherit;transition:background-color .2s ease-out}
+a.kpi:hover{background:var(--tint)}
+.av{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:inline-grid;place-items:center;font-size:9.5px;font-weight:600;letter-spacing:.02em;flex:none}
+.av.pm{background:var(--moss)}.av.lc{background:var(--amber)}.av.sys{background:var(--ash)}
+.owner{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;vertical-align:middle}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px}
+tbody tr[data-po]{cursor:pointer}
+tbody tr[data-po]:hover{background:var(--bg)}
+tr.claimed td:first-child{box-shadow:inset 3px 0 0 var(--brick)}
+tr.isnew td:first-child{box-shadow:inset 3px 0 0 var(--amber)}
+tr.flash td{animation:flash 3s ease-out}
+@keyframes flash{0%,35%{background:var(--amber-soft)}100%{background:transparent}}
+.steps{display:inline-flex;gap:3px;vertical-align:middle}
+.steps i{width:14px;height:4px;border-radius:2px;background:var(--line)}
+.steps i.on{background:var(--text)}
+.steps.big{display:flex;width:100%}
+.steps.big i{flex:1;height:6px}
+.steplbl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;font-size:12px;color:var(--graphite)}
+.steplbl .on{color:var(--text);font-weight:600}
+.timeline{display:flex;flex-direction:column;font-size:13.5px}
+.timeline>div{display:grid;grid-template-columns:112px minmax(0,1fr);gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.timeline>div:first-child{border-top:0}
+.timeline small{color:var(--graphite);font-size:12px}
+.note{border-top:1px solid var(--line);padding:11px 0;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.note .meta{font-size:12px;color:var(--graphite);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.contact{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 0;border-top:1px solid var(--line);font-size:13.5px}
+.contact:first-child{border-top:0}
+.contact.left{color:var(--ash)}
+.contact.left b{text-decoration:line-through;font-weight:500}
+.contact small{grid-column:1/-1;color:var(--graphite);font-size:12.5px}
+.iform{display:flex;flex-direction:column;gap:8px}
+.iform .r2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.iform select,.iform input,.iform textarea,.field textarea{font:inherit;font-weight:400;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);width:100%;min-width:0}
+.iform textarea,.field textarea{min-height:64px;resize:vertical}
+.iform .btn{align-self:flex-start}
+.ripple{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(410px,calc(100% - 32px));background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 36px rgba(17,24,39,.16);padding:14px 16px 16px;z-index:35;opacity:0;transform:translateY(14px);transition:opacity .25s,transform .25s;pointer-events:none;display:flex;flex-direction:column;gap:4px}
+.ripple.on{opacity:1;transform:none;pointer-events:auto}
+.ripple ol{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:13px}
+.ripple li{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;opacity:0;animation:rin .4s ease-out forwards}
+.ripple li>span:first-child{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--moss);padding-top:2px}
+@keyframes rin{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:none}}
+.answer{font-size:14.5px;padding:12px 14px;border-radius:10px;background:var(--tint);line-height:1.5}
+.answer.good{background:var(--moss-soft)}
+.answer.good>b:first-child{color:var(--moss)}
+.answer.bad{background:var(--brick-soft)}
+.answer.bad>b:first-child{color:var(--brick)}
+th.plan,td.plan{background:var(--amber-soft)!important}
+td.lock{color:var(--ash)}
+th.grp{text-align:center;font-size:11px}
+.stockq{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.alert-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.alert-row:first-child{border-top:0}
+.alert-row>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips .chip{font-size:12.5px;padding:5px 10px}
+.portal{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card)}
+.portal-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 20px;background:var(--ink);color:#fff}
+.portal-bar b{font-family:var(--display);font-weight:400;font-size:18px}
+.portal-bar span{font-size:13px;opacity:.8}
+.portal-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:16px}
+.qty{width:80px;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);text-align:right;font-variant-numeric:tabular-nums}
+.ok-box{display:flex;flex-direction:column;gap:6px;align-items:flex-start;padding:16px 18px;border-radius:12px;background:var(--moss-soft)}
+.ok-box b{font-size:15px;color:var(--moss)}
+.ok-box span{font-size:13.5px}
+.modal form{max-height:calc(100vh - 32px);overflow-y:auto}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:900px){.o2c,.assume{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px}.o2c.o5{grid-template-columns:repeat(2,minmax(0,1fr))}.o2c>div::after{display:none}.asof{grid-template-columns:1fr}}
 
 @media (max-width:1080px){.kpis.k5{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:1000px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:1fr 1fr}.grid3>:last-child{grid-column:1/-1}.method{grid-template-columns:1fr}}
 @media (max-width:860px){
   .app{grid-template-columns:1fr}
   .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);gap:12px;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-  .client{display:none}
+  .client,.nav-g{display:none}
   nav{flex-direction:row;overflow-x:auto;gap:4px}
   nav a{white-space:nowrap;gap:6px}
   .side-foot{display:none}
   main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 }
 @media (max-width:700px){.grid3,.grid2{grid-template-columns:1fr}.grid3>:last-child{grid-column:auto}.kpis.k5{grid-template-columns:repeat(2,minmax(0,1fr))}.mini{grid-template-columns:1fr 1fr}.kpi .v{font-size:22px;line-height:28px}h1{font-size:26px;line-height:32px}}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:700px){.two,.iform .r2{grid-template-columns:1fr}.timeline>div{grid-template-columns:1fr;gap:2px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.ripple li{animation:none;opacity:1}tr.flash td{animation:none}}
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:11.5px}
-  .side,.noprint,.scrim,.drawer,.toast,.modal{display:none!important}
+  .side,.noprint,.scrim,.drawer,.toast,.modal,.ripple{display:none!important}
   .app{display:block}
   main{padding:0}
   .wrap{max-width:none;gap:14px}
@@ -228,12 +304,14 @@ details.card[open] summary{margin-bottom:12px}
   <aside class="side">
     <a class="lockup" href="https://www.anytrail.ai/" aria-label="Anytrail home"><img src="/anytrail-mark.png" alt=""><span>Anytrail</span></a>
     <div class="client"><span class="label">Workspace</span><b>King's Vegetarian Food</b><small>Sales desk · Mississauga, ON</small></div>
+    <label class="who" for="meSel"><span class="label">Signed in as</span><select class="select" id="meSel"></select></label>
     <nav id="nav" aria-label="Views"></nav>
-    <button class="btn primary" id="logBtn" type="button">+ Log an order</button>
+    <button class="btn primary" id="logBtn" type="button">+ Take a phone order</button>
     <div class="side-foot">Demo workspace with sample orders.<br>Built by Anytrail for King's Vegetarian Food.</div>
   </aside>
   <main id="main"></main>
 </div>
+<div class="ripple" id="ripple" role="status" aria-live="polite"></div>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true"></aside>
 <div class="modal" id="modal" hidden></div>
@@ -262,6 +340,15 @@ const fmtK=v=>{const a=Math.abs(v),s=v<0?'-':'';return s+'$'+(a>=1e6?(a/1e6).toF
 const pct=v=>v==null||!isFinite(v)?'—':(v>0?'+':'')+Math.round(v*100)+'%';
 const dcls=v=>v==null||!isFinite(v)?'':v>=0.005?'up':v<=-0.005?'down':'';
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const median=a=>{const s=a.slice().sort((x,y)=>x-y);return s.length?s[Math.floor(s.length/2)]:0};
+const r10=v=>Math.ceil(v/10)*10;
+const nf=v=>Math.round(v).toLocaleString('en-CA');
+/* demo clock: Monday Nov 9, 2026 from 9:12 am, ticking in real time */
+const T0=Date.now(),CLOCK0=new Date(2026,10,9,9,12);
+const now=()=>new Date(+CLOCK0+(Date.now()-T0));
+const at=(md,h=9,mi=0)=>{const [m,d]=md.split('-').map(Number);return new Date(2026,m-1,d,h,mi)};
+const tfmt=d=>d.toLocaleString('en-CA',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+const ago=t=>{const m=Math.round((now()-t)/6e4);return m<1?'just now':m<60?`${m} min ago`:m<1440?`${Math.round(m/60)} h ago`:`${Math.round(m/1440)} d ago`};
 
 /* ---------- catalogue: every product listed on kingsvegetarianfood.ca/products (case packs & prices illustrative) ---------- */
 const IMG='https://kingsvegetarianfood.ca/wp-content/uploads/';
@@ -315,7 +402,9 @@ const CUSTOMERS=[
  {id:'zm',name:'Zen Gardens Mississauga',type:'Restaurant',city:'Mississauga',base:4300,growth:.006,freq:4,season:'resto',lines:6,mix:{chb:2,sat:3,sks:2,bbq:2,kp:2,cur:2,shr:2,dmp:2,cal:1,ssb:2,gbl:1}},
  {id:'zl',name:'Zen Gardens London',type:'Restaurant',city:'London, ON',base:2600,growth:.01,freq:2,season:'resto',lines:5,mix:{chb:2,sat:2,bbq:2,kp:2,cur:1,shr:1,dmp:1,ssb:1,rib:1}},
  {id:'zg',name:'Zen Gardens Guelph',type:'Restaurant',city:'Guelph',base:2100,growth:.012,freq:2,season:'resto',lines:5,mix:{chb:2,sat:2,bbq:2,tik:1,cur:2,shr:1,cal:1,bpb:1,mut:1}},
- {id:'gg',name:'Greenleaf Grocers',type:'Grocery',city:'Toronto · 6 stores',base:9800,growth:.018,freq:3,season:'retail',lines:8,mix:{nug:3,chb:3,bac:2,bur:2,tik:2,cur:2,kp:1,sal:2,cut:2,wng:1,dmp:1,omg:2,omb:2,wel:2,mtb:2,jky:1,tun:1}},
+ {id:'gg',name:'Greenleaf Grocers',type:'Grocery',city:'Toronto · 6 stores',base:9800,growth:.018,freq:3,season:'retail',lines:8,mix:{nug:3,chb:3,bac:2,bur:2,tik:2,cur:2,kp:1,sal:2,cut:2,wng:1,dmp:1,omg:2,omb:2,wel:2,mtb:2,jky:1,tun:1,cal:1}},
+ {id:'df',name:'Danforth Fresh Market',type:'Grocery',city:'Toronto · 3 stores',base:4200,growth:.012,freq:2,season:'retail',lines:7,mix:{nug:2,chb:2,tik:2,kp:2,bac:1,sal:1,cal:1,dmp:2,rib:1,wel:1,jky:1,smb:1}},
+ {id:'cs',name:'Cedar & Sage Natural',type:'Health store',city:'Oakville',base:1600,growth:-.01,freq:1,season:'retail',lines:5,mix:{nug:2,bac:2,jks:2,jky:2,sal:1,tun:1,omg:1,omb:1}},
  {id:'lt',name:'Lotus Asian Supermarket',type:'Grocery',city:'Richmond Hill',base:7400,growth:.01,freq:2,season:'retail',lines:8,mix:{bbq:3,dmp:3,shr:3,bfb:2,kp:2,chb:2,cal:2,hkb:3,bbn:3,rsb:2,cbn:2,srw:3,smb:2,gbl:2,jks:1}},
  {id:'mp',name:'Maple Pantry Market',type:'Grocery',city:'Markham',base:3100,growth:.035,freq:2,season:'retail',lines:6,start:4,mix:{nug:3,chb:2,bur:2,sal:2,tik:1,bac:1,omg:2,wel:1,jky:1,rvb:1}},
  {id:'nf',name:'Northline Foods',type:'Distributor',city:'Ottawa',base:14500,growth:.008,freq:2,season:'retail',lines:10,drop:{drm:16},mix:{chb:3,nug:3,wng:2,drm:2,cut:2,bac:2,bbq:2,bfb:2,bur:2,tik:1,cur:1,shr:1,sal:1,sdr:2,rvb:2,mtb:2,omb:2,omg:1}},
@@ -331,8 +420,11 @@ const TYPES=[...new Set(CUSTOMERS.map(c=>c.type))];
 /* order-to-cash: lead time from portal PO to delivery, payment terms (days after delivery/invoice), typical days paid late */
 const TERMS={Grocery:30,Distributor:30,'Health store':30,Hotel:30,Foodservice:45,Restaurant:15};
 const LEAD={Grocery:6,Distributor:8,'Health store':4,Hotel:3,Foodservice:4,Restaurant:2};
-const LATE={kc:0,zm:0,zl:0,zg:0,gg:4,lt:9,mp:2,nf:6,pp:22,hh:12,cd:18,sn:5,bh:3,rc:95};
-CUSTOMERS.forEach(c=>{c.terms=TERMS[c.type];c.lead=LEAD[c.type];c.late=LATE[c.id]});
+const LATE={kc:0,zm:0,zl:0,zg:0,gg:4,lt:9,mp:2,nf:6,pp:22,hh:12,cd:18,sn:5,bh:3,rc:95,df:5,cs:8};
+/* retail behaves like consignment, food service orders on a rhythm, distributors feed both */
+const CHANNEL={Grocery:'Retail','Health store':'Retail',Distributor:'Distribution',Restaurant:'Food service',Hotel:'Food service',Foodservice:'Food service'};
+const CHS=['Retail','Food service','Distribution'];
+CUSTOMERS.forEach(c=>{c.terms=TERMS[c.type];c.lead=LEAD[c.type];c.late=LATE[c.id];c.ch=CHANNEL[c.type]});
 
 const SEASON={ // Jan..Dec
  retail:[1.12,.95,.98,.97,1,.93,.9,.92,.98,1.02,1.1,1.22],
@@ -375,6 +467,180 @@ function settle(o,hist){const c=C[o.c];o.delivery=addDays(o.date,c.lead+Math.flo
  if(hist){const paid=addDays(o.due,Math.round(Math.max(-4,c.late+gauss()*Math.min(6,Math.max(2,c.late*.35)))));if(paid<=TODAY)o.paid=paid}}
 orders.forEach(o=>settle(o,true));
 
+/* ---------- team (3 seats) and the audit trail: every action leaves a footprint ---------- */
+const USERS=[{id:'dy',name:'David Younge',short:'David',role:'Owner'},{id:'pm',name:'Priya Mehta',short:'Priya',role:'Sales'},{id:'lc',name:'Luc Tremblay',short:'Luc',role:'Warehouse & shipping'}];
+const U=Object.fromEntries(USERS.map(u=>[u.id,u]));U.sys={id:'sys',name:'Anytrail (automatic)',short:'Automatic',role:'System'};
+let me='dy';
+let AUDIT=[];
+function log(mod,act,rec,detail='',by=me,t=now()){AUDIT.push({t,by,mod,act,rec,detail})}
+const ini=id=>id==='sys'?'AT':U[id].name.split(' ').map(x=>x[0]).join('').slice(0,2);
+const who=id=>`<span class="owner"><span class="av ${id}" aria-hidden="true">${ini(id)}</span>${esc(U[id].short)}</span>`;
+
+/* ---------- contacts and notes: anyone who logs in knows who to call ---------- */
+const CONTACTS={
+ kc:[{n:'Wei Chen',r:'Kitchen manager',ph:'416-555-0142',best:'2:30–4:30 pm, after the lunch rush'}],
+ zm:[{n:'Sandra Liu',r:'General manager',ph:'905-555-0117',best:'Mornings before 11'},{n:'Tony Ho',r:'Head chef',ph:'905-555-0175',best:'Text first'}],
+ zl:[{n:'Marcus Bell',r:'Restaurant manager',ph:'519-555-0160',best:'Weekdays 10–11:30'}],
+ zg:[{n:'Erin Walsh',r:'Restaurant manager',ph:'519-555-0139',best:'Tuesdays and Wednesdays'}],
+ gg:[{n:'Amanda Ross',r:'Frozen category buyer',ph:'416-555-0188',best:'Tue/Thu 9–11, books calls by email',since:'Sep 2026'},{n:'Tasha Green',r:'Store manager, Queen St',ph:'416-555-0151',best:'Weekday mornings, on the floor'},{n:'Kevin Doyle',r:'Frozen category buyer',ph:'—',left:'Left in Aug 2026 for another chain'}],
+ lt:[{n:'Henry Lau',r:'Grocery buyer',ph:'905-555-0123',best:'Weekdays 9–11, Cantonese or English'},{n:'Grace Wong',r:'Receiving lead, DC',ph:'905-555-0196',best:'Book delivery appointments 48 h ahead'}],
+ mp:[{n:'Daniel Park',r:'Owner',ph:'905-555-0104',best:'Evenings after 6, on his cell'}],
+ df:[{n:'Sofia Marino',r:'Category manager',ph:'416-555-0133',best:'Mondays',since:'Oct 2026'},{n:'Ravi Patel',r:'Category manager',ph:'—',left:'Left in Sep 2026'}],
+ cs:[{n:'Meg Thornton',r:'Owner and buyer',ph:'905-555-0158',best:'Weekdays 1–3 pm'}],
+ bh:[{n:'Jordan Ames',r:'Store manager',ph:'416-555-0170',best:'Fridays'}],
+ nf:[{n:'Paul Gagnon',r:'Purchasing manager',ph:'613-555-0112',best:'Orders by EDI, calls 8–10 am'},{n:'Lise Bérubé',r:'Accounts payable',ph:'613-555-0147',best:'For deduction disputes'}],
+ pp:[{n:'Brett Olsen',r:'Category buyer',ph:'403-555-0129',best:'9–12 Mountain time',since:'Jul 2026'},{n:'Karen Fox',r:'Category buyer',ph:'—',left:'Left in Jun 2026'}],
+ hh:[{n:'Andre Dubois',r:'Executive chef',ph:'416-555-0165',best:'2–4 pm'}],
+ cd:[{n:'Nadia Rahman',r:'Food services director',ph:'519-555-0181',best:'During term, email first'}],
+ sn:[{n:'Minh Tran',r:'Owner',ph:'416-555-0109',best:'10–11 am, orders by phone'}],
+ rc:[{n:'Holly Brooks',r:'Owner',ph:'905-555-0190',best:'—'}],
+};
+const NOTE_TYPES=['Call','Store visit','Store manager comment','Email','Note'];
+const NOTES_SEED=[
+ ['gg','11-05','pm','Call','Amanda confirmed the holiday flyer: Wellington and Chicken Bites, Nov 27 to Dec 10. Wants 2 extra cases per store on Wellington.'],
+ ['gg','10-22','dy','Store visit','Queen St store: our frozen door is half empty. Tasha says the Calamari is not moving because shoppers don\'t know how to cook it. Offered a demo weekend.'],
+ ['gg','09-16','pm','Note','New frozen buyer is Amanda Ross (Kevin Doyle left in August). She reviews the line in January. Send her the 2-year sales summary before then.'],
+ ['gg','08-28','dy','Store manager comment','Tasha (Queen St) asked for shelf talkers for the Satay. Sent 20.'],
+ ['lt','11-03','pm','Call','Henry wants HK BBQ Buns for the Lunar New Year end cap. Asked for pricing by Nov 20.'],
+ ['lt','10-14','lc','Email','Grace at the DC: deliveries must be booked 48 h ahead and the BOL emailed before the truck leaves. A missed slot is a $250 fine.'],
+ ['mp','10-30','pm','Store visit','Daniel moved our freezer to the front of the store. Nuggets and Chicken Bites sell out by Thursday. Suggest weekly delivery.'],
+ ['df','10-20','pm','Note','Sofia Marino replaced Ravi Patel as category manager. She has not seen our line review deck yet. Book an intro.'],
+ ['df','11-06','dy','Store visit','Danforth Ave store: most of the first Sweet & Sour Ribs delivery is still on the shelf. Manager will move it to eye level for 2 weeks.'],
+ ['cs','10-09','pm','Call','Meg says jerky is the best seller and frozen is slower in the fall. Prefers one bigger order a month.'],
+ ['bh','09-25','pm','Store manager comment','Jordan asked whether we do a smaller case of Vegan Salmon. Shoppers like it but a 12-pack sits too long.'],
+ ['nf','11-02','dy','Call','Paul: Drumsticks are off their list for now, replaced by Smoked Drumsticks at 3 Ottawa stores.'],
+ ['nf','10-17','lc','Note','Two pallets refused at the Ottawa DC on Oct 15 for a late truck. Carrier (Rapid Freight) admits fault. Refund requested.'],
+ ['pp','10-08','dy','Call','Brett is new (Karen Fox left in June). Volume is down because they cut Bacon and Cutlets from the planogram. Wants a promo plan before re-listing.'],
+ ['pp','09-12','pm','Email','Asked Prairie AP what code MCB means. It is a margin chargeback for the spring promo.'],
+ ['kc','11-04','dy','Note','Café menu change Dec 1: adding a Kung Pao bowl. Expect about 3 more cases a week of Kung Pao.'],
+ ['zm','10-26','pm','Call','Tony wants to try the Plant-based Calamari as an appetizer special in December.'],
+ ['zl','10-11','pm','Note','Marcus is on vacation until Nov 15. They will order through the portal meanwhile.'],
+ ['hh','10-29','pm','Call','Andre is planning the holiday banquet menu: up to 40 cases of Wellington over 3 weeks in December. Confirm by Nov 15.'],
+ ['cd','09-03','pm','Email','Nadia: fall term menus are fixed. Next change in January. Send samples in early December.'],
+ ['sn','10-31','lc','Call','Minh asked for delivery before 10 am only. Updated the route note.'],
+ ['rc','08-25','dy','Call','Holly is closing the café at the end of August. Final invoices outstanding, she promised payment in September.'],
+ ['rc','10-02','dy','Note','Still unpaid. Sent a reminder letter. Consider collections in November.'],
+ ['zg','10-15','pm','Note','Erin asked for a Wednesday order cut-off to get Friday delivery.'],
+];
+let NOTES=[];
+const lastTouch=cid=>NOTES.filter(n=>n.c===cid).sort((a,b)=>b.t-a.t)[0];
+
+/* ---------- deductions and chargebacks, logged per client ---------- */
+const DSTAT=['Unexplained','Investigating','Disputed','Refund pending','Recovered','Accepted'];
+const CLOSED=new Set(['Recovered','Accepted']);
+const DCLS={Unexplained:'bad',Investigating:'warn',Disputed:'warn','Refund pending':'info',Recovered:'good',Accepted:'info'};
+const dedPill=s=>`<span class="pill ${DCLS[s]}">${s}</span>`;
+let DCODES=[{c:'gg',code:'41',meaning:'Late delivery or missed appointment fine'},{c:'gg',code:'PA-7',meaning:'Promotional allowance for a flyer'},{c:'lt',code:'SH',meaning:'Short shipped against the PO'},{c:'nf',code:'DMG',meaning:'Damaged or refused on receipt'},{c:'nf',code:'8',meaning:'Price differs from their item file'},{c:'pp',code:'MCB',meaning:'Margin chargeback on a promotion'},{c:'mp',code:'DMG',meaning:'Damaged on receipt'}];
+const codeMeaning=(c,code)=>DCODES.find(x=>x.c===c&&x.code.toLowerCase()===String(code).trim().toLowerCase());
+const DED_SEED=[
+ ['gg','11-02','41',600,'Truck arrived 2 h after the DC appointment. Greenleaf fined the delivery.','Refund pending',[['11-03','lc','Called Rapid Freight. Driver logs confirm the delay was on their side.'],['11-05','lc','Rapid Freight agreed to cover the $600. Credit note pending.']]],
+ ['gg','10-18','PA-7',1240,'Flyer allowance for the October promo, agreed with Amanda.','Accepted',[['10-21','pm','Matches the promo agreement. Accepted.']]],
+ ['gg','11-06','Z11',318.5,'Unknown code Z11 on the remittance. No match to any agreement.','Unexplained',[]],
+ ['lt','10-27','SH',184,'Lotus receiving says 4 cases of HK BBQ Buns were short.','Disputed',[['10-28','lc','Pick list and signed BOL show the full quantity delivered. Sent proof to Henry.']]],
+ ['lt','09-30','SH',92,'Short 2 cases of Curry Buns.','Recovered',[['10-02','lc','Driver signed for the full count. Lotus reversed it.'],['10-16','dy','Credit received on the remittance.']]],
+ ['nf','10-15','DMG',2140,'Two pallets refused at the Ottawa DC for late delivery, charged back as damaged.','Refund pending',[['10-17','lc','Carrier admits fault. Claim RF-2291 filed with Rapid Freight.']]],
+ ['nf','10-29','8',265,'Price difference on Chicken Bites: Northline\'s item file still has the 2025 price.','Investigating',[['10-30','pm','Asked Paul to update the item file with the Sep 1 price list.']]],
+ ['pp','10-12','MCB',780,'Margin chargeback for the spring promo.','Disputed',[['10-14','dy','Promo ended in May and the chargeback window is 90 days. Disputed with Brett.']]],
+ ['pp','08-20','MCB',540,'Margin chargeback for the spring promo.','Accepted',[['08-25','dy','Within the agreement. Accepted.']]],
+ ['df','11-04','R2',156,'Code R2 on their first remittance.','Unexplained',[]],
+ ['mp','10-05','DMG',62,'One case of Vegan Salmon thawed on arrival.','Accepted',[['10-06','lc','Photo confirms. Accepted, checking the reefer temperature log.']]],
+];
+let DEDS=[];
+
+/* ---------- order desk: one shared inbox for portal, EDI, email and phone orders ---------- */
+const SRC={nf:'EDI',pp:'EDI',gg:'EDI',kc:'Portal',zm:'Portal',zl:'Portal',zg:'Portal',lt:'Portal',mp:'Portal',df:'Portal',hh:'Email',cd:'Email',bh:'Email',cs:'Email',sn:'Phone',rc:'Email'};
+const APPT=new Set(['gg','lt','nf','pp','df']); // larger accounts: delivery appointments, BOL sent in advance
+const STEPS=['New','Claimed','Confirmed','Picking','Shipped'];
+const OPEN=new Set(['New','Claimed','Confirmed','Picking']);
+const invNo=o=>'INV-'+o.id.slice(3),bolNo=o=>'BOL-'+o.id.slice(3);
+const poNo=o=>{const n=o.id.slice(3);return o.src==='EDI'?`PO 4500${n} (EDI 850)`:o.src==='Portal'?`Portal PO KP-${n}`:o.src==='Phone'?'Phone order':`PO ${1000+(+n*37)%9000} (email)`};
+const buyerEmail=c=>{const ct=(CONTACTS[c]||[]).find(x=>!x.left);return (ct?ct.n.split(' ')[0].toLowerCase():'orders')+'@'+C[c].name.toLowerCase().replace(/[^a-z]/g,'').slice(0,16)+'.ca'};
+function ev(o,text,by=me,t=now()){o.ev.push({t,by,text});log('Orders',text,`${o.id} · ${C[o.c].name}`,'',by,t)}
+function makeOrder(c,lines,src,po,by='sys',t=now(),note=''){
+ const o={id:'SO-'+(24100+orders.length),c,date:new Date(TODAY),at:t,lines,total:sum(lines.map(l=>l.qty*l.price)),src,status:'New',owner:null,ev:[]};
+ settle(o,false);if(APPT.has(c))o.appt=o.delivery;o.po=po||poNo(o);orders.push(o);
+ ev(o,`Received via ${src==='Email'?'the orders@ inbox':src}: ${sum(lines.map(l=>l.qty))} cases, ${fmt$(o.total)}${note?'. '+note:''}`,by,t);return o}
+function replay(o,target,own){const T=h=>new Date(+o.at+h*36e5),ti=STEPS.indexOf(target==='Delivered'?'Shipped':target);
+ ev(o,`Received via ${o.src==='Email'?'the orders@ inbox':o.src}: ${sum(o.lines.map(l=>l.qty))} cases, ${fmt$(o.total)}`,'sys',o.at);
+ if(ti>=1){o.owner=own;ev(o,'Claimed the order',own,T(.3))}
+ if(ti>=2){o.confirmed=T(.9);ev(o,`Emailed the order confirmation to ${buyerEmail(o.c)}`,own,T(.9))}
+ if(ti>=3)ev(o,'Released to the warehouse for picking',own,T(20));
+ if(ti>=4){if(o.appt){o.bol=bolNo(o);ev(o,`Sent BOL ${o.bol} ahead of the ${dfmt(o.appt)} delivery appointment`,'lc',T(26))}
+  o.bol=o.bol||bolNo(o);o.inv=invNo(o);ev(o,`Shipped. Invoice ${o.inv} and BOL ${o.bol} emailed together`,'lc',T(44))}
+ o.status=target}
+function seedOrders(){
+ orders.forEach(o=>{o.src=SRC[o.c];o.status='Delivered';o.ev=[];o.owner=null;o.po=poNo(o);
+  o.at=new Date(o.date.getFullYear(),o.date.getMonth(),o.date.getDate(),7+Math.floor(rnd()*9),Math.floor(rnd()*60));if(APPT.has(o.c))o.appt=o.delivery});
+ const rot=['pm','lc','dy','pm','pm','lc'];let k=0;
+ // the latest orders are mid-flow; older ones in the window have shipped
+ const FLOW=['Claimed','Confirmed','Picking','Picking','Confirmed'];
+ orders.filter(o=>o.date>=new Date(2026,10,1)).sort((a,b)=>b.at-a.at).forEach((o,i)=>replay(o,FLOW[i]||(o.delivery<=TODAY?'Delivered':'Shipped'),rot[k++%rot.length]));
+ [['nf','EDI',7,42],['lt','Portal',8,15],['hh','Email',8,51]].forEach(([c,src,h,mi])=>{const cs=C[c],top=Object.entries(cs.mix).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  makeOrder(c,top.map(([p])=>({p,qty:Math.max(2,Math.round(cs.base/cs.freq/4/P[p].price)),price:P[p].price})),src,null,'sys',new Date(2026,10,9,h,mi))});
+}
+
+/* ---------- inventory: lots with expiry dates, production runs ---------- */
+const SHELF={'Vegan Appetizers':240,'Vegan Beef & Vegan Pork':365,'Vegan Chicken':365,'Vegan Dimsum':270,'Vegan Meals':300,'Vegan Meatballs':365,'Vegan Seafood':300};
+let LOTS=[],RUNS=[];
+const lotId=(d,p)=>`L${String(d.getFullYear()).slice(2)}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}-${p.toUpperCase()}`;
+function initInventory(){
+ // weeks of stock on hand; a few products set up to show the alerts David asked for
+ const OVR={rib:{w:16,exp:38},cal:{w:14,exp:52},jks:{w:12,exp:24},drm:{w:22,exp:57},bac:{w:1.6},chb:{w:2.4},sal:{w:2.2},wel:{w:7}};
+ PRODUCTS.forEach(p=>{const ps=S.prod[p.id],o=OVR[p.id]||{},wk=o.w??(5+rnd()*6),total=Math.max(12,Math.round(ps.rate*wk))+ps.alloc,sh=SHELF[p.cat];
+  const made=[150+Math.floor(rnd()*50),70+Math.floor(rnd()*40),10+Math.floor(rnd()*20)];if(o.exp)made[0]=sh-o.exp;
+  const q0=Math.round(total*(o.exp?.6:.22)),q1=Math.round(total*(o.exp?.2:.33)),qs=[q0,q1,total-q0-q1];
+  qs.forEach((q,i)=>{const md=addDays(TODAY,-made[i]);if(q>0)LOTS.push({id:lotId(md,p.id),p:p.id,qty:q,made:md,exp:addDays(md,sh),action:null})});
+  // production for the locked months was planned 3 months ago from the forecast at the time, so it's close but not exact
+  if(['rib','cal','jks','drm','bac'].includes(p.id))return;
+  const f=ps.fcU.f,dem=Math.max(0,f[0]-ps.mtdU)+f[1]+f[2],gap=dem-(total-ps.alloc),cover=(total-ps.alloc)/Math.max(ps.rate,.1);
+  if(gap<=10)return;
+  const d1=cover<3?5+Math.floor(rnd()*4):12+Math.floor(rnd()*14),d2=40+Math.floor(rnd()*24);
+  [[d1,.5],[d2,.5]].forEach(([d,sh])=>RUNS.push({id:'RUN-'+(310+RUNS.length),p:p.id,date:addDays(TODAY,d),qty:r10(gap*sh*(.82+rnd()*.3)),status:'Scheduled'}));
+ });
+ RUNS.sort((a,b)=>a.date-b.date).forEach((r,i)=>r.id='RUN-'+(310+i));
+}
+function inv(p){const ps=S.prod[p],rate=ps.rate;
+ const lots=LOTS.filter(l=>l.p===p&&l.qty>0).sort((a,b)=>a.exp-b.exp);
+ const oh=sum(lots.map(l=>l.qty)),av=oh-ps.alloc,cover=rate>0?av/rate:99;
+ let cum=0;lots.forEach(l=>{l.dte=days(TODAY,l.exp);const canSell=Math.max(0,rate*l.dte/7-cum);l.risk=Math.max(0,Math.round(l.qty-canSell));cum+=l.qty});
+ const runs=RUNS.filter(r=>r.p===p&&r.status==='Scheduled').sort((a,b)=>a.date-b.date);
+ const exp60=lots.filter(l=>l.dte<=60);
+ const status=av<=0?'Out':cover<3?'Low':exp60.some(l=>l.risk>0)?'Expiring':cover>20?'Overstock':'OK';
+ return{oh,av,alloc:ps.alloc,rate,cover,lots,runs,exp60,status}}
+function consume(lines){lines.forEach(l=>{let q=l.qty;LOTS.filter(x=>x.p===l.p&&x.qty>0).sort((a,b)=>a.exp-b.exp).forEach(x=>{const t=Math.min(q,x.qty);x.qty-=t;q-=t})})}
+
+/* ---------- QuickBooks double-check ---------- */
+let REC=[],recAll=false;
+function seedRecon(){
+ const done=orders.filter(o=>!OPEN.has(o.status)&&days(o.date,TODAY)<=30&&days(o.date,TODAY)>=2).sort((a,b)=>b.date-a.date);
+ REC=done.map((o,i)=>{let kind='match',qb=o.total;
+  if(i===2){kind='amount';const s=String(Math.round(o.total));qb=s.length>=3&&s.at(-2)!==s.at(-3)?+(s.slice(0,-3)+s.at(-2)+s.at(-3)+s.at(-1)):o.total+90}
+  if(i===6){kind='missing';qb=null}
+  if(i===10)kind='dup';
+  return{o,qb,kind,ok:false}});
+}
+const EXTRA_AUDIT=[
+ [at('11-07',8,5),'dy','Settings','Invited a user','Luc Tremblay','Role: Warehouse & shipping'],
+ [at('11-06',16,40),'lc','Inventory','Cycle count adjustment','Vegan Bacon','7 damaged cases written off'],
+ [at('11-08',13,10),'lc','Inventory','Received a production run','Vegan Nuggets','Added to stock as a new lot'],
+ [at('11-04',6,0),'sys','Connections','QuickBooks check','Daily invoice check','All invoices matched'],
+ [at('11-09',6,0),'sys','Connections','QuickBooks check','Daily invoice check','3 invoices need a look'],
+ [at('10-28',15,22),'pm','Pipeline','Moved deal','Fresh Valley Markets','Quote → Listing review'],
+ [at('11-05',10,48),'dy','Products','Changed case price','Vegan Salmon','$76 → $78 per case'],
+ [at('11-03',17,2),'pm','Portal','Invited an account to the portal','Danforth Fresh Market','Sofia Marino'],
+];
+function seedRest(){
+ NOTES=NOTES_SEED.map(([c,md,by,type,text],i)=>({c,t:at(md,9+(i*5)%8,(i*17)%60),by,type,text}));
+ NOTES.forEach(n=>log('Accounts',`Added a ${n.type.toLowerCase()} note`,C[n.c].name,n.text.length>90?n.text.slice(0,88)+'…':n.text,n.by,n.t));
+ DEDS=DED_SEED.map(([c,md,code,amt,issue,status,acts],i)=>{const date=at(md,9,30),o=S.cust[c].orders.filter(x=>x.date<addDays(date,-4)).at(-1);
+  const d={id:'DED-'+(1040+i),c,date,inv:o?invNo(o):'—',code,amt,issue,status,actions:acts.map(([m,by,text],j)=>({t:at(m,11+j,(i*13+j*29)%60),by,text}))};
+  log('Deductions','Logged a deduction',`${d.id} · ${C[c].name}`,`${fmt$(amt)} on ${d.inv}, code ${code}`,i%2?'lc':'pm',date);
+  d.actions.forEach(a=>log('Deductions','Updated a deduction',`${d.id} · ${C[c].name}`,a.text,a.by,a.t));return d});
+ DEDS.sort((a,b)=>b.date-a.date);
+ EXTRA_AUDIT.forEach(([t,by,mod,act,rec,detail])=>log(mod,act,rec,detail,by,t));
+ seedRecon();
+}
+
 /* ---------- forecasting: seasonal index × damped linear trend ---------- */
 function linreg(y){const n=y.length;if(n<2)return{a:y[0]||0,b:0};const mx=(n-1)/2,my=avg(y);let num=0,den=0;y.forEach((v,i)=>{num+=(i-mx)*(v-my);den+=(i-mx)**2});const b=num/den;return{a:my-b*mx,b}}
 function forecast(y,h=H){
@@ -398,18 +664,49 @@ function forecast(y,h=H){
  return{f,lo,hi};
 }
 
+/* this month's orders count: booked + expected rest of month, and the pace nudges the months after */
+const ELAPSED=(TODAY.getDate()-.5)/30;
+function paced(fc,mtd){const f0=fc.f[0],exp=f0*ELAPSED,r=exp>0?Math.min(1.6,Math.max(.7,mtd/exp)):1;
+ const g=j=>1+.2*(r-1)*Math.pow(.85,j-1);
+ const m0=v=>mtd+v*(1-ELAPSED);
+ return{f:fc.f.map((v,j)=>j?v*g(j):m0(v)),lo:fc.lo.map((v,j)=>j?v*g(j):m0(v)),hi:fc.hi.map((v,j)=>j?v*g(j):m0(v)),pace:r}}
+/* retail shelf signal: how long since each product was delivered, against that store's usual reorder gap */
+function shelfFor(cs){const by={};
+ cs.orders.filter(o=>days(o.date,TODAY)<=365).forEach(o=>o.lines.forEach(l=>(by[l.p]||(by[l.p]=[])).push({d:o.date,q:l.qty})));
+ return Object.entries(by).map(([p,a])=>{a.sort((x,y)=>x.d-y.d);const gaps=a.slice(1).map((x,i)=>days(a[i].d,x.d));
+  const interval=gaps.length>=2?Math.max(7,median(gaps)):gaps.length?Math.max(14,gaps[0]):Math.max(30,cs.interval*3);
+  const last=a.at(-1),since=days(last.d,TODAY),ratio=since/interval;
+  return{p,n:a.length,interval,since,ratio,state:ratio<=1.25?'Moving':ratio<=2?'Slowing':'Sitting',last:last.d,qLast:last.q}}).sort((x,y)=>y.ratio-x.ratio)}
+function verdict(ps,r){const why=[],y=ps.yoy??0,sit=r.carry>=2?r.sitting/r.carry:0;
+ if(ps.yoy!=null)why.push(`Sales ${pct(ps.yoy)} over the last 12 months vs the 12 before`);
+ why.push(`${ps.buyers} account${ps.buyers===1?'':'s'} bought it in the last 12 months`);
+ if(ps.dropped.length)why.push(`Stopped buying it: ${ps.dropped.map(c=>C[c].name).join(', ')}`);
+ if(r.carry)why.push(`At retail: reordered on pace at ${r.moving} of ${r.carry} accounts, sitting too long at ${r.sitting}`);
+ let k='Keep',cls='info';
+ if(y<=-.15||ps.dropped.length>=2){k='Review';cls='bad'}
+ else if(y<=-.05||sit>=.5||ps.dropped.length===1){k='Watch';cls='warn'}
+ else if(y>=.12&&ps.buyers>=3){k='Grow';cls='good'}
+ return{k,cls,why}}
+const VD_HEAD={Grow:'Growing. Worth pushing to more accounts.',Keep:'Steady. Keep it in the line.',Watch:'Softening. Watch it this quarter.',Review:'Declining. Review whether to keep it.'};
+const vpill=vd=>`<span class="pill ${vd.cls}">${vd.k}</span>`;
+
 /* ---------- derived state ---------- */
 let S;
 function compute(){
- S={cust:{},prod:{},total:Array(N).fill(0),mtd:0,mtdOrders:0};
- CUSTOMERS.forEach(c=>S.cust[c.id]={c,rev:Array(N).fill(0),orders:[],pc12:{},pcPrev:{}});
- PRODUCTS.forEach(p=>S.prod[p.id]={p,units:Array(N).fill(0),rev:Array(N).fill(0),b12:{},bPrev:{},last:{}});
+ S={cust:{},prod:{},total:Array(N).fill(0),mtd:0,mtdOrders:0,chRev:{All:Array(N+1).fill(0)}};
+ CHS.forEach(ch=>S.chRev[ch]=Array(N+1).fill(0));
+ CUSTOMERS.forEach(c=>S.cust[c.id]={c,rev:Array(N).fill(0),orders:[],pc12:{},pcPrev:{},mtd:0});
+ PRODUCTS.forEach(p=>S.prod[p.id]={p,units:Array(N).fill(0),rev:Array(N).fill(0),b12:{},bPrev:{},last:{},cu:{},mtdU:0,mtdRev:0,alloc:0});
  orders.forEach(o=>{
-  const m=monthIdx(o.date),cs=S.cust[o.c];cs.orders.push(o);
+  const m=monthIdx(o.date),cs=S.cust[o.c],ch=C[o.c].ch,open=OPEN.has(o.status);cs.orders.push(o);
   if(m>=0&&m<N){cs.rev[m]+=o.total;S.total[m]+=o.total}
-  if(m===N){S.mtd+=o.total;S.mtdOrders++}
+  if(m===N){S.mtd+=o.total;S.mtdOrders++;cs.mtd+=o.total}
+  if(m>=0&&m<=N){S.chRev.All[m]+=o.total;S.chRev[ch][m]+=o.total}
   o.lines.forEach(l=>{const ps=S.prod[l.p];
    if(m>=0&&m<N){ps.units[m]+=l.qty;ps.rev[m]+=l.qty*l.price}
+   if(m===N){ps.mtdU+=l.qty;ps.mtdRev+=l.qty*l.price}
+   if(m>=0&&m<=N)(ps.cu[o.c]||(ps.cu[o.c]=Array(N+1).fill(0)))[m]+=l.qty;
+   if(open)ps.alloc+=l.qty;
    if(m>=12){ps.b12[o.c]=(ps.b12[o.c]||0)+l.qty;cs.pc12[l.p]=(cs.pc12[l.p]||0)+l.qty}
    else if(m>=0){ps.bPrev[o.c]=(ps.bPrev[o.c]||0)+l.qty;cs.pcPrev[l.p]=(cs.pcPrev[l.p]||0)+l.qty}
    if(!ps.last[o.c]||ps.last[o.c]<o.date)ps.last[o.c]=o.date;
@@ -429,12 +726,13 @@ function compute(){
   else if(cs.daysSince>cs.interval*1.4+3){cs.status='Reorder due';cs.sev=2;cs.why=`Usually orders every ${cs.interval} days. Last order ${cs.daysSince} days ago.`}
   else if(cs.yoy!=null&&cs.yoy<-.12){cs.status='Slowing';cs.sev=1;cs.why=`12-month revenue ${pct(cs.yoy)} vs prior year.`}
   else{cs.status='On track';cs.sev=0;cs.why=''}
-  cs.fc=cs.status==='Lapsed'?forecast(Array(N).fill(0)):forecast(cs.rev);
+  cs.fc=paced(cs.status==='Lapsed'?forecast(Array(N).fill(0)):forecast(cs.rev),cs.mtd);
+  cs.shelf=cs.c.ch==='Retail'?shelfFor(cs):null;
  });
  const tf=forecast(S.total);
  S.fc={f:[],lo:[],hi:[]};
  for(let j=0;j<H;j++){const f=sum(Object.values(S.cust).map(cs=>cs.fc.f[j]));const w=(tf.hi[j]-tf.f[j]);S.fc.f.push(f);S.fc.lo.push(Math.max(0,f-w));S.fc.hi.push(f+w)}
- const pf=PRODUCTS.map(p=>forecast(S.prod[p.id].rev));
+ const pf=PRODUCTS.map(p=>paced(forecast(S.prod[p.id].rev),S.prod[p.id].mtdRev));
  for(let j=0;j<H;j++){const t=sum(pf.map(x=>x.f[j]))||1,k=S.fc.f[j]/t;pf.forEach(x=>{x.f[j]*=k;x.lo[j]*=k;x.hi[j]*=k})}
  PRODUCTS.forEach((p,i)=>{const ps=S.prod[p.id];ps.fc=pf[i];
   ps.fcU={f:pf[i].f.map(v=>v/p.price),lo:pf[i].lo.map(v=>v/p.price),hi:pf[i].hi.map(v=>v/p.price)};
@@ -443,17 +741,23 @@ function compute(){
   ps.buyers=Object.keys(ps.b12).length;
   const top=Object.entries(ps.b12).sort((a,b)=>b[1]-a[1])[0];ps.top=top?C[top[0]].name:'—';
   ps.dropped=Object.keys(ps.bPrev).filter(c=>ps.last[c]&&days(ps.last[c],TODAY)>120&&S.cust[c].status!=='Lapsed');
+  ps.rate=(ps.units[N-1]+ps.units[N-2]+ps.mtdU)/((61+TODAY.getDate()-1)/7); // cases per week, last ~10 weeks
+  ps.chU=Object.fromEntries(CHS.map(ch=>[ch,Array(N+1).fill(0)]));
+  Object.entries(ps.cu).forEach(([c,a])=>a.forEach((v,m)=>ps.chU[C[c].ch][m]+=v));
  });
+ S.rp={};PRODUCTS.forEach(p=>S.rp[p.id]={carry:0,moving:0,slowing:0,sitting:0,accts:[]});
+ Object.values(S.cust).forEach(cs=>cs.shelf&&cs.shelf.forEach(s=>{const r=S.rp[s.p];r.carry++;r[s.state.toLowerCase()]++;r.accts.push({...s,c:cs.c.id})}));
+ PRODUCTS.forEach(p=>S.prod[p.id].vd=verdict(S.prod[p.id],S.rp[p.id]));
  const bt=Array(6).fill(0);
  Object.values(S.cust).forEach(cs=>{const f=forecast(cs.rev.slice(0,18)).f;f.forEach((v,j)=>bt[j]+=v)});
  S.btErr=avg(bt.map((v,j)=>Math.abs(v-S.total[18+j])/S.total[18+j]));
 }
 
 /* ---------- charts ---------- */
-let charts=[];
+let charts=[],chartSeq=0;
 const niceMax=v=>{const p=10**Math.floor(Math.log10(v)),m=v/p;return [1,1.2,1.6,2,2.4,3,4,5,6,8,10].find(x=>x>=m-1e-9)*p};
-function chartSlot(spec,h=240){const id='ch'+charts.length;charts.push({id,spec,h});return `<div class="chart" id="${id}" style="height:${h}px"></div>`}
-function lineChart({actual,fc,money=true,unit=''}){
+function chartSlot(spec,h=240){const id='ch'+(chartSeq++);charts.push({id,spec,h});return `<div class="chart" id="${id}" style="height:${h}px"></div>`}
+function lineChart({actual,fc,money=true,unit='',off=0}){
  const na=actual.length,n=na+(fc?fc.f.length:0),padL=money?50:44,padR=10,padT=12,padB=24;
  const all=[...actual,...(fc?fc.hi:[])];const max=niceMax(Math.max(1,...all)*1.05);
  const fv=v=>money?fmtK(v):Math.round(v).toLocaleString('en-CA')+unit;
@@ -463,7 +767,7 @@ function lineChart({actual,fc,money=true,unit=''}){
   let g='';
   for(let k=0;k<=4;k++){const v=max*k/4,yy=y(v);g+=`<line x1="${padL}" x2="${w-padR}" y1="${yy}" y2="${yy}" stroke="var(--line)"/><text x="${padL-8}" y="${yy+3.5}" text-anchor="end">${fv(v)}</text>`}
   const step=w<520?6:3;
-  for(let i=0;i<n;i+=step)g+=`<text x="${x(i)}" y="${h-6}" text-anchor="${i===0?'start':'middle'}">${mLabel(i)}</text>`;
+  for(let i=0;i<n;i+=step)g+=`<text x="${x(i)}" y="${h-6}" text-anchor="${i===0?'start':'middle'}">${mLabel(i+off)}</text>`;
   const pts=actual.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
   g+=`<polygon points="${x(0)},${y(0)} ${pts} ${x(na-1)},${y(0)}" fill="var(--text)" fill-opacity=".05"/>`;
   g+=`<polyline points="${pts}" fill="none" stroke="var(--text)" stroke-width="1.8" stroke-linejoin="round"/>`;
@@ -478,7 +782,7 @@ function lineChart({actual,fc,money=true,unit=''}){
   }
   g+=`<line class="guide" x1="0" x2="0" y1="${padT}" y2="${h-padB}" stroke="var(--text)" stroke-opacity=".3" visibility="hidden"/>`;
   return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Monthly values with forecast">${g}</svg>`;
- },tip(i){return i<na?`${mLabel(i)} · actual <b>${fv(actual[i])}</b>`:`${mLabel(i)} · forecast <b>${fv(fc.f[i-na])}</b><br>likely ${fv(fc.lo[i-na])}–${fv(fc.hi[i-na])}`}};
+ },tip(i){return i<na?`${mLabel(i+off)} · actual <b>${fv(actual[i])}</b>`:`${mLabel(i+off)} · forecast <b>${fv(fc.f[i-na])}</b><br>likely ${fv(fc.lo[i-na])}–${fv(fc.hi[i-na])}`}};
 }
 function barChart({vals,labels,tips,cmp}){
  const n=vals.length,padL=50,padR=6,padT=12,padB=24;const max=niceMax(Math.max(1,...vals,...(cmp||[]))*1.05);
@@ -515,14 +819,23 @@ const pillCls={'On track':'good','Reorder due':'warn','Slowing':'info','Lapsed':
 const pill=s=>`<span class="pill ${pillCls[s]}">${s}</span>`;
 const delta=v=>`<span class="${dcls(v)}">${pct(v)}</span>`;
 const bars=(rows,alt)=>{const max=Math.max(...rows.map(r=>r.v),1);return `<div class="bars">${rows.map(r=>`<div class="bar-row"><span title="${esc(r.label)}">${esc(r.label)}</span><span class="num">${r.right}</span><div class="track"><div class="fill ${alt?'alt':''}" style="width:${r.v/max*100}%"></div></div></div>`).join('')}</div>`};
-const VIEWS=[['overview','Overview'],['reports','Reports'],['customers','Customers'],['products','Products'],['forecast','Forecast'],['cash','Cash flow'],['pipeline','Pipeline']];
+const NAV=[['Today',[['overview','Overview'],['orders','Orders'],['inventory','Inventory']]],
+ ['Accounts',[['customers','Customers'],['retail','Retail'],['deductions','Deductions'],['pipeline','Pipeline']]],
+ ['Planning',[['products','Products'],['forecast','Production forecast'],['reports','Reports'],['cash','Cash flow']]],
+ ['System',[['activity','Activity log'],['connections','Connections'],['portal','Customer portal']]]];
 const fcLabel=()=>`${mLabel(N)} – ${mLabel(N+H-1)}`;
 
-function renderNav(view){
- const due=Object.values(S.cust).filter(c=>c.sev>=2).length;
- document.getElementById('nav').innerHTML=VIEWS.map(([k,l])=>`<a href="#${k}" ${k===view?'aria-current="page"':''}>${l}${k==='customers'&&due?`<span class="count" title="Accounts needing a call">${due}</span>`:''}</a>`).join('');
+function badges(){const IV=PRODUCTS.map(p=>inv(p.id));
+ return{orders:[orders.filter(o=>o.status==='New').length,'hot','New orders nobody has claimed'],
+  inventory:[IV.filter(x=>x.status==='Low'||x.status==='Out').length+IV.reduce((a,x)=>a+x.exp60.length,0),'','Low stock, and lots expiring within 60 days'],
+  customers:[Object.values(S.cust).filter(c=>c.sev>=2).length,'','Accounts needing a call'],
+  deductions:[DEDS.filter(d=>d.status==='Unexplained').length,'','Deductions with a code nobody has explained yet']}}
+function renderNav(view){const B=badges();
+ document.getElementById('nav').innerHTML=NAV.map(([g,items])=>`<span class="nav-g">${g}</span>`+items.map(([k,l])=>{const b=B[k];
+  return `<a href="#${k}" ${k===view?'aria-current="page"':''}>${l}${b&&b[0]?`<span class="count ${b[1]}" title="${b[2]}">${b[0]}</span>`:''}</a>`}).join('')).join('');
+ document.getElementById('meSel').innerHTML=USERS.map(u=>`<option value="${u.id}" ${u.id===me?'selected':''}>${esc(u.name)} · ${u.role}</option>`).join('');
 }
-const notice=`<div class="notice"><b>Demo with sample orders.</b> The full product list comes from King's catalogue, and King's Café and Zen Gardens are King's own restaurants. Every other account, price, case pack and order is illustrative. In production, orders sync from your invoicing or accounting system.</div>`;
+const notice=`<div class="notice"><b>Demo with sample data.</b> The full product list comes from King's catalogue, and King's Café and Zen Gardens are King's own restaurants. Every other account, contact, price, stock level and order is illustrative. In production, orders arrive from the portal, EDI and your orders inbox, and invoices sync with QuickBooks.</div>`;
 
 /* ---------- Overview ---------- */
 function vOverview(){
@@ -535,11 +848,20 @@ function vOverview(){
  const movers=Object.values(S.prod).filter(p=>p.revPrev>2000).sort((a,b)=>b.yoy-a.yoy);
  const catRows=CATS.map(cat=>{const ps=Object.values(S.prod).filter(p=>p.p.cat===cat);const v=sum(ps.map(p=>p.rev12)),pv=sum(ps.map(p=>p.revPrev));return{label:cat,v,right:`${fmtK(v)} <span class="${dcls(pv?v/pv-1:null)}">${pv?pct(v/pv-1):'new'}</span>`}}).sort((a,b)=>b.v-a.v);
  const mtdRep=report(periodById('m-24'));
+ const newPO=orders.filter(o=>o.status==='New'),inProg=orders.filter(o=>OPEN.has(o.status)&&o.status!=='New');
+ const IV=PRODUCTS.map(p=>inv(p.id)),expN=IV.reduce((a,x)=>a+x.exp60.length,0),lowN=IV.filter(x=>x.status==='Low'||x.status==='Out').length;
+ const openD=DEDS.filter(d=>!CLOSED.has(d.status)),pm=N+LEADM,planC=sum(PRODUCTS.map(p=>S.prod[p.id].fcU.f[LEADM]));
  return `
- <div class="head"><div><span class="label">${TODAY.toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</span><h1>Good morning. Here's where sales stand.</h1>
- <p>${attn.filter(c=>c.sev>=2).length} accounts need a call this week. November is pacing toward ${fmtK(mtdRep.projection)} against a forecast of ${fmtK(S.fc.f[0])}. Cash is projected at ${fmtK(cashModel().bal[days(TODAY,new Date(2026,11,31))])} on December 31.</p></div>
+ <div class="head"><div><span class="label">${TODAY.toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</span><h1>Good morning, ${esc(U[me].short)}. Here's where things stand.</h1>
+ <p>${newPO.length} new order${newPO.length===1?' is':'s are'} waiting to be claimed and ${attn.filter(c=>c.sev>=2).length} accounts need a call. ${expN} lots expire within 60 days. November is pacing toward ${fmtK(mtdRep.projection)}, and cash is projected at ${fmtK(cashModel().bal[days(TODAY,new Date(2026,11,31))])} on December 31.</p></div>
  <a class="btn noprint" href="#reports">Open this month's report</a></div>
  ${notice}
+ <div class="kpis">
+  <a class="kpi" href="#orders"><span class="label">Orders waiting</span><span class="v ${newPO.length?'down':''}">${newPO.length}</span><span class="s">not claimed yet · ${inProg.length} in progress</span></a>
+  <a class="kpi" href="#inventory"><span class="label">Inventory alerts</span><span class="v">${expN+lowN}</span><span class="s">${expN} lots expire in 60 days · ${lowN} products low</span></a>
+  <a class="kpi" href="#forecast"><span class="label">Plan production for ${mLabel(pm)}</span><span class="v">${nf(planC)} cs</span><span class="s">expected orders, ${LEADM} months out</span></a>
+  <a class="kpi" href="#deductions"><span class="label">Open deductions</span><span class="v">${fmtK(sum(openD.map(d=>d.amt)))}</span><span class="s">${openD.length} open · ${openD.filter(d=>d.status==='Unexplained').length} with unexplained codes</span></a>
+ </div>
  <div class="kpis">
   <div class="kpi"><span class="label">Revenue, last 12 months</span><span class="v">${fmtK(r12)}</span><span class="s">${delta(r12/rp-1)} vs prior 12 months</span></div>
   <div class="kpi"><span class="label">November to date</span><span class="v">${fmtK(S.mtd)}</span><span class="s">${S.mtdOrders} orders · on pace for ${fmtK(mtdRep.projection)}</span></div>
@@ -571,30 +893,32 @@ const PERIODS=(()=>{
   L.push({id:`q-${y}-${q}`,kind:'quarter',group:'Quarters',label:`Q${q} ${y}${partial?' (to date)':''}`,start:s,end:e,partial,prev:{start:addMonths(s,-3),end:addMonths(e,-3),label:`Q${q===1?4:q-1} ${q===1?y-1:y}`}})});
  L.push({id:'y-2026',kind:'year',group:'Years',label:'2026 year to date',start:new Date(2026,0,1),end:new Date(TOMORROW),partial:true,prev:null});
  L.push({id:'y-2025',kind:'year',group:'Years',label:'2025 full year',start:new Date(2025,0,1),end:new Date(2026,0,1),partial:false,prev:null});
+ L.push({id:'r-12',kind:'rolling',group:'Rolling',label:'Last 12 months (Nov 2025 – Oct 2026)',start:monthDate(12),end:monthDate(24),partial:false,prev:{start:monthDate(0),end:monthDate(12),label:'the 12 months before'}});
+ L.push({id:'r-24',kind:'rolling',group:'Rolling',label:'Last 2 years (Nov 2024 – Oct 2026)',start:monthDate(0),end:monthDate(24),partial:false,prev:null});
  return L;
 })();
 const periodById=id=>PERIODS.find(p=>p.id===id)||PERIODS[0];
-function agg(start,end){
+function agg(start,end,ch='All'){
  if(start<DATA_START)return null;
- const os=orders.filter(o=>o.date>=start&&o.date<end);
+ const os=orders.filter(o=>o.date>=start&&o.date<end&&(ch==='All'||C[o.c].ch===ch));
  const r={orders:os,rev:sum(os.map(o=>o.total)),n:os.length,cases:sum(os.flatMap(o=>o.lines.map(l=>l.qty))),cust:{},prod:{},cat:{}};
  os.forEach(o=>{const c=r.cust[o.c]||(r.cust[o.c]={rev:0,n:0,cases:0});c.rev+=o.total;c.n++;
   o.lines.forEach(l=>{const v=l.qty*l.price;c.cases+=l.qty;const p=r.prod[l.p]||(r.prod[l.p]={rev:0,cases:0,cust:new Set()});p.rev+=v;p.cases+=l.qty;p.cust.add(o.c);
    const k=P[l.p].cat;r.cat[k]=(r.cat[k]||0)+v})});
  r.aov=r.n?r.rev/r.n:0;r.active=Object.keys(r.cust).length;return r;
 }
-function report(per){
- const cur=agg(per.start,per.end),prev=per.prev?agg(per.prev.start,per.prev.end):null;
- const ly=agg(addMonths(per.start,-12),addMonths(per.end,-12));
+function report(per,ch='All'){
+ const cur=agg(per.start,per.end,ch),prev=per.prev?agg(per.prev.start,per.prev.end,ch):null;
+ const ly=agg(addMonths(per.start,-12),addMonths(per.end,-12),ch);
  let projection=null,fcMonth=null;
- if(per.kind==='month'&&per.partial){const dim=new Date(per.start.getFullYear(),per.start.getMonth()+1,0).getDate(),el=days(per.start,per.end);
+ if(per.kind==='month'&&per.partial&&ch==='All'){const dim=new Date(per.start.getFullYear(),per.start.getMonth()+1,0).getDate(),el=days(per.start,per.end);
   const lyFull=agg(addMonths(per.start,-12),addMonths(per.start,-11));const lyShare=ly&&lyFull&&lyFull.rev?ly.rev/lyFull.rev:el/dim;
   projection=cur.rev/Math.max(lyShare,.05);fcMonth=S.fc.f[0];}
  return{per,cur,prev,ly,projection,fcMonth};
 }
-let repId='m-24',repBy='customer';
+let repId='m-24',repBy='customer',repCh='All';
 function vReports(){
- const R=report(periodById(repId)),{per,cur,prev,ly}=R;
+ const R=report(periodById(repId),repCh),{per,cur,prev,ly}=R;
  const cmp=(a,b)=>b&&b>0?a/b-1:null;
  const groups=[...new Set(PERIODS.map(p=>p.group))];
  const rangeTxt=`${dlong(per.start)} – ${dlong(new Date(per.end-864e5))}`;
@@ -602,27 +926,28 @@ function vReports(){
  let chart='';
  if(per.kind==='month'){const dim=new Date(per.start.getFullYear(),per.start.getMonth()+1,0).getDate();const v=Array(dim).fill(0),lyv=Array(dim).fill(0);
   cur.orders.forEach(o=>v[o.date.getDate()-1]+=o.total);ly&&ly.orders.forEach(o=>{const d=o.date.getDate()-1;if(d<dim)lyv[d]+=o.total});
-  const lyAll=agg(addMonths(per.start,-12),addMonths(per.start,-11));if(per.partial&&lyAll){lyv.fill(0);lyAll.orders.forEach(o=>{const d=o.date.getDate()-1;if(d<dim)lyv[d]+=o.total})}
+  const lyAll=agg(addMonths(per.start,-12),addMonths(per.start,-11),repCh);if(per.partial&&lyAll){lyv.fill(0);lyAll.orders.forEach(o=>{const d=o.date.getDate()-1;if(d<dim)lyv[d]+=o.total})}
   chart=chartSlot(barChart({vals:v,cmp:lyAll||ly?lyv:null,labels:v.map((_,i)=>String(i+1)),tips:v.map((x,i)=>`${mName(monthIdx(per.start))} ${i+1} · <b>${fmt$(x)}</b>${lyAll||ly?`<br>same day last year ${fmt$(lyv[i])}`:''}`)}),200);}
  else{const ms=[];for(let d=new Date(per.start);d<per.end;d=addMonths(d,1))ms.push(monthIdx(d));
-  const v=ms.map(m=>m<N?S.total[m]:S.mtd),lyv=ms.map(m=>m-12>=0?S.total[m-12]:0);
-  chart=chartSlot(barChart({vals:v,cmp:lyv,labels:ms.map(mName),tips:ms.map((m,i)=>`${mLabel(m)} · <b>${fmt$(v[i])}</b>${m===N?' (to date)':''}<br>last year ${fmt$(lyv[i])}`)}),200);}
+  const cr=S.chRev[repCh],v=ms.map(m=>cr[m]),lyv=ms.map(m=>m-12>=0?cr[m-12]:0);
+  chart=chartSlot(barChart({vals:v,cmp:lyv,labels:ms.map(ms.length>12?mLabel:mName),tips:ms.map((m,i)=>`${mLabel(m)} · <b>${fmt$(v[i])}</b>${m===N?' (to date)':''}<br>last year ${fmt$(lyv[i])}`)}),200);}
  const custRows=Object.entries(cur.cust).sort((a,b)=>b[1].rev-a[1].rev);
- const quiet=Object.values(S.cust).filter(c=>!cur.cust[c.c.id]&&c.status!=='Lapsed'&&c.orders.some(o=>o.date<per.start&&days(o.date,per.start)<=90));
+ const quiet=Object.values(S.cust).filter(c=>(repCh==='All'||c.c.ch===repCh)&&!cur.cust[c.c.id]&&c.status!=='Lapsed'&&c.orders.some(o=>o.date<per.start&&days(o.date,per.start)<=90));
  const prodRows=Object.entries(cur.prod).sort((a,b)=>b[1].rev-a[1].rev);
  const notSold=PRODUCTS.filter(p=>!cur.prod[p.id]);
  const catRows=CATS.map(k=>({label:k,v:cur.cat[k]||0,right:`${fmt$(cur.cat[k]||0)} · ${delta(ly?cmp(cur.cat[k]||0,ly.cat[k]||0):null)}`})).sort((a,b)=>b.v-a.v);
  const share=v=>cur.rev?Math.round(v/cur.rev*1000)/10+'%':'—';
  const lyc=(map,k,f='rev')=>ly&&ly[map][k]?ly[map][k][f]:0;
- return `<div class="head noprint"><div><span class="label">Sales reports</span><h1>Reports</h1><p>Pick any month, quarter or year to see sales by customer, product and category against the previous period and last year. Download it as a spreadsheet or save it as a PDF to share.</p></div></div>
+ return `<div class="head noprint"><div><span class="label">Sales reports</span><h1>Reports</h1><p>Pick any month, quarter, year or the last two years, for all accounts or one channel. See sales by customer, product and category against the previous period and last year. Download it as a spreadsheet or save it as a PDF.</p></div></div>
  <div class="toolbar noprint">
   <label class="label" for="repSel" style="margin-right:4px">Period</label>
   <select class="select" id="repSel">${groups.map(g=>`<optgroup label="${g}">${PERIODS.filter(p=>p.group===g).map(p=>`<option value="${p.id}" ${p.id===repId?'selected':''}>${p.label}</option>`).join('')}</optgroup>`).join('')}</select>
+  ${['All',...CHS].map(c=>`<button class="chip" data-repch="${c}" aria-pressed="${repCh===c}">${c==='All'?'All channels':c}</button>`).join('')}
   <span style="flex:1"></span>
   <button class="btn" id="csvBtn" type="button">Download CSV</button>
   <button class="btn primary" id="printBtn" type="button">Print / save as PDF</button>
  </div>
- <div class="rep-head"><span class="label">King's Vegetarian Food · Sales report</span><h1>${per.label}</h1>
+ <div class="rep-head"><span class="label">King's Vegetarian Food · Sales report${repCh==='All'?'':' · '+repCh}</span><h1>${per.label}</h1>
   <div class="rep-meta"><span>${rangeTxt}</span><span>Prepared ${dlong(TODAY)}</span>${per.prev?`<span>Compared with ${per.prev.label} and the same period last year</span>`:'<span>Compared with the same period last year</span>'}</div></div>
  <div class="kpis k5">
   <div class="kpi"><span class="label">Revenue</span><span class="v">${fmt$(cur.rev)}</span><span class="s">${prev?`${delta(cmp(cur.rev,prev.rev))} vs prev · `:''}${delta(ly?cmp(cur.rev,ly.rev):null)} vs LY</span></div>
@@ -644,105 +969,230 @@ function vReports(){
   <tr class="total"><td>All customers</td><td class="n">${fmt$(cur.rev)}</td><td class="n">100%</td><td class="n">${cur.n}</td><td class="n">${cur.cases}</td><td class="n">${ly?fmt$(ly.rev):'—'}</td><td class="n">${delta(ly?cmp(cur.rev,ly.rev):null)}</td></tr>
   ${custRows.map(([k,v])=>`<tr data-cust="${k}" tabindex="0"><td><b>${esc(C[k].name)}</b><span class="sub">${C[k].type} · ${esc(C[k].city)}</span></td><td class="n">${fmt$(v.rev)}</td><td class="n">${share(v.rev)}</td><td class="n">${v.n}</td><td class="n">${v.cases}</td><td class="n">${ly?fmt$(lyc('cust',k)):'—'}</td><td class="n">${ly&&lyc('cust',k)?delta(cmp(v.rev,lyc('cust',k))):'<span class="muted">new</span>'}</td></tr>`).join('')}
  </tbody></table></div>
- <div class="tbl-wrap" ${repBy==='product'?'':'hidden'} data-print="show"><table><thead><tr><th>Product</th><th>Category</th><th class="n">Cases</th><th class="n">Revenue</th><th class="n">Share</th><th class="n">Customers</th><th class="n">vs LY</th></tr></thead><tbody>
-  ${prodRows.map(([k,v])=>`<tr data-prod="${k}" tabindex="0"><td><span class="pcell">${thumb(P[k])}<span><b>${esc(P[k].name)}</b><span class="sub">${P[k].pack}</span></span></span></td><td>${P[k].cat}</td><td class="n">${v.cases}</td><td class="n">${fmt$(v.rev)}</td><td class="n">${share(v.rev)}</td><td class="n">${v.cust.size}</td><td class="n">${ly&&lyc('prod',k)?delta(cmp(v.rev,lyc('prod',k))):'<span class="muted">—</span>'}</td></tr>`).join('')}
-  ${notSold.length?`<tr><td colspan="7" class="muted" style="white-space:normal">Not sold in this period: ${notSold.map(p=>esc(p.name)).join(', ')}</td></tr>`:''}
+ <div class="tbl-wrap" ${repBy==='product'?'':'hidden'} data-print="show"><table><thead><tr><th>Product</th><th>Category</th><th class="n">Cases</th><th class="n">Revenue</th><th class="n">Share</th><th class="n">Customers</th><th class="n">vs LY</th><th>Verdict</th></tr></thead><tbody>
+  ${prodRows.map(([k,v])=>`<tr data-prod="${k}" tabindex="0"><td><span class="pcell">${thumb(P[k])}<span><b>${esc(P[k].name)}</b><span class="sub">${P[k].pack}</span></span></span></td><td>${P[k].cat}</td><td class="n">${v.cases}</td><td class="n">${fmt$(v.rev)}</td><td class="n">${share(v.rev)}</td><td class="n">${v.cust.size}</td><td class="n">${ly&&lyc('prod',k)?delta(cmp(v.rev,lyc('prod',k))):'<span class="muted">—</span>'}</td><td>${vpill(S.prod[k].vd)}</td></tr>`).join('')}
+  ${notSold.length?`<tr><td colspan="8" class="muted" style="white-space:normal">Not sold in this period: ${notSold.map(p=>esc(p.name)).join(', ')}</td></tr>`:''}
  </tbody></table></div>
  <div class="tbl-wrap" ${repBy==='orders'?'':'hidden'} data-print="show"><table><thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Lines</th><th class="n">Cases</th><th class="n">Total</th></tr></thead><tbody>
   ${cur.orders.slice().reverse().map(o=>`<tr><td class="mono">${o.id}</td><td>${dfmt(o.date)}</td><td>${esc(C[o.c].name)}</td><td style="white-space:normal;min-width:280px">${o.lines.map(l=>`${l.qty}× ${esc(P[l.p].name)}`).join(' · ')}</td><td class="n">${sum(o.lines.map(l=>l.qty))}</td><td class="n">${fmt$(o.total)}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">No orders in this period.</td></tr>'}
  </tbody></table></div>
  <p class="print-only muted">Generated by Anytrail · sample data for demonstration.</p>`;
 }
-function downloadCSV(){
- const per=periodById(repId),r=agg(per.start,per.end);
+function saveCSV(rows,name){
  const q=v=>{const s=String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
- const rows=[['Order','Date','Customer','Customer type','City','Product','Category','Case pack','Cases','Price per case (CAD)','Line total (CAD)']];
- r.orders.forEach(o=>o.lines.forEach(l=>{const c=C[o.c],p=P[l.p];rows.push([o.id,iso(o.date),c.name,c.type,c.city,p.name,p.cat,p.pack,l.qty,l.price.toFixed(2),(l.qty*l.price).toFixed(2)])}));
- const blob=new Blob(['﻿'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
- const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`kings-sales-${per.id}.csv`;document.body.appendChild(a);a.click();
- setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+ const blob=new Blob(['\ufeff'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+function downloadCSV(){
+ const per=periodById(repId),r=agg(per.start,per.end,repCh);
+ const rows=[['Order','Date','Customer','Channel','Customer type','City','Product','Category','Case pack','Cases','Price per case (CAD)','Line total (CAD)']];
+ r.orders.forEach(o=>o.lines.forEach(l=>{const c=C[o.c],p=P[l.p];rows.push([o.id,iso(o.date),c.name,c.ch,c.type,c.city,p.name,p.cat,p.pack,l.qty,l.price.toFixed(2),(l.qty*l.price).toFixed(2)])}));
+ saveCSV(rows,`kings-sales-${per.id}${repCh==='All'?'':'-'+repCh.toLowerCase().replace(/ /g,'-')}.csv`);
  toast(`Downloaded ${rows.length-1} order lines for ${per.label}.`);
 }
 
 /* ---------- Customers ---------- */
 let custFilter='All',custQ='',custSort='rev12';
+const SHELF_CLS={Moving:'good',Slowing:'warn',Sitting:'bad'};
+const shelfLine=(s,byAcct)=>`<${byAcct?`button class="li" data-cust="${s.c}"`:'div class="li"'}><span class="pcell">${byAcct?'':thumb(P[s.p])}<span><span class="li-t">${esc(byAcct?C[s.c].name:P[s.p].name)}</span><small>Last delivered ${dfmt(s.last)} (${s.qLast} cs) · ${s.n>1?`reorders about every ${s.interval} days`:'ordered once so far'}</small></span></span><span style="text-align:right"><span class="pill ${SHELF_CLS[s.state]}">${s.state}</span><small>${s.since} days since delivery</small></span></${byAcct?'button':'div'}>`;
+function swapsFor(cs){const have=new Set(cs.shelf.map(s=>s.p));
+ return PRODUCTS.filter(p=>!have.has(p.id)&&S.rp[p.id].carry>=2).map(p=>({p,r:S.rp[p.id]})).filter(x=>x.r.moving/x.r.carry>=.5).sort((a,b)=>b.r.moving/b.r.carry-a.r.moving/a.r.carry).slice(0,3)}
 function vCustomers(){
- let rows=Object.values(S.cust).filter(c=>(custFilter==='All'||c.c.type===custFilter)&&c.c.name.toLowerCase().includes(custQ.toLowerCase()));
+ let rows=Object.values(S.cust).filter(c=>(custFilter==='All'||c.c.ch===custFilter)&&c.c.name.toLowerCase().includes(custQ.toLowerCase()));
  const sorters={rev12:(a,b)=>b.rev12-a.rev12,yoy:(a,b)=>(a.yoy??9)-(b.yoy??9),status:(a,b)=>b.sev-a.sev||b.daysSince-a.daysSince};
  rows.sort(sorters[custSort]);
  const th=(k,l,n)=>`<th class="${n?'n':''}"><button data-sort="${k}" ${custSort===k?'aria-sort="descending"':''}>${l}</button></th>`;
- return `<div class="head"><div><span class="label">${CUSTOMERS.length} accounts</span><h1>Customers</h1><p>How often each account orders, whether it's growing, and when to expect the next order. Open an account to see its forecast and a suggested reorder.</p></div></div>
- <div class="toolbar">${['All',...TYPES].map(t=>`<button class="chip" data-type="${t}" aria-pressed="${custFilter===t}">${t}</button>`).join('')}
+ return `<div class="head"><div><span class="label">${CUSTOMERS.length} accounts</span><h1>Customers</h1><p>How often each account orders, whether it's growing, and the last time someone on the team talked to them. Open an account for contacts, notes, deductions and its forecast.</p></div></div>
+ <div class="toolbar">${['All',...CHS].map(t=>`<button class="chip" data-ch="${t}" aria-pressed="${custFilter===t}">${t}</button>`).join('')}
   <input class="search" id="custSearch" type="search" placeholder="Search accounts" value="${esc(custQ)}" aria-label="Search accounts"></div>
- <div class="tbl-wrap"><table><thead><tr><th>Account</th>${th('rev12','Revenue 12 mo',1)}${th('yoy','vs prior yr',1)}<th>Last 12 months</th><th>Last order</th><th>Next expected</th>${th('status','Status')}</tr></thead>
- <tbody>${rows.map(c=>`<tr tabindex="0" data-cust="${c.c.id}"><td><b>${esc(c.c.name)}</b><span class="sub">${c.c.type} · ${esc(c.c.city)}</span></td>
+ <div class="tbl-wrap"><table><thead><tr><th>Account</th>${th('rev12','Revenue 12 mo',1)}${th('yoy','vs prior yr',1)}<th>Last 12 months</th><th>Last order</th><th>Next expected</th><th>Last note</th>${th('status','Status')}</tr></thead>
+ <tbody>${rows.map(c=>{const lt=lastTouch(c.c.id);return `<tr tabindex="0" data-cust="${c.c.id}"><td><b>${esc(c.c.name)}</b><span class="sub">${c.c.ch} · ${c.c.type} · ${esc(c.c.city)}</span></td>
   <td class="n">${fmt$(c.rev12)}</td><td class="n">${c.yoy==null?'<span class="pill info">New</span>':delta(c.yoy)}</td><td>${spark(c.rev.slice(12))}</td>
   <td>${dfmt(c.last)}<span class="sub">${c.daysSince} days ago</span></td>
-  <td>${c.status==='Lapsed'?'<span class="muted">—</span>':dfmt(c.next)}<span class="sub">every ~${c.interval} days</span></td><td>${pill(c.status)}</td></tr>`).join('')}</tbody></table></div>`;
+  <td>${c.status==='Lapsed'?'<span class="muted">—</span>':dfmt(c.next)}<span class="sub">every ~${c.interval} days</span></td>
+  <td>${lt?`${dfmt(lt.t)}<span class="sub">${esc(U[lt.by].short)} · ${lt.type}</span>`:'<span class="muted">No notes yet</span>'}</td><td>${pill(c.status)}</td></tr>`}).join('')}</tbody></table></div>`;
 }
-function openCustomer(id){
+let drawerFn=null;
+function openCustomer(id,keep){drawerFn=()=>openCustomer(id,true);
  const cs=S.cust[id],c=cs.c;
  const mix=Object.entries(cs.pc12).sort((a,b)=>b[1]*P[b[0]].price-a[1]*P[a[0]].price).slice(0,10).map(([pid,q])=>{const pq=cs.pcPrev[pid]||0;return{label:P[pid].name,v:q*P[pid].price,right:`${q} cs · ${pq?`<span class="${dcls(q/pq-1)}">${pct(q/pq-1)}</span>`:'new'}`}});
  const last3=cs.orders.slice(-3),sugg={};last3.forEach(o=>o.lines.forEach(l=>sugg[l.p]=(sugg[l.p]||0)+l.qty/last3.length));
  const sl=Object.entries(sugg).map(([p,q])=>[p,Math.max(1,Math.round(q))]).sort((a,b)=>b[1]-a[1]);
  const due=cs.next?days(TODAY,cs.next):0;
  const dropped=Object.keys(cs.pcPrev).filter(p=>!cs.pc12[p]);
- openDrawer(`<div class="dh"><div><span class="label">${c.type} · ${esc(c.city)}</span><h1>${esc(c.name)}</h1><div>${pill(cs.status)} <span class="muted">${cs.why}</span></div></div><button class="x" data-close aria-label="Close">×</button></div>
+ const ns=NOTES.filter(n=>n.c===id).sort((a,b)=>b.t-a.t),cons=CONTACTS[id]||(CONTACTS[id]=[]);
+ const ds=DEDS.filter(d=>d.c===id),dOpen=ds.filter(d=>!CLOSED.has(d.status));
+ const acts=AUDIT.filter(a=>a.rec.includes(c.name)).sort((a,b)=>b.t-a.t).slice(0,8);
+ const sw=cs.shelf?swapsFor(cs):[];
+ openDrawer(`<div class="dh"><div><span class="label">${c.ch} · ${c.type} · ${esc(c.city)}</span><h1>${esc(c.name)}</h1><div>${pill(cs.status)} <span class="muted">${cs.why}</span></div></div><button class="x" data-close aria-label="Close">×</button></div>
  <div class="mini"><div><b>${fmtK(cs.rev12)}</b><span>Revenue 12 mo</span></div><div><b class="${dcls(cs.yoy)}">${cs.yoy==null?'New':pct(cs.yoy)}</b><span>vs prior year</span></div><div><b>${fmt$(cs.aov)}</b><span>Avg order</span></div><div><b>${cs.interval} days</b><span>Order rhythm</span></div></div>
- ${(()=>{const ps=payStats(id);return `<div class="notice">Net ${c.terms} terms · delivers about ${c.lead} days after the PO · ${ps.n?`pays ${ps.late<=1?'on time':`on average ${Math.round(ps.late)} days late`}`:'no payment history yet'} · open balance ${fmt$(ps.openAmt)}${ps.overAmt?`, <b>${fmt$(ps.overAmt)} overdue</b>`:''}${ps.pos?` · ${fmt$(ps.pos)} in transit`:''}</div>`})()}
+ ${(()=>{const ps=payStats(id);return `<div class="notice">Net ${c.terms} terms · delivers about ${c.lead} days after the PO${APPT.has(id)?' · delivery appointments, BOL sent ahead':''} · orders by ${SRC[id]} · ${ps.n?`pays ${ps.late<=1?'on time':`on average ${Math.round(ps.late)} days late`}`:'no payment history yet'} · open balance ${fmt$(ps.openAmt)}${ps.overAmt?`, <b>${fmt$(ps.overAmt)} overdue</b>`:''}${dOpen.length?` · <b>${fmt$(sum(dOpen.map(d=>d.amt)))} in open deductions</b>`:''}</div>`})()}
  ${cs.status!=='Lapsed'?`<div class="next"><div><b>Next order expected ${due<0?`${-due} days ago (${dfmt(cs.next)})`:due===0?'today':`${dfmt(cs.next)} (in ${due} days)`}</b><div class="muted" style="font-size:13px">Suggested order from the last ${last3.length} orders · about ${fmt$(sum(sl.map(([p,q])=>q*P[p].price)))}</div></div>
-  <ul>${sl.map(([p,q])=>`<li><span>${esc(P[p].name)}</span><span class="num">${q} cs × ${fmt$(P[p].price)}</span></li>`).join('')}</ul></div>`:`<div class="next"><b>No order since ${dfmt(cs.last)}.</b><span class="muted" style="font-size:13.5px">This account used to order about ${fmtK(cs.revPrev/12)} a month. Worth a win-back call.</span></div>`}
+  <ul>${sl.slice(0,8).map(([p,q])=>`<li><span>${esc(P[p].name)}</span><span class="num">${q} cs × ${fmt$(P[p].price)}</span></li>`).join('')}${sl.length>8?`<li class="muted"><span>+ ${sl.length-8} more products</span></li>`:''}</ul></div>`:`<div class="next"><b>No order since ${dfmt(cs.last)}.</b><span class="muted" style="font-size:13.5px">This account used to order about ${fmtK(cs.revPrev/12)} a month. Worth a win-back call.</span></div>`}
+ <section class="card"><div class="card-h"><h2>Who to call</h2><span class="muted">${cons.filter(x=>!x.left).length} current contact${cons.filter(x=>!x.left).length===1?'':'s'}</span></div>
+  <div class="list">${cons.map(x=>`<div class="contact ${x.left?'left':''}"><b>${esc(x.n)}</b><span class="num">${esc(x.ph||'—')}</span><small>${esc(x.r||'')}${x.since?` · since ${x.since}`:''}${x.left?` · ${esc(x.left)}`:x.best?` · Best time: ${esc(x.best)}`:''}</small></div>`).join('')||'<p class="muted" style="margin:0">No contacts yet.</p>'}</div>
+  <details style="margin-top:10px"><summary class="muted" style="cursor:pointer;font-size:13px">+ Add a contact</summary>
+  <form class="iform" id="contactForm" data-c="${id}" style="margin-top:10px"><div class="r2"><input name="n" placeholder="Name" required aria-label="Name"><input name="r" placeholder="Role, e.g. store manager" aria-label="Role"></div><div class="r2"><input name="ph" placeholder="Phone" aria-label="Phone"><input name="best" placeholder="Best time to call" aria-label="Best time to call"></div><button class="btn sm" type="submit">Save contact</button></form></details></section>
+ <section class="card"><div class="card-h"><h2>Notes and visit log</h2><span class="muted">${ns.length} entr${ns.length===1?'y':'ies'} · the whole team sees these</span></div>
+  <form class="iform" id="noteForm" data-c="${id}"><select name="type" aria-label="Kind of note" style="max-width:240px">${NOTE_TYPES.map(t=>`<option>${t}</option>`).join('')}</select><textarea name="text" required placeholder="Who did you talk to, what did they say, what happens next?" aria-label="Note"></textarea><button class="btn sm primary" type="submit">Add note as ${esc(U[me].short)}</button></form>
+  <div style="margin-top:6px">${ns.map(n=>`<div class="note"><span class="meta">${who(n.by)}<span>${n.type}</span><span>·</span><span>${tfmt(n.t)}</span></span><span>${esc(n.text)}</span></div>`).join('')}</div></section>
+ ${cs.shelf?`<section class="card"><div class="card-h"><h2>On their shelves</h2><span class="muted">time since delivery vs their usual reorder gap</span></div><div class="list">${cs.shelf.slice(0,8).map(s=>shelfLine(s)).join('')}</div>
+  ${sw.length?`<p class="muted" style="margin:12px 0 0;font-size:13px">Moving well at other retailers and not on their shelf yet: ${sw.map(x=>`<b style="color:var(--text)">${esc(x.p.name)}</b> (on pace at ${x.r.moving} of ${x.r.carry})`).join(', ')}.</p>`:''}</section>`:''}
+ <section class="card"><div class="card-h"><h2>Deductions and chargebacks</h2><span class="muted">${dOpen.length?`${fmt$(sum(dOpen.map(d=>d.amt)))} open`:'nothing open'}</span></div>
+  <div class="list">${ds.map(d=>`<button class="li" data-ded="${d.id}"><span><span class="li-t">${d.id} · ${d.inv} · code ${esc(d.code)}</span><small>${esc(d.issue)}</small></span><span style="text-align:right"><span class="num">${fmt$(d.amt)}</span><small>${dedPill(d.status)}</small></span></button>`).join('')||'<p class="muted" style="margin:0">None logged.</p>'}</div>
+  <button class="btn sm" data-newded="${id}" style="margin-top:10px">+ Log a deduction</button></section>
  <section class="card"><div class="card-h"><h2>Monthly revenue and forecast</h2><span class="muted">next 6 mo: ${fmtK(sum(cs.fc.f))}</span></div>${chartSlot(lineChart({actual:cs.rev,fc:cs.fc}),210)}</section>
  <section class="card"><div class="card-h"><h2>What they buy</h2><span class="muted">cases, last 12 mo vs prior</span></div>${bars(mix)}
   ${dropped.length?`<p class="muted" style="margin:12px 0 0;font-size:13px">Stopped buying: ${dropped.map(p=>esc(P[p].name)).join(', ')}</p>`:''}</section>
- <section class="card"><div class="card-h"><h2>Recent orders</h2></div><div class="list">${cs.orders.slice(-6).reverse().map(o=>`<div class="li"><span><span class="li-t mono">${o.id}</span><small>${o.lines.map(l=>`${l.qty}× ${esc(P[l.p].name)}`).join(' · ')}</small></span><span style="text-align:right"><span class="num">${fmt$(o.total)}</span><small>${dfmt(o.date)}</small></span></div>`).join('')}</div></section>`);
+ <section class="card"><div class="card-h"><h2>Recent orders</h2></div><div class="list">${cs.orders.slice(-6).reverse().map(o=>`<${o.ev.length?`button class="li" data-po="${o.id}"`:'div class="li"'}><span><span class="li-t mono">${o.id}</span><small>${o.lines.map(l=>`${l.qty}× ${esc(P[l.p].name)}`).join(' · ')}</small></span><span style="text-align:right"><span class="num">${fmt$(o.total)}</span><small>${dfmt(o.date)}${OPEN.has(o.status)?` · ${o.status}`:''}</small></span></${o.ev.length?'button':'div'}>`).join('')}</div></section>
+ <section class="card"><div class="card-h"><h2>Activity on this account</h2><a href="#activity" class="muted">Full log</a></div><div class="timeline">${acts.map(a=>`<div><small>${tfmt(a.t)}</small><span>${who(a.by)} ${esc(a.act)}${a.detail?` <span class="muted">· ${esc(a.detail)}</span>`:''}</span></div>`).join('')||'<p class="muted" style="margin:0">Nothing yet.</p>'}</div></section>`,keep);
+}
+
+/* ---------- Retail ---------- */
+function retailAdvice(s){const v=S.prod[s.p].vd.k;
+ if(s.state==='Sitting'&&s.n===1)return 'Trial not reordered. Ask the store how it sold.';
+ if(s.state==='Sitting'&&(v==='Review'||v==='Watch'))return 'Weak at other accounts too. Consider swapping it out.';
+ if(s.state==='Sitting')return 'Sells well elsewhere. Check placement with the store manager.';
+ return 'Check the shelf at the next visit.'}
+function vRetail(){
+ const R=Object.values(S.cust).filter(c=>c.c.ch==='Retail').sort((a,b)=>b.rev12-a.rev12);
+ const rev=sum(R.map(c=>c.rev12)),prev=sum(R.map(c=>c.revPrev));
+ const sh=R.flatMap(c=>c.shelf.map(s=>({...s,c:c.c.id})));
+ const watch=sh.filter(s=>s.state!=='Moving').sort((a,b)=>b.ratio-a.ratio);
+ const openD=DEDS.filter(d=>C[d.c].ch==='Retail'&&!CLOSED.has(d.status));
+ const prods=PRODUCTS.map(p=>{const a=S.prod[p.id].chU.Retail;return{p,r:S.rp[p.id],ps:S.prod[p.id],u:sum(a.slice(12,N)),up:sum(a.slice(0,12))}}).filter(x=>x.r.carry).sort((a,b)=>b.r.moving/b.r.carry-a.r.moving/a.r.carry||b.u-a.u);
+ const cnt=(c,st)=>c.shelf.filter(s=>s.state===st).length;
+ return `<div class="head"><div><span class="label">${R.length} retail accounts</span><h1>Retail</h1><p>Retail doesn't reorder on a schedule. Product sits on the shelf, the store pays as it sells, and they get nervous the longer it sits. So the question is what's moving and what isn't. Each product's usual reorder gap at each store shows when it has sat too long.</p></div></div>
+ <div class="kpis">
+  <div class="kpi"><span class="label">Retail revenue, 12 mo</span><span class="v">${fmtK(rev)}</span><span class="s">${delta(rev/prev-1)} vs prior 12 months</span></div>
+  <div class="kpi"><span class="label">Products on retail shelves</span><span class="v">${sh.length}</span><span class="s">listings across ${R.length} accounts</span></div>
+  <div class="kpi"><span class="label">Sitting too long</span><span class="v down">${sh.filter(s=>s.state==='Sitting').length}</span><span class="s">${sh.filter(s=>s.state==='Slowing').length} more slowing down</span></div>
+  <div class="kpi"><span class="label">Open retail deductions</span><span class="v">${fmtK(sum(openD.map(d=>d.amt)))}</span><span class="s">${openD.length} open · <a href="#deductions">see all</a></span></div></div>
+ <div class="card-h" style="margin:8px 0 -12px"><h2>Retail accounts, ranked</h2><span class="muted">by revenue, last 12 months</span></div>
+ <div class="tbl-wrap"><table><thead><tr><th class="n">#</th><th>Account</th><th class="n">Revenue 12 mo</th><th class="n">vs prior yr</th><th class="n">Orders 12 mo</th><th>Shelf: moving · slowing · sitting</th><th class="n">Open deductions</th><th>Last note</th></tr></thead><tbody>
+ ${R.map((c,i)=>{const lt=lastTouch(c.c.id),od=DEDS.filter(d=>d.c===c.c.id&&!CLOSED.has(d.status));return `<tr tabindex="0" data-cust="${c.c.id}"><td class="n">${i+1}</td><td><b>${esc(c.c.name)}</b> ${c.sev?pill(c.status):''}<span class="sub">${c.c.type} · ${esc(c.c.city)}</span></td><td class="n">${fmt$(c.rev12)}</td><td class="n">${c.yoy==null?'<span class="pill info">New</span>':delta(c.yoy)}</td><td class="n">${c.n12}<span class="sub">every ~${c.interval} days</span></td>
+  <td><span class="up">${cnt(c,'Moving')}</span> · <span style="color:var(--amber)">${cnt(c,'Slowing')}</span> · <span class="down">${cnt(c,'Sitting')}</span><span class="sub">${c.shelf.length} products listed</span></td><td class="n ${od.length?'down':''}">${od.length?fmt$(sum(od.map(d=>d.amt))):'—'}</td><td>${lt?`${dfmt(lt.t)}<span class="sub">${esc(U[lt.by].short)} · ${lt.type}</span>`:'<span class="muted">—</span>'}</td></tr>`}).join('')}
+ </tbody></table></div>
+ <div class="card-h" style="margin:8px 0 -12px"><h2>Shelf watch</h2><span class="muted">products that have sat longer than that store usually lets them</span></div>
+ <div class="tbl-wrap"><table><thead><tr><th>Account · product</th><th>Last delivered</th><th class="n">Days since</th><th>State</th><th>Suggested next step</th></tr></thead><tbody>
+ ${watch.slice(0,16).map(s=>`<tr tabindex="0" data-cust="${s.c}"><td><span class="pcell">${thumb(P[s.p])}<span><b>${esc(C[s.c].name)}</b><span class="sub">${esc(P[s.p].name)}</span></span></span></td><td>${dfmt(s.last)} · ${s.qLast} cs<span class="sub">${s.n>1?`usually reorders every ~${s.interval} days`:'only ordered once'}</span></td><td class="n">${s.since}<span class="sub">${s.ratio.toFixed(1)}× usual</span></td><td><span class="pill ${SHELF_CLS[s.state]}">${s.state}</span></td><td style="white-space:normal;min-width:220px">${retailAdvice(s)}</td></tr>`).join('')}
+ </tbody></table></div>
+ <div class="card-h" style="margin:8px 0 -12px"><h2>Product performance at retail</h2><span class="muted">which products earn their shelf space</span></div>
+ <div class="tbl-wrap"><table><thead><tr><th>Product</th><th class="n">Retail accounts</th><th class="n">Reordered on pace</th><th class="n">Sitting</th><th class="n">Retail cases 12 mo</th><th class="n">vs prior yr</th><th>Verdict</th></tr></thead><tbody>
+ ${prods.map(x=>`<tr tabindex="0" data-prod="${x.p.id}"><td><span class="pcell">${thumb(x.p)}<span><b>${esc(x.p.name)}</b><span class="sub">${x.p.cat}</span></span></span></td><td class="n">${x.r.carry}</td><td class="n">${Math.round(x.r.moving/x.r.carry*100)}%</td><td class="n ${x.r.sitting?'down':''}">${x.r.sitting||'—'}</td><td class="n">${nf(x.u)}</td><td class="n">${x.up?delta(x.u/x.up-1):'<span class="muted">new</span>'}</td><td>${vpill(x.ps.vd)}</td></tr>`).join('')}
+ </tbody></table></div>`;
 }
 
 /* ---------- Products ---------- */
-let prodCat='All';
+let prodCat='All',prodRange=12,prodCh='All',pdRange=24;
+const pU=(ps,ch)=>ch==='All'?ps.units:ps.chU[ch];
+function rangeStats(ps,r,ch){const a=pU(ps,ch),cur=sum(a.slice(N-r,N)),prv=r<24?sum(a.slice(N-2*r,N-r)):null;
+ const y1=sum(a.slice(0,12)),vs=r<24?(prv?cur/prv-1:null):(y1?sum(a.slice(12,N))/y1-1:null);
+ const bs=Object.entries(ps.cu).filter(([c])=>ch==='All'||C[c].ch===ch).map(([c,arr])=>[c,sum(arr.slice(N-r,N))]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+ return{cur,vs,buyers:bs.length,top:bs[0]?C[bs[0][0]].name:'—',rev:cur*ps.p.price,spark:a.slice(N-r,N)}}
+const RANGES=[[6,'6 months'],[12,'12 months'],[24,'2 years']];
 function vProducts(){
- const rows=Object.values(S.prod).filter(p=>prodCat==='All'||(prodCat==='New Products'?p.p.isNew:p.p.cat===prodCat)).sort((a,b)=>b.rev12-a.rev12);
- return `<div class="head"><div><span class="label">${PRODUCTS.length} products · King's full catalogue</span><h1>Products</h1><p>Volume and revenue for each product, who buys it, and which customers have stopped buying it.</p></div></div>
+ const rows=Object.values(S.prod).filter(p=>prodCat==='All'||(prodCat==='New Products'?p.p.isNew:p.p.cat===prodCat)).map(ps=>({ps,st:rangeStats(ps,prodRange,prodCh)})).sort((a,b)=>b.st.rev-a.st.rev);
+ const vsL=prodRange<24?`vs prior ${prodRange} mo`:'yr 2 vs yr 1';
+ const vc=k=>Object.values(S.prod).filter(p=>p.vd.k===k).length;
+ return `<div class="head"><div><span class="label">${PRODUCTS.length} products · King's full catalogue</span><h1>Products</h1><p>How each product performs over up to two years, who buys it, which way it's heading, and whether to grow it, keep it, watch it or review it for cutting. Open a product for its buyers, stock and forecast.</p></div></div>
+ <div class="kpis">
+  <div class="kpi"><span class="label">Grow</span><span class="v up">${vc('Grow')}</span><span class="s">up 12% or more, no customers lost</span></div>
+  <div class="kpi"><span class="label">Keep</span><span class="v">${vc('Keep')}</span><span class="s">steady</span></div>
+  <div class="kpi"><span class="label">Watch</span><span class="v" style="color:var(--amber)">${vc('Watch')}</span><span class="s">softening, lost a buyer, or sitting at retail</span></div>
+  <div class="kpi"><span class="label">Review</span><span class="v down">${vc('Review')}</span><span class="s">down 15% or more, or 2+ buyers gone</span></div></div>
+ <div class="toolbar"><span class="label" style="margin-right:4px">Range</span>${RANGES.map(([v,l])=>`<button class="chip" data-prange="${v}" aria-pressed="${prodRange===v}">${l}</button>`).join('')}
+  <span style="width:12px"></span><label class="label" for="prodChSel">Channel</label><select class="select" id="prodChSel">${['All',...CHS].map(c=>`<option ${c===prodCh?'selected':''} value="${c}">${c==='All'?'All channels':c}</option>`).join('')}</select></div>
  <div class="toolbar">${['All',...CATS,'New Products'].map(t=>`<button class="chip" data-cat="${t}" aria-pressed="${prodCat===t}">${t}</button>`).join('')}</div>
- <div class="tbl-wrap"><table><thead><tr><th>Product</th><th>Category</th><th class="n">Cases 12 mo</th><th class="n">Revenue 12 mo</th><th class="n">vs prior yr</th><th>Last 12 months</th><th class="n">Buyers</th><th>Top buyer</th></tr></thead>
- <tbody>${rows.map(p=>`<tr tabindex="0" data-prod="${p.p.id}"><td><span class="pcell">${thumb(p.p)}<span><b>${esc(p.p.name)}</b>${p.p.isNew?' <span class="pill info">New</span>':''}<span class="sub">${p.p.pack} · ${fmt$(p.p.price)}/case</span></span></span></td><td>${p.p.cat}</td>
- <td class="n">${p.u12.toLocaleString('en-CA')}</td><td class="n">${fmt$(p.rev12)}</td><td class="n">${delta(p.yoy)}</td><td>${spark(p.units.slice(12))}</td>
- <td class="n">${p.buyers}${p.dropped.length?` <span class="pill warn" title="Customers who stopped buying">−${p.dropped.length}</span>`:''}</td><td>${esc(p.top)}</td></tr>`).join('')}</tbody></table></div>`;
+ <div class="tbl-wrap"><table><thead><tr><th>Product</th><th>Category</th><th class="n">Cases</th><th class="n">Revenue</th><th class="n">${vsL}</th><th>Trend</th><th class="n">Buyers</th><th>Top buyer</th><th>Verdict</th></tr></thead>
+ <tbody>${rows.map(({ps,st})=>`<tr tabindex="0" data-prod="${ps.p.id}"><td><span class="pcell">${thumb(ps.p)}<span><b>${esc(ps.p.name)}</b>${ps.p.isNew?' <span class="pill info">New</span>':''}${ps.p.hold?' <span class="pill warn">On hold</span>':''}<span class="sub">${ps.p.pack} · ${fmt$(ps.p.price)}/case</span></span></span></td><td>${ps.p.cat}</td>
+ <td class="n">${nf(st.cur)}</td><td class="n">${fmt$(st.rev)}</td><td class="n">${delta(st.vs)}</td><td>${spark(st.spark)}</td>
+ <td class="n">${st.buyers}${ps.dropped.length&&prodCh==='All'?` <span class="pill warn" title="Customers who stopped buying">−${ps.dropped.length}</span>`:''}</td><td>${esc(st.top)}</td><td>${vpill(ps.vd)}</td></tr>`).join('')}</tbody></table></div>`;
 }
-function openProduct(id){
- const ps=S.prod[id],p=ps.p;
- const buyers=Object.entries(ps.b12).sort((a,b)=>b[1]-a[1]).map(([c,q])=>{const pq=ps.bPrev[c]||0;return{label:C[c].name,v:q,right:`${q} cs · ${pq?`<span class="${dcls(q/pq-1)}">${pct(q/pq-1)}</span>`:'new'}`}});
+const INV_CLS={Out:'bad',Low:'bad',Expiring:'warn',Overstock:'info',OK:'good'};
+const invPill=s=>`<span class="pill ${INV_CLS[s]}">${s==='Low'?'Below reorder point':s==='Out'?'Out of stock':s}</span>`;
+function openProduct(id,keep){drawerFn=()=>openProduct(id,true);
+ const ps=S.prod[id],p=ps.p,r=pdRange,st=rangeStats(ps,r,'All'),I=inv(id),vd=ps.vd,rp=S.rp[id],pl=planRow(id),pm=N+LEADM;
+ const y1=c=>sum(ps.cu[c].slice(0,12));
+ const buyers=Object.entries(ps.cu).map(([c,a])=>{const cur=sum(a.slice(N-r,N)),prv=r<24?sum(a.slice(N-2*r,N-r)):y1(c);
+  return{c,cur,prv,vs:r<24?(prv?cur/prv-1:null):(y1(c)?sum(a.slice(12,N))/y1(c)-1:null),a:a.slice(N-r,N)}}).filter(x=>x.cur>0||x.prv>0).sort((a,b)=>b.cur-a.cur);
+ const chRows=CHS.map(ch=>{const v=sum(ps.chU[ch].slice(N-r,N));return{label:ch,v,right:`${nf(v)} cs`}});
+ const months=Array.from({length:H},(_,j)=>N+j);
  openDrawer(`<div class="dh"><div style="flex-direction:row;gap:16px;align-items:center">${thumb(p,'hero-img')}<div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span class="label">${p.cat} · ${p.pack}</span><h1>${esc(p.name)}</h1></div></div><button class="x" data-close aria-label="Close">×</button></div>
- <div class="mini"><div><b>${ps.u12.toLocaleString('en-CA')}</b><span>Cases 12 mo</span></div><div><b>${fmtK(ps.rev12)}</b><span>Revenue 12 mo</span></div><div><b class="${dcls(ps.yoy)}">${pct(ps.yoy)}</b><span>vs prior year</span></div><div><b>${ps.buyers}</b><span>Buyers</span></div></div>
- <section class="card"><div class="card-h"><h2>Cases per month and forecast</h2><span class="muted">next 6 mo: ${Math.round(sum(ps.fcU.f)).toLocaleString('en-CA')} cases</span></div>${chartSlot(lineChart({actual:ps.units,fc:ps.fcU,money:false,unit:''}),210)}</section>
- ${ps.dropped.length?`<div class="next"><b>${ps.dropped.length} customer${ps.dropped.length>1?'s':''} stopped buying this</b><ul>${ps.dropped.map(c=>`<li><span>${esc(C[c].name)}</span><span class="muted">last bought ${dfmt(ps.last[c])}</span></li>`).join('')}</ul></div>`:''}
- <section class="card"><div class="card-h"><h2>Who buys it</h2><span class="muted">cases, last 12 mo vs prior</span></div>${bars(buyers,true)}</section>`);
+ <div class="toolbar">${RANGES.map(([v,l])=>`<button class="chip" data-pdr="${v}" aria-pressed="${r===v}">${l}</button>`).join('')}</div>
+ <div class="mini"><div><b>${nf(st.cur)}</b><span>Cases, ${r===24?'2 years':r+' mo'}</span></div><div><b>${fmtK(st.rev)}</b><span>Revenue</span></div><div><b class="${dcls(st.vs)}">${pct(st.vs)}</b><span>${r<24?`vs prior ${r} mo`:'yr 2 vs yr 1'}</span></div><div><b>${st.buyers}</b><span>Buyers</span></div></div>
+ <div class="next"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${vpill(vd)}<b>${VD_HEAD[vd.k]}</b></div><ul style="list-style:disc;padding-left:18px">${vd.why.map(w=>`<li style="display:list-item">${esc(w)}</li>`).join('')}</ul></div>
+ <section class="card"><div class="card-h"><h2>Cases per month</h2><span class="muted">${r===24?'2 years':`last ${r} months`} and the next 6</span></div>${chartSlot(lineChart({actual:ps.units.slice(N-r),fc:ps.fcU,money:false,off:N-r}),210)}</section>
+ <section class="card"><div class="card-h"><h2>Expected orders, cases</h2><span class="muted">plan ${mLabel(pm)} now</span></div>
+  <div style="overflow-x:auto"><table style="min-width:0"><thead><tr>${months.map((m,j)=>`<th class="n ${zone(j)}">${mLabel(m)}</th>`).join('')}</tr></thead><tbody><tr>${ps.fcU.f.map((v,j)=>`<td class="n ${zone(j)}">${nf(v)}</td>`).join('')}</tr></tbody></table></div>
+  <p class="muted" style="margin:10px 0 0;font-size:13px">${p.hold?`<b style="color:var(--amber)">On hold: not reordering.</b> <button class="linkbtn" data-unhold="${id}">Lift the hold</button>`:pl.make?`Suggested production for ${mName(pm)}: <b style="color:var(--text)">${nf(pl.make)} cases</b>. That's the forecast plus ${SAFETY}% safety stock, less the ${nf(Math.max(0,pl.proj))} cases expected on hand on ${mName(pm)} 1.`:`No run needed for ${mName(pm)}. Current stock and scheduled runs cover it.`}</p></section>
+ <section class="card"><div class="card-h"><h2>Who's buying it</h2><span class="muted">cases, ${r<24?`vs prior ${r} mo`:'yr 2 vs yr 1'}</span></div><div class="list">
+  ${buyers.map((b,i)=>`<button class="li" data-cust="${b.c}"><span><span class="li-t">${esc(C[b.c].name)}</span>${i===0&&b.cur?' <span class="pill good">Top buyer</span>':''}<small>${C[b.c].ch} · last bought ${ps.last[b.c]?dfmt(ps.last[b.c]):'—'}</small></span><span style="display:flex;align-items:center;gap:14px">${spark(b.a,72,22)}<span style="text-align:right;min-width:64px"><span class="num">${nf(b.cur)} cs</span><small>${b.cur===0?'<span class="down">stopped</span>':b.vs==null?'new':delta(b.vs)}</small></span></span></button>`).join('')}</div></section>
+ <section class="card"><div class="card-h"><h2>By channel</h2><span class="muted">cases, ${r===24?'2 years':r+' months'}</span></div>${bars(chRows,true)}</section>
+ ${rp.carry?`<section class="card"><div class="card-h"><h2>On retail shelves</h2><span class="muted">${rp.moving} moving · ${rp.slowing} slowing · ${rp.sitting} sitting</span></div><div class="list">${rp.accts.sort((a,b)=>b.ratio-a.ratio).map(s=>shelfLine(s,true)).join('')}</div></section>`:''}
+ <section class="card"><div class="card-h"><h2>Stock</h2>${invPill(I.status)}</div>
+  <div class="mini"><div><b>${nf(I.oh)}</b><span>On hand</span></div><div><b>${nf(I.alloc)}</b><span>Reserved</span></div><div><b>${nf(I.av)}</b><span>Available</span></div><div><b>${I.cover>=99?'—':I.cover.toFixed(1)}</b><span>Weeks of cover</span></div></div>
+  <div class="list" style="margin-top:8px">${I.lots.map(l=>`<div class="li"><span><span class="li-t mono">${l.id}</span><small>Made ${dfmt(l.made)} · expires ${dlong(l.exp)}</small></span><span style="text-align:right"><span class="num">${nf(l.qty)} cs</span><small>${l.dte<=60?`<span class="down">${l.dte} days left</span>`:`${l.dte} days left`}</small></span></div>`).join('')}
+  ${I.runs.map(x=>`<div class="li"><span><span class="li-t">Production run ${x.id}</span><small>Scheduled ${dlong(x.date)}</small></span><span class="num">+${nf(x.qty)} cs</span></div>`).join('')}</div></section>`,keep);
 }
 
-/* ---------- Forecast ---------- */
-let fcBy='customer';
+/* ---------- Production forecast ---------- */
+let fcBy='product',fcUnit='cases',LEADM=3,SAFETY=15;
+const zone=j=>j<LEADM?'lock':j===LEADM?'plan':'';
+function planRow(pid){const ps=S.prod[pid],I=inv(pid),f=ps.fcU.f,start=monthDate(N+LEADM);
+ const before=Math.max(0,f[0]-ps.mtdU)+sum(f.slice(1,LEADM)); // still to ship before the planning month
+ const runsBefore=sum(I.runs.filter(r=>r.date<start).map(r=>r.qty));
+ const proj=I.av+runsBefore-before,need=f[LEADM]*(1+SAFETY/100);
+ return{proj,runsBefore,av:I.av,make:ps.p.hold?0:Math.max(0,r10(need-Math.max(0,proj)))}}
 function vForecast(){
- const months=Array.from({length:H},(_,j)=>N+j);
- const rows=fcBy==='customer'?Object.values(S.cust).map(c=>({id:c.c.id,attr:'cust',name:c.c.name,sub:c.c.type,f:c.fc.f,ly:c.rev.slice(12,18)})):Object.values(S.prod).map(p=>({id:p.p.id,attr:'prod',name:p.p.name,sub:p.p.cat,f:p.fc.f,ly:p.rev.slice(12,18)}));
- rows.sort((a,b)=>sum(b.f)-sum(a.f));
- const tot={f:S.fc.f,ly:S.total.slice(12,18)};
- const cell=r=>`${r.f.map(v=>`<td class="n fc">${fmtK(v)}</td>`).join('')}<td class="n"><b>${fmtK(sum(r.f))}</b></td><td class="n">${sum(r.ly)?delta(sum(r.f)/sum(r.ly)-1):'—'}</td>`;
- const peak=S.fc.f.indexOf(Math.max(...S.fc.f));
- return `<div class="head"><div><span class="label">${fcLabel()}</span><h1>Forecast</h1><p>Built from each account's past orders. It updates every time an order comes in.</p></div></div>
+ const months=Array.from({length:H},(_,j)=>N+j),pm=N+LEADM,pmLong=monthDate(pm).toLocaleString('en-CA',{month:'long',year:'numeric'});
+ const prodRows=Object.values(S.prod).map(ps=>({ps,pl:planRow(ps.p.id)}));
+ const planCases=sum(prodRows.map(x=>x.ps.fcU.f[LEADM])),make=sum(prodRows.map(x=>x.pl.make)),short=prodRows.filter(x=>x.pl.proj<0).sort((a,b)=>a.pl.proj-b.pl.proj);
+ const grp=`<tr><th></th>${LEADM?`<th colspan="${LEADM}" class="grp">Already in production</th>`:''}<th class="grp plan">Plan now</th>${H-LEADM-1>0?`<th colspan="${H-LEADM-1}" class="grp">Outlook</th>`:''}`;
+ let table;
+ if(fcBy==='product'&&fcUnit==='cases'){
+  const rows=prodRows.sort((a,b)=>b.ps.fcU.f[LEADM]-a.ps.fcU.f[LEADM]);
+  const tot=months.map((_,j)=>sum(rows.map(x=>x.ps.fcU.f[j])));
+  // plan-month block: stock expected on day 1 · expected orders · what to make
+  const cells=(f,pl,isTot)=>f.map((v,j)=>j!==LEADM?`<td class="n ${zone(j)}">${nf(v)}</td>`:
+   `<td class="n plan ${!isTot&&pl.proj<0?'down':''}">${isTot?'':`${nf(pl.proj)}<span class="sub">${nf(pl.av)} now${pl.runsBefore?` + ${nf(pl.runsBefore)} in runs`:''}</span>`}</td><td class="n plan">${nf(v)}</td><td class="n plan"><b>${isTot?nf(make):pl.make?nf(pl.make):'—'}</b></td>`).join('');
+  table=`<div class="tbl-wrap"><table><thead><tr><th></th>${LEADM?`<th colspan="${LEADM}" class="grp">Already in production</th>`:''}<th colspan="3" class="grp plan">Plan now: ${mLabel(pm)}</th>${H-LEADM-1>0?`<th colspan="${H-LEADM-1}" class="grp">Outlook</th>`:''}</tr>
+   <tr><th>Product</th>${months.map((m,j)=>j!==LEADM?`<th class="n ${zone(j)}">${mLabel(m)}</th>`:`<th class="n plan">Stock on ${mName(pm)} 1</th><th class="n plan">Expected orders</th><th class="n plan">Make</th>`).join('')}</tr></thead>
+   <tbody><tr class="total"><td>All products · cases</td>${cells(tot,null,true)}</tr>
+   ${rows.map(({ps,pl})=>`<tr tabindex="0" data-prod="${ps.p.id}"><td><span class="pcell">${thumb(ps.p)}<span><b>${esc(ps.p.name)}</b>${ps.p.hold?' <span class="pill warn">On hold</span>':''}<span class="sub">${ps.p.pack}</span></span></span></td>${cells(ps.fcU.f,pl)}</tr>`).join('')}
+   </tbody></table></div>`;
+ }else{
+  let rows;
+  if(fcBy==='customer')rows=Object.values(S.cust).map(c=>({id:c.c.id,attr:'cust',name:c.c.name,sub:`${c.c.ch} · ${c.c.type}`,f:c.fc.f,ly:c.rev.slice(12,18)}));
+  else if(fcBy==='channel')rows=CHS.map(ch=>{const cs=Object.values(S.cust).filter(c=>c.c.ch===ch);return{id:'',attr:'',name:ch,sub:`${cs.length} accounts`,f:months.map((_,j)=>sum(cs.map(c=>c.fc.f[j]))),ly:S.chRev[ch].slice(12,18)}});
+  else rows=Object.values(S.prod).map(p=>({id:p.p.id,attr:'prod',name:p.p.name,sub:p.p.cat,f:p.fc.f,ly:p.rev.slice(12,18)}));
+  rows.sort((a,b)=>sum(b.f)-sum(a.f));
+  const cell=r=>`${r.f.map((v,j)=>`<td class="n ${zone(j)}">${fmtK(v)}</td>`).join('')}<td class="n"><b>${fmtK(sum(r.f))}</b></td><td class="n">${sum(r.ly)?delta(sum(r.f)/sum(r.ly)-1):'—'}</td>`;
+  table=`<div class="tbl-wrap"><table><thead>${grp}<th colspan="2"></th></tr><tr><th>${fcBy==='customer'?'Account':fcBy==='channel'?'Channel':'Product'}</th>${months.map((m,j)=>`<th class="n ${zone(j)}">${mLabel(m)}</th>`).join('')}<th class="n">6-mo total</th><th class="n">vs last yr</th></tr></thead>
+   <tbody><tr class="total"><td>All</td>${cell({f:S.fc.f,ly:S.total.slice(12,18)})}</tr>
+   ${rows.map(r=>`<tr ${r.attr?`tabindex="0" data-${r.attr}="${r.id}"`:''}><td><b>${esc(r.name)}</b><span class="sub">${esc(r.sub)}</span></td>${cell(r)}</tr>`).join('')}</tbody></table></div>`;
+ }
+ return `<div class="head"><div><span class="label">${fcLabel()} · planning ${mLabel(pm)}</span><h1>Production forecast</h1><p>Expected orders for every product, month by month, in cases. Ingredients and production take about ${LEADM} months, so what you decide today lands in ${pmLong}. ${LEADM?`${months.slice(0,LEADM).map(mName).join(', ')} ${LEADM===1?'is':'are'} already set.`:''} Every order that comes in updates it.</p></div></div>
  <div class="kpis">
-  <div class="kpi"><span class="label">Next 6 months</span><span class="v">${fmtK(sum(S.fc.f))}</span><span class="s">likely ${fmtK(sum(S.fc.lo))} – ${fmtK(sum(S.fc.hi))}</span></div>
-  <div class="kpi"><span class="label">${mLabel(N)}</span><span class="v">${fmtK(S.fc.f[0])}</span><span class="s">${fmtK(S.mtd)} booked so far (${Math.round(S.mtd/S.fc.f[0]*100)}%)</span></div>
-  <div class="kpi"><span class="label">Peak month</span><span class="v">${mLabel(N+peak)}</span><span class="s">${fmtK(S.fc.f[peak])} · plan production for the holiday lift</span></div>
+  <div class="kpi"><span class="label">Plan now: ${mLabel(pm)}</span><span class="v">${nf(planCases)} cs</span><span class="s">expected orders · ${fmtK(S.fc.f[LEADM])} in sales</span></div>
+  <div class="kpi"><span class="label">Suggested production</span><span class="v">${nf(make)} cs</span><span class="s">${prodRows.filter(x=>x.pl.make>0).length} products need a run for ${mName(pm)}</span></div>
+  <div class="kpi"><span class="label">Could run short before ${mName(pm)}</span><span class="v ${short.length?'down':''}">${short.length}</span><span class="s">${short.length?esc(short.slice(0,2).map(x=>x.ps.p.name).join(', '))+(short.length>2?' and more':''):'stock and runs cover demand until then'}</span></div>
   <div class="kpi"><span class="label">Accuracy check</span><span class="v">±${Math.round(S.btErr*100)}%</span><span class="s">average miss when tested on May–Oct 2026</span></div>
  </div>
+ <section class="card"><div class="card-h"><h2>Planning settings</h2><span class="muted">everything on this page follows these</span></div>
+  <div class="assume">
+   <label for="fcLead">Ingredients and production lead time<select class="select" id="fcLead" data-fc="lead" style="width:100%">${[1,2,3,4,5].map(v=>`<option value="${v}" ${v===LEADM?'selected':''}>${v} month${v>1?'s':''}</option>`).join('')}</select></label>
+   <label for="fcSafe">Safety stock (% on top of forecast)<input id="fcSafe" type="number" min="0" max="100" step="5" value="${SAFETY}" data-fc="safety"></label>
+   <label>Planning today for<input value="${pmLong}" disabled></label>
+   <label>Example<input value="Plan on Dec 1 → for ${monthDate(N+1+LEADM).toLocaleString('en-CA',{month:'long'})}" disabled></label>
+  </div></section>
  <section class="card"><div class="card-h"><h2>How the forecast works</h2></div><div class="method">
-  <div><b><span class="step">1</span>Seasonality</b>Two years of orders show each account's pattern through the year, like December peaks at grocers, Wellington at the holidays and summer dips at campus dining.</div>
-  <div><b><span class="step">2</span>Trend</b>The last 12 months set the direction. Growing accounts keep growing in the forecast, but the growth slows the further out it goes.</div>
-  <div><b><span class="step">3</span>Added up per account</b>Every account gets its own forecast, and the company total is their sum. Lapsed accounts count as zero until they order again.</div></div></section>
- <div class="toolbar"><button class="chip" data-fcby="customer" aria-pressed="${fcBy==='customer'}">By customer</button><button class="chip" data-fcby="product" aria-pressed="${fcBy==='product'}">By product</button></div>
- <div class="tbl-wrap"><table><thead><tr><th>${fcBy==='customer'?'Account':'Product'}</th>${months.map(i=>`<th class="n">${mLabel(i)}</th>`).join('')}<th class="n">6-mo total</th><th class="n">vs last yr</th></tr></thead>
- <tbody><tr class="total"><td>All ${fcBy==='customer'?'accounts':'products'}</td>${cell(tot)}</tr>
- ${rows.map(r=>`<tr tabindex="0" data-${r.attr}="${r.id}"><td><b>${esc(r.name)}</b><span class="sub">${esc(r.sub)}</span></td>${cell(r)}</tr>`).join('')}</tbody></table></div>`;
+  <div><b><span class="step">1</span>Seasonality and trend</b>Two years of orders show each account's pattern through the year and which way it's heading, like December peaks at grocers and Wellington at the holidays.</div>
+  <div><b><span class="step">2</span>This month counts</b>Orders already in this month are booked. If a product is selling faster than expected, the next months move up with it, and down if it's slow.</div>
+  <div><b><span class="step">3</span>Planned at your lead time</b>Make = expected orders for ${mName(pm)} plus safety stock, minus what will still be on the shelf on ${mName(pm)} 1 after current stock, scheduled runs and the orders before then.</div></div></section>
+ <div class="toolbar"><button class="chip" data-fcby="product" aria-pressed="${fcBy==='product'}">By product</button><button class="chip" data-fcby="customer" aria-pressed="${fcBy==='customer'}">By customer</button><button class="chip" data-fcby="channel" aria-pressed="${fcBy==='channel'}">By channel</button>
+  ${fcBy==='product'?`<span style="width:12px"></span><button class="chip" data-fcunit="cases" aria-pressed="${fcUnit==='cases'}">Cases</button><button class="chip" data-fcunit="revenue" aria-pressed="${fcUnit==='revenue'}">Revenue</button>`:''}</div>
+ ${table}`;
 }
 
 /* ---------- Cash flow ---------- */
@@ -891,30 +1341,280 @@ function vPipeline(){
  <div class="row"><button class="btn sm" data-move="${d.id}" data-dir="-1" ${i===0?'disabled':''} aria-label="Move ${esc(d.acct)} back">←</button><button class="btn sm" data-move="${d.id}" data-dir="1" ${i===4?'disabled':''}>${i===3?'Mark won':'Advance →'}</button></div></div>`).join('')}</div>`}).join('')}</div>`;
 }
 
+/* ---------- ripple: one action updates every module it touches ---------- */
+function snap(){const o={st:{},av:{},oh:{},plan:{}};
+ Object.values(S.cust).forEach(c=>o.st[c.c.id]=c.status);
+ PRODUCTS.forEach(p=>{const I=inv(p.id);o.av[p.id]=I.av;o.oh[p.id]=I.oh;o.plan[p.id]=S.prod[p.id].fcU.f[LEADM]});
+ o.fcT=sum(S.fc.f);o.cash=cashModel().bal[days(TODAY,new Date(2026,11,31))];return o}
+function cascade(title,b,{cid,pids,extra=[],by=me}){const a=snap(),items=[],ps=[...new Set(pids)];
+ ps.forEach(p=>{const I=inv(p);
+  if(a.av[p]!==b.av[p])items.push(['Inventory',`${esc(P[p].name)}: ${nf(b.av[p])} → ${nf(a.av[p])} cases available${I.status==='Low'||I.status==='Out'?'. <b class="down">Below the reorder point.</b>':''}`]);
+  else if(a.oh[p]!==b.oh[p])items.push(['Inventory',`${esc(P[p].name)}: ${nf(b.oh[p])} → ${nf(a.oh[p])} cases on hand, oldest lot first`])});
+ ps.forEach(p=>{const d=a.plan[p]-b.plan[p];if(Math.abs(d)>=1)items.push(['Forecast',`${esc(P[p].name)}, ${mLabel(N+LEADM)}: ${d>0?'+':''}${Math.round(d)} cases to plan`])});
+ if(Math.round(a.fcT)!==Math.round(b.fcT))items.push(['Forecast',`${fcLabel()} total ${fmtK(b.fcT)} → ${fmtK(a.fcT)}`]);
+ if(cid&&a.st[cid]!==b.st[cid])items.push(['Account',`${esc(C[cid].name)}: ${b.st[cid]} → ${a.st[cid]}`]);
+ if(Math.round(a.cash/100)!==Math.round(b.cash/100))items.push(['Cash flow',`Dec 31 balance ${fmtK(b.cash)} → ${fmtK(a.cash)}`]);
+ items.push(...extra,['Activity log',`Recorded under ${esc(U[by].name)}, ${tfmt(now())}`]);
+ const r=document.getElementById('ripple');
+ r.innerHTML=`<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><b style="font-size:14px">${esc(title)}</b><button class="x" style="width:26px;height:26px;font-size:15px" data-rclose aria-label="Dismiss">×</button></div><span class="muted" style="font-size:12.5px">Updated everywhere it matters</span><ol>${items.map(([k,v],i)=>`<li style="animation-delay:${150+i*160}ms"><span>${k}</span><span>${v}</span></li>`).join('')}</ol>`;
+ r.classList.add('on');clearTimeout(r._t);r._t=setTimeout(()=>r.classList.remove('on'),12000)}
+
+/* ---------- Orders ---------- */
+const TITLE=document.title;
+const srcPill=s=>`<span class="pill ${s==='Portal'?'good':'info'}">${s==='Email'?'Email inbox':s}</span>`;
+const stepsHtml=o=>{const k=STEPS.indexOf(o.status==='Delivered'?'Shipped':o.status);return `<span class="steps" aria-hidden="true">${STEPS.map((_,i)=>`<i class="${i<=k?'on':''}"></i>`).join('')}</span>`};
+function nextAct(o){return o.status==='New'?'Claim':o.status==='Claimed'?'Send confirmation':o.status==='Confirmed'?'Send to warehouse':o.status==='Picking'?(o.appt&&!o.bol?'Send BOL for appointment':'Ship: invoice + BOL'):null}
+const ACT_SHORT={'Claim':'Claim','Send confirmation':'Confirm','Send to warehouse':'To warehouse','Send BOL for appointment':'Send BOL','Ship: invoice + BOL':'Ship'};
+const bolUrgent=o=>o.appt&&!o.bol&&OPEN.has(o.status)&&days(TODAY,o.appt)<=2;
+let ordF='open';
+function vOrders(){
+ const box=orders.filter(o=>o.ev.length);
+ const F={open:o=>OPEN.has(o.status),new:o=>o.status==='New',mine:o=>OPEN.has(o.status)&&o.owner===me,done:o=>!OPEN.has(o.status)};
+ const rows=box.filter(F[ordF]).sort((a,b)=>(b.status==='New')-(a.status==='New')||b.at-a.at);
+ const nw=box.filter(F.new),prog=box.filter(o=>OPEN.has(o.status)&&o.status!=='New'),bolDue=box.filter(bolUrgent),wk=box.filter(o=>!OPEN.has(o.status)&&days(o.date,TODAY)<=7);
+ const oldest=nw.slice().sort((a,b)=>a.at-b.at)[0];
+ return `<div class="head"><div><span class="label">Shared order inbox</span><h1>Orders</h1><p>Every order lands here, from the customer portal, EDI, the orders@ email inbox or a phone call. The whole team is pinged, and whoever claims an order owns it until it ships. Nothing sits in one person's email or in spam.</p></div>
+  <div class="toolbar noprint"><button class="btn" data-sim="EDI">Simulate an EDI order</button><button class="btn" data-sim="Email">Simulate an emailed PO</button></div></div>
+ <div class="kpis">
+  <div class="kpi"><span class="label">Waiting to be claimed</span><span class="v ${nw.length?'down':''}">${nw.length}</span><span class="s">${oldest?`oldest came in ${ago(oldest.at)}`:'all claimed'}</span></div>
+  <div class="kpi"><span class="label">In progress</span><span class="v">${prog.length}</span><span class="s">${prog.filter(o=>o.owner===me).length} claimed by you</span></div>
+  <div class="kpi"><span class="label">BOL due in 2 days</span><span class="v ${bolDue.length?'down':''}">${bolDue.length}</span><span class="s">for delivery appointments · a missed one is billed as a penalty</span></div>
+  <div class="kpi"><span class="label">Shipped, last 7 days</span><span class="v">${wk.length}</span><span class="s">${fmtK(sum(wk.map(o=>o.total)))} invoiced, BOL attached</span></div></div>
+ <section class="card"><div class="card-h"><h2>How an order moves</h2><span class="muted">every step is logged with who did it</span></div><div class="o2c o5">
+  <div><span class="step">1</span><b>Arrives</b>From the portal, EDI, the orders@ inbox or a phone call. The team gets a ping.</div>
+  <div><span class="step">2</span><b>Claimed</b>The first person to claim it owns it. It turns red so nobody doubles up.</div>
+  <div><span class="step">3</span><b>Confirmed</b>A confirmation email goes back to the buyer.</div>
+  <div><span class="step">4</span><b>Picking</b>The warehouse picks it. Appointment accounts get the BOL ahead of the truck.</div>
+  <div><span class="step">5</span><b>Shipped</b>Invoice and BOL go out together. Stock comes off the shelf.</div></div></section>
+ <div class="toolbar">${[['open','Open'],['new','Unclaimed'],['mine','Mine'],['done','Shipped']].map(([k,l])=>`<button class="chip" data-ordf="${k}" aria-pressed="${ordF===k}">${l}</button>`).join('')}</div>
+ <div class="tbl-wrap"><table><thead><tr><th>Order</th><th>Account</th><th>Came in</th><th class="n">Total</th><th>Stock</th><th>Owner · progress</th><th>Delivery</th><th></th></tr></thead><tbody>
+ ${rows.map(o=>{const act=nextAct(o),open=OPEN.has(o.status),sl=open?o.lines.filter(l=>inv(l.p).av<0):[];
+  return `<tr tabindex="0" data-po="${o.id}" class="${o.status==='New'?'isnew':open?'claimed':''} ${o.fresh?'flash':''}"><td><b class="mono">${o.id}</b><span class="sub">${esc(o.po)}</span></td>
+  <td><b>${esc(C[o.c].name)}</b><span class="sub">${C[o.c].ch}</span></td><td>${srcPill(o.src)}<span class="sub">${ago(o.at)}</span></td>
+  <td class="n">${fmt$(o.total)}<span class="sub">${sum(o.lines.map(l=>l.qty))} cases</span></td>
+  <td>${!open?'<span class="muted">Shipped</span>':sl.length?`<span class="pill bad">Short: ${esc(P[sl[0].p].name)}</span>`:'<span class="pill good">In stock</span>'}</td>
+  <td>${o.owner?who(o.owner):'<span class="pill warn">Unclaimed</span>'}<span class="sub">${stepsHtml(o)} ${o.status}</span></td>
+  <td>${o.appt?`Appt ${dfmt(o.appt)}<span class="sub">${o.bol?'BOL sent':!open?'':bolUrgent(o)?'<span class="down">BOL due now</span>':'BOL before the truck'}</span>`:`${dfmt(o.delivery)}<span class="sub">estimated</span>`}</td>
+  <td>${act?`<button class="btn sm ${o.status==='New'?'primary':''}" data-adv="${o.id}" title="${act}">${ACT_SHORT[act]}</button>`:''}</td></tr>`}).join('')||'<tr><td colspan="8" class="muted">Nothing here.</td></tr>'}
+ </tbody></table></div>`;
+}
+function openPO(id,keep){drawerFn=()=>openPO(id,true);
+ const o=orders.find(x=>x.id===id),c=C[o.c],act=nextAct(o),open=OPEN.has(o.status),k=STEPS.indexOf(o.status==='Delivered'?'Shipped':o.status);
+ openDrawer(`<div class="dh"><div><span class="label">${o.src==='Email'?'Email inbox':o.src} order · came in ${tfmt(o.at)}</span><h1>${o.id}</h1><div class="muted">${esc(o.po)} · <button class="linkbtn" data-cust="${o.c}">${esc(c.name)}</button></div></div><button class="x" data-close aria-label="Close">×</button></div>
+ <div style="display:flex;flex-direction:column;gap:6px"><span class="steps big" aria-hidden="true">${STEPS.map((_,i)=>`<i class="${i<=k?'on':''}"></i>`).join('')}</span><div class="steplbl">${STEPS.map((s,i)=>`<span class="${i===k?'on':''}">${s}</span>`).join('')}</div></div>
+ <div class="next">${o.owner?`<div>${who(o.owner)} <span class="muted">owns this order through delivery.</span></div>`:'<div><b>Nobody has claimed this yet.</b> <span class="muted">Claiming it makes you the owner.</span></div>'}
+  ${o.appt&&open?`<div style="font-size:13.5px" class="${o.bol?'muted':'down'}">Delivery appointment at ${esc(c.name)} on ${dlong(o.appt)}. ${o.bol?`BOL ${o.bol} sent ahead.`:'Send the BOL before the truck leaves. A missed appointment is billed as a penalty.'}</div>`:''}
+  ${act?`<button class="btn primary" data-adv="${o.id}">${act}</button>`:`<span class="muted">Shipped. Invoice ${o.inv||invNo(o)} and BOL ${o.bol||bolNo(o)} went out together.</span>`}</div>
+ <section class="card"><div class="card-h"><h2>Lines</h2><span class="muted">${sum(o.lines.map(l=>l.qty))} cases · ${fmt$(o.total)}</span></div><div class="list">${o.lines.map(l=>{const I=inv(l.p);return `<button class="li" data-prod="${l.p}"><span class="pcell">${thumb(P[l.p])}<span><span class="li-t">${esc(P[l.p].name)}</span><small>${l.qty} cs × ${fmt$(l.price)} = ${fmt$(l.qty*l.price)}</small></span></span><span style="text-align:right">${open?(I.av>=0?`<span class="pill good">In stock</span><small>${nf(I.av)} left after open orders</small>`:`<span class="pill bad">Short ${nf(-I.av)} cs</span><small>${I.runs[0]?`run of ${nf(I.runs[0].qty)} on ${dfmt(I.runs[0].date)}`:'no run scheduled'}</small>`):'<span class="muted">Shipped</span>'}</span></button>`}).join('')}</div></section>
+ <section class="card"><div class="card-h"><h2>Documents</h2></div><div class="ledger">
+  <div><span>Order confirmation email</span><span>${o.confirmed?`Sent ${tfmt(o.confirmed)}`:'Not sent yet'}</span></div>
+  <div><span>Bill of lading</span><span>${o.bol||'—'}</span></div>
+  <div><span>Invoice</span><span>${o.inv?`${o.inv} · posted to QuickBooks`:'Issued at shipment'}</span></div></div></section>
+ <section class="card"><div class="card-h"><h2>History</h2><span class="muted">every step, with who did it</span></div><div class="timeline">${o.ev.slice().reverse().map(e=>`<div><small>${tfmt(e.t)}</small><span>${who(e.by)} ${esc(e.text)}</span></div>`).join('')}</div></section>`,keep);
+}
+function ping(o,claimed){o.fresh=true;setTimeout(()=>{o.fresh=false},3500);
+ toast(claimed?`Logged ${o.id} for ${C[o.c].name}. It's claimed by you.`:`New order from ${C[o.c].name} via ${o.src==='Email'?'the orders@ inbox':o.src}, ${fmt$(o.total)}. The team has been pinged.`);
+ if(!claimed){document.title=`(1) New order · ${TITLE}`;setTimeout(()=>document.title=TITLE,8000)}}
+function newOrder(c,lines,src,po,by,{claim=false,note=''}={}){const before=snap();
+ const o=makeOrder(c,lines,src,po,by,now(),note);
+ if(claim){o.status='Claimed';o.owner=me;ev(o,'Claimed the order (took the call)')}
+ compute();render();refreshDrawer();ping(o,claim);
+ cascade(`New order · ${C[c].name}`,before,{cid:c,pids:lines.map(l=>l.p),by});return o}
+function simulate(src){const pool=src==='EDI'?['pp','nf','gg']:['cd','bh','cs','hh'],c=pool[Math.floor(rnd()*pool.length)],cs=C[c];
+ const top=Object.entries(cs.mix).sort((a,b)=>b[1]-a[1]).slice(0,3+Math.floor(rnd()*2));
+ const lines=top.map(([p])=>({p,qty:Math.max(2,Math.round(cs.base/cs.freq/top.length/P[p].price*(.7+rnd()*.6))),price:P[p].price}));
+ newOrder(c,lines,src,null,'sys',{note:src==='Email'?'Read from the PDF attached to the email and logged automatically':'EDI 850 received and logged automatically'})}
+function advance(id){const o=orders.find(x=>x.id===id);if(!o||!OPEN.has(o.status))return;
+ const before=snap();let msg='',shipped=false;
+ if(o.status==='New'){o.status='Claimed';o.owner=me;ev(o,'Claimed the order');msg=`${o.id} is yours. The team sees it as claimed by ${U[me].short}.`}
+ else if(o.status==='Claimed'){o.status='Confirmed';o.confirmed=now();ev(o,`Emailed the order confirmation to ${buyerEmail(o.c)}`);msg=`Confirmation emailed to ${buyerEmail(o.c)}.`}
+ else if(o.status==='Confirmed'){o.status='Picking';ev(o,'Released to the warehouse for picking');msg=`${o.id} is on the warehouse pick list.`}
+ else if(o.appt&&!o.bol){o.bol=bolNo(o);ev(o,`Sent BOL ${o.bol} ahead of the ${dfmt(o.appt)} delivery appointment`);msg=`BOL ${o.bol} sent for the ${dfmt(o.appt)} appointment.`}
+ else{o.status='Shipped';o.bol=o.bol||bolNo(o);o.inv=invNo(o);consume(o.lines);ev(o,`Shipped. Invoice ${o.inv} and BOL ${o.bol} emailed together`);shipped=true}
+ if(o.owner&&o.owner!==me&&!shipped)msg+=` Owned by ${U[o.owner].short}; logged as done by you.`;
+ compute();render();refreshDrawer();
+ if(shipped)cascade(`${o.id} shipped`,before,{cid:o.c,pids:o.lines.map(l=>l.p),extra:[['QuickBooks',`Invoice ${o.inv} for ${fmt$(o.total)} posted`]]});else toast(msg)}
+
+/* ---------- Inventory ---------- */
+let invF='all',chkP='chb',chkQ=300;
+const EXP_ACTS=['Run a promotion','Feature to top buyers','Curate into a bundle',"Don't reorder"];
+function stockAnswer(pid,q){const I=inv(pid),p=P[pid];if(!q)return '';
+ if(I.av>=q){let need=q,used=[];for(const l of I.lots){if(need<=0)break;used.push(l);need-=l.qty}
+  const left=I.av-q;
+  return `<div class="answer good"><b>Yes.</b> ${nf(I.av)} cases of ${esc(p.name)} are available (${nf(I.oh)} on hand, ${nf(I.alloc)} reserved for open orders). ${nf(q)} cases would ship from lot${used.length>1?'s':''} ${used.map(l=>`${l.id} (expires ${dfmt(l.exp)})`).join(' and ')}. That leaves ${nf(left)} cases, about ${(left/Math.max(I.rate,.1)).toFixed(1)} weeks of sales.${left<I.rate*3?' <b>It would drop below the reorder point.</b>':''}</div>`}
+ const nr=I.runs[0];
+ return `<div class="answer bad"><b>Not all of it.</b> ${nf(Math.max(0,I.av))} cases of ${esc(p.name)} are available, ${nf(q-Math.max(0,I.av))} short. ${nr?`The next production run adds ${nf(nr.qty)} cases on ${dlong(nr.date)}.`:'No production run is scheduled.'}</div>`}
+function updStock(){const el=document.getElementById('stockAns');if(el)el.innerHTML=stockAnswer(chkP,chkQ)}
+function vInventory(){
+ const IV=PRODUCTS.map(p=>({p,...inv(p.id)}));
+ const alerts=IV.flatMap(x=>x.exp60.map(l=>({x,l}))).sort((a,b)=>a.l.dte-b.l.dte);
+ const low=IV.filter(x=>x.status==='Low'||x.status==='Out').sort((a,b)=>a.cover-b.cover);
+ const runs=RUNS.filter(r=>r.status==='Scheduled').sort((a,b)=>a.date-b.date);
+ const order={Out:0,Low:1,Expiring:2,Overstock:3,OK:4};
+ const rows=IV.filter(x=>invF==='all'||(invF==='action'?x.status!=='OK':x.p.cat===invF)).sort((a,b)=>order[a.status]-order[b.status]||a.cover-b.cover);
+ return `<div class="head"><div><span class="label">${nf(sum(IV.map(x=>x.oh)))} cases on hand · ${LOTS.filter(l=>l.qty>0).length} lots</span><h1>Inventory</h1><p>A live count by product and lot. An order reserves stock the moment it arrives, shipping takes it off the shelf oldest lot first, and a finished production run adds a lot. Every lot is flagged 60 days before it expires.</p></div></div>
+ <div class="kpis">
+  <div class="kpi"><span class="label">On hand</span><span class="v">${nf(sum(IV.map(x=>x.oh)))}</span><span class="s">cases across ${PRODUCTS.length} products</span></div>
+  <div class="kpi"><span class="label">Reserved for open orders</span><span class="v">${nf(sum(IV.map(x=>x.alloc)))}</span><span class="s">cases, released when they ship</span></div>
+  <div class="kpi"><span class="label">Below reorder point</span><span class="v ${low.length?'down':''}">${low.length}</span><span class="s">under 3 weeks of sales left</span></div>
+  <div class="kpi"><span class="label">Expiring within 60 days</span><span class="v ${alerts.length?'down':''}">${alerts.length} lots</span><span class="s">${nf(sum(alerts.map(a=>a.l.risk)))} cases unlikely to sell in time</span></div></div>
+ <div class="grid2">
+  <section class="card"><div class="card-h"><h2>Do we have it?</h2><span class="muted">check before you promise a customer</span></div>
+   <div class="stockq"><select class="select" id="chkP" aria-label="Product">${CATS.map(cat=>`<optgroup label="${esc(cat)}">${PRODUCTS.filter(p=>p.cat===cat).map(p=>`<option value="${p.id}" ${p.id===chkP?'selected':''}>${esc(p.name)}</option>`).join('')}</optgroup>`).join('')}</select>
+   <input class="select" id="chkQ" type="number" min="1" value="${chkQ}" style="width:100px" aria-label="Cases needed"><span class="muted">cases</span></div>
+   <div id="stockAns" style="margin-top:12px">${stockAnswer(chkP,chkQ)}</div></section>
+  <section class="card"><div class="card-h"><h2>Reorder prompts</h2><span class="muted">schedule production before it runs out</span></div><div class="list">
+   ${low.map(x=>`<div class="li"><span class="pcell">${thumb(x.p)}<span><span class="li-t">${esc(x.p.name)}</span><small>${nf(Math.max(0,x.av))} available · ${x.cover<=0?'out of stock':x.cover.toFixed(1)+' weeks left'} · sells ${nf(x.rate)} a week</small></span></span>${x.runs[0]?`<span style="text-align:right"><span class="pill info">Run on ${dfmt(x.runs[0].date)}</span><small>+${nf(x.runs[0].qty)} cases</small></span>`:x.p.hold?'<span class="pill warn">On hold</span>':`<button class="btn sm primary" data-run="${x.p.id}">Schedule a run</button>`}</div>`).join('')||'<p class="muted" style="margin:0">Nothing below the reorder point.</p>'}
+   ${runs.slice(0,4).map(r=>`<div class="li"><span><span class="li-t">${r.id} · ${esc(P[r.p].name)}</span><small>Production run, ${dlong(r.date)} · +${nf(r.qty)} cases</small></span><button class="btn sm" data-recv="${r.id}">Mark received</button></div>`).join('')}</div></section>
+ </div>
+ <section class="card"><div class="card-h"><h2>Expiring within 60 days</h2><span class="muted">promote it, feature it, turn it into something else, or stop reordering</span></div><div>
+  ${alerts.map(({x,l})=>`<div class="alert-row">${thumb(x.p)}<div><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span><b>${esc(x.p.name)}</b> <span class="muted mono">${l.id}</span>${x.p.isNew?' <span class="pill info">New product</span>':''}</span><span class="pill ${l.dte<=30?'bad':'warn'}">Expires ${dfmt(l.exp)} · ${l.dte} days</span></div>
+   <span class="muted" style="font-size:13px">${nf(l.qty)} cases in this lot. ${l.risk>0?`At the current pace of ${x.rate<10?x.rate.toFixed(1):nf(x.rate)} cases a week, about <b class="down">${nf(l.risk)} cases won't sell in time</b>.`:'At the current pace it sells through before it expires.'}</span>
+   ${l.action?`<span style="font-size:13px">${who(l.action.by)} chose <b>${esc(l.action.a)}</b> · ${tfmt(l.action.t)}</span>`:`<div class="chips">${EXP_ACTS.map(a=>`<button class="chip" data-lotact="${l.id}|${esc(a)}">${esc(a)}</button>`).join('')}</div>`}</div></div>`).join('')||'<p class="muted" style="margin:0">Nothing expires in the next 60 days.</p>'}</div></section>
+ <div class="toolbar">${[['all','All products'],['action','Needs action']].map(([k,l])=>`<button class="chip" data-invf="${k}" aria-pressed="${invF===k}">${l}</button>`).join('')}${CATS.map(c=>`<button class="chip" data-invf="${esc(c)}" aria-pressed="${invF===c}">${c}</button>`).join('')}</div>
+ <div class="tbl-wrap"><table><thead><tr><th>Product</th><th class="n">On hand</th><th class="n">Reserved</th><th class="n">Available</th><th class="n">Sells / week</th><th class="n">Weeks of cover</th><th>Next expiry</th><th>Next production run</th><th>Status</th></tr></thead><tbody>
+  ${rows.map(x=>`<tr tabindex="0" data-prod="${x.p.id}"><td><span class="pcell">${thumb(x.p)}<span><b>${esc(x.p.name)}</b>${x.p.hold?' <span class="pill warn">On hold</span>':''}<span class="sub">${x.p.pack} · ${x.lots.length} lot${x.lots.length===1?'':'s'}</span></span></span></td><td class="n">${nf(x.oh)}</td><td class="n">${x.alloc?nf(x.alloc):'—'}</td><td class="n ${x.av<=0?'down':''}">${nf(x.av)}</td><td class="n">${x.rate<10?x.rate.toFixed(1):nf(x.rate)}</td><td class="n ${x.cover<3?'down':''}">${x.cover>=99?'—':x.cover.toFixed(1)}</td>
+  <td>${x.lots[0]?`${dfmt(x.lots[0].exp)}<span class="sub ${x.lots[0].dte<=60?'down':''}">${x.lots[0].dte} days</span>`:'—'}</td><td>${x.runs[0]?`${dfmt(x.runs[0].date)}<span class="sub">+${nf(x.runs[0].qty)} cases</span>`:'<span class="muted">—</span>'}</td><td>${invPill(x.status)}</td></tr>`).join('')}
+ </tbody></table></div>`;
+}
+function lotAction(v){const i=v.indexOf('|'),id=v.slice(0,i),a=v.slice(i+1),l=LOTS.find(x=>x.id===id),p=P[l.p];
+ l.action={a,by:me,t:now()};log('Inventory',`Expiry plan: ${a}`,`${p.name} · lot ${l.id}`,`${l.qty} cases, expires ${dfmt(l.exp)}`);
+ let msg=`Noted for lot ${l.id}. The team sees it on the product.`;
+ if(a==="Don't reorder"){p.hold=true;RUNS.filter(r=>r.p===l.p&&r.status==='Scheduled').forEach(r=>{r.status='Cancelled';log('Inventory','Cancelled a production run',p.name,`${r.id}, ${r.qty} cases`)});
+  log('Products','Put on reorder hold',p.name,'From the expiry alert');msg=`${p.name} is on hold. The production forecast won't suggest more until someone lifts it.`}
+ if(a==='Feature to top buyers'){const top=Object.entries(S.prod[l.p].b12).sort((x,y)=>y[1]-x[1]).slice(0,3).map(x=>C[x[0]].name);msg=`Added to the next call with ${top.join(', ')}.`;
+  top.forEach(n=>{const c=CUSTOMERS.find(x=>x.name===n);NOTES.push({c:c.id,t:now(),by:me,type:'Note',text:`Offer ${p.name}: lot ${l.id} expires ${dfmt(l.exp)}. Feature it on the next order.`})})}
+ render();refreshDrawer();toast(msg)}
+function scheduleRun(pid){const ps=S.prod[pid],r={id:'RUN-'+(310+RUNS.length),p:pid,date:addDays(TODAY,14),qty:r10(Math.max(ps.rate*8,20)),status:'Scheduled'};
+ RUNS.push(r);log('Inventory','Scheduled a production run',P[pid].name,`${r.qty} cases for ${dfmt(r.date)}`);render();refreshDrawer();toast(`${r.id}: ${nf(r.qty)} cases of ${P[pid].name} scheduled for ${dlong(r.date)}.`)}
+function receiveRun(id){const r=RUNS.find(x=>x.id===id),before=snap();r.status='Received';
+ const lot={id:lotId(TODAY,r.p),p:r.p,qty:r.qty,made:new Date(TODAY),exp:addDays(TODAY,SHELF[P[r.p].cat]),action:null};LOTS.push(lot);
+ log('Inventory','Received a production run',P[r.p].name,`${r.id}: +${r.qty} cases as lot ${lot.id}`);compute();render();refreshDrawer();
+ cascade(`${r.id} received`,before,{pids:[r.p]})}
+
+/* ---------- Deductions ---------- */
+let dedF='open';
+function vDeductions(){
+ const open=DEDS.filter(d=>!CLOSED.has(d.status)),rec=DEDS.filter(d=>d.status==='Recovered'),acc=DEDS.filter(d=>d.status==='Accepted');
+ const rows=DEDS.filter(d=>dedF==='all'||(dedF==='open'?!CLOSED.has(d.status):dedF==='closed'?CLOSED.has(d.status):d.status===dedF)).sort((a,b)=>b.date-a.date);
+ const byAcct=CUSTOMERS.map(c=>({label:c.name,v:sum(open.filter(d=>d.c===c.id).map(d=>d.amt))})).filter(x=>x.v).sort((a,b)=>b.v-a.v).map(x=>({...x,right:fmt$(x.v)}));
+ return `<div class="head"><div><span class="label">Per client, with every follow-up</span><h1>Deductions and chargebacks</h1><p>Retailers deduct on their own, often with a code nobody recognizes. Log it once with the invoice, what happened and what you did about it, and anyone can look up the full history without calling around.</p></div>
+  <button class="btn primary noprint" data-newded="">+ Log a deduction</button></div>
+ <div class="kpis">
+  <div class="kpi"><span class="label">Open</span><span class="v">${fmtK(sum(open.map(d=>d.amt)))}</span><span class="s">${open.length} deductions being worked</span></div>
+  <div class="kpi"><span class="label">Unexplained codes</span><span class="v ${open.some(d=>d.status==='Unexplained')?'down':''}">${DEDS.filter(d=>d.status==='Unexplained').length}</span><span class="s">nobody knows what they mean yet</span></div>
+  <div class="kpi"><span class="label">Refunds pending</span><span class="v">${fmtK(sum(DEDS.filter(d=>d.status==='Refund pending').map(d=>d.amt)))}</span><span class="s">agreed, money not back yet</span></div>
+  <div class="kpi"><span class="label">Recovered</span><span class="v up">${fmtK(sum(rec.map(d=>d.amt)))}</span><span class="s">${fmtK(sum(acc.map(d=>d.amt)))} accepted as valid</span></div></div>
+ <div class="toolbar">${[['open','Open'],['Unexplained','Unexplained'],['Refund pending','Refund pending'],['closed','Closed'],['all','All']].map(([k,l])=>`<button class="chip" data-dedf="${k}" aria-pressed="${dedF===k}">${l}</button>`).join('')}</div>
+ <div class="tbl-wrap"><table><thead><tr><th>Deduction</th><th>Account</th><th>Invoice</th><th>Code</th><th class="n">Amount</th><th>What happened</th><th>Latest action</th><th>Status</th></tr></thead><tbody>
+  ${rows.map(d=>{const m=codeMeaning(d.c,d.code),la=d.actions.at(-1);return `<tr tabindex="0" data-ded="${d.id}"><td><b class="mono">${d.id}</b><span class="sub">${dfmt(d.date)} · ${days(d.date,TODAY)} days ago</span></td><td><b>${esc(C[d.c].name)}</b><span class="sub">${C[d.c].ch}</span></td><td class="mono">${d.inv}</td>
+  <td><b>${esc(d.code)}</b><span class="sub">${m?esc(m.meaning):'<span class="down">unknown</span>'}</span></td><td class="n">${fmt$(d.amt)}</td><td style="white-space:normal;min-width:220px">${esc(d.issue)}</td>
+  <td style="white-space:normal;min-width:220px">${la?`${who(la.by)} <span class="muted">${esc(la.text)}</span>`:'<span class="muted">Nothing yet</span>'}</td><td>${dedPill(d.status)}</td></tr>`}).join('')||'<tr><td colspan="8" class="muted">Nothing here.</td></tr>'}
+ </tbody></table></div>
+ <div class="grid2">
+  <section class="card"><div class="card-h"><h2>Open, by account</h2></div>${byAcct.length?bars(byAcct):'<p class="muted">Nothing open.</p>'}</section>
+  <section class="card"><div class="card-h"><h2>Codes we've figured out</h2><span class="muted">explained automatically next time</span></div><div class="list">${DCODES.map(x=>`<div class="li"><span><span class="li-t">${esc(C[x.c].name)} · ${esc(x.code)}</span><small>${esc(x.meaning)}</small></span></div>`).join('')}</div></section></div>`;
+}
+function openDed(id,keep){drawerFn=()=>openDed(id,true);const d=DEDS.find(x=>x.id===id),c=C[d.c],m=codeMeaning(d.c,d.code);
+ openDrawer(`<div class="dh"><div><span class="label">Deduction · ${esc(c.name)}</span><h1>${d.id} · ${fmt$(d.amt)}</h1><div>${dedPill(d.status)} <span class="muted">invoice ${d.inv} · taken ${dlong(d.date)}</span></div></div><button class="x" data-close aria-label="Close">×</button></div>
+ <div class="notice">Code <b>${esc(d.code)}</b>: ${m?esc(m.meaning)+'.':'not figured out yet. Once someone finds out what it means, save it below and it will be explained automatically next time.'}</div>
+ <section class="card"><h2 style="margin-bottom:8px">What happened</h2><p style="margin:0">${esc(d.issue)}</p></section>
+ <section class="card"><div class="card-h"><h2>Actions taken</h2></div><div class="timeline">${d.actions.map(a=>`<div><small>${tfmt(a.t)}</small><span>${who(a.by)} ${esc(a.text)}</span></div>`).join('')||'<p class="muted" style="margin:0">Nothing done yet.</p>'}</div></section>
+ <section class="card"><div class="card-h"><h2>Log what you did</h2></div><form class="iform" id="dedForm" data-d="${d.id}"><textarea name="text" required placeholder="e.g. Called the transport company. They agreed to cover it, refund pending." aria-label="Action taken"></textarea>
+  <div class="r2"><select name="status" aria-label="Status">${DSTAT.map(s=>`<option ${s===d.status?'selected':''}>${s}</option>`).join('')}</select>${m?'<span></span>':`<input name="meaning" placeholder="What code ${esc(d.code)} means (optional)" aria-label="What the code means">`}</div>
+  <button class="btn sm primary" type="submit">Save as ${esc(U[me].short)}</button></form></section>
+ <button class="btn" data-cust="${d.c}">Open ${esc(c.name)}</button>`,keep)}
+const invOpts=c=>S.cust[c].orders.filter(o=>!OPEN.has(o.status)).slice(-15).reverse().map(o=>`<option value="${invNo(o)}">${invNo(o)} · ${dfmt(o.date)} · ${fmt$(o.total)}</option>`).join('');
+function newDedModal(cid){const c0=cid||'gg';
+ modal.innerHTML=`<form id="newDedForm"><h2>Log a deduction</h2><p class="muted" style="margin:0;font-size:13px">Record it once. Everyone on the team can see it on the account, with every follow-up.</p>
+  <label class="field" for="ndC">Account<select id="ndC" name="c">${CUSTOMERS.map(c=>`<option value="${c.id}" ${c.id===c0?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
+  <div class="two"><label class="field" for="ndInv">Invoice<select id="ndInv" name="inv">${invOpts(c0)}</select></label><label class="field" for="ndCode">Code on the remittance<input id="ndCode" name="code" required></label></div>
+  <div class="two"><label class="field" for="ndAmt">Amount ($)<input id="ndAmt" name="amt" type="number" step="0.01" min="0.01" required></label><label class="field" for="ndDate">Date taken<input id="ndDate" name="date" type="date" value="${iso(TODAY)}" max="${iso(TODAY)}"></label></div>
+  <label class="field" for="ndIssue">What happened<textarea id="ndIssue" name="issue" required placeholder="e.g. Truck showed up 2 hours late, $600 penalty"></textarea></label>
+  <label class="field" for="ndAct">Action taken so far (optional)<input id="ndAct" name="act" placeholder="e.g. Called the transport company"></label>
+  <div class="actions"><button type="button" class="btn" data-mclose>Cancel</button><button class="btn primary" type="submit">Log deduction</button></div></form>`;
+ modal.hidden=false;document.getElementById('ndC').focus()}
+
+/* ---------- Activity log ---------- */
+let actU='all',actM='all',actQ='';
+function vActivity(){const wk=AUDIT.filter(a=>days(a.t,now())<=7),mods=[...new Set(AUDIT.map(a=>a.mod))].sort();
+ const rows=AUDIT.filter(a=>(actU==='all'||a.by===actU)&&(actM==='all'||a.mod===actM)&&(!actQ||(a.act+' '+a.rec+' '+a.detail+' '+U[a.by].name).toLowerCase().includes(actQ.toLowerCase()))).sort((a,b)=>b.t-a.t);
+ return `<div class="head"><div><span class="label">Audit trail</span><h1>Activity log</h1><p>Every action by every person leaves a footprint: who did it, when, and what changed. Entries can't be edited or deleted by anyone, including admins.</p></div><button class="btn noprint" data-actcsv>Export CSV</button></div>
+ <div class="kpis"><div class="kpi"><span class="label">Actions, last 7 days</span><span class="v">${wk.length}</span><span class="s">${wk.filter(a=>a.by==='sys').length} done automatically</span></div>
+  ${USERS.map(u=>`<div class="kpi"><span class="label">${esc(u.name)}</span><span class="v">${wk.filter(a=>a.by===u.id).length}</span><span class="s">${u.role} · last 7 days</span></div>`).join('')}</div>
+ <div class="toolbar">${[['all','Everyone'],...USERS.map(u=>[u.id,u.short]),['sys','Automatic']].map(([k,l])=>`<button class="chip" data-actu="${k}" aria-pressed="${actU===k}">${l}</button>`).join('')}
+  <select class="select" id="actMod" aria-label="Area"><option value="all">All areas</option>${mods.map(m=>`<option ${m===actM?'selected':''}>${m}</option>`).join('')}</select>
+  <input class="search" id="actSearch" type="search" placeholder="Search the log" value="${esc(actQ)}" aria-label="Search the log"></div>
+ <div class="tbl-wrap"><table><thead><tr><th>When</th><th>Who</th><th>Area</th><th>Action</th><th>Record</th><th>Detail</th></tr></thead><tbody>
+  ${rows.slice(0,200).map(a=>`<tr><td>${tfmt(a.t)}<span class="sub">${ago(a.t)}</span></td><td>${who(a.by)}</td><td>${a.mod}</td><td style="white-space:normal;min-width:200px">${esc(a.act)}</td><td>${esc(a.rec)}</td><td style="white-space:normal;min-width:220px" class="muted">${esc(a.detail)}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">No matching entries.</td></tr>'}
+ </tbody></table></div>${rows.length>200?`<p class="muted">Showing the latest 200 of ${rows.length}. Export for the rest.</p>`:''}`;
+}
+function activityCSV(){saveCSV([['When','Who','Area','Action','Record','Detail'],...AUDIT.slice().sort((a,b)=>b.t-a.t).map(a=>[a.t.toISOString(),U[a.by].name,a.mod,a.act,a.rec,a.detail])],'kings-activity-log.csv');toast(`Exported ${AUDIT.length} log entries.`)}
+
+/* ---------- Connections ---------- */
+const RK={amount:'Amount differs',missing:'Missing in QuickBooks',dup:'Entered twice in QuickBooks',match:'Matched'};
+function vConnections(){
+ const box=orders.filter(o=>o.ev.length),n=s=>box.filter(o=>o.src===s).length;
+ const bad=REC.filter(r=>r.kind!=='match'),open=bad.filter(r=>!r.ok),list=recAll?REC:bad;
+ const card=(t,st,body,meta)=>`<section class="card" style="display:flex;flex-direction:column;gap:8px"><div class="card-h" style="margin:0"><h2>${t}</h2><span class="pill good">${st}</span></div><p style="margin:0;color:var(--graphite)">${body}</p><div class="muted" style="font-size:12.5px">${meta}</div></section>`;
+ return `<div class="head"><div><span class="label">Integrations</span><h1>Connections</h1><p>Orders and invoices move in and out without anyone retyping them, and every touchpoint updates at once. In this demo the connections are simulated.</p></div></div>
+ <div class="grid2">
+  ${card('Customer portal','Live',`Customers register, see their own order guide and pricing, and order. Every order lands in the shared Orders inbox and pings the team. <a href="#portal">See what customers see</a>.`,`${CUSTOMERS.filter(c=>SRC[c.id]==='Portal').length} accounts ordering through it · ${n('Portal')} orders this week`)}
+  ${card('Orders email inbox','Reading',`POs emailed to orders@kingsvegetarianfood.ca are read and logged automatically, PDF or not. Nothing depends on one person's inbox or the spam folder.`,`${n('Email')} orders logged from email this week`)}
+  ${card('EDI','Connected',`Works with your current EDI service. Purchase orders (850) come in on their own; acknowledgements (855), ship notices (856) and invoices (810) go back out. Each one is traceable on the order.`,`Trading partners: Northline Foods, Prairie Plant Co., Greenleaf Grocers · ${n('EDI')} orders this week`)}
+  ${card('QuickBooks Online','Syncing',`Accounting stays in QuickBooks. Every invoice Anytrail issues is posted there, and a daily check compares the two so anything typed by hand that doesn't match gets caught.`,`Last check today at 6:00 am · ${REC.length} invoices compared`)}
+ </div>
+ <div class="card-h" style="margin:8px 0 -12px"><h2>QuickBooks check, last 30 days</h2><span class="muted">${REC.length-bad.length} of ${REC.length} invoices match · ${open.length} need a look</span></div>
+ <div class="toolbar"><button class="chip" data-recall aria-pressed="${recAll}">Show matched invoices too</button></div>
+ <div class="tbl-wrap"><table><thead><tr><th>Invoice</th><th>Account</th><th>Shipped</th><th class="n">In Anytrail</th><th class="n">In QuickBooks</th><th>Result</th><th></th></tr></thead><tbody>
+  ${list.map(r=>{const i=REC.indexOf(r);return `<tr><td class="mono">${invNo(r.o)}</td><td>${esc(C[r.o.c].name)}</td><td>${dfmt(r.o.date)}</td><td class="n">${fmt$(r.o.total)}</td><td class="n ${r.kind!=='match'?'down':''}">${r.kind==='missing'?'—':r.kind==='dup'?`${fmt$(r.o.total)} × 2`:fmt$(r.qb)}</td>
+  <td>${r.kind==='match'?'<span class="pill good">Matched</span>':r.ok?'<span class="pill info">Reviewed</span>':`<span class="pill bad">${RK[r.kind]}</span>`}</td><td>${r.kind!=='match'&&!r.ok?`<button class="btn sm" data-recok="${i}">Mark reviewed</button>`:''}</td></tr>`}).join('')}
+ </tbody></table></div>`;
+}
+function reviewRec(i){const r=REC[i];r.ok=true;log('Connections','Reviewed a QuickBooks mismatch',invNo(r.o),RK[r.kind]);render();toast(`${invNo(r.o)} marked reviewed.`)}
+
+/* ---------- Customer portal preview ---------- */
+let portC='lt',portAll=false,portQ={},portDone=null;
+function vPortal(){const c=C[portC],cs=S.cust[portC],ct=(CONTACTS[portC]||[]).find(x=>!x.left);
+ const guide=Object.entries(cs.pc12).sort((a,b)=>b[1]-a[1]).map(x=>x[0]),ids=portAll?PRODUCTS.map(p=>p.id):guide;
+ const lastQ=pid=>{for(let i=cs.orders.length-1;i>=0;i--){const l=cs.orders[i].lines.find(x=>x.p===pid);if(l)return{q:l.qty,d:cs.orders[i].date}}return null};
+ const tot=sum(Object.entries(portQ).map(([p,q])=>q*P[p].price));
+ return `<div class="head"><div><span class="label">What your customers see</span><h1>Customer portal</h1><p>Invite each account to register. They log in, see their own order guide and pricing, and place the order. It lands in the shared Orders inbox and pings the team, and the buyer gets a confirmation email.</p></div>
+  <div class="toolbar"><label class="label" for="portSel">Preview as</label><select class="select" id="portSel">${CUSTOMERS.filter(x=>x.ch!=='Distribution'&&x.id!=='rc').map(x=>`<option value="${x.id}" ${x.id===portC?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div></div>
+ <div class="portal"><div class="portal-bar"><b>King's Vegetarian Food · Wholesale ordering</b><span>Signed in: ${esc(ct?ct.n:'Buyer')} · ${esc(c.name)}</span></div>
+ <div class="portal-body">
+  ${portDone?`<div class="ok-box"><b>Order ${portDone} received.</b><span>King's team has been notified and will email a confirmation to ${buyerEmail(portC)}.</span><a href="#orders" class="btn sm">See it in King's Orders inbox →</a></div>`:''}
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap"><div><h2>Your order guide</h2><span class="muted" style="font-size:13px">${guide.length} products you buy · your prices · net ${c.terms} terms</span></div><label class="check" for="portAll"><input type="checkbox" id="portAll" ${portAll?'checked':''}>Show the full catalogue</label></div>
+  <form id="portalForm" style="display:flex;flex-direction:column;gap:16px">
+  <div class="tbl-wrap"><table style="min-width:600px"><thead><tr><th>Product</th><th class="n">Your price</th><th>Last ordered</th><th class="n">Cases</th></tr></thead><tbody>
+   ${ids.map(pid=>{const p=P[pid],lq=lastQ(pid);return `<tr><td><span class="pcell">${thumb(p)}<span><b>${esc(p.name)}</b><span class="sub">${p.pack}</span></span></span></td><td class="n">${fmt$(p.price)} / case</td><td>${lq?`${lq.q} cs · ${dfmt(lq.d)}`:'<span class="muted">—</span>'}</td><td class="n"><input class="qty" type="number" min="0" step="1" data-pq="${pid}" value="${portQ[pid]||''}" placeholder="0" aria-label="Cases of ${esc(p.name)}"></td></tr>`}).join('')}
+  </tbody></table></div>
+  <div class="assume"><label for="portPo">Your PO number<input id="portPo" name="po" placeholder="Optional"></label><label for="portDate">Requested delivery<input id="portDate" name="date" type="date" value="${iso(addDays(TODAY,c.lead+1))}" min="${iso(addDays(TODAY,1))}"></label><label for="portTot">Order total<input id="portTot" value="${fmt$(tot)}" disabled></label><label style="justify-content:flex-end"><button class="btn primary" type="submit" style="align-self:stretch;justify-content:center">Place order</button></label></div>
+  </form></div></div>`;
+}
+
 /* ---------- drawer, modal, routing ---------- */
 const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim'),modal=document.getElementById('modal');
-function openDrawer(html){
- charts=charts.filter(c=>!c.inDrawer);const start=charts.length;
- drawer.innerHTML=html;charts.slice(start).forEach(c=>c.inDrawer=true);
- drawer.classList.add('on');scrim.classList.add('on');drawer.setAttribute('aria-hidden','false');drawer.scrollTop=0;
- drawCharts();drawer.querySelector('.x').focus();
+function openDrawer(html,keep){const st=drawer.scrollTop;
+ drawer.innerHTML=html;
+ charts=charts.filter(c=>document.getElementById(c.id));charts.forEach(c=>{if(drawer.contains(document.getElementById(c.id)))c.inDrawer=true});
+ drawer.classList.add('on');scrim.classList.add('on');drawer.setAttribute('aria-hidden','false');drawer.scrollTop=keep?st:0;
+ drawCharts();if(!keep)drawer.querySelector('.x').focus();
 }
-function closeDrawer(){drawer.classList.remove('on');scrim.classList.remove('on');drawer.setAttribute('aria-hidden','true');charts=charts.filter(c=>!c.inDrawer)}
+function closeDrawer(){drawer.classList.remove('on');scrim.classList.remove('on');drawer.setAttribute('aria-hidden','true');charts=charts.filter(c=>!c.inDrawer);drawerFn=null}
+function refreshDrawer(){if(drawer.classList.contains('on')&&drawerFn)drawerFn()}
 scrim.onclick=closeDrawer;
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(!modal.hidden)modal.hidden=true;else closeDrawer()}
- if(e.key==='Enter'&&e.target.matches('tr[data-cust],tr[data-prod]'))e.target.click()});
+ if(e.key==='Enter'&&e.target.matches('tr[data-cust],tr[data-prod],tr[data-po],tr[data-ded]'))e.target.click()});
 
-const views={overview:vOverview,reports:vReports,customers:vCustomers,products:vProducts,forecast:vForecast,cash:vCash,pipeline:vPipeline};
+const views={overview:vOverview,orders:vOrders,inventory:vInventory,customers:vCustomers,retail:vRetail,deductions:vDeductions,pipeline:vPipeline,
+ products:vProducts,forecast:vForecast,reports:vReports,cash:vCash,activity:vActivity,connections:vConnections,portal:vPortal};
 let current='overview';
 function render(){
  const h=location.hash.slice(1);current=Object.hasOwn(views,h)?h:'overview';
  renderNav(current);charts=charts.filter(c=>c.inDrawer);
  document.getElementById('main').innerHTML=`<div class="wrap">${views[current]()}</div>`;
- if(current==='cash'){
-  document.querySelectorAll('[data-ca]').forEach(el=>el.onchange=()=>{const k=el.dataset.ca;CA[k]=el.type==='checkbox'?el.checked:el.type==='date'?el.value:Math.max(0,+el.value||0);render()});
- }
  if(current==='reports'){
-  document.getElementById('repSel').onchange=e=>{repId=e.target.value;render()};
   document.getElementById('csvBtn').onclick=downloadCSV;
   document.getElementById('printBtn').onclick=()=>window.print();
  }
@@ -924,48 +1624,115 @@ addEventListener('hashchange',()=>{render();scrollTo(0,0)});
 addEventListener('beforeprint',()=>document.querySelectorAll('[data-print="show"]').forEach(el=>{el.dataset.wasHidden=el.hidden;el.hidden=false}));
 addEventListener('afterprint',()=>document.querySelectorAll('[data-print="show"]').forEach(el=>{el.hidden=el.dataset.wasHidden==='true'}));
 
-document.addEventListener('click',e=>{
- const t=e.target.closest('[data-cust],[data-prod],[data-type],[data-cat],[data-sort],[data-fcby],[data-repby],[data-arf],[data-move],[data-close]');if(!t)return;
- if(t.dataset.close!=null)return closeDrawer();
- if(t.dataset.cust)return openCustomer(t.dataset.cust);
- if(t.dataset.prod)return openProduct(t.dataset.prod);
- if(t.dataset.type){custFilter=t.dataset.type;return render()}
- if(t.dataset.cat){prodCat=t.dataset.cat;return render()}
- if(t.dataset.sort){custSort=t.dataset.sort;return render()}
- if(t.dataset.fcby){fcBy=t.dataset.fcby;return render()}
- if(t.dataset.repby){repBy=t.dataset.repby;return render()}
- if(t.dataset.arf){CA.arFilter=t.dataset.arf;return render()}
- if(t.dataset.move){const d=deals.find(x=>x.id==t.dataset.move);d.stage=Math.min(4,Math.max(0,d.stage+ +t.dataset.dir));render();if(d.stage===4)toast(`${d.acct} marked won: ${fmt$(d.v)}/mo added.`)}
+function moveDeal(id,dir){const d=deals.find(x=>x.id==id),from=d.stage;d.stage=Math.min(4,Math.max(0,d.stage+dir));
+ if(d.stage!==from)log('Pipeline','Moved deal',d.acct,`${STAGES[from][0]} → ${STAGES[d.stage][0]}`);
+ render();if(d.stage===4&&from!==4)toast(`${d.acct} marked won: ${fmt$(d.v)}/mo added.`)}
+const ACT={
+ rclose:()=>document.getElementById('ripple').classList.remove('on'),
+ mclose:()=>{modal.hidden=true},
+ close:()=>closeDrawer(),
+ adv:v=>advance(v),
+ recok:v=>reviewRec(+v),
+ recall:()=>{recAll=!recAll;render()},
+ lotact:v=>lotAction(v),
+ run:v=>scheduleRun(v),
+ recv:v=>receiveRun(v),
+ unhold:v=>{P[v].hold=false;log('Products','Lifted reorder hold',P[v].name);render();refreshDrawer();toast(`${P[v].name} is back in the production forecast.`)},
+ newded:v=>newDedModal(v||null),
+ sim:v=>simulate(v),
+ actcsv:()=>activityCSV(),
+ move:(v,t)=>moveDeal(v,+t.dataset.dir),
+ po:v=>openPO(v),
+ ded:v=>openDed(v),
+ cust:v=>openCustomer(v),
+ prod:v=>openProduct(v),
+ ordf:v=>{ordF=v;render()},
+ invf:v=>{invF=v;render()},
+ dedf:v=>{dedF=v;render()},
+ actu:v=>{actU=v;render()},
+ ch:v=>{custFilter=v;render()},
+ cat:v=>{prodCat=v;render()},
+ prange:v=>{prodRange=+v;render()},
+ pdr:v=>{pdRange=+v;refreshDrawer()},
+ sort:v=>{custSort=v;render()},
+ fcby:v=>{fcBy=v;render()},
+ fcunit:v=>{fcUnit=v;render()},
+ repby:v=>{repBy=v;render()},
+ repch:v=>{repCh=v;render()},
+ arf:v=>{CA.arFilter=v;render()},
+};
+const ACT_SEL=Object.keys(ACT).map(k=>`[data-${k}]`).join(',');
+document.addEventListener('click',e=>{const t=e.target.closest(ACT_SEL);if(!t)return;
+ for(const k in ACT)if(t.dataset[k]!=null){ACT[k](t.dataset[k],t);return}});
+const refocus=id=>{const s=document.getElementById(id);if(s){s.focus();s.setSelectionRange(s.value.length,s.value.length)}};
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.id==='custSearch'){custQ=t.value;render();refocus('custSearch')}
+ else if(t.id==='actSearch'){actQ=t.value;render();refocus('actSearch')}
+ else if(t.id==='chkQ'){chkQ=Math.max(0,Math.floor(+t.value||0));updStock()}
+ else if(t.dataset.pq){const q=Math.max(0,Math.floor(+t.value||0));if(q)portQ[t.dataset.pq]=q;else delete portQ[t.dataset.pq];
+  document.getElementById('portTot').value=fmt$(sum(Object.entries(portQ).map(([p,q])=>q*P[p].price)))}
 });
-document.addEventListener('input',e=>{if(e.target.id==='custSearch'){custQ=e.target.value;render();const s=document.getElementById('custSearch');s.focus();s.setSelectionRange(custQ.length,custQ.length)}});
+document.addEventListener('change',e=>{const t=e.target;
+ if(t.id==='meSel'){me=t.value;render();refreshDrawer();toast(`Signed in as ${U[me].name}. Everything from here is logged under that name.`)}
+ else if(t.id==='repSel'){repId=t.value;render()}
+ else if(t.dataset.ca!=null){const k=t.dataset.ca;CA[k]=t.type==='checkbox'?t.checked:t.type==='date'?t.value:Math.max(0,+t.value||0);render()}
+ else if(t.dataset.fc){if(t.dataset.fc==='lead')LEADM=+t.value;else SAFETY=Math.max(0,Math.min(100,+t.value||0));render()}
+ else if(t.id==='prodChSel'){prodCh=t.value;render()}
+ else if(t.id==='actMod'){actM=t.value;render()}
+ else if(t.id==='portSel'){portC=t.value;portQ={};portDone=null;render()}
+ else if(t.id==='portAll'){portAll=t.checked;render()}
+ else if(t.id==='chkP'){chkP=t.value;updStock()}
+ else if(t.id==='ndC'){document.getElementById('ndInv').innerHTML=invOpts(t.value)}
+});
+const short=s=>s.length>90?s.slice(0,88)+'…':s;
+document.addEventListener('submit',e=>{const f=e.target,fd=new FormData(f),g=k=>String(fd.get(k)||'').trim();
+ if(f.id==='noteForm'){e.preventDefault();const c=f.dataset.c,text=g('text');if(!text)return;const type=g('type');
+  NOTES.push({c,t:now(),by:me,type,text});log('Accounts',`Added a ${type.toLowerCase()} note`,C[c].name,short(text));
+  render();refreshDrawer();toast('Note saved. Anyone who opens this account will see it.')}
+ else if(f.id==='contactForm'){e.preventDefault();const c=f.dataset.c,n=g('n');if(!n)return;
+  CONTACTS[c].unshift({n,r:g('r'),ph:g('ph'),best:g('best'),since:'Nov 2026'});log('Accounts','Added a contact',C[c].name,`${n}${g('r')?', '+g('r'):''}`);
+  refreshDrawer();toast(`${n} added to ${C[c].name}.`)}
+ else if(f.id==='dedForm'){e.preventDefault();const d=DEDS.find(x=>x.id===f.dataset.d),text=g('text'),st=g('status'),mean=g('meaning');if(!text)return;
+  const old=d.status;d.actions.push({t:now(),by:me,text});d.status=st;
+  log('Deductions',old!==st?`Updated a deduction: ${old} → ${st}`:'Updated a deduction',`${d.id} · ${C[d.c].name}`,short(text));
+  if(mean){DCODES.push({c:d.c,code:d.code,meaning:mean});log('Deductions','Explained a deduction code',`${C[d.c].name} · ${d.code}`,mean)}
+  render();refreshDrawer();toast(`${d.id} updated${old!==st?`: ${st}`:''}.`)}
+ else if(f.id==='newDedForm'){e.preventDefault();const c=g('c'),code=g('code'),amt=+g('amt'),issue=g('issue'),act=g('act');if(!code||!amt||!issue)return;
+  const m=codeMeaning(c,code),[y,mo,dd]=g('date').split('-').map(Number);
+  const d={id:'DED-'+(1040+DEDS.length),c,date:new Date(y,mo-1,dd,now().getHours(),now().getMinutes()),inv:g('inv')||'—',code,amt,issue,status:act?'Investigating':m?'Investigating':'Unexplained',actions:act?[{t:now(),by:me,text:act}]:[]};
+  DEDS.unshift(d);log('Deductions','Logged a deduction',`${d.id} · ${C[c].name}`,`${fmt$(amt)} on ${d.inv}, code ${code}`);
+  modal.hidden=true;render();refreshDrawer();toast(m?`Logged ${d.id}. Code ${code} at ${C[c].name} means: ${m.meaning}.`:`Logged ${d.id}. Code ${code} is new for ${C[c].name}, so it's marked unexplained.`)}
+ else if(f.id==='portalForm'){e.preventDefault();
+  const lines=Object.entries(portQ).filter(([,q])=>q>0).map(([p,q])=>({p,qty:q,price:P[p].price}));
+  if(!lines.length){toast('Add a case count to at least one product.');return}
+  const ct=(CONTACTS[portC]||[]).find(x=>!x.left),dt=g('date');
+  const o=newOrder(portC,lines,'Portal',g('po')?`Portal PO ${g('po')}`:null,'sys',{note:`Placed by ${ct?ct.n:'the buyer'}${dt?`, delivery requested for ${dfmt(new Date(dt+'T00:00'))}`:''}`});
+  portQ={};portDone=o.id;render()}
+});
 
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3600)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),4200)}
 document.getElementById('logBtn').onclick=()=>{
  const due=Object.values(S.cust).filter(c=>c.sev===2).sort((a,b)=>b.rev12-a.rev12)[0];
  const popts=sel=>CATS.map(cat=>`<optgroup label="${esc(cat)}">${PRODUCTS.filter(p=>p.cat===cat).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name)}</option>`).join('')}</optgroup>`).join('');
- modal.innerHTML=`<form id="orderForm"><h2>Log an order</h2><p class="muted" style="margin:0;font-size:13px">In production, orders arrive automatically from your invoices or accounting system.</p>
+ modal.innerHTML=`<form id="orderForm"><h2>Take a phone order</h2><p class="muted" style="margin:0;font-size:13px">It goes into the shared Orders inbox, already claimed by you, and updates stock, the forecast and cash flow right away.</p>
   <label class="field" for="oc">Customer<select id="oc">${CUSTOMERS.map(c=>`<option value="${c.id}" ${due&&c.id===due.c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
-  <label class="field" for="od">Order date<input id="od" type="date" value="${iso(TODAY)}" min="2026-11-01" max="${iso(TODAY)}"></label>
+  <label class="field" for="opo">Customer's PO number (optional)<input id="opo" placeholder="e.g. 7731"></label>
   <div class="field">Products and cases<div class="lines">
    <select id="op1" aria-label="Product 1">${popts('chb')}</select><input id="oq1" type="number" min="0" value="6" aria-label="Cases 1">
    <select id="op2" aria-label="Product 2">${popts('bbq')}</select><input id="oq2" type="number" min="0" value="4" aria-label="Cases 2">
    <select id="op3" aria-label="Product 3">${popts('hkb')}</select><input id="oq3" type="number" min="0" value="0" aria-label="Cases 3"></div></div>
-  <div class="actions"><button type="button" class="btn" id="oCancel">Cancel</button><button class="btn primary" type="submit">Log order</button></div></form>`;
+  <div class="actions"><button type="button" class="btn" data-mclose>Cancel</button><button class="btn primary" type="submit">Log order</button></div></form>`;
  modal.hidden=false;document.getElementById('oc').focus();
- document.getElementById('oCancel').onclick=()=>modal.hidden=true;
  document.getElementById('orderForm').onsubmit=e=>{e.preventDefault();
-  const lines=[1,2,3].map(i=>({p:document.getElementById('op'+i).value,qty:+document.getElementById('oq'+i).value||0})).filter(l=>l.qty>0).map(l=>({...l,price:P[l.p].price}));
+  const lines=[1,2,3].map(i=>({p:document.getElementById('op'+i).value,qty:Math.floor(+document.getElementById('oq'+i).value||0)})).filter(l=>l.qty>0).map(l=>({...l,price:P[l.p].price}));
   if(!lines.length){toast('Add at least one product with a case count.');return}
-  const [y,m,d]=document.getElementById('od').value.split('-').map(Number);const cid=document.getElementById('oc').value;
-  const before=S.cust[cid].status;const total=sum(lines.map(l=>l.qty*l.price));
-  const no={id:'SO-'+(24100+orders.length),c:cid,date:new Date(y,m-1,d||TODAY.getDate()),lines,total};settle(no,false);orders.push(no);
-  compute();modal.hidden=true;render();
-  toast(`Logged ${fmt$(total)} for ${C[cid].name}. Status: ${before} → ${S.cust[cid].status}.`);
+  const po=document.getElementById('opo').value.trim();
+  modal.hidden=true;newOrder(document.getElementById('oc').value,lines,'Phone',po?`Phone order, PO ${po}`:null,me,{claim:true});
  };
 };
 modal.addEventListener('click',e=>{if(e.target===modal)modal.hidden=true});
 
-compute();render();
+seedOrders();compute();initInventory();seedRest();render();
 </script>
 </body>
 </html>

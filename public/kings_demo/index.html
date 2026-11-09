@@ -245,9 +245,9 @@ let seed=2468;
 const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
 const gauss=()=>{let u=0;while(!u)u=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*rnd())};
 const sum=a=>a.reduce((x,y)=>x+y,0), avg=a=>a.length?sum(a)/a.length:0;
-const TODAY=new Date(2026,10,8);
+const TODAY=new Date(2026,10,9);
 const DATA_START=new Date(2024,10,1);
-const TOMORROW=new Date(2026,10,9); // current periods include today's orders
+const TOMORROW=new Date(2026,10,10); // current periods include today's orders
 const N=24, H=6; // actual: Nov 2024 – Oct 2026; forecast: Nov 2026 – Apr 2027
 const monthDate=i=>new Date(2024,10+i,1);
 const monthIdx=d=>(d.getFullYear()-2024)*12+d.getMonth()-10;
@@ -354,7 +354,7 @@ let orders=[];
    let n=c.freq*Math.sqrt(s);n=Math.max(1,Math.floor(n)+(rnd()<n%1?1:0));
    for(let k=0;k<n;k++){
     const day=1+Math.floor(rnd()*dim);
-    if(m===N&&day>7)continue;
+    if(m===N&&day>=TODAY.getDate())continue;
     const value=target/n;
     const cand=Object.entries(c.mix).map(([pid,w])=>{const p=P[pid];let wt=w*(p.tag?PSEASON[p.tag][cal]:1)*Math.pow(1+(p.trend||0),m);
       if(c.drop&&c.drop[pid]!=null&&m>c.drop[pid])wt=0;return{pid,wt}}).filter(x=>x.wt>0);
@@ -536,7 +536,7 @@ function vOverview(){
  const catRows=CATS.map(cat=>{const ps=Object.values(S.prod).filter(p=>p.p.cat===cat);const v=sum(ps.map(p=>p.rev12)),pv=sum(ps.map(p=>p.revPrev));return{label:cat,v,right:`${fmtK(v)} <span class="${dcls(pv?v/pv-1:null)}">${pv?pct(v/pv-1):'new'}</span>`}}).sort((a,b)=>b.v-a.v);
  const mtdRep=report(periodById('m-24'));
  return `
- <div class="head"><div><span class="label">Sunday, November 8, 2026</span><h1>Good morning. Here's where sales stand.</h1>
+ <div class="head"><div><span class="label">${TODAY.toLocaleDateString("en-CA",{weekday:"long",month:"long",day:"numeric",year:"numeric"})}</span><h1>Good morning. Here's where sales stand.</h1>
  <p>${attn.filter(c=>c.sev>=2).length} accounts need a call this week. November is pacing toward ${fmtK(mtdRep.projection)} against a forecast of ${fmtK(S.fc.f[0])}. Cash is projected at ${fmtK(cashModel().bal[days(TODAY,new Date(2026,11,31))])} on December 31.</p></div>
  <a class="btn noprint" href="#reports">Open this month's report</a></div>
  ${notice}

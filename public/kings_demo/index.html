@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#fefdf6">
+<title>King's Sales Desk · Anytrail</title>
+<link rel="icon" href="/anytrail-mark.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:wght@300..800&family=Montserrat:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Anytrail "Quote Sheet" system (see DESIGN.md): cream paper, hairline rules, ink actions,
+   moss only for confirmed/healthy state. Layout: left rail of views, working canvas, slide-in drawer. */
+:root{
+  --bg:#fefdf6; --card:#ffffff; --tint:#f6f4ea; --line:#e7e2d1;
+  --ink:#000000; --ink-soft:#1f1f1f; --text:#111827; --graphite:#6b7280; --ash:#78716c;
+  --moss:#2f6f4f; --moss-soft:#e8f0eb;
+  --amber:#8a5a12; --amber-soft:#f5ecd8; --brick:#9b3b2a; --brick-soft:#f5e4df;
+  --sans:"Funnel Sans", system-ui, "Segoe UI", Roboto, sans-serif;
+  --display:"Funnel Display", "Funnel Sans", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img{max-width:100%}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
+h1{font-size:30px;line-height:36px;letter-spacing:-.6px}
+h2{font-size:18px;line-height:24px;letter-spacing:-.2px}
+.num,td.n,.mono{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono);font-size:12.5px}
+.muted{color:var(--graphite)}
+.label{font-size:12px;line-height:16px;text-transform:uppercase;letter-spacing:.08em;color:var(--ash)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
+a{color:inherit}
+
+.app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:24px;border-right:1px solid var(--line);
+  padding-block:22px;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:18px}
+.lockup{display:flex;align-items:center;gap:9px;text-decoration:none}
+.lockup img{width:26px;height:26px}
+.lockup span{font-family:Montserrat,var(--sans);font-weight:300;font-size:19px;letter-spacing:.01em;color:var(--text)}
+.client{display:flex;flex-direction:column;gap:2px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.client b{font-weight:600;font-size:14.5px}
+.client small{color:var(--graphite);font-size:12.5px}
+nav{display:flex;flex-direction:column;gap:2px}
+nav a{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:6px;text-decoration:none;color:var(--graphite);transition:background-color .2s ease-out}
+nav a:hover{background:var(--tint);color:var(--text)}
+nav a[aria-current="page"]{background:var(--card);color:var(--text);box-shadow:inset 0 0 0 1px var(--line)}
+nav .count{font-size:11.5px;font-variant-numeric:tabular-nums;background:var(--amber-soft);color:var(--amber);padding:1px 8px;border-radius:999px}
+.side-foot{margin-top:auto;font-size:12.5px;color:var(--ash);line-height:1.5}
+.btn{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;border:1px solid var(--line);background:var(--card);padding:9px 14px;border-radius:6px;font-size:14px;line-height:1;transition:background-color .2s ease-out;white-space:nowrap}
+.btn:hover{background:var(--tint)}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.primary:hover{background:var(--ink-soft)}
+.btn.sm{padding:6px 10px;font-size:12.5px}
+.btn:disabled{opacity:.4;cursor:default}
+
+main{min-width:0;padding-block:32px 80px;padding-left:max(16px,min(44px,4vw));padding-right:max(16px,env(safe-area-inset-right,0px),min(44px,4vw))}
+.wrap{max-width:1180px;display:flex;flex-direction:column;gap:24px}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.head>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.head p{margin:0;color:var(--graphite);font-size:15px;max-width:620px}
+.notice{font-size:13px;color:var(--graphite);border-left:2px solid var(--line);padding:2px 0 2px 14px;max-width:820px}
+.notice b{color:var(--text);font-weight:600}
+
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpis.k5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.kpi .v{font-family:var(--display);font-size:26px;line-height:32px;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12.5px;color:var(--graphite)}
+.up{color:var(--moss)} .down{color:var(--brick)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;min-width:0}
+.card-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.legend{display:flex;gap:16px;font-size:12.5px;color:var(--graphite);flex-wrap:wrap}
+.legend i{display:inline-block;width:16px;height:0;border-top:2px solid;vertical-align:middle;margin-right:6px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+
+.chart{position:relative;width:100%}
+.chart svg{display:block;overflow:visible}
+.chart text{font-family:var(--sans);font-size:11px;fill:var(--ash);font-variant-numeric:tabular-nums}
+.tip{position:absolute;pointer-events:none;background:var(--text);color:#fff;font-size:12.5px;padding:6px 10px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-100%);top:0;z-index:2}
+.tip b{font-weight:600}
+
+.list{display:flex;flex-direction:column}
+.li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border:0;border-top:1px solid var(--line);text-align:left;background:none;width:100%}
+.li:first-child{border-top:0}
+button.li:hover .li-t{text-decoration:underline;text-underline-offset:3px}
+.li-t{font-weight:600}
+.li small{display:block;color:var(--graphite);font-size:12.5px;font-weight:400}
+
+.pill{display:inline-block;font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.pill.good{color:var(--moss);background:var(--moss-soft)}
+.pill.warn{color:var(--amber);background:var(--amber-soft)}
+.pill.bad{color:var(--brick);background:var(--brick-soft)}
+.pill.info{color:var(--graphite);background:var(--tint);box-shadow:inset 0 0 0 1px var(--line)}
+
+.bars{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 12px;font-size:13.5px}
+.bar-row>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-row .track{grid-column:1/-1;height:6px;background:var(--tint);border-radius:3px;overflow:hidden}
+.bar-row .fill{height:100%;background:var(--text);border-radius:3px}
+.bar-row .fill.alt{background:var(--graphite)}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:var(--card);padding:6px 12px;border-radius:999px;font-size:13px;color:var(--graphite);transition:background-color .2s ease-out}
+.chip:hover{background:var(--tint)}
+.chip[aria-pressed="true"]{background:var(--text);color:#fff;border-color:var(--text)}
+.search,.select{border:1px solid var(--line);background:var(--card);color:var(--text);padding:8px 11px;border-radius:6px;font:inherit;min-width:0;max-width:100%}
+.search{width:230px}
+
+.tbl-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:10px 16px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ash);font-weight:400;background:var(--tint)}
+th.n,td.n{text-align:right}
+th button{background:none;border:0;padding:0;font:inherit;text-transform:inherit;letter-spacing:inherit;color:inherit}
+th button[aria-sort]{color:var(--text)}
+th button[aria-sort]::after{content:" ↓"}
+tbody tr[data-cust],tbody tr[data-prod]{cursor:pointer}
+tbody tr[data-cust]:hover,tbody tr[data-prod]:hover{background:var(--bg)}
+tbody tr:last-child td{border-bottom:0}
+td .sub{display:block;font-size:12.5px;color:var(--graphite)}
+td b{font-weight:600}
+tr.total td{font-weight:600;background:var(--tint)}
+td.fc{color:var(--graphite)}
+.pcell{display:flex;align-items:center;gap:12px}
+.thumb{width:38px;height:38px;border-radius:6px;object-fit:cover;background:var(--tint);border:1px solid var(--line);flex:none}
+
+.method{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.method div{font-size:14px;color:var(--graphite);display:flex;flex-direction:column;gap:6px}
+.method b{color:var(--text);font-weight:600;display:flex;align-items:center;gap:10px}
+.step{width:26px;height:26px;border-radius:50%;background:var(--moss-soft);color:var(--moss);display:inline-grid;place-items:center;font-size:13px;flex:none}
+
+.board{display:grid;grid-template-columns:repeat(5,minmax(214px,1fr));gap:12px;overflow-x:auto;padding-bottom:6px}
+.col{background:var(--tint);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.col-h{display:flex;flex-direction:column;font-size:12.5px;padding:2px 4px 6px;color:var(--graphite)}
+.col-h b{font-size:14px;color:var(--text);font-weight:600}
+.deal{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 13px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.deal .t{font-weight:600;font-size:14px}
+.deal .row{display:flex;justify-content:space-between;align-items:center;gap:6px}
+
+.scrim{position:fixed;inset:0;background:rgba(17,24,39,.28);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(640px,100%);background:var(--bg);border-left:1px solid var(--line);z-index:21;overflow-y:auto;transform:translateX(102%);transition:transform .28s cubic-bezier(.16,1,.3,1);
+  padding-top:calc(22px + env(safe-area-inset-top,0px));padding-bottom:calc(36px + env(safe-area-inset-bottom,0px));padding-left:22px;padding-right:max(22px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:16px}
+.drawer.on{transform:none}
+.dh{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.dh>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.dh .hero-img{width:84px;height:84px;border-radius:12px;object-fit:cover;border:1px solid var(--line);background:var(--tint)}
+.x{border:1px solid var(--line);background:var(--card);width:34px;height:34px;border-radius:6px;flex:none;font-size:18px;line-height:1}
+.mini{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.mini div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.mini b{display:block;font-family:var(--display);font-weight:400;font-size:19px;font-variant-numeric:tabular-nums}
+.mini span{font-size:12px;color:var(--graphite)}
+.next{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.next ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.next li{display:flex;justify-content:space-between;gap:10px}
+
+.modal{position:fixed;inset:0;display:grid;place-items:center;z-index:30;padding:16px;background:rgba(17,24,39,.32)}
+.modal form{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;width:min(480px,100%);display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:5px;font-size:13px;font-weight:600}
+.field select,.field input{font:inherit;font-weight:400;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);min-width:0;width:100%}
+.lines{display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:8px}
+.actions{display:flex;justify-content:flex-end;gap:8px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--text);color:#fff;padding:11px 18px;border-radius:999px;font-size:13.5px;opacity:0;transition:.25s;z-index:40;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+.rep-head{display:flex;flex-direction:column;gap:6px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.rep-meta{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--graphite)}
+details.card summary{cursor:pointer;font-family:var(--display);font-size:18px}
+details.card[open] summary{margin-bottom:12px}
+.print-only{display:none}
+
+@media (max-width:1080px){.kpis.k5{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:1000px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:1fr 1fr}.grid3>:last-child{grid-column:1/-1}.method{grid-template-columns:1fr}}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);gap:12px;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .client{display:none}
+  nav{flex-direction:row;overflow-x:auto;gap:4px}
+  nav a{white-space:nowrap;gap:6px}
+  .side-foot{display:none}
+  main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+}
+@media (max-width:700px){.grid3,.grid2{grid-template-columns:1fr}.grid3>:last-child{grid-column:auto}.kpis.k5{grid-template-columns:repeat(2,minmax(0,1fr))}.mini{grid-template-columns:1fr 1fr}.kpi .v{font-size:22px;line-height:28px}h1{font-size:26px;line-height:32px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  @page{margin:14mm}
+  body{background:#fff;font-size:11.5px}
+  .side,.noprint,.scrim,.drawer,.toast,.modal{display:none!important}
+  .app{display:block}
+  main{padding:0}
+  .wrap{max-width:none;gap:14px}
+  .print-only{display:block}
+  .card,.kpi,.tbl-wrap{break-inside:avoid;border-color:#ddd}
+  .tbl-wrap{overflow:visible}
+  table{min-width:0}
+  th,td{padding:5px 8px}
+  details.card>*{display:block}
+  .kpis.k5{grid-template-columns:repeat(5,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <a class="lockup" href="https://www.anytrail.ai/" aria-label="Anytrail home"><img src="/anytrail-mark.png" alt=""><span>Anytrail</span></a>
+    <div class="client"><span class="label">Workspace</span><b>King's Vegetarian Food</b><small>Sales desk · Mississauga, ON</small></div>
+    <nav id="nav" aria-label="Views"></nav>
+    <button class="btn primary" id="logBtn" type="button">+ Log an order</button>
+    <div class="side-foot">Demo workspace with sample orders.<br>Built by Anytrail for King's Vegetarian Food.</div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+<div class="modal" id="modal" hidden></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- helpers ---------- */
+let seed=2468;
+const rnd=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+const gauss=()=>{let u=0;while(!u)u=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*rnd())};
+const sum=a=>a.reduce((x,y)=>x+y,0), avg=a=>a.length?sum(a)/a.length:0;
+const TODAY=new Date(2026,10,8);
+const DATA_START=new Date(2024,10,1);
+const TOMORROW=new Date(2026,10,9); // current periods include today's orders
+const N=24, H=6; // actual: Nov 2024 – Oct 2026; forecast: Nov 2026 – Apr 2027
+const monthDate=i=>new Date(2024,10+i,1);
+const monthIdx=d=>(d.getFullYear()-2024)*12+d.getMonth()-10;
+const mName=i=>monthDate(i).toLocaleString('en-CA',{month:'short'}).replace('.','');
+const mLabel=i=>mName(i)+" '"+String(monthDate(i).getFullYear()).slice(2);
+const days=(a,b)=>Math.round((b-a)/864e5);
+const dfmt=d=>d.toLocaleDateString('en-CA',{month:'short',day:'numeric'});
+const dlong=d=>d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'});
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const fmt$=v=>'$'+Math.round(v).toLocaleString('en-CA');
+const fmtK=v=>{const a=Math.abs(v),s=v<0?'-':'';return s+'$'+(a>=1e6?(a/1e6).toFixed(2)+'M':a>=1e4?Math.round(a/1e3)+'k':a>=1e3?(a/1e3).toFixed(1)+'k':Math.round(a))};
+const pct=v=>v==null||!isFinite(v)?'—':(v>0?'+':'')+Math.round(v*100)+'%';
+const dcls=v=>v==null||!isFinite(v)?'':v>=0.005?'up':v<=-0.005?'down':'';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- catalogue: every product listed on kingsvegetarianfood.ca/products (case packs & prices illustrative) ---------- */
+const IMG='https://kingsvegetarianfood.ca/wp-content/uploads/';
+const PRODUCTS=[
+ {id:'srw',name:'Sticky Rice Wrap',cat:'Vegan Appetizers',pack:'12 × 6 pc',price:48,img:'2021/04/sticky_rice_wrap-300x300.jpg'},
+ {id:'jks',name:'Vegan Spicy Jerky',cat:'Vegan Appetizers',pack:'24 × 100 g',price:62,img:'2021/05/vegan_jerky_spicy_2-300x300.jpg'},
+ {id:'jky',name:'Vegan Jerky',cat:'Vegan Appetizers',pack:'24 × 100 g',price:62,img:'2021/05/vegan_jerky_original_2-300x300.jpg'},
+ {id:'bac',name:'Vegan Bacon',cat:'Vegan Beef & Vegan Pork',pack:'12 × 200 g',price:46,trend:-.03,img:'2021/01/vegan_bacon-300x300.jpg'},
+ {id:'bbq',name:'Vegan BBQ Pork',cat:'Vegan Beef & Vegan Pork',pack:'12 × 300 g',price:56,img:'2017/02/vegan_bbq_pork_3-300x300.jpg'},
+ {id:'bfb',name:'Vegan Beefy Bites',cat:'Vegan Beef & Vegan Pork',pack:'12 × 300 g',price:54,img:'2021/01/vegan_beefy_bites-300x300.jpg'},
+ {id:'bur',name:'Vegan Shiitake Burger',cat:'Vegan Beef & Vegan Pork',pack:'24 × 113 g',price:64,tag:'bbq',img:'2017/01/vegan_burger_3-300x300.jpg'},
+ {id:'mut',name:'Vegan Mutton Bites',cat:'Vegan Beef & Vegan Pork',pack:'12 × 300 g',price:58,tag:'warm',img:'2021/01/vegan_mutton_bites-300x300.jpg'},
+ {id:'wel',name:"Plant-based King's Wellington",cat:'Vegan Beef & Vegan Pork',pack:'6 × 800 g',price:84,tag:'holiday',isNew:true,img:'2022/10/kings_wellington_plant-based-3-300x300.jpg'},
+ {id:'rib',name:'Plant-based Sweet & Sour Ribs',cat:'Vegan Beef & Vegan Pork',pack:'12 × 300 g',price:60,isNew:true,img:'2022/01/plant-based_sweetsour_ribs-3-300x300.jpg'},
+ {id:'omg',name:'OMNI Ground Beef',cat:'Vegan Beef & Vegan Pork',pack:'12 × 230 g',price:58,trend:.02,isNew:true,img:'2021/12/omni_ground_beef_plant-based-2-300x300.jpg'},
+ {id:'omb',name:'OMNI Burger',cat:'Vegan Beef & Vegan Pork',pack:'24 × 113 g',price:66,tag:'bbq',isNew:true,img:'2021/12/omni_burger_plant-based-300x300.jpg'},
+ {id:'chb',name:'Vegan Chicken Bites (Gluten-Free)',cat:'Vegan Chicken',pack:'12 × 300 g',price:54,img:'2021/04/vegan_chicken_bites_gf_2-300x300.jpg'},
+ {id:'wng',name:'Vegan Chicken Wings',cat:'Vegan Chicken',pack:'10 × 350 g',price:58,tag:'bbq',img:'2021/02/vegan_chicken_wings-300x300.jpg'},
+ {id:'sat',name:'Vegan Chicken Satay (Gluten-Free)',cat:'Vegan Chicken',pack:'12 × 280 g',price:62,tag:'bbq',img:'2021/04/vegan_chicken_satay_gf_2-300x300.jpg'},
+ {id:'sks',name:'Vegan Skewered Satay',cat:'Vegan Chicken',pack:'10 × 400 g',price:66,tag:'bbq',img:'2021/07/vegan_skewered_satay_4-300x300.jpg'},
+ {id:'drm',name:'Vegan Drumsticks',cat:'Vegan Chicken',pack:'10 × 350 g',price:60,tag:'bbq',img:'2017/02/vegan_drumsticks_2-300x300.jpg'},
+ {id:'nug',name:'Vegan Nuggets',cat:'Vegan Chicken',pack:'12 × 400 g',price:49,img:'2017/02/vegan_nuggets_2-300x300.jpg'},
+ {id:'cut',name:'Vegan Cutlets',cat:'Vegan Chicken',pack:'12 × 300 g',price:52,img:'2021/01/vegan_cutlet-300x300.jpg'},
+ {id:'sdr',name:'Vegan Smoked Drumsticks',cat:'Vegan Chicken',pack:'10 × 350 g',price:62,tag:'bbq',img:'2017/01/vegan_smoked_drumsticks_3-300x300.jpg'},
+ {id:'rvb',name:'Roasted Vegan Bites',cat:'Vegan Chicken',pack:'12 × 300 g',price:54,img:'2021/01/roasted_vegan_bites-300x300.jpg'},
+ {id:'rsb',name:'Roasted Soy Protein Buns',cat:'Vegan Dimsum',pack:'12 × 6 pc',price:44,img:'2021/04/roasted_soy_protein_buns-300x300.jpg'},
+ {id:'cbn',name:'Curry Buns',cat:'Vegan Dimsum',pack:'12 × 6 pc',price:44,img:'2021/04/curry_buns-300x300.jpg'},
+ {id:'hkb',name:'Hong Kong BBQ Buns',cat:'Vegan Dimsum',pack:'12 × 6 pc',price:46,img:'2021/04/hk_bbq_buns-300x300.jpg'},
+ {id:'bbn',name:'BBQ Buns',cat:'Vegan Dimsum',pack:'12 × 6 pc',price:44,img:'2021/04/bbq_buns-300x300.jpg'},
+ {id:'dmp',name:'Plant-based Beef & Vegetable Dumplings',cat:'Vegan Dimsum',pack:'10 × 500 g',price:58,trend:.025,isNew:true,img:'2022/01/beefvegetables-dumplings-plant-based-2-300x300.jpg'},
+ {id:'tik',name:'Vegan Tikka Masala',cat:'Vegan Meals',pack:'12 × 350 g',price:66,tag:'warm',img:'2021/01/vegan_tikka_masala-300x300.jpg'},
+ {id:'kp',name:'Vegan Kung Pao',cat:'Vegan Meals',pack:'12 × 350 g',price:64,tag:'warm',img:'2021/01/vegan_kung_pao-300x300.jpg'},
+ {id:'ssb',name:'Vegan Sweet & Sour Beefy Bites',cat:'Vegan Meals',pack:'12 × 350 g',price:64,tag:'warm',img:'2021/01/vegan_sweetsour_beefy_bites-300x300.jpg'},
+ {id:'cur',name:'Soy Thai Red Curry',cat:'Vegan Meals',pack:'12 × 350 g',price:64,tag:'warm',img:'2021/01/soy_thai_red_curry-300x300.jpg'},
+ {id:'bpb',name:'Vegan Black Pepper Beefy Bites',cat:'Vegan Meals',pack:'12 × 350 g',price:64,tag:'warm',img:'2021/01/vegan_blackpepper_beefy_bites-300x300.jpg'},
+ {id:'mtb',name:'Vegan Meatballs',cat:'Vegan Meatballs',pack:'12 × 400 g',price:52,tag:'warm',img:'2021/04/vegan_meatballs-300x300.jpg'},
+ {id:'smb',name:'Vegan Shiitake Mushroom Balls',cat:'Vegan Meatballs',pack:'12 × 300 g',price:50,img:'2021/01/vegan_shiitake_mushroom_balls-300x300.jpg'},
+ {id:'gbl',name:'Vegan Golden Balls',cat:'Vegan Meatballs',pack:'12 × 300 g',price:50,img:'2021/01/vegan_golden_balls-300x300.jpg'},
+ {id:'shr',name:'Vegan Shrimps',cat:'Vegan Seafood',pack:'12 × 250 g',price:72,img:'2021/02/vegan_shrimps-300x300.jpg'},
+ {id:'tun',name:'Vegan Tuna',cat:'Vegan Seafood',pack:'12 × 250 g',price:70,img:'2021/01/vegan_tuna-300x300.jpg'},
+ {id:'sal',name:'Vegan Salmon',cat:'Vegan Seafood',pack:'12 × 250 g',price:78,trend:.03,img:'2017/01/vegan_salmon_2-300x300.jpg'},
+ {id:'cal',name:'Plant-based Calamari',cat:'Vegan Seafood',pack:'12 × 250 g',price:70,isNew:true,img:'2022/03/calamari_plant-based-300x300.jpg'},
+];
+const P=Object.fromEntries(PRODUCTS.map(p=>[p.id,p]));
+const CATS=[...new Set(PRODUCTS.map(p=>p.cat))];
+const thumb=(p,cls='thumb')=>`<img class="${cls}" src="${IMG+p.img}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`;
+
+/* ---------- accounts: King's Café & Zen Gardens are King's own restaurants; all others are fictional ---------- */
+const CUSTOMERS=[
+ {id:'kc',name:"King's Café",type:'Restaurant',city:'Toronto',base:5200,growth:.004,freq:4,season:'resto',lines:6,mix:{chb:3,bbq:3,kp:2,tik:2,dmp:2,shr:2,cut:1,bfb:2,bpb:2,hkb:1,smb:1}},
+ {id:'zm',name:'Zen Gardens Mississauga',type:'Restaurant',city:'Mississauga',base:4300,growth:.006,freq:4,season:'resto',lines:6,mix:{chb:2,sat:3,sks:2,bbq:2,kp:2,cur:2,shr:2,dmp:2,cal:1,ssb:2,gbl:1}},
+ {id:'zl',name:'Zen Gardens London',type:'Restaurant',city:'London, ON',base:2600,growth:.01,freq:2,season:'resto',lines:5,mix:{chb:2,sat:2,bbq:2,kp:2,cur:1,shr:1,dmp:1,ssb:1,rib:1}},
+ {id:'zg',name:'Zen Gardens Guelph',type:'Restaurant',city:'Guelph',base:2100,growth:.012,freq:2,season:'resto',lines:5,mix:{chb:2,sat:2,bbq:2,tik:1,cur:2,shr:1,cal:1,bpb:1,mut:1}},
+ {id:'gg',name:'Greenleaf Grocers',type:'Grocery',city:'Toronto · 6 stores',base:9800,growth:.018,freq:3,season:'retail',lines:8,mix:{nug:3,chb:3,bac:2,bur:2,tik:2,cur:2,kp:1,sal:2,cut:2,wng:1,dmp:1,omg:2,omb:2,wel:2,mtb:2,jky:1,tun:1}},
+ {id:'lt',name:'Lotus Asian Supermarket',type:'Grocery',city:'Richmond Hill',base:7400,growth:.01,freq:2,season:'retail',lines:8,mix:{bbq:3,dmp:3,shr:3,bfb:2,kp:2,chb:2,cal:2,hkb:3,bbn:3,rsb:2,cbn:2,srw:3,smb:2,gbl:2,jks:1}},
+ {id:'mp',name:'Maple Pantry Market',type:'Grocery',city:'Markham',base:3100,growth:.035,freq:2,season:'retail',lines:6,start:4,mix:{nug:3,chb:2,bur:2,sal:2,tik:1,bac:1,omg:2,wel:1,jky:1,rvb:1}},
+ {id:'nf',name:'Northline Foods',type:'Distributor',city:'Ottawa',base:14500,growth:.008,freq:2,season:'retail',lines:10,drop:{drm:16},mix:{chb:3,nug:3,wng:2,drm:2,cut:2,bac:2,bbq:2,bfb:2,bur:2,tik:1,cur:1,shr:1,sal:1,sdr:2,rvb:2,mtb:2,omb:2,omg:1}},
+ {id:'pp',name:'Prairie Plant Co.',type:'Distributor',city:'Calgary',base:8200,growth:-.024,freq:1,season:'retail',lines:9,drop:{bac:15,cut:17},mix:{chb:3,nug:3,bac:2,bur:2,cut:2,bfb:2,tik:1,sal:1,mtb:2,jky:1,jks:1}},
+ {id:'hh',name:'Harbour Hotel Group',type:'Hotel',city:'Toronto',base:3900,growth:.012,freq:2,season:'hotel',lines:6,mix:{sat:2,sks:2,bur:3,cut:2,sal:2,shr:1,bac:2,tik:1,wel:2,omb:1}},
+ {id:'cd',name:'Campus Dining Co-op',type:'Foodservice',city:'Waterloo',base:6100,growth:.005,freq:2,season:'campus',lines:7,mix:{nug:3,chb:3,bur:2,tik:2,cur:2,kp:2,bfb:1,mtb:2,omg:2,ssb:1,bpb:1}},
+ {id:'sn',name:'Spadina Noodle House',type:'Restaurant',city:'Toronto',base:1500,growth:.002,freq:2,season:'resto',lines:4,mix:{bbq:3,bfb:2,shr:2,kp:1,hkb:1,gbl:1}},
+ {id:'bh',name:'Bloor Health Foods',type:'Health store',city:'Toronto',base:1300,growth:0,freq:1,season:'retail',lines:5,mix:{nug:2,bac:2,sal:2,bur:1,chb:1,jky:2,jks:2,tun:1}},
+ {id:'rc',name:'Riverside Vegan Café',type:'Restaurant',city:'Hamilton',base:1700,growth:0,freq:2,season:'resto',lines:3,end:21,mix:{chb:2,wng:2,bur:2,cut:1,mtb:1}},
+];
+const C=Object.fromEntries(CUSTOMERS.map(c=>[c.id,c]));
+const TYPES=[...new Set(CUSTOMERS.map(c=>c.type))];
+
+const SEASON={ // Jan..Dec
+ retail:[1.12,.95,.98,.97,1,.93,.9,.92,.98,1.02,1.1,1.22],
+ resto:[.9,.92,1,1,1.05,1.05,1.08,1.05,1,1,1.02,1.15],
+ campus:[1.05,1.15,1.15,1,.6,.3,.3,.45,1.2,1.2,1.15,.7],
+ hotel:[.85,.85,.95,1,1.1,1.2,1.25,1.2,1.05,.95,.95,1.2]};
+const PSEASON={bbq:[.8,.8,.9,1,1.15,1.3,1.35,1.3,1.05,.9,.85,.9],warm:[1.2,1.15,1.05,.95,.85,.8,.8,.82,.95,1.05,1.15,1.2],holiday:[.6,.5,.5,.5,.5,.4,.4,.4,.6,1.1,2.2,3.2]};
+
+/* ---------- generate 24 months of orders + Nov 1–7 ---------- */
+let orders=[];
+(function gen(){
+ CUSTOMERS.forEach(c=>{
+  for(let m=0;m<=N;m++){
+   if(m<(c.start||0)||m>(c.end??99))continue;
+   const d0=monthDate(m),cal=d0.getMonth(),dim=new Date(d0.getFullYear(),cal+1,0).getDate();
+   const s=SEASON[c.season][cal];
+   let target=c.base*Math.pow(1+c.growth,m)*s*(1+.1*gauss());
+   if(c.start!=null&&m-c.start<3)target*=(m-c.start+1)/3;
+   let n=c.freq*Math.sqrt(s);n=Math.max(1,Math.floor(n)+(rnd()<n%1?1:0));
+   for(let k=0;k<n;k++){
+    const day=1+Math.floor(rnd()*dim);
+    if(m===N&&day>7)continue;
+    const value=target/n;
+    const cand=Object.entries(c.mix).map(([pid,w])=>{const p=P[pid];let wt=w*(p.tag?PSEASON[p.tag][cal]:1)*Math.pow(1+(p.trend||0),m);
+      if(c.drop&&c.drop[pid]!=null&&m>c.drop[pid])wt=0;return{pid,wt}}).filter(x=>x.wt>0);
+    const kk=Math.min(cand.length,Math.max(2,c.lines-1+Math.floor(rnd()*2)));
+    const picks=[],pool=cand.slice();
+    while(picks.length<kk&&pool.length){let r=rnd()*sum(pool.map(x=>x.wt)),i=0;while(r>pool[i].wt&&i<pool.length-1){r-=pool[i].wt;i++}picks.push(pool.splice(i,1)[0])}
+    const sh=picks.map(x=>x.wt*(.6+.8*rnd())),st=sum(sh);
+    const lines=picks.map((x,i)=>({p:x.pid,qty:Math.max(1,Math.round(value*sh[i]/st/P[x.pid].price)),price:P[x.pid].price}));
+    orders.push({c:c.id,date:new Date(d0.getFullYear(),cal,day),lines,total:sum(lines.map(l=>l.qty*l.price))});
+   }
+  }
+ });
+ orders.sort((a,b)=>a.date-b.date);
+ orders.forEach((o,i)=>o.id='SO-'+(24100+i));
+})();
+
+/* ---------- forecasting: seasonal index × damped linear trend ---------- */
+function linreg(y){const n=y.length;if(n<2)return{a:y[0]||0,b:0};const mx=(n-1)/2,my=avg(y);let num=0,den=0;y.forEach((v,i)=>{num+=(i-mx)*(v-my);den+=(i-mx)**2});const b=num/den;return{a:my-b*mx,b}}
+function forecast(y,h=H){
+ const n=y.length,z=()=>Array(h).fill(0);
+ const first=y.findIndex(v=>v>0);
+ if(first<0)return{f:z(),lo:z(),hi:z()};
+ const seg=y.slice(first);
+ let s=Array(12).fill(1);
+ if(seg.length>=24){
+  const{a,b}=linreg(seg);const r=Array.from({length:12},()=>[]);
+  seg.forEach((v,i)=>{const t=a+b*i;if(t>0)r[(first+i)%12].push(v/t)});
+  s=r.map(x=>x.length?1+.7*(avg(x)-1):1);const ms=avg(s);s=s.map(v=>v/ms);
+ }
+ const from=Math.max(first,n-12),win=y.slice(from).map((v,i)=>v/s[(from+i)%12]);
+ if(win.length<3){const lvl=avg(win);const f=Array.from({length:h},(_,j)=>lvl*s[(n+j)%12]);return{f,lo:f.map(v=>v*.6),hi:f.map(v=>v*1.4)}}
+ const{a,b}=linreg(win);
+ const sd=Math.sqrt(avg(win.map((v,i)=>((v-(a+b*i))*s[(from+i)%12])**2)));
+ const level=a+b*(win.length-1);
+ const f=[],lo=[],hi=[];let acc=0;
+ for(let j=0;j<h;j++){acc+=b*Math.pow(.85,j+1);const v=Math.max(0,(level+acc)*s[(n+j)%12]);const band=1.28*sd*Math.sqrt(1+(j+1)/3);f.push(v);lo.push(Math.max(0,v-band));hi.push(v+band)}
+ return{f,lo,hi};
+}
+
+/* ---------- derived state ---------- */
+let S;
+function compute(){
+ S={cust:{},prod:{},total:Array(N).fill(0),mtd:0,mtdOrders:0};
+ CUSTOMERS.forEach(c=>S.cust[c.id]={c,rev:Array(N).fill(0),orders:[],pc12:{},pcPrev:{}});
+ PRODUCTS.forEach(p=>S.prod[p.id]={p,units:Array(N).fill(0),rev:Array(N).fill(0),b12:{},bPrev:{},last:{}});
+ orders.forEach(o=>{
+  const m=monthIdx(o.date),cs=S.cust[o.c];cs.orders.push(o);
+  if(m>=0&&m<N){cs.rev[m]+=o.total;S.total[m]+=o.total}
+  if(m===N){S.mtd+=o.total;S.mtdOrders++}
+  o.lines.forEach(l=>{const ps=S.prod[l.p];
+   if(m>=0&&m<N){ps.units[m]+=l.qty;ps.rev[m]+=l.qty*l.price}
+   if(m>=12){ps.b12[o.c]=(ps.b12[o.c]||0)+l.qty;cs.pc12[l.p]=(cs.pc12[l.p]||0)+l.qty}
+   else if(m>=0){ps.bPrev[o.c]=(ps.bPrev[o.c]||0)+l.qty;cs.pcPrev[l.p]=(cs.pcPrev[l.p]||0)+l.qty}
+   if(!ps.last[o.c]||ps.last[o.c]<o.date)ps.last[o.c]=o.date;
+  });
+ });
+ Object.values(S.cust).forEach(cs=>{
+  cs.orders.sort((a,b)=>a.date-b.date);
+  cs.rev12=sum(cs.rev.slice(12));cs.revPrev=sum(cs.rev.slice(0,12));
+  cs.yoy=cs.revPrev>0?cs.rev12/cs.revPrev-1:null;
+  const yr=cs.orders.filter(o=>days(o.date,TODAY)<=365);cs.n12=yr.length;cs.aov=yr.length?sum(yr.map(o=>o.total))/yr.length:0;
+  const rec=cs.orders.filter(o=>days(o.date,TODAY)<=240).map(o=>o.date);
+  const gaps=rec.slice(1).map((d,i)=>days(rec[i],d)).sort((a,b)=>a-b);
+  cs.interval=gaps.length>=2?Math.max(3,gaps[Math.floor(gaps.length/2)]):30;
+  cs.last=cs.orders.at(-1)?.date;cs.daysSince=cs.last?days(cs.last,TODAY):999;
+  cs.next=cs.last?new Date(+cs.last+cs.interval*864e5):null;
+  if(cs.daysSince>Math.max(45,3*cs.interval)){cs.status='Lapsed';cs.sev=3;cs.why=`No order in ${cs.daysSince} days. Usually orders every ${cs.interval} days.`}
+  else if(cs.daysSince>cs.interval*1.4+3){cs.status='Reorder due';cs.sev=2;cs.why=`Usually orders every ${cs.interval} days. Last order ${cs.daysSince} days ago.`}
+  else if(cs.yoy!=null&&cs.yoy<-.12){cs.status='Slowing';cs.sev=1;cs.why=`12-month revenue ${pct(cs.yoy)} vs prior year.`}
+  else{cs.status='On track';cs.sev=0;cs.why=''}
+  cs.fc=cs.status==='Lapsed'?forecast(Array(N).fill(0)):forecast(cs.rev);
+ });
+ const tf=forecast(S.total);
+ S.fc={f:[],lo:[],hi:[]};
+ for(let j=0;j<H;j++){const f=sum(Object.values(S.cust).map(cs=>cs.fc.f[j]));const w=(tf.hi[j]-tf.f[j]);S.fc.f.push(f);S.fc.lo.push(Math.max(0,f-w));S.fc.hi.push(f+w)}
+ const pf=PRODUCTS.map(p=>forecast(S.prod[p.id].rev));
+ for(let j=0;j<H;j++){const t=sum(pf.map(x=>x.f[j]))||1,k=S.fc.f[j]/t;pf.forEach(x=>{x.f[j]*=k;x.lo[j]*=k;x.hi[j]*=k})}
+ PRODUCTS.forEach((p,i)=>{const ps=S.prod[p.id];ps.fc=pf[i];
+  ps.fcU={f:pf[i].f.map(v=>v/p.price),lo:pf[i].lo.map(v=>v/p.price),hi:pf[i].hi.map(v=>v/p.price)};
+  ps.rev12=sum(ps.rev.slice(12));ps.revPrev=sum(ps.rev.slice(0,12));ps.u12=sum(ps.units.slice(12));
+  ps.yoy=ps.revPrev>0?ps.rev12/ps.revPrev-1:null;
+  ps.buyers=Object.keys(ps.b12).length;
+  const top=Object.entries(ps.b12).sort((a,b)=>b[1]-a[1])[0];ps.top=top?C[top[0]].name:'—';
+  ps.dropped=Object.keys(ps.bPrev).filter(c=>ps.last[c]&&days(ps.last[c],TODAY)>120&&S.cust[c].status!=='Lapsed');
+ });
+ const bt=Array(6).fill(0);
+ Object.values(S.cust).forEach(cs=>{const f=forecast(cs.rev.slice(0,18)).f;f.forEach((v,j)=>bt[j]+=v)});
+ S.btErr=avg(bt.map((v,j)=>Math.abs(v-S.total[18+j])/S.total[18+j]));
+}
+
+/* ---------- charts ---------- */
+let charts=[];
+const niceMax=v=>{const p=10**Math.floor(Math.log10(v)),m=v/p;return [1,1.2,1.6,2,2.4,3,4,5,6,8,10].find(x=>x>=m-1e-9)*p};
+function chartSlot(spec,h=240){const id='ch'+charts.length;charts.push({id,spec,h});return `<div class="chart" id="${id}" style="height:${h}px"></div>`}
+function lineChart({actual,fc,money=true,unit=''}){
+ const na=actual.length,n=na+(fc?fc.f.length:0),padL=money?50:44,padR=10,padT=12,padB=24;
+ const all=[...actual,...(fc?fc.hi:[])];const max=niceMax(Math.max(1,...all)*1.05);
+ const fv=v=>money?fmtK(v):Math.round(v).toLocaleString('en-CA')+unit;
+ const xAt=(i,w)=>padL+i/(n-1)*(w-padL-padR);
+ return{n,idx:(mx,w)=>Math.round((mx-padL)/(w-padL-padR)*(n-1)),gx:xAt,draw(w,h){
+  const x=i=>xAt(i,w),y=v=>padT+(1-v/max)*(h-padT-padB);
+  let g='';
+  for(let k=0;k<=4;k++){const v=max*k/4,yy=y(v);g+=`<line x1="${padL}" x2="${w-padR}" y1="${yy}" y2="${yy}" stroke="var(--line)"/><text x="${padL-8}" y="${yy+3.5}" text-anchor="end">${fv(v)}</text>`}
+  const step=w<520?6:3;
+  for(let i=0;i<n;i+=step)g+=`<text x="${x(i)}" y="${h-6}" text-anchor="${i===0?'start':'middle'}">${mLabel(i)}</text>`;
+  const pts=actual.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  g+=`<polygon points="${x(0)},${y(0)} ${pts} ${x(na-1)},${y(0)}" fill="var(--text)" fill-opacity=".05"/>`;
+  g+=`<polyline points="${pts}" fill="none" stroke="var(--text)" stroke-width="1.8" stroke-linejoin="round"/>`;
+  if(fc){
+   const xi=j=>x(na+j),p0=`${x(na-1)},${y(actual[na-1])}`;
+   const top=[p0,...fc.hi.map((v,j)=>`${xi(j)},${y(v)}`)],bot=[...fc.lo.map((v,j)=>`${xi(j)},${y(v)}`).reverse(),p0];
+   g+=`<line x1="${x(na-1)}" x2="${x(na-1)}" y1="${padT}" y2="${h-padB}" stroke="var(--ash)" stroke-dasharray="2 3"/>`;
+   g+=`<text x="${x(na-1)+6}" y="${padT+10}">Forecast</text>`;
+   g+=`<polygon points="${top.join(' ')} ${bot.join(' ')}" fill="var(--graphite)" fill-opacity=".12"/>`;
+   g+=`<polyline points="${p0} ${fc.f.map((v,j)=>`${xi(j)},${y(v)}`).join(' ')}" fill="none" stroke="var(--graphite)" stroke-width="1.8" stroke-dasharray="5 4"/>`;
+   g+=`<circle cx="${x(na-1)}" cy="${y(actual[na-1])}" r="3.5" fill="var(--text)"/>`;
+  }
+  g+=`<line class="guide" x1="0" x2="0" y1="${padT}" y2="${h-padB}" stroke="var(--text)" stroke-opacity=".3" visibility="hidden"/>`;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Monthly values with forecast">${g}</svg>`;
+ },tip(i){return i<na?`${mLabel(i)} · actual <b>${fv(actual[i])}</b>`:`${mLabel(i)} · forecast <b>${fv(fc.f[i-na])}</b><br>likely ${fv(fc.lo[i-na])}–${fv(fc.hi[i-na])}`}};
+}
+function barChart({vals,labels,tips,cmp}){
+ const n=vals.length,padL=50,padR=6,padT=12,padB=24;const max=niceMax(Math.max(1,...vals,...(cmp||[]))*1.05);
+ const bw=w=>(w-padL-padR)/n;
+ return{n,idx:(mx,w)=>Math.floor((mx-padL)/bw(w)),gx:(i,w)=>padL+(i+.5)*bw(w),draw(w,h){
+  const b=bw(w),y=v=>padT+(1-v/max)*(h-padT-padB);let g='';
+  for(let k=0;k<=4;k++){const v=max*k/4,yy=y(v);g+=`<line x1="${padL}" x2="${w-padR}" y1="${yy}" y2="${yy}" stroke="var(--line)"/><text x="${padL-8}" y="${yy+3.5}" text-anchor="end">${fmtK(v)}</text>`}
+  const every=Math.ceil(n/(w/46));
+  vals.forEach((v,i)=>{const x=padL+i*b+b*.15,bwid=Math.max(1,b*.7);
+   if(cmp)g+=`<rect x="${x}" y="${y(cmp[i])}" width="${bwid}" height="${Math.max(0,y(0)-y(cmp[i]))}" fill="none" stroke="var(--ash)" stroke-dasharray="2 2"/>`;
+   g+=`<rect x="${x}" y="${y(v)}" width="${bwid}" height="${Math.max(0,y(0)-y(v))}" rx="2" fill="var(--text)" fill-opacity="${v?'.85':'0'}"/>`;
+   if(i%every===0)g+=`<text x="${padL+(i+.5)*b}" y="${h-6}" text-anchor="middle">${labels[i]}</text>`});
+  g+=`<line class="guide" x1="0" x2="0" y1="${padT}" y2="${h-padB}" stroke="var(--text)" stroke-opacity=".0" visibility="hidden"/>`;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Sales by period">${g}</svg>`;
+ },tip:i=>tips[i]};
+}
+function spark(arr,w=96,h=26){const max=Math.max(...arr,1),x=i=>2+i/(arr.length-1)*(w-6),y=v=>h-3-(v/max)*(h-6);
+ return `<svg width="${w}" height="${h}" aria-hidden="true"><polyline points="${arr.map((v,i)=>x(i)+','+y(v)).join(' ')}" fill="none" stroke="var(--text)" stroke-width="1.4"/><circle cx="${x(arr.length-1)}" cy="${y(arr.at(-1))}" r="2.4" fill="var(--text)"/></svg>`}
+function drawCharts(){
+ charts.forEach(c=>{const el=document.getElementById(c.id);if(!el)return;const w=el.clientWidth;if(!w)return;
+  el.innerHTML=c.spec.draw(w,c.h)+'<div class="tip" hidden></div>';
+  const tip=el.querySelector('.tip'),guide=el.querySelector('.guide'),s=c.spec;
+  el.onmousemove=e=>{const r=el.getBoundingClientRect(),i=s.idx(e.clientX-r.left,r.width);
+   if(i<0||i>=s.n){tip.hidden=true;guide.setAttribute('visibility','hidden');return}
+   const gx=s.gx(i,r.width);guide.setAttribute('x1',gx);guide.setAttribute('x2',gx);guide.setAttribute('visibility','visible');
+   tip.innerHTML=s.tip(i);tip.hidden=false;tip.style.left=Math.min(Math.max(gx,90),r.width-90)+'px'};
+  el.onmouseleave=()=>{tip.hidden=true;guide.setAttribute('visibility','hidden')};
+ });
+}
+let rT;addEventListener('resize',()=>{clearTimeout(rT);rT=setTimeout(drawCharts,120)});
+
+/* ---------- UI bits ---------- */
+const pillCls={'On track':'good','Reorder due':'warn','Slowing':'info','Lapsed':'bad'};
+const pill=s=>`<span class="pill ${pillCls[s]}">${s}</span>`;
+const delta=v=>`<span class="${dcls(v)}">${pct(v)}</span>`;
+const bars=(rows,alt)=>{const max=Math.max(...rows.map(r=>r.v),1);return `<div class="bars">${rows.map(r=>`<div class="bar-row"><span title="${esc(r.label)}">${esc(r.label)}</span><span class="num">${r.right}</span><div class="track"><div class="fill ${alt?'alt':''}" style="width:${r.v/max*100}%"></div></div></div>`).join('')}</div>`};
+const VIEWS=[['overview','Overview'],['reports','Reports'],['customers','Customers'],['products','Products'],['forecast','Forecast'],['pipeline','Pipeline']];
+const fcLabel=()=>`${mLabel(N)} – ${mLabel(N+H-1)}`;
+
+function renderNav(view){
+ const due=Object.values(S.cust).filter(c=>c.sev>=2).length;
+ document.getElementById('nav').innerHTML=VIEWS.map(([k,l])=>`<a href="#${k}" ${k===view?'aria-current="page"':''}>${l}${k==='customers'&&due?`<span class="count" title="Accounts needing a call">${due}</span>`:''}</a>`).join('');
+}
+const notice=`<div class="notice"><b>Demo with sample orders.</b> The full product list comes from King's catalogue, and King's Café and Zen Gardens are King's own restaurants. Every other account, price, case pack and order is illustrative. In production, orders sync from your invoicing or accounting system.</div>`;
+
+/* ---------- Overview ---------- */
+function vOverview(){
+ const r12=sum(S.total.slice(12)),rp=sum(S.total.slice(0,12));
+ const f6=sum(S.fc.f),ly6=sum(S.total.slice(12,18));
+ const active=Object.values(S.cust).filter(c=>c.daysSince<=45).length;
+ const inM=(o,a,b)=>{const m=monthIdx(o.date);return m>=a&&m<b};
+ const aov=avg(orders.filter(o=>inM(o,12,N)).map(o=>o.total)),aovP=avg(orders.filter(o=>inM(o,0,12)).map(o=>o.total));
+ const attn=Object.values(S.cust).filter(c=>c.sev>0).sort((a,b)=>b.sev-a.sev||b.rev12-a.rev12);
+ const movers=Object.values(S.prod).filter(p=>p.revPrev>2000).sort((a,b)=>b.yoy-a.yoy);
+ const catRows=CATS.map(cat=>{const ps=Object.values(S.prod).filter(p=>p.p.cat===cat);const v=sum(ps.map(p=>p.rev12)),pv=sum(ps.map(p=>p.revPrev));return{label:cat,v,right:`${fmtK(v)} <span class="${dcls(pv?v/pv-1:null)}">${pv?pct(v/pv-1):'new'}</span>`}}).sort((a,b)=>b.v-a.v);
+ const mtdRep=report(periodById('m-24'));
+ return `
+ <div class="head"><div><span class="label">Sunday, November 8, 2026</span><h1>Good morning. Here's where sales stand.</h1>
+ <p>${attn.filter(c=>c.sev>=2).length} accounts need a call this week. November is pacing toward ${fmtK(mtdRep.projection)} against a forecast of ${fmtK(S.fc.f[0])}.</p></div>
+ <a class="btn noprint" href="#reports">Open this month's report</a></div>
+ ${notice}
+ <div class="kpis">
+  <div class="kpi"><span class="label">Revenue, last 12 months</span><span class="v">${fmtK(r12)}</span><span class="s">${delta(r12/rp-1)} vs prior 12 months</span></div>
+  <div class="kpi"><span class="label">November to date</span><span class="v">${fmtK(S.mtd)}</span><span class="s">${S.mtdOrders} orders · on pace for ${fmtK(mtdRep.projection)}</span></div>
+  <div class="kpi"><span class="label">Forecast, ${fcLabel()}</span><span class="v">${fmtK(f6)}</span><span class="s">${delta(f6/ly6-1)} vs same months last year</span></div>
+  <div class="kpi"><span class="label">Average order</span><span class="v">${fmt$(aov)}</span><span class="s">${delta(aov/aovP-1)} · ${active} of ${CUSTOMERS.length} accounts active</span></div>
+ </div>
+ <section class="card">
+  <div class="card-h"><h2>Monthly revenue</h2><div class="legend"><span><i style="border-color:var(--text)"></i>Actual</span><span><i style="border-color:var(--graphite);border-top-style:dashed"></i>Forecast, shaded band = likely range</span></div></div>
+  ${chartSlot(lineChart({actual:S.total,fc:S.fc}),260)}
+ </section>
+ <div class="grid3">
+  <section class="card"><div class="card-h"><h2>Needs attention</h2><a href="#customers" class="muted">All accounts</a></div>
+   <div class="list">${attn.slice(0,6).map(c=>`<button class="li" data-cust="${c.c.id}"><span><span class="li-t">${esc(c.c.name)}</span><small>${c.why}</small></span>${pill(c.status)}</button>`).join('')||'<p class="muted">Every account is on track.</p>'}</div></section>
+  <section class="card"><div class="card-h"><h2>Product movers</h2><span class="muted">12 mo vs prior</span></div>
+   <div class="list">${[...movers.slice(0,4),...movers.slice(-3)].map(p=>`<button class="li" data-prod="${p.p.id}"><span class="pcell">${thumb(p.p)}<span><span class="li-t">${esc(p.p.name)}</span><small>${fmtK(p.rev12)} · ${p.buyers} buyers</small></span></span><span class="num">${delta(p.yoy)}</span></button>`).join('')}</div></section>
+  <section class="card"><div class="card-h"><h2>Sales by category</h2><span class="muted">last 12 months</span></div>${bars(catRows)}</section>
+ </div>`;
+}
+
+/* ---------- Reports ---------- */
+const addMonths=(d,k)=>{const r=new Date(d.getFullYear(),d.getMonth()+k,1);r.setDate(Math.min(d.getDate(),new Date(r.getFullYear(),r.getMonth()+1,0).getDate()));return r};
+const PERIODS=(()=>{
+ const L=[];
+ for(let m=N;m>=0;m--){const s=monthDate(m),e=m===N?new Date(TOMORROW):monthDate(m+1),partial=m===N;
+  L.push({id:'m-'+m,kind:'month',group:'Months',label:s.toLocaleString('en-CA',{month:'long',year:'numeric'})+(partial?' (to date)':''),start:s,end:e,partial,
+   prev:{start:addMonths(s,-1),end:partial?addMonths(e,-1):s,label:partial?`${mName(m-1)} 1–${TODAY.getDate()}`:mName(m-1)+' '+monthDate(m-1).getFullYear()}})}
+ const qs=[[2026,9,true],[2026,6],[2026,3],[2026,0],[2025,9],[2025,6],[2025,3],[2025,0]];
+ qs.forEach(([y,mo,partial])=>{const s=new Date(y,mo,1),e=partial?new Date(TOMORROW):new Date(y,mo+3,1),q=mo/3+1;
+  L.push({id:`q-${y}-${q}`,kind:'quarter',group:'Quarters',label:`Q${q} ${y}${partial?' (to date)':''}`,start:s,end:e,partial,prev:{start:addMonths(s,-3),end:addMonths(e,-3),label:`Q${q===1?4:q-1} ${q===1?y-1:y}`}})});
+ L.push({id:'y-2026',kind:'year',group:'Years',label:'2026 year to date',start:new Date(2026,0,1),end:new Date(TOMORROW),partial:true,prev:null});
+ L.push({id:'y-2025',kind:'year',group:'Years',label:'2025 full year',start:new Date(2025,0,1),end:new Date(2026,0,1),partial:false,prev:null});
+ return L;
+})();
+const periodById=id=>PERIODS.find(p=>p.id===id)||PERIODS[0];
+function agg(start,end){
+ if(start<DATA_START)return null;
+ const os=orders.filter(o=>o.date>=start&&o.date<end);
+ const r={orders:os,rev:sum(os.map(o=>o.total)),n:os.length,cases:sum(os.flatMap(o=>o.lines.map(l=>l.qty))),cust:{},prod:{},cat:{}};
+ os.forEach(o=>{const c=r.cust[o.c]||(r.cust[o.c]={rev:0,n:0,cases:0});c.rev+=o.total;c.n++;
+  o.lines.forEach(l=>{const v=l.qty*l.price;c.cases+=l.qty;const p=r.prod[l.p]||(r.prod[l.p]={rev:0,cases:0,cust:new Set()});p.rev+=v;p.cases+=l.qty;p.cust.add(o.c);
+   const k=P[l.p].cat;r.cat[k]=(r.cat[k]||0)+v})});
+ r.aov=r.n?r.rev/r.n:0;r.active=Object.keys(r.cust).length;return r;
+}
+function report(per){
+ const cur=agg(per.start,per.end),prev=per.prev?agg(per.prev.start,per.prev.end):null;
+ const ly=agg(addMonths(per.start,-12),addMonths(per.end,-12));
+ let projection=null,fcMonth=null;
+ if(per.kind==='month'&&per.partial){const dim=new Date(per.start.getFullYear(),per.start.getMonth()+1,0).getDate(),el=days(per.start,per.end);
+  const lyFull=agg(addMonths(per.start,-12),addMonths(per.start,-11));const lyShare=ly&&lyFull&&lyFull.rev?ly.rev/lyFull.rev:el/dim;
+  projection=cur.rev/Math.max(lyShare,.05);fcMonth=S.fc.f[0];}
+ return{per,cur,prev,ly,projection,fcMonth};
+}
+let repId='m-24',repBy='customer';
+function vReports(){
+ const R=report(periodById(repId)),{per,cur,prev,ly}=R;
+ const cmp=(a,b)=>b&&b>0?a/b-1:null;
+ const groups=[...new Set(PERIODS.map(p=>p.group))];
+ const rangeTxt=`${dlong(per.start)} – ${dlong(new Date(per.end-864e5))}`;
+ // chart: daily for month, monthly for quarter/year
+ let chart='';
+ if(per.kind==='month'){const dim=new Date(per.start.getFullYear(),per.start.getMonth()+1,0).getDate();const v=Array(dim).fill(0),lyv=Array(dim).fill(0);
+  cur.orders.forEach(o=>v[o.date.getDate()-1]+=o.total);ly&&ly.orders.forEach(o=>{const d=o.date.getDate()-1;if(d<dim)lyv[d]+=o.total});
+  const lyAll=agg(addMonths(per.start,-12),addMonths(per.start,-11));if(per.partial&&lyAll){lyv.fill(0);lyAll.orders.forEach(o=>{const d=o.date.getDate()-1;if(d<dim)lyv[d]+=o.total})}
+  chart=chartSlot(barChart({vals:v,cmp:lyAll||ly?lyv:null,labels:v.map((_,i)=>String(i+1)),tips:v.map((x,i)=>`${mName(monthIdx(per.start))} ${i+1} · <b>${fmt$(x)}</b>${lyAll||ly?`<br>same day last year ${fmt$(lyv[i])}`:''}`)}),200);}
+ else{const ms=[];for(let d=new Date(per.start);d<per.end;d=addMonths(d,1))ms.push(monthIdx(d));
+  const v=ms.map(m=>m<N?S.total[m]:S.mtd),lyv=ms.map(m=>m-12>=0?S.total[m-12]:0);
+  chart=chartSlot(barChart({vals:v,cmp:lyv,labels:ms.map(mName),tips:ms.map((m,i)=>`${mLabel(m)} · <b>${fmt$(v[i])}</b>${m===N?' (to date)':''}<br>last year ${fmt$(lyv[i])}`)}),200);}
+ const custRows=Object.entries(cur.cust).sort((a,b)=>b[1].rev-a[1].rev);
+ const quiet=Object.values(S.cust).filter(c=>!cur.cust[c.c.id]&&c.status!=='Lapsed'&&c.orders.some(o=>o.date<per.start&&days(o.date,per.start)<=90));
+ const prodRows=Object.entries(cur.prod).sort((a,b)=>b[1].rev-a[1].rev);
+ const notSold=PRODUCTS.filter(p=>!cur.prod[p.id]);
+ const catRows=CATS.map(k=>({label:k,v:cur.cat[k]||0,right:`${fmt$(cur.cat[k]||0)} · ${delta(ly?cmp(cur.cat[k]||0,ly.cat[k]||0):null)}`})).sort((a,b)=>b.v-a.v);
+ const share=v=>cur.rev?Math.round(v/cur.rev*1000)/10+'%':'—';
+ const lyc=(map,k,f='rev')=>ly&&ly[map][k]?ly[map][k][f]:0;
+ return `<div class="head noprint"><div><span class="label">Sales reports</span><h1>Reports</h1><p>Pick any month, quarter or year to see sales by customer, product and category against the previous period and last year. Download it as a spreadsheet or save it as a PDF to share.</p></div></div>
+ <div class="toolbar noprint">
+  <label class="label" for="repSel" style="margin-right:4px">Period</label>
+  <select class="select" id="repSel">${groups.map(g=>`<optgroup label="${g}">${PERIODS.filter(p=>p.group===g).map(p=>`<option value="${p.id}" ${p.id===repId?'selected':''}>${p.label}</option>`).join('')}</optgroup>`).join('')}</select>
+  <span style="flex:1"></span>
+  <button class="btn" id="csvBtn" type="button">Download CSV</button>
+  <button class="btn primary" id="printBtn" type="button">Print / save as PDF</button>
+ </div>
+ <div class="rep-head"><span class="label">King's Vegetarian Food · Sales report</span><h1>${per.label}</h1>
+  <div class="rep-meta"><span>${rangeTxt}</span><span>Prepared ${dlong(TODAY)}</span>${per.prev?`<span>Compared with ${per.prev.label} and the same period last year</span>`:'<span>Compared with the same period last year</span>'}</div></div>
+ <div class="kpis k5">
+  <div class="kpi"><span class="label">Revenue</span><span class="v">${fmt$(cur.rev)}</span><span class="s">${prev?`${delta(cmp(cur.rev,prev.rev))} vs prev · `:''}${delta(ly?cmp(cur.rev,ly.rev):null)} vs LY</span></div>
+  <div class="kpi"><span class="label">Orders</span><span class="v">${cur.n}</span><span class="s">${prev?`${delta(cmp(cur.n,prev.n))} vs prev · `:''}${delta(ly?cmp(cur.n,ly.n):null)} vs LY</span></div>
+  <div class="kpi"><span class="label">Cases shipped</span><span class="v">${cur.cases.toLocaleString('en-CA')}</span><span class="s">${delta(ly?cmp(cur.cases,ly.cases):null)} vs LY</span></div>
+  <div class="kpi"><span class="label">Average order</span><span class="v">${fmt$(cur.aov)}</span><span class="s">${delta(ly?cmp(cur.aov,ly.aov):null)} vs LY</span></div>
+  <div class="kpi"><span class="label">Customers ordering</span><span class="v">${cur.active}</span><span class="s">${ly?`${ly.active} same period LY`:'—'}</span></div>
+ </div>
+ ${R.projection!=null?`<div class="card"><div class="card-h" style="margin:0"><div><h2>Month-end outlook</h2><p class="muted" style="margin:4px 0 0">At the pace of the first ${days(per.start,per.end)} days, adjusted for how November usually splits across the month.</p></div>
+   <div class="legend" style="font-size:14px;gap:22px"><span>On pace for <b class="num">${fmt$(R.projection)}</b></span><span>Forecast <b class="num">${fmt$(R.fcMonth)}</b></span><span>Nov 2025 <b class="num">${fmt$(S.total[12])}</b></span></div></div></div>`:''}
+ <section class="card"><div class="card-h"><h2>${per.kind==='month'?'Sales by day':'Sales by month'}</h2><div class="legend"><span><i style="border-color:var(--text);border-top-width:6px"></i>This period</span><span><i style="border-color:var(--ash);border-top-style:dashed"></i>Same period last year</span></div></div>${chart}</section>
+ <div class="grid2">
+  <section class="card"><div class="card-h"><h2>By category</h2><span class="muted">revenue · vs LY</span></div>${bars(catRows)}</section>
+  <section class="card"><div class="card-h"><h2>${per.partial?'Not ordered yet this period':'Did not order this period'}</h2><span class="muted">active in the 90 days before</span></div>
+   <div class="list">${quiet.length?quiet.map(c=>`<button class="li" data-cust="${c.c.id}"><span><span class="li-t">${esc(c.c.name)}</span><small>Last order ${dfmt(c.last)} · usually every ${c.interval} days</small></span>${pill(c.status)}</button>`).join(''):'<p class="muted" style="margin:0">Every recently active account ordered in this period.</p>'}</div></section>
+ </div>
+ <div class="toolbar noprint"><button class="chip" data-repby="customer" aria-pressed="${repBy==='customer'}">By customer</button><button class="chip" data-repby="product" aria-pressed="${repBy==='product'}">By product</button><button class="chip" data-repby="orders" aria-pressed="${repBy==='orders'}">Order log</button></div>
+ <div class="tbl-wrap" ${repBy==='customer'?'':'hidden'} data-print="show"><table><thead><tr><th>Customer</th><th class="n">Revenue</th><th class="n">Share</th><th class="n">Orders</th><th class="n">Cases</th><th class="n">Same period LY</th><th class="n">vs LY</th></tr></thead><tbody>
+  <tr class="total"><td>All customers</td><td class="n">${fmt$(cur.rev)}</td><td class="n">100%</td><td class="n">${cur.n}</td><td class="n">${cur.cases}</td><td class="n">${ly?fmt$(ly.rev):'—'}</td><td class="n">${delta(ly?cmp(cur.rev,ly.rev):null)}</td></tr>
+  ${custRows.map(([k,v])=>`<tr data-cust="${k}" tabindex="0"><td><b>${esc(C[k].name)}</b><span class="sub">${C[k].type} · ${esc(C[k].city)}</span></td><td class="n">${fmt$(v.rev)}</td><td class="n">${share(v.rev)}</td><td class="n">${v.n}</td><td class="n">${v.cases}</td><td class="n">${ly?fmt$(lyc('cust',k)):'—'}</td><td class="n">${ly&&lyc('cust',k)?delta(cmp(v.rev,lyc('cust',k))):'<span class="muted">new</span>'}</td></tr>`).join('')}
+ </tbody></table></div>
+ <div class="tbl-wrap" ${repBy==='product'?'':'hidden'} data-print="show"><table><thead><tr><th>Product</th><th>Category</th><th class="n">Cases</th><th class="n">Revenue</th><th class="n">Share</th><th class="n">Customers</th><th class="n">vs LY</th></tr></thead><tbody>
+  ${prodRows.map(([k,v])=>`<tr data-prod="${k}" tabindex="0"><td><span class="pcell">${thumb(P[k])}<span><b>${esc(P[k].name)}</b><span class="sub">${P[k].pack}</span></span></span></td><td>${P[k].cat}</td><td class="n">${v.cases}</td><td class="n">${fmt$(v.rev)}</td><td class="n">${share(v.rev)}</td><td class="n">${v.cust.size}</td><td class="n">${ly&&lyc('prod',k)?delta(cmp(v.rev,lyc('prod',k))):'<span class="muted">—</span>'}</td></tr>`).join('')}
+  ${notSold.length?`<tr><td colspan="7" class="muted" style="white-space:normal">Not sold in this period: ${notSold.map(p=>esc(p.name)).join(', ')}</td></tr>`:''}
+ </tbody></table></div>
+ <div class="tbl-wrap" ${repBy==='orders'?'':'hidden'} data-print="show"><table><thead><tr><th>Order</th><th>Date</th><th>Customer</th><th>Lines</th><th class="n">Cases</th><th class="n">Total</th></tr></thead><tbody>
+  ${cur.orders.slice().reverse().map(o=>`<tr><td class="mono">${o.id}</td><td>${dfmt(o.date)}</td><td>${esc(C[o.c].name)}</td><td style="white-space:normal;min-width:280px">${o.lines.map(l=>`${l.qty}× ${esc(P[l.p].name)}`).join(' · ')}</td><td class="n">${sum(o.lines.map(l=>l.qty))}</td><td class="n">${fmt$(o.total)}</td></tr>`).join('')||'<tr><td colspan="6" class="muted">No orders in this period.</td></tr>'}
+ </tbody></table></div>
+ <p class="print-only muted">Generated by Anytrail · sample data for demonstration.</p>`;
+}
+function downloadCSV(){
+ const per=periodById(repId),r=agg(per.start,per.end);
+ const q=v=>{const s=String(v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s};
+ const rows=[['Order','Date','Customer','Customer type','City','Product','Category','Case pack','Cases','Price per case (CAD)','Line total (CAD)']];
+ r.orders.forEach(o=>o.lines.forEach(l=>{const c=C[o.c],p=P[l.p];rows.push([o.id,iso(o.date),c.name,c.type,c.city,p.name,p.cat,p.pack,l.qty,l.price.toFixed(2),(l.qty*l.price).toFixed(2)])}));
+ const blob=new Blob(['﻿'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`kings-sales-${per.id}.csv`;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+ toast(`Downloaded ${rows.length-1} order lines for ${per.label}.`);
+}
+
+/* ---------- Customers ---------- */
+let custFilter='All',custQ='',custSort='rev12';
+function vCustomers(){
+ let rows=Object.values(S.cust).filter(c=>(custFilter==='All'||c.c.type===custFilter)&&c.c.name.toLowerCase().includes(custQ.toLowerCase()));
+ const sorters={rev12:(a,b)=>b.rev12-a.rev12,yoy:(a,b)=>(a.yoy??9)-(b.yoy??9),status:(a,b)=>b.sev-a.sev||b.daysSince-a.daysSince};
+ rows.sort(sorters[custSort]);
+ const th=(k,l,n)=>`<th class="${n?'n':''}"><button data-sort="${k}" ${custSort===k?'aria-sort="descending"':''}>${l}</button></th>`;
+ return `<div class="head"><div><span class="label">${CUSTOMERS.length} accounts</span><h1>Customers</h1><p>How often each account orders, whether it's growing, and when to expect the next order. Open an account to see its forecast and a suggested reorder.</p></div></div>
+ <div class="toolbar">${['All',...TYPES].map(t=>`<button class="chip" data-type="${t}" aria-pressed="${custFilter===t}">${t}</button>`).join('')}
+  <input class="search" id="custSearch" type="search" placeholder="Search accounts" value="${esc(custQ)}" aria-label="Search accounts"></div>
+ <div class="tbl-wrap"><table><thead><tr><th>Account</th>${th('rev12','Revenue 12 mo',1)}${th('yoy','vs prior yr',1)}<th>Last 12 months</th><th>Last order</th><th>Next expected</th>${th('status','Status')}</tr></thead>
+ <tbody>${rows.map(c=>`<tr tabindex="0" data-cust="${c.c.id}"><td><b>${esc(c.c.name)}</b><span class="sub">${c.c.type} · ${esc(c.c.city)}</span></td>
+  <td class="n">${fmt$(c.rev12)}</td><td class="n">${c.yoy==null?'<span class="pill info">New</span>':delta(c.yoy)}</td><td>${spark(c.rev.slice(12))}</td>
+  <td>${dfmt(c.last)}<span class="sub">${c.daysSince} days ago</span></td>
+  <td>${c.status==='Lapsed'?'<span class="muted">—</span>':dfmt(c.next)}<span class="sub">every ~${c.interval} days</span></td><td>${pill(c.status)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function openCustomer(id){
+ const cs=S.cust[id],c=cs.c;
+ const mix=Object.entries(cs.pc12).sort((a,b)=>b[1]*P[b[0]].price-a[1]*P[a[0]].price).slice(0,10).map(([pid,q])=>{const pq=cs.pcPrev[pid]||0;return{label:P[pid].name,v:q*P[pid].price,right:`${q} cs · ${pq?`<span class="${dcls(q/pq-1)}">${pct(q/pq-1)}</span>`:'new'}`}});
+ const last3=cs.orders.slice(-3),sugg={};last3.forEach(o=>o.lines.forEach(l=>sugg[l.p]=(sugg[l.p]||0)+l.qty/last3.length));
+ const sl=Object.entries(sugg).map(([p,q])=>[p,Math.max(1,Math.round(q))]).sort((a,b)=>b[1]-a[1]);
+ const due=cs.next?days(TODAY,cs.next):0;
+ const dropped=Object.keys(cs.pcPrev).filter(p=>!cs.pc12[p]);
+ openDrawer(`<div class="dh"><div><span class="label">${c.type} · ${esc(c.city)}</span><h1>${esc(c.name)}</h1><div>${pill(cs.status)} <span class="muted">${cs.why}</span></div></div><button class="x" data-close aria-label="Close">×</button></div>
+ <div class="mini"><div><b>${fmtK(cs.rev12)}</b><span>Revenue 12 mo</span></div><div><b class="${dcls(cs.yoy)}">${cs.yoy==null?'New':pct(cs.yoy)}</b><span>vs prior year</span></div><div><b>${fmt$(cs.aov)}</b><span>Avg order</span></div><div><b>${cs.interval} days</b><span>Order rhythm</span></div></div>
+ ${cs.status!=='Lapsed'?`<div class="next"><div><b>Next order expected ${due<0?`${-due} days ago (${dfmt(cs.next)})`:due===0?'today':`${dfmt(cs.next)} (in ${due} days)`}</b><div class="muted" style="font-size:13px">Suggested order from the last ${last3.length} orders · about ${fmt$(sum(sl.map(([p,q])=>q*P[p].price)))}</div></div>
+  <ul>${sl.map(([p,q])=>`<li><span>${esc(P[p].name)}</span><span class="num">${q} cs × ${fmt$(P[p].price)}</span></li>`).join('')}</ul></div>`:`<div class="next"><b>No order since ${dfmt(cs.last)}.</b><span class="muted" style="font-size:13.5px">This account used to order about ${fmtK(cs.revPrev/12)} a month. Worth a win-back call.</span></div>`}
+ <section class="card"><div class="card-h"><h2>Monthly revenue and forecast</h2><span class="muted">next 6 mo: ${fmtK(sum(cs.fc.f))}</span></div>${chartSlot(lineChart({actual:cs.rev,fc:cs.fc}),210)}</section>
+ <section class="card"><div class="card-h"><h2>What they buy</h2><span class="muted">cases, last 12 mo vs prior</span></div>${bars(mix)}
+  ${dropped.length?`<p class="muted" style="margin:12px 0 0;font-size:13px">Stopped buying: ${dropped.map(p=>esc(P[p].name)).join(', ')}</p>`:''}</section>
+ <section class="card"><div class="card-h"><h2>Recent orders</h2></div><div class="list">${cs.orders.slice(-6).reverse().map(o=>`<div class="li"><span><span class="li-t mono">${o.id}</span><small>${o.lines.map(l=>`${l.qty}× ${esc(P[l.p].name)}`).join(' · ')}</small></span><span style="text-align:right"><span class="num">${fmt$(o.total)}</span><small>${dfmt(o.date)}</small></span></div>`).join('')}</div></section>`);
+}
+
+/* ---------- Products ---------- */
+let prodCat='All';
+function vProducts(){
+ const rows=Object.values(S.prod).filter(p=>prodCat==='All'||(prodCat==='New Products'?p.p.isNew:p.p.cat===prodCat)).sort((a,b)=>b.rev12-a.rev12);
+ return `<div class="head"><div><span class="label">${PRODUCTS.length} products · King's full catalogue</span><h1>Products</h1><p>Volume and revenue for each product, who buys it, and which customers have stopped buying it.</p></div></div>
+ <div class="toolbar">${['All',...CATS,'New Products'].map(t=>`<button class="chip" data-cat="${t}" aria-pressed="${prodCat===t}">${t}</button>`).join('')}</div>
+ <div class="tbl-wrap"><table><thead><tr><th>Product</th><th>Category</th><th class="n">Cases 12 mo</th><th class="n">Revenue 12 mo</th><th class="n">vs prior yr</th><th>Last 12 months</th><th class="n">Buyers</th><th>Top buyer</th></tr></thead>
+ <tbody>${rows.map(p=>`<tr tabindex="0" data-prod="${p.p.id}"><td><span class="pcell">${thumb(p.p)}<span><b>${esc(p.p.name)}</b>${p.p.isNew?' <span class="pill info">New</span>':''}<span class="sub">${p.p.pack} · ${fmt$(p.p.price)}/case</span></span></span></td><td>${p.p.cat}</td>
+ <td class="n">${p.u12.toLocaleString('en-CA')}</td><td class="n">${fmt$(p.rev12)}</td><td class="n">${delta(p.yoy)}</td><td>${spark(p.units.slice(12))}</td>
+ <td class="n">${p.buyers}${p.dropped.length?` <span class="pill warn" title="Customers who stopped buying">−${p.dropped.length}</span>`:''}</td><td>${esc(p.top)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function openProduct(id){
+ const ps=S.prod[id],p=ps.p;
+ const buyers=Object.entries(ps.b12).sort((a,b)=>b[1]-a[1]).map(([c,q])=>{const pq=ps.bPrev[c]||0;return{label:C[c].name,v:q,right:`${q} cs · ${pq?`<span class="${dcls(q/pq-1)}">${pct(q/pq-1)}</span>`:'new'}`}});
+ openDrawer(`<div class="dh"><div style="flex-direction:row;gap:16px;align-items:center">${thumb(p,'hero-img')}<div style="display:flex;flex-direction:column;gap:4px;min-width:0"><span class="label">${p.cat} · ${p.pack}</span><h1>${esc(p.name)}</h1></div></div><button class="x" data-close aria-label="Close">×</button></div>
+ <div class="mini"><div><b>${ps.u12.toLocaleString('en-CA')}</b><span>Cases 12 mo</span></div><div><b>${fmtK(ps.rev12)}</b><span>Revenue 12 mo</span></div><div><b class="${dcls(ps.yoy)}">${pct(ps.yoy)}</b><span>vs prior year</span></div><div><b>${ps.buyers}</b><span>Buyers</span></div></div>
+ <section class="card"><div class="card-h"><h2>Cases per month and forecast</h2><span class="muted">next 6 mo: ${Math.round(sum(ps.fcU.f)).toLocaleString('en-CA')} cases</span></div>${chartSlot(lineChart({actual:ps.units,fc:ps.fcU,money:false,unit:''}),210)}</section>
+ ${ps.dropped.length?`<div class="next"><b>${ps.dropped.length} customer${ps.dropped.length>1?'s':''} stopped buying this</b><ul>${ps.dropped.map(c=>`<li><span>${esc(C[c].name)}</span><span class="muted">last bought ${dfmt(ps.last[c])}</span></li>`).join('')}</ul></div>`:''}
+ <section class="card"><div class="card-h"><h2>Who buys it</h2><span class="muted">cases, last 12 mo vs prior</span></div>${bars(buyers,true)}</section>`);
+}
+
+/* ---------- Forecast ---------- */
+let fcBy='customer';
+function vForecast(){
+ const months=Array.from({length:H},(_,j)=>N+j);
+ const rows=fcBy==='customer'?Object.values(S.cust).map(c=>({id:c.c.id,attr:'cust',name:c.c.name,sub:c.c.type,f:c.fc.f,ly:c.rev.slice(12,18)})):Object.values(S.prod).map(p=>({id:p.p.id,attr:'prod',name:p.p.name,sub:p.p.cat,f:p.fc.f,ly:p.rev.slice(12,18)}));
+ rows.sort((a,b)=>sum(b.f)-sum(a.f));
+ const tot={f:S.fc.f,ly:S.total.slice(12,18)};
+ const cell=r=>`${r.f.map(v=>`<td class="n fc">${fmtK(v)}</td>`).join('')}<td class="n"><b>${fmtK(sum(r.f))}</b></td><td class="n">${sum(r.ly)?delta(sum(r.f)/sum(r.ly)-1):'—'}</td>`;
+ const peak=S.fc.f.indexOf(Math.max(...S.fc.f));
+ return `<div class="head"><div><span class="label">${fcLabel()}</span><h1>Forecast</h1><p>Built from each account's past orders. It updates every time an order comes in.</p></div></div>
+ <div class="kpis">
+  <div class="kpi"><span class="label">Next 6 months</span><span class="v">${fmtK(sum(S.fc.f))}</span><span class="s">likely ${fmtK(sum(S.fc.lo))} – ${fmtK(sum(S.fc.hi))}</span></div>
+  <div class="kpi"><span class="label">${mLabel(N)}</span><span class="v">${fmtK(S.fc.f[0])}</span><span class="s">${fmtK(S.mtd)} booked so far (${Math.round(S.mtd/S.fc.f[0]*100)}%)</span></div>
+  <div class="kpi"><span class="label">Peak month</span><span class="v">${mLabel(N+peak)}</span><span class="s">${fmtK(S.fc.f[peak])} · plan production for the holiday lift</span></div>
+  <div class="kpi"><span class="label">Accuracy check</span><span class="v">±${Math.round(S.btErr*100)}%</span><span class="s">average miss when tested on May–Oct 2026</span></div>
+ </div>
+ <section class="card"><div class="card-h"><h2>How the forecast works</h2></div><div class="method">
+  <div><b><span class="step">1</span>Seasonality</b>Two years of orders show each account's pattern through the year, like December peaks at grocers, Wellington at the holidays and summer dips at campus dining.</div>
+  <div><b><span class="step">2</span>Trend</b>The last 12 months set the direction. Growing accounts keep growing in the forecast, but the growth slows the further out it goes.</div>
+  <div><b><span class="step">3</span>Added up per account</b>Every account gets its own forecast, and the company total is their sum. Lapsed accounts count as zero until they order again.</div></div></section>
+ <div class="toolbar"><button class="chip" data-fcby="customer" aria-pressed="${fcBy==='customer'}">By customer</button><button class="chip" data-fcby="product" aria-pressed="${fcBy==='product'}">By product</button></div>
+ <div class="tbl-wrap"><table><thead><tr><th>${fcBy==='customer'?'Account':'Product'}</th>${months.map(i=>`<th class="n">${mLabel(i)}</th>`).join('')}<th class="n">6-mo total</th><th class="n">vs last yr</th></tr></thead>
+ <tbody><tr class="total"><td>All ${fcBy==='customer'?'accounts':'products'}</td>${cell(tot)}</tr>
+ ${rows.map(r=>`<tr tabindex="0" data-${r.attr}="${r.id}"><td><b>${esc(r.name)}</b><span class="sub">${esc(r.sub)}</span></td>${cell(r)}</tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ---------- Pipeline ---------- */
+const STAGES=[['Lead',.1],['Samples sent',.25],['Quote',.4],['Listing review',.6],['Won',1]];
+let deals=[
+ {id:1,acct:'Fresh Valley Markets',what:'8-store listing, frozen aisle',v:6500,stage:3,prods:'Chicken Bites, Nuggets, Tikka Masala',next:'Category review, Nov 20'},
+ {id:2,acct:'Golden Lotus Restaurant Group',what:'4 locations, dim sum menu',v:4800,stage:2,prods:'HK BBQ Buns, Dumplings, Sticky Rice Wrap',next:'Send revised quote'},
+ {id:3,acct:'Kensington Commons Food Hall',what:'Two vendor stalls',v:3100,stage:2,prods:'Skewered Satay, Kung Pao',next:'Tasting on Nov 14'},
+ {id:4,acct:'Lakeshore Catering',what:'Holiday event menus',v:2200,stage:1,prods:"King's Wellington, Calamari",next:'Follow up on samples'},
+ {id:5,acct:'Bayview Senior Living',what:'Weekly plant-based menu',v:1800,stage:1,prods:'Cutlets, Meatballs, Tikka Masala',next:'Chef feedback call'},
+ {id:6,acct:'Uptown Poke Bar',what:'Seafood toppings',v:900,stage:0,prods:'Vegan Tuna, Vegan Salmon',next:'Intro call'},
+ {id:7,acct:'Prairie Plant Co.',what:'Win back lost volume',v:3000,stage:0,prods:'Bacon, Cutlets',next:'Ask why orders dropped'},
+ {id:8,acct:'Maple Pantry Market',what:'Add seafood line',v:1200,stage:4,prods:'Salmon, Shrimps',next:'First order this week'},
+];
+function vPipeline(){
+ const open=deals.filter(d=>d.stage<4),weighted=sum(open.map(d=>d.v*STAGES[d.stage][1]));
+ return `<div class="head"><div><span class="label">New business</span><h1>Pipeline</h1><p>Prospects and expansion deals, valued at the monthly orders they would bring. Move a deal along as it progresses.</p></div></div>
+ <div class="kpis">
+  <div class="kpi"><span class="label">Open deals</span><span class="v">${open.length}</span><span class="s">${fmtK(sum(open.map(d=>d.v)))}/mo if all close</span></div>
+  <div class="kpi"><span class="label">Weighted pipeline</span><span class="v">${fmtK(weighted)}/mo</span><span class="s">value × chance of closing</span></div>
+  <div class="kpi"><span class="label">Won</span><span class="v">${deals.filter(d=>d.stage===4).length}</span><span class="s">${fmtK(sum(deals.filter(d=>d.stage===4).map(d=>d.v)))}/mo added</span></div>
+  <div class="kpi"><span class="label">Annualized, weighted</span><span class="v">${fmtK(weighted*12)}</span><span class="s">on top of the forecast</span></div>
+ </div>
+ <div class="board">${STAGES.map(([s,pr],i)=>{const ds=deals.filter(d=>d.stage===i);return `<div class="col"><div class="col-h"><b>${s}</b><span>${ds.length} · ${fmtK(sum(ds.map(d=>d.v)))}/mo · ${Math.round(pr*100)}% odds</span></div>
+ ${ds.map(d=>`<div class="deal"><span class="t">${esc(d.acct)}</span><span class="muted">${esc(d.what)}</span><span>${esc(d.prods)}</span><span class="num">${fmt$(d.v)}/mo</span><span class="muted">Next: ${esc(d.next)}</span>
+ <div class="row"><button class="btn sm" data-move="${d.id}" data-dir="-1" ${i===0?'disabled':''} aria-label="Move ${esc(d.acct)} back">←</button><button class="btn sm" data-move="${d.id}" data-dir="1" ${i===4?'disabled':''}>${i===3?'Mark won':'Advance →'}</button></div></div>`).join('')}</div>`}).join('')}</div>`;
+}
+
+/* ---------- drawer, modal, routing ---------- */
+const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim'),modal=document.getElementById('modal');
+function openDrawer(html){
+ charts=charts.filter(c=>!c.inDrawer);const start=charts.length;
+ drawer.innerHTML=html;charts.slice(start).forEach(c=>c.inDrawer=true);
+ drawer.classList.add('on');scrim.classList.add('on');drawer.setAttribute('aria-hidden','false');drawer.scrollTop=0;
+ drawCharts();drawer.querySelector('.x').focus();
+}
+function closeDrawer(){drawer.classList.remove('on');scrim.classList.remove('on');drawer.setAttribute('aria-hidden','true');charts=charts.filter(c=>!c.inDrawer)}
+scrim.onclick=closeDrawer;
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(!modal.hidden)modal.hidden=true;else closeDrawer()}
+ if(e.key==='Enter'&&e.target.matches('tr[data-cust],tr[data-prod]'))e.target.click()});
+
+const views={overview:vOverview,reports:vReports,customers:vCustomers,products:vProducts,forecast:vForecast,pipeline:vPipeline};
+let current='overview';
+function render(){
+ const h=location.hash.slice(1);current=views[h]?h:'overview';
+ renderNav(current);charts=charts.filter(c=>c.inDrawer);
+ document.getElementById('main').innerHTML=`<div class="wrap">${views[current]()}</div>`;
+ if(current==='reports'){
+  document.getElementById('repSel').onchange=e=>{repId=e.target.value;render()};
+  document.getElementById('csvBtn').onclick=downloadCSV;
+  document.getElementById('printBtn').onclick=()=>window.print();
+ }
+ drawCharts();
+}
+addEventListener('hashchange',()=>{render();scrollTo(0,0)});
+addEventListener('beforeprint',()=>document.querySelectorAll('[data-print="show"]').forEach(el=>{el.dataset.wasHidden=el.hidden;el.hidden=false}));
+addEventListener('afterprint',()=>document.querySelectorAll('[data-print="show"]').forEach(el=>{el.hidden=el.dataset.wasHidden==='true'}));
+
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-cust],[data-prod],[data-type],[data-cat],[data-sort],[data-fcby],[data-repby],[data-move],[data-close]');if(!t)return;
+ if(t.dataset.close!=null)return closeDrawer();
+ if(t.dataset.cust)return openCustomer(t.dataset.cust);
+ if(t.dataset.prod)return openProduct(t.dataset.prod);
+ if(t.dataset.type){custFilter=t.dataset.type;return render()}
+ if(t.dataset.cat){prodCat=t.dataset.cat;return render()}
+ if(t.dataset.sort){custSort=t.dataset.sort;return render()}
+ if(t.dataset.fcby){fcBy=t.dataset.fcby;return render()}
+ if(t.dataset.repby){repBy=t.dataset.repby;return render()}
+ if(t.dataset.move){const d=deals.find(x=>x.id==t.dataset.move);d.stage=Math.min(4,Math.max(0,d.stage+ +t.dataset.dir));render();if(d.stage===4)toast(`${d.acct} marked won: ${fmt$(d.v)}/mo added.`)}
+});
+document.addEventListener('input',e=>{if(e.target.id==='custSearch'){custQ=e.target.value;render();const s=document.getElementById('custSearch');s.focus();s.setSelectionRange(custQ.length,custQ.length)}});
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3600)}
+document.getElementById('logBtn').onclick=()=>{
+ const due=Object.values(S.cust).filter(c=>c.sev===2).sort((a,b)=>b.rev12-a.rev12)[0];
+ const popts=sel=>CATS.map(cat=>`<optgroup label="${esc(cat)}">${PRODUCTS.filter(p=>p.cat===cat).map(p=>`<option value="${p.id}" ${p.id===sel?'selected':''}>${esc(p.name)}</option>`).join('')}</optgroup>`).join('');
+ modal.innerHTML=`<form id="orderForm"><h2>Log an order</h2><p class="muted" style="margin:0;font-size:13px">In production, orders arrive automatically from your invoices or accounting system.</p>
+  <label class="field" for="oc">Customer<select id="oc">${CUSTOMERS.map(c=>`<option value="${c.id}" ${due&&c.id===due.c.id?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
+  <label class="field" for="od">Order date<input id="od" type="date" value="${iso(TODAY)}" min="2026-11-01" max="${iso(TODAY)}"></label>
+  <div class="field">Products and cases<div class="lines">
+   <select id="op1" aria-label="Product 1">${popts('chb')}</select><input id="oq1" type="number" min="0" value="6" aria-label="Cases 1">
+   <select id="op2" aria-label="Product 2">${popts('bbq')}</select><input id="oq2" type="number" min="0" value="4" aria-label="Cases 2">
+   <select id="op3" aria-label="Product 3">${popts('hkb')}</select><input id="oq3" type="number" min="0" value="0" aria-label="Cases 3"></div></div>
+  <div class="actions"><button type="button" class="btn" id="oCancel">Cancel</button><button class="btn primary" type="submit">Log order</button></div></form>`;
+ modal.hidden=false;document.getElementById('oc').focus();
+ document.getElementById('oCancel').onclick=()=>modal.hidden=true;
+ document.getElementById('orderForm').onsubmit=e=>{e.preventDefault();
+  const lines=[1,2,3].map(i=>({p:document.getElementById('op'+i).value,qty:+document.getElementById('oq'+i).value||0})).filter(l=>l.qty>0).map(l=>({...l,price:P[l.p].price}));
+  if(!lines.length){toast('Add at least one product with a case count.');return}
+  const [y,m,d]=document.getElementById('od').value.split('-').map(Number);const cid=document.getElementById('oc').value;
+  const before=S.cust[cid].status;const total=sum(lines.map(l=>l.qty*l.price));
+  orders.push({id:'SO-'+(24100+orders.length),c:cid,date:new Date(y,m-1,d||TODAY.getDate()),lines,total});
+  compute();modal.hidden=true;render();
+  toast(`Logged ${fmt$(total)} for ${C[cid].name}. Status: ${before} → ${S.cust[cid].status}.`);
+ };
+};
+modal.addEventListener('click',e=>{if(e.target===modal)modal.hidden=true});
+
+compute();render();
+</script>
+</body>
+</html>

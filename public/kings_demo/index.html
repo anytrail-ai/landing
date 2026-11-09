@@ -177,6 +177,21 @@ td.fc{color:var(--graphite)}
 details.card summary{cursor:pointer;font-family:var(--display);font-size:18px}
 details.card[open] summary{margin-bottom:12px}
 .print-only{display:none}
+.o2c{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;position:relative}
+.o2c>div{display:flex;flex-direction:column;gap:6px;padding-right:16px;position:relative;font-size:13.5px;color:var(--graphite)}
+.o2c>div:not(:last-child)::after{content:"";position:absolute;top:13px;left:34px;right:8px;height:1px;background:var(--line)}
+.o2c b{color:var(--text);font-weight:600}
+.assume{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.assume label{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--graphite)}
+.assume input{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--text);width:100%;min-width:0;font-variant-numeric:tabular-nums}
+.asof{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;align-items:start}
+.asof .big{font-family:var(--display);font-size:34px;line-height:40px;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
+.ledger{display:flex;flex-direction:column;font-size:13.5px}
+.ledger div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid var(--line)}
+.ledger div:first-child{border-top:0}
+.ledger .tot{font-weight:600}
+.check{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--graphite)}
+@media (max-width:900px){.o2c,.assume{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:16px}.o2c>div::after{display:none}.asof{grid-template-columns:1fr}}
 
 @media (max-width:1080px){.kpis.k5{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:1000px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:1fr 1fr}.grid3>:last-child{grid-column:1/-1}.method{grid-template-columns:1fr}}
@@ -313,6 +328,11 @@ const CUSTOMERS=[
 ];
 const C=Object.fromEntries(CUSTOMERS.map(c=>[c.id,c]));
 const TYPES=[...new Set(CUSTOMERS.map(c=>c.type))];
+/* order-to-cash: lead time from portal PO to delivery, payment terms (days after delivery/invoice), typical days paid late */
+const TERMS={Grocery:30,Distributor:30,'Health store':30,Hotel:30,Foodservice:45,Restaurant:15};
+const LEAD={Grocery:6,Distributor:8,'Health store':4,Hotel:3,Foodservice:4,Restaurant:2};
+const LATE={kc:0,zm:0,zl:0,zg:0,gg:4,lt:9,mp:2,nf:6,pp:22,hh:12,cd:18,sn:5,bh:3,rc:95};
+CUSTOMERS.forEach(c=>{c.terms=TERMS[c.type];c.lead=LEAD[c.type];c.late=LATE[c.id]});
 
 const SEASON={ // Jan..Dec
  retail:[1.12,.95,.98,.97,1,.93,.9,.92,.98,1.02,1.1,1.22],
@@ -350,6 +370,10 @@ let orders=[];
  orders.sort((a,b)=>a.date-b.date);
  orders.forEach((o,i)=>o.id='SO-'+(24100+i));
 })();
+const addDays=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
+function settle(o,hist){const c=C[o.c];o.delivery=addDays(o.date,c.lead+Math.floor(rnd()*3));o.due=addDays(o.delivery,c.terms);o.paid=null;
+ if(hist){const paid=addDays(o.due,Math.round(Math.max(-4,c.late+gauss()*Math.min(6,Math.max(2,c.late*.35)))));if(paid<=TODAY)o.paid=paid}}
+orders.forEach(o=>settle(o,true));
 
 /* ---------- forecasting: seasonal index × damped linear trend ---------- */
 function linreg(y){const n=y.length;if(n<2)return{a:y[0]||0,b:0};const mx=(n-1)/2,my=avg(y);let num=0,den=0;y.forEach((v,i)=>{num+=(i-mx)*(v-my);den+=(i-mx)**2});const b=num/den;return{a:my-b*mx,b}}
@@ -491,7 +515,7 @@ const pillCls={'On track':'good','Reorder due':'warn','Slowing':'info','Lapsed':
 const pill=s=>`<span class="pill ${pillCls[s]}">${s}</span>`;
 const delta=v=>`<span class="${dcls(v)}">${pct(v)}</span>`;
 const bars=(rows,alt)=>{const max=Math.max(...rows.map(r=>r.v),1);return `<div class="bars">${rows.map(r=>`<div class="bar-row"><span title="${esc(r.label)}">${esc(r.label)}</span><span class="num">${r.right}</span><div class="track"><div class="fill ${alt?'alt':''}" style="width:${r.v/max*100}%"></div></div></div>`).join('')}</div>`};
-const VIEWS=[['overview','Overview'],['reports','Reports'],['customers','Customers'],['products','Products'],['forecast','Forecast'],['pipeline','Pipeline']];
+const VIEWS=[['overview','Overview'],['reports','Reports'],['customers','Customers'],['products','Products'],['forecast','Forecast'],['cash','Cash flow'],['pipeline','Pipeline']];
 const fcLabel=()=>`${mLabel(N)} – ${mLabel(N+H-1)}`;
 
 function renderNav(view){
@@ -513,7 +537,7 @@ function vOverview(){
  const mtdRep=report(periodById('m-24'));
  return `
  <div class="head"><div><span class="label">Sunday, November 8, 2026</span><h1>Good morning. Here's where sales stand.</h1>
- <p>${attn.filter(c=>c.sev>=2).length} accounts need a call this week. November is pacing toward ${fmtK(mtdRep.projection)} against a forecast of ${fmtK(S.fc.f[0])}.</p></div>
+ <p>${attn.filter(c=>c.sev>=2).length} accounts need a call this week. November is pacing toward ${fmtK(mtdRep.projection)} against a forecast of ${fmtK(S.fc.f[0])}. Cash is projected at ${fmtK(cashModel().bal[days(TODAY,new Date(2026,11,31))])} on December 31.</p></div>
  <a class="btn noprint" href="#reports">Open this month's report</a></div>
  ${notice}
  <div class="kpis">
@@ -665,6 +689,7 @@ function openCustomer(id){
  const dropped=Object.keys(cs.pcPrev).filter(p=>!cs.pc12[p]);
  openDrawer(`<div class="dh"><div><span class="label">${c.type} · ${esc(c.city)}</span><h1>${esc(c.name)}</h1><div>${pill(cs.status)} <span class="muted">${cs.why}</span></div></div><button class="x" data-close aria-label="Close">×</button></div>
  <div class="mini"><div><b>${fmtK(cs.rev12)}</b><span>Revenue 12 mo</span></div><div><b class="${dcls(cs.yoy)}">${cs.yoy==null?'New':pct(cs.yoy)}</b><span>vs prior year</span></div><div><b>${fmt$(cs.aov)}</b><span>Avg order</span></div><div><b>${cs.interval} days</b><span>Order rhythm</span></div></div>
+ ${(()=>{const ps=payStats(id);return `<div class="notice">Net ${c.terms} terms · delivers about ${c.lead} days after the PO · ${ps.n?`pays ${ps.late<=1?'on time':`on average ${Math.round(ps.late)} days late`}`:'no payment history yet'} · open balance ${fmt$(ps.openAmt)}${ps.overAmt?`, <b>${fmt$(ps.overAmt)} overdue</b>`:''}${ps.pos?` · ${fmt$(ps.pos)} in transit`:''}</div>`})()}
  ${cs.status!=='Lapsed'?`<div class="next"><div><b>Next order expected ${due<0?`${-due} days ago (${dfmt(cs.next)})`:due===0?'today':`${dfmt(cs.next)} (in ${due} days)`}</b><div class="muted" style="font-size:13px">Suggested order from the last ${last3.length} orders · about ${fmt$(sum(sl.map(([p,q])=>q*P[p].price)))}</div></div>
   <ul>${sl.map(([p,q])=>`<li><span>${esc(P[p].name)}</span><span class="num">${q} cs × ${fmt$(P[p].price)}</span></li>`).join('')}</ul></div>`:`<div class="next"><b>No order since ${dfmt(cs.last)}.</b><span class="muted" style="font-size:13.5px">This account used to order about ${fmtK(cs.revPrev/12)} a month. Worth a win-back call.</span></div>`}
  <section class="card"><div class="card-h"><h2>Monthly revenue and forecast</h2><span class="muted">next 6 mo: ${fmtK(sum(cs.fc.f))}</span></div>${chartSlot(lineChart({actual:cs.rev,fc:cs.fc}),210)}</section>
@@ -720,6 +745,126 @@ function vForecast(){
  ${rows.map(r=>`<tr tabindex="0" data-${r.attr}="${r.id}"><td><b>${esc(r.name)}</b><span class="sub">${esc(r.sub)}</span></td>${cell(r)}</tr>`).join('')}</tbody></table></div>`;
 }
 
+/* ---------- Cash flow ---------- */
+const HZ=90;
+let CA={open:62000,cogs:42,payroll:16000,fixed:9500,risky:false,asOf:'2026-12-31',arFilter:'all'};
+function payStats(cid){const os=S.cust[cid].orders,paid=os.filter(o=>o.paid&&days(o.paid,TODAY)<=365);
+ const open=os.filter(o=>!o.paid&&o.delivery<=TODAY),over=open.filter(o=>o.due<TODAY);
+ return{n:paid.length,dtp:avg(paid.map(o=>days(o.delivery,o.paid))),late:avg(paid.map(o=>days(o.due,o.paid))),openAmt:sum(open.map(o=>o.total)),
+  overAmt:sum(over.map(o=>o.total)),oldest:over.length?Math.max(...over.map(o=>days(o.due,TODAY))):0,pos:sum(os.filter(o=>o.delivery>TODAY).map(o=>o.total))}}
+function cashModel(){
+ const D=HZ+1,di=d=>days(TODAY,d),Z=()=>Array(D).fill(0);
+ const M={D,inv:Z(),po:Z(),fco:Z(),sup:Z(),pay:Z(),fix:Z(),items:[],excluded:0};
+ const put=(k,d,v)=>{const i=di(d);if(i>=0&&i<D)M[k][i]+=v};
+ orders.forEach(o=>{if(o.paid)return;const c=C[o.c];const exp=addDays(o.due,c.late);
+  if(o.delivery<=TODAY){const over=days(o.due,TODAY),risky=over>60;
+   const when=exp<=TODAY?addDays(TODAY,2+(o.total%7|0)):exp;
+   M.items.push({o,kind:'invoice',when,over,risky});
+   if(risky&&!CA.risky)M.excluded+=o.total;else put('inv',when,o.total);
+  }else{M.items.push({o,kind:'po',when:exp,over:0});put('po',exp,o.total)}});
+ const cg=CA.cogs/100;
+ orders.forEach(o=>put('sup',addDays(o.date,30),o.total*cg));
+ Object.values(S.cust).forEach(cs=>{const c=cs.c;const mtd=sum(cs.orders.filter(o=>monthIdx(o.date)===N).map(o=>o.total));
+  for(let j=0;j<H;j++){const m=N+j,d0=monthDate(m),dim=new Date(d0.getFullYear(),d0.getMonth()+1,0).getDate();
+   const first=j===0?TODAY.getDate()+1:1,amt=j===0?Math.max(0,cs.fc.f[0]-mtd):cs.fc.f[j],nd=dim-first+1;if(!amt||nd<=0)continue;
+   for(let dd=first;dd<=dim;dd++){const sub=new Date(d0.getFullYear(),d0.getMonth(),dd),a=amt/nd;
+    put('fco',addDays(sub,c.lead+1+c.terms+c.late),a);put('sup',addDays(sub,30),a*cg)}}});
+ const payday0=new Date(2026,10,13);
+ for(let i=0;i<D;i++){const d=addDays(TODAY,i);if(d.getDate()===1)M.fix[i]+=CA.fixed;const k=days(payday0,d);if(k>=0&&k%14===0)M.pay[i]+=CA.payroll}
+ M.inn=M.inv.map((v,i)=>v+M.po[i]+M.fco[i]);M.out=M.sup.map((v,i)=>v+M.pay[i]+M.fix[i]);
+ M.bal=[];let b=CA.open;for(let i=0;i<D;i++){b+=M.inn[i]-M.out[i];M.bal.push(b)}
+ return M;
+}
+function cashChart(M,sel){
+ const n=M.D,padL=56,padR=12,padT=16,padB=24,mx=Math.max(...M.bal,CA.open),mn=Math.min(0,...M.bal);
+ const stp=niceMax((mx*1.05-Math.min(0,mn*1.1))/4),top=Math.ceil(mx*1.05/stp)*stp,bot=Math.floor(Math.min(0,mn*1.1)/stp)*stp,xAt=(i,w)=>padL+i/(n-1)*(w-padL-padR);
+ const lo=M.bal.indexOf(Math.min(...M.bal));
+ return{n,idx:(m,w)=>Math.round((m-padL)/(w-padL-padR)*(n-1)),gx:xAt,draw(w,h){
+  const x=i=>xAt(i,w),y=v=>padT+(top-v)/(top-bot)*(h-padT-padB);let g='';
+  for(let v=bot;v<=top+1;v+=stp){const yy=y(v);g+=`<line x1="${padL}" x2="${w-padR}" y1="${yy}" y2="${yy}" stroke="var(--line)"/><text x="${padL-8}" y="${yy+3.5}" text-anchor="end">${fmtK(v)}</text>`}
+  if(bot<0)g+=`<line x1="${padL}" x2="${w-padR}" y1="${y(0)}" y2="${y(0)}" stroke="var(--brick)" stroke-opacity=".6"/>`;
+  const step=w<560?28:14;for(let i=0;i<n;i+=step)g+=`<text x="${x(i)}" y="${h-6}" text-anchor="${i===0?'start':'middle'}">${dfmt(addDays(TODAY,i))}</text>`;
+  const pts=M.bal.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  g+=`<polygon points="${x(0)},${y(Math.max(bot,0))} ${pts} ${x(n-1)},${y(Math.max(bot,0))}" fill="var(--text)" fill-opacity=".05"/>`;
+  g+=`<polyline points="${pts}" fill="none" stroke="var(--text)" stroke-width="1.8" stroke-linejoin="round"/>`;
+  if(sel>=0&&sel<n)g+=`<line x1="${x(sel)}" x2="${x(sel)}" y1="${padT}" y2="${h-padB}" stroke="var(--graphite)" stroke-dasharray="3 3"/><circle cx="${x(sel)}" cy="${y(M.bal[sel])}" r="4" fill="var(--text)"/>`;
+  const lx=x(lo),anchor=lx>w-140?'end':lx<padL+60?'start':'middle';
+  g+=`<circle cx="${lx}" cy="${y(M.bal[lo])}" r="4" fill="var(--bg)" stroke="${M.bal[lo]<0?'var(--brick)':'var(--text)'}" stroke-width="1.6"/><text x="${anchor==='end'?lx-8:anchor==='start'?lx+8:lx}" y="${Math.min(h-padB-6,y(M.bal[lo])+18)}" text-anchor="${anchor}" style="fill:var(--text)">Low ${fmtK(M.bal[lo])} · ${dfmt(addDays(TODAY,lo))}</text>`;
+  g+=`<line class="guide" x1="0" x2="0" y1="${padT}" y2="${h-padB}" stroke="var(--text)" stroke-opacity=".3" visibility="hidden"/>`;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Projected daily bank balance for the next 90 days">${g}</svg>`;
+ },tip(i){const d=addDays(TODAY,i);return `${d.toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric'})} · balance <b>${fmt$(M.bal[i])}</b><br>in ${fmt$(M.inn[i])} · out ${fmt$(M.out[i])}`}};
+}
+function vCash(){
+ const M=cashModel(),D=M.D;
+ let sel=days(TODAY,new Date(CA.asOf+'T00:00'));if(!(sel>=0&&sel<D)){sel=Math.min(D-1,days(TODAY,new Date(2026,11,31)));}
+ const cum=k=>sum(M[k].slice(0,sel+1));
+ const lo=M.bal.indexOf(Math.min(...M.bal));
+ const inv=M.items.filter(x=>x.kind==='invoice'),po=M.items.filter(x=>x.kind==='po');
+ const arTot=sum(inv.map(x=>x.o.total)),overdue=inv.filter(x=>x.over>0);
+ const bucket=x=>x.over<=0?0:x.over<=30?1:x.over<=60?2:3;
+ const bk=[0,1,2,3].map(b=>sum(inv.filter(x=>bucket(x)===b).map(x=>x.o.total)));
+ const g=CUSTOMERS.filter(c=>c.type==='Grocery').map(c=>payStats(c.id)).filter(p=>p.n);
+ const gLate=avg(g.map(p=>p.late));
+ const in30=sum(M.inn.slice(0,31));
+ const weeks=[];for(let s=0;s<D;s+=7){const e=Math.min(D,s+7),sl=k=>sum(M[k].slice(s,e));weeks.push({s,inv:sl('inv'),po:sl('po'),fco:sl('fco'),out:sl('out'),bal:M.bal[e-1]})}
+ const custRows=CUSTOMERS.map(c=>({c,...payStats(c.id),next:M.items.filter(x=>x.o.c===c.id&&!(x.risky&&!CA.risky)).sort((a,b)=>a.when-b.when)[0]})).sort((a,b)=>b.openAmt+b.pos-(a.openAmt+a.pos));
+ const flt=CA.arFilter,items=M.items.filter(x=>flt==='all'||(flt==='overdue'?x.kind==='invoice'&&x.over>0:flt==='po'?x.kind==='po':x.kind==='invoice'&&x.over<=0)).sort((a,b)=>a.when-b.when);
+ const status=x=>x.kind==='po'?`<span class="pill info">In transit · delivers ${dfmt(x.o.delivery)}</span>`:x.over>60?`<span class="pill bad">${x.over} days overdue</span>`:x.over>0?`<span class="pill warn">${x.over} days overdue</span>`:`<span class="pill good">Due in ${days(TODAY,x.o.due)} days</span>`;
+ return `<div class="head"><div><span class="label">Next 90 days · ${dfmt(TODAY)} – ${dfmt(addDays(TODAY,HZ))}</span><h1>Cash flow</h1><p>When the money from each order arrives. Every PO from a retailer portal gets an estimated delivery date and a due date from that customer's terms. It's then shifted by how late that customer usually pays.</p></div></div>
+ <section class="card"><div class="card-h"><h2>Order to cash, for a typical grocery order</h2><span class="muted">varies by account</span></div>
+  <div class="o2c">
+   <div><span class="step">1</span><b>PO submitted</b>The retailer places the order in its supplier portal.</div>
+   <div><span class="step">2</span><b>Delivered · +${LEAD.Grocery} days</b>Delivery appointment at the retailer's DC. The invoice is issued on delivery.</div>
+   <div><span class="step">3</span><b>Due · +${TERMS.Grocery} days</b>Net ${TERMS.Grocery} from the invoice date.</div>
+   <div><span class="step">4</span><b>Paid · +${Math.round(gLate)} days</b>Grocers paid ${Math.round(gLate)} days after the due date on average over the last 12 months.</div>
+  </div></section>
+ <section class="card"><div class="card-h"><h2>Assumptions</h2><span class="muted">edit to test scenarios</span></div>
+  <div class="assume">
+   <label for="caOpen">Bank balance today ($)<input id="caOpen" type="number" step="1000" value="${CA.open}" data-ca="open"></label>
+   <label for="caCogs">Ingredients & packaging (% of sales, paid net 30)<input id="caCogs" type="number" step="1" value="${CA.cogs}" data-ca="cogs"></label>
+   <label for="caPay">Payroll per run ($, every 2nd Friday)<input id="caPay" type="number" step="500" value="${CA.payroll}" data-ca="payroll"></label>
+   <label for="caFix">Rent, utilities & fixed costs ($, on the 1st)<input id="caFix" type="number" step="500" value="${CA.fixed}" data-ca="fixed"></label>
+  </div>
+  <label class="check" style="margin-top:12px" for="caRisky"><input id="caRisky" type="checkbox" ${CA.risky?'checked':''} data-ca="risky">Count invoices more than 60 days overdue as collectable (${fmt$(M.excluded+ (CA.risky?sum(inv.filter(x=>x.risky).map(x=>x.o.total)):0))})</label></section>
+ <div class="kpis">
+  <div class="kpi"><span class="label">Lowest balance</span><span class="v ${M.bal[lo]<0?'down':''}">${fmtK(M.bal[lo])}</span><span class="s">on ${dlong(addDays(TODAY,lo))}</span></div>
+  <div class="kpi"><span class="label">Collections, next 30 days</span><span class="v">${fmtK(in30)}</span><span class="s">${fmtK(sum(M.inv.slice(0,31)))} from invoices already sent</span></div>
+  <div class="kpi"><span class="label">Receivables outstanding</span><span class="v">${fmtK(arTot)}</span><span class="s">${inv.length} invoices · ${fmtK(sum(po.map(x=>x.o.total)))} more in transit</span></div>
+  <div class="kpi"><span class="label">Overdue</span><span class="v ${overdue.length?'down':''}">${fmtK(sum(overdue.map(x=>x.o.total)))}</span><span class="s">${overdue.length} invoices · ${fmtK(bk[3])} over 60 days</span></div>
+ </div>
+ <section class="card"><div class="asof">
+  <div style="display:flex;flex-direction:column;gap:10px"><label class="label" for="caAsOf">Cash on a given day</label>
+   <input class="select" id="caAsOf" type="date" value="${iso(addDays(TODAY,sel))}" min="${iso(TODAY)}" max="${iso(addDays(TODAY,HZ))}" data-ca="asOf" style="align-self:flex-start">
+   <span class="big ${M.bal[sel]<0?'down':''}">${fmt$(M.bal[sel])}</span>
+   <span class="muted">Projected bank balance at the end of ${dlong(addDays(TODAY,sel))}, ${sel} days from today.</span></div>
+  <div class="ledger">
+   <div><span>Bank balance today</span><span class="num">${fmt$(CA.open)}</span></div>
+   <div><span>+ Invoices already sent</span><span class="num up">${fmt$(cum('inv'))}</span></div>
+   <div><span>+ POs in transit, not yet invoiced</span><span class="num up">${fmt$(cum('po'))}</span></div>
+   <div><span>+ Forecast orders</span><span class="num up">${fmt$(cum('fco'))}</span></div>
+   <div><span>− Ingredient & packaging suppliers</span><span class="num down">${fmt$(cum('sup'))}</span></div>
+   <div><span>− Payroll</span><span class="num down">${fmt$(cum('pay'))}</span></div>
+   <div><span>− Rent & fixed costs</span><span class="num down">${fmt$(cum('fix'))}</span></div>
+   <div class="tot"><span>Projected balance</span><span class="num">${fmt$(M.bal[sel])}</span></div>
+  </div></div></section>
+ <section class="card"><div class="card-h"><h2>Projected bank balance</h2><span class="muted">daily, hover for detail</span></div>${chartSlot(cashChart(M,sel),260)}</section>
+ <div class="tbl-wrap"><table><thead><tr><th>Week of</th><th class="n">Invoices sent</th><th class="n">POs in transit</th><th class="n">Forecast orders</th><th class="n">Money in</th><th class="n">Money out</th><th class="n">Net</th><th class="n">Balance at week end</th></tr></thead><tbody>
+  ${weeks.map(w=>{const inn=w.inv+w.po+w.fco,net=inn-w.out;return `<tr><td>${dfmt(addDays(TODAY,w.s))}</td><td class="n">${fmt$(w.inv)}</td><td class="n">${fmt$(w.po)}</td><td class="n fc">${fmt$(w.fco)}</td><td class="n">${fmt$(inn)}</td><td class="n">${fmt$(w.out)}</td><td class="n ${net<0?'down':'up'}">${net<0?'−':'+'}${fmt$(Math.abs(net))}</td><td class="n"><b class="${w.bal<0?'down':''}">${fmt$(w.bal)}</b></td></tr>`}).join('')}
+ </tbody></table></div>
+ <div class="grid2">
+  <section class="card"><div class="card-h"><h2>Receivables by age</h2><span class="muted">${fmt$(arTot)} outstanding</span></div>${bars([{label:'Not yet due',v:bk[0],right:fmt$(bk[0])},{label:'1–30 days overdue',v:bk[1],right:fmt$(bk[1])},{label:'31–60 days overdue',v:bk[2],right:fmt$(bk[2])},{label:'Over 60 days overdue',v:bk[3],right:fmt$(bk[3])}])}</section>
+  <section class="card"><div class="card-h"><h2>Slowest payers</h2><span class="muted">days paid after due, last 12 mo</span></div>
+   <div class="list">${CUSTOMERS.map(c=>({c,...payStats(c.id)})).filter(p=>p.n).sort((a,b)=>b.late-a.late).slice(0,5).map(p=>`<button class="li" data-cust="${p.c.id}"><span><span class="li-t">${esc(p.c.name)}</span><small>Net ${p.c.terms} · ${fmt$(p.openAmt)} open${p.overAmt?` · ${fmt$(p.overAmt)} overdue`:''}</small></span><span class="pill ${p.late>20?'bad':p.late>7?'warn':'info'}">${Math.round(p.late)} days late</span></button>`).join('')}</div></section>
+ </div>
+ <div class="tbl-wrap"><table><thead><tr><th>Account</th><th class="n">Terms</th><th class="n">PO to delivery</th><th class="n">Avg days to pay</th><th class="n">Open invoices</th><th class="n">Overdue</th><th class="n">In transit</th><th>Next expected payment</th></tr></thead><tbody>
+  ${custRows.map(r=>`<tr data-cust="${r.c.id}" tabindex="0"><td><b>${esc(r.c.name)}</b><span class="sub">${r.c.type}</span></td><td class="n">Net ${r.c.terms}</td><td class="n">~${r.c.lead} days</td><td class="n">${r.n?Math.round(r.dtp)+' days':'—'}</td><td class="n">${fmt$(r.openAmt)}</td><td class="n ${r.overAmt?'down':''}">${r.overAmt?fmt$(r.overAmt):'—'}</td><td class="n">${r.pos?fmt$(r.pos):'—'}</td><td>${r.next?`${dfmt(r.next.when)} · ${fmt$(r.next.o.total)}`:'<span class="muted">—</span>'}</td></tr>`).join('')}
+ </tbody></table></div>
+ <div class="toolbar"><span class="label" style="margin-right:4px">Open invoices & POs</span>${[['all','All'],['current','Not yet due'],['overdue','Overdue'],['po','In transit']].map(([k,l])=>`<button class="chip" data-arf="${k}" aria-pressed="${flt===k}">${l}</button>`).join('')}</div>
+ <div class="tbl-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>PO submitted</th><th>Delivered</th><th>Due</th><th>Expected payment</th><th class="n">Amount</th><th>Status</th></tr></thead><tbody>
+  ${items.map(x=>`<tr data-cust="${x.o.c}" tabindex="0"><td class="mono">${x.o.id}</td><td>${esc(C[x.o.c].name)}</td><td>${dfmt(x.o.date)}</td><td>${dfmt(x.o.delivery)}${x.kind==='po'?' <span class="muted">(est.)</span>':''}</td><td>${dfmt(x.o.due)}</td><td>${x.risky&&!CA.risky?'<span class="muted">not counted</span>':dfmt(x.when)}</td><td class="n">${fmt$(x.o.total)}</td><td>${status(x)}</td></tr>`).join('')||'<tr><td colspan="8" class="muted">Nothing in this view.</td></tr>'}
+ </tbody></table></div>`;
+}
+
 /* ---------- Pipeline ---------- */
 const STAGES=[['Lead',.1],['Samples sent',.25],['Quote',.4],['Listing review',.6],['Won',1]];
 let deals=[
@@ -759,12 +904,15 @@ scrim.onclick=closeDrawer;
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(!modal.hidden)modal.hidden=true;else closeDrawer()}
  if(e.key==='Enter'&&e.target.matches('tr[data-cust],tr[data-prod]'))e.target.click()});
 
-const views={overview:vOverview,reports:vReports,customers:vCustomers,products:vProducts,forecast:vForecast,pipeline:vPipeline};
+const views={overview:vOverview,reports:vReports,customers:vCustomers,products:vProducts,forecast:vForecast,cash:vCash,pipeline:vPipeline};
 let current='overview';
 function render(){
  const h=location.hash.slice(1);current=Object.hasOwn(views,h)?h:'overview';
  renderNav(current);charts=charts.filter(c=>c.inDrawer);
  document.getElementById('main').innerHTML=`<div class="wrap">${views[current]()}</div>`;
+ if(current==='cash'){
+  document.querySelectorAll('[data-ca]').forEach(el=>el.onchange=()=>{const k=el.dataset.ca;CA[k]=el.type==='checkbox'?el.checked:el.type==='date'?el.value:Math.max(0,+el.value||0);render()});
+ }
  if(current==='reports'){
   document.getElementById('repSel').onchange=e=>{repId=e.target.value;render()};
   document.getElementById('csvBtn').onclick=downloadCSV;
@@ -777,7 +925,7 @@ addEventListener('beforeprint',()=>document.querySelectorAll('[data-print="show"
 addEventListener('afterprint',()=>document.querySelectorAll('[data-print="show"]').forEach(el=>{el.hidden=el.dataset.wasHidden==='true'}));
 
 document.addEventListener('click',e=>{
- const t=e.target.closest('[data-cust],[data-prod],[data-type],[data-cat],[data-sort],[data-fcby],[data-repby],[data-move],[data-close]');if(!t)return;
+ const t=e.target.closest('[data-cust],[data-prod],[data-type],[data-cat],[data-sort],[data-fcby],[data-repby],[data-arf],[data-move],[data-close]');if(!t)return;
  if(t.dataset.close!=null)return closeDrawer();
  if(t.dataset.cust)return openCustomer(t.dataset.cust);
  if(t.dataset.prod)return openProduct(t.dataset.prod);
@@ -786,6 +934,7 @@ document.addEventListener('click',e=>{
  if(t.dataset.sort){custSort=t.dataset.sort;return render()}
  if(t.dataset.fcby){fcBy=t.dataset.fcby;return render()}
  if(t.dataset.repby){repBy=t.dataset.repby;return render()}
+ if(t.dataset.arf){CA.arFilter=t.dataset.arf;return render()}
  if(t.dataset.move){const d=deals.find(x=>x.id==t.dataset.move);d.stage=Math.min(4,Math.max(0,d.stage+ +t.dataset.dir));render();if(d.stage===4)toast(`${d.acct} marked won: ${fmt$(d.v)}/mo added.`)}
 });
 document.addEventListener('input',e=>{if(e.target.id==='custSearch'){custQ=e.target.value;render();const s=document.getElementById('custSearch');s.focus();s.setSelectionRange(custQ.length,custQ.length)}});
@@ -809,7 +958,7 @@ document.getElementById('logBtn').onclick=()=>{
   if(!lines.length){toast('Add at least one product with a case count.');return}
   const [y,m,d]=document.getElementById('od').value.split('-').map(Number);const cid=document.getElementById('oc').value;
   const before=S.cust[cid].status;const total=sum(lines.map(l=>l.qty*l.price));
-  orders.push({id:'SO-'+(24100+orders.length),c:cid,date:new Date(y,m-1,d||TODAY.getDate()),lines,total});
+  const no={id:'SO-'+(24100+orders.length),c:cid,date:new Date(y,m-1,d||TODAY.getDate()),lines,total};settle(no,false);orders.push(no);
   compute();modal.hidden=true;render();
   toast(`Logged ${fmt$(total)} for ${C[cid].name}. Status: ${before} → ${S.cust[cid].status}.`);
  };

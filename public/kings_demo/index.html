@@ -762,7 +762,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){if(!modal.hidden)modal.hidde
 const views={overview:vOverview,reports:vReports,customers:vCustomers,products:vProducts,forecast:vForecast,pipeline:vPipeline};
 let current='overview';
 function render(){
- const h=location.hash.slice(1);current=views[h]?h:'overview';
+ const h=location.hash.slice(1);current=Object.hasOwn(views,h)?h:'overview';
  renderNav(current);charts=charts.filter(c=>c.inDrawer);
  document.getElementById('main').innerHTML=`<div class="wrap">${views[current]()}</div>`;
  if(current==='reports'){

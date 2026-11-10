@@ -1,7 +1,38 @@
+import { CRM_COPY } from './copyCrm.js'
+
 // All landing-page copy in both languages. One object per section.
+// The top-level section blocks are the AR (customer AP portal) product; the
+// CRM product overrides them from copyCrm.js. See copyFor().
 // `meta` feeds both the runtime <head> and the static prerender in prerender.js.
 export const COPY = {
   en: {
+    // The product chooser at / : the site root asks which product the visitor
+    // came for instead of picking one for them.
+    chooser: {
+      meta: {
+        title: 'Anytrail | AI Agents for B2B Sales and Accounts Receivable',
+        description: 'Anytrail builds software for industrial companies and distributors: an AI sales agent and CRM on WhatsApp that answers every inquiry, and a customer AP portal workflow for accounts receivable teams.',
+        ogLocale: 'en_US',
+      },
+      label: 'Two products, one team',
+      title: 'What brings you to Anytrail?',
+      intro: 'We build for industrial companies and distributors. Pick the product you want to see.',
+      products: {
+        crm: {
+          label: 'Sales · WhatsApp CRM',
+          title: 'Answer every inquiry. Close more sales.',
+          body: 'An AI sales agent on WhatsApp, email and your CRM that replies in seconds, revives stalled quotes and hands qualified opportunities to your team.',
+          cta: 'See the sales agent',
+        },
+        ar: {
+          label: 'Finance · Accounts receivable',
+          title: 'Get invoices paid through customer AP portals.',
+          body: 'Track portal requirements, rejected invoices, missing documents and payment dates, so every blocked invoice has an owner and a next action.',
+          cta: 'See the AR portal workflow',
+        },
+      },
+      footerTagline: 'Software for industrial companies and distributors. © 2026 Anytrail',
+    },
     meta: {
       "title": "Anytrail | Customer AP Portal Work for Industrial Distributors",
       "description": "Building Anytrail for industrial distributors managing customer AP portals. Review invoice rejections, missing documents, approval status and payment dates in a 30-minute portal-to-cash review.",
@@ -790,6 +821,31 @@ export const COPY = {
   },
 
   es: {
+    chooser: {
+      meta: {
+        title: 'Anytrail | Agentes de IA para Ventas B2B y Cuentas por Cobrar',
+        description: 'Anytrail construye software para empresas industriales y distribuidores: un agente de ventas con IA y CRM en WhatsApp que responde cada consulta, y un flujo para que cuentas por cobrar dé seguimiento a los portales de proveedores de sus clientes.',
+        ogLocale: 'es_ES',
+      },
+      label: 'Dos productos, un equipo',
+      title: '¿Qué te trae a Anytrail?',
+      intro: 'Construimos para empresas industriales y distribuidores. Elige el producto que quieres ver.',
+      products: {
+        crm: {
+          label: 'Ventas · CRM de WhatsApp',
+          title: 'Responde cada consulta. Cierra más ventas.',
+          body: 'Un agente de ventas con IA en WhatsApp, correo y tu CRM que responde en segundos, reactiva cotizaciones detenidas y pasa las oportunidades calificadas a tu equipo.',
+          cta: 'Ver el agente de ventas',
+        },
+        ar: {
+          label: 'Finanzas · Cuentas por cobrar',
+          title: 'Cobra tus facturas en los portales de tus clientes.',
+          body: 'Da seguimiento a requisitos de portal, facturas rechazadas, documentos faltantes y fechas de pago, para que cada factura detenida tenga responsable y siguiente paso.',
+          cta: 'Ver el flujo de cobranza',
+        },
+      },
+      footerTagline: 'Software para empresas industriales y distribuidores. © 2026 Anytrail',
+    },
     meta: {
       "title": "Anytrail | Tus Portales de Cobro, Bajo Control",
       "description": "Para equipos de cuentas por cobrar B2B que trabajan en múltiples portales de clientes. Estamos construyendo una forma de dar seguimiento a rechazos, plazos, días de pago y pendientes. Agenda una demo de acceso anticipado.",
@@ -1993,7 +2049,15 @@ export const LANG_PATH = { en: '/', es: '/es' }
 // what to render, so adding a page here is enough to get it built.
 export const ROUTES = {
   en: {
+    // Product chooser. Each product has its own home, booking page and
+    // thank-you page so a CTA never sends a visitor into the other funnel.
     home: '/',
+    arHome: '/ar',
+    crmHome: '/crm',
+    crmSchedule: '/crm/schedule',
+    crmThanks: '/crm/thanks',
+    // AR product booking and thanks keep their original URLs: confirmation
+    // emails and ads already point at them.
     thanks: '/thanks',
     demo: '/demo',
     schedule: '/schedule',
@@ -2014,6 +2078,10 @@ export const ROUTES = {
   },
   es: {
     home: '/es',
+    arHome: '/es/ar',
+    crmHome: '/es/crm',
+    crmSchedule: '/es/crm/agenda',
+    crmThanks: '/es/crm/gracias',
     thanks: '/es/gracias',
     demo: '/es/demo',
     schedule: '/es/agenda',
@@ -2059,7 +2127,53 @@ export const CLUSTER_PAGES = ['speedToLead', 'manufacturingCrm', 'rfqAutomation'
 // linked from every page (noindex, follow). privacyCopilot exists for the
 // Chrome Web Store listing; nothing on the site links to it, so listing it in
 // the sitemap made it an orphan.
-export const NOINDEX_PAGES = ['thanks', 'demo', 'schedule', 'privacyCopilot', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo', 'whatsappGuide', 'metaGuide']
+export const NOINDEX_PAGES = ['thanks', 'crmThanks', 'demo', 'schedule', 'crmSchedule', 'privacyCopilot', 'inboundDemo', 'quoteDemo', 'supplierPrice', 'siniestrosDemo', 'celdasDemo', 'grubpakDemo', 'whatsappGuide', 'metaGuide']
+
+// Which product each page belongs to. Pages listed under crm read the CRM
+// copy and send their CTAs to the CRM booking page; every other page (except
+// the chooser at home) is the AR product, which is what the base COPY holds.
+const CRM_PAGES = [
+  'crmHome', 'crmSchedule', 'crmThanks',
+  'demo', 'inboundDemo', 'quoteDemo', 'supplierPrice',
+  'speedToLead', 'manufacturingCrm', 'rfqAutomation',
+  'whatsappGuide', 'metaGuide',
+]
+
+export function productFor(page) {
+  if (page === 'home') return null
+  return CRM_PAGES.includes(page) ? 'crm' : 'ar'
+}
+
+// The home, booking and thank-you page of each product.
+export const PRODUCT_PAGES = {
+  ar: { home: 'arHome', schedule: 'schedule', thanks: 'thanks' },
+  crm: { home: 'crmHome', schedule: 'crmSchedule', thanks: 'crmThanks' },
+}
+
+// Route of a product's home/schedule/thanks page. The chooser has no product
+// of its own, so it falls back to the AR pages.
+export function productRoute(lang, page, kind) {
+  return ROUTES[lang][PRODUCT_PAGES[productFor(page) ?? 'ar'][kind]]
+}
+
+// The copy a page renders: the base COPY, with the CRM blocks laid over it
+// for CRM pages.
+export function copyFor(lang, page) {
+  return productFor(page) === 'crm'
+    ? { ...COPY[lang], ...CRM_COPY[lang] }
+    : COPY[lang]
+}
+
+// <head> metadata for a page. Product homes use the top-level meta block;
+// the chooser and every other page carry their own.
+export function metaFor(lang, page) {
+  const copy = copyFor(lang, page)
+  if (page === 'home') return copy.chooser.meta
+  if (page === 'arHome' || page === 'crmHome') return copy.meta
+  if (page === 'crmSchedule') return copy.schedule.meta
+  if (page === 'crmThanks') return copy.thanks.meta
+  return copy[page].meta
+}
 
 const normalise = (p) => {
   const trimmed = String(p || '/').replace(/\/+$/, '')

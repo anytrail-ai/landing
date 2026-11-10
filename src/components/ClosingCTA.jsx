@@ -10,7 +10,7 @@ import { useLanguage } from '../i18n/useLanguage'
 // `variant="band"` is the homepage's full-bleed ink close; content pages keep
 // the photo card.
 function ClosingCTA({ title, body, cta, location = 'closing', variant = 'card' }) {
-  const { copy } = useLanguage()
+  const { copy, product } = useLanguage()
   const c = copy.closing
 
   if (variant === 'band') {
@@ -25,6 +25,9 @@ function ClosingCTA({ title, body, cta, location = 'closing', variant = 'card' }
                 {cta ?? c.cta}
                 <ArrowRight size={18} aria-hidden="true" />
               </CtaLink>
+              {product === 'crm' && (
+                <WhatsAppLink location={location} className="whatsapp-link--onDark" />
+              )}
             </div>
           </div>
         </div>

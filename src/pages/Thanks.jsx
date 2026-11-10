@@ -1,6 +1,6 @@
 import { useEffect, useSyncExternalStore } from 'react'
 import { useLanguage } from '../i18n/useLanguage'
-import { LANG_PATH } from '../i18n/copy'
+import { ROUTES, productRoute } from '../i18n/copy'
 import { track } from '../analytics'
 import { metaTrack } from '../metaPixel'
 import './Thanks.css'
@@ -22,15 +22,16 @@ function readManageUrl() {
 }
 
 function Thanks() {
-  const { lang, copy } = useLanguage()
+  const { lang, page, product, copy } = useLanguage()
+  const crm = product === 'crm'
   const c = copy.thanks
   const manageUrl = useSyncExternalStore(subscribeNever, readManageUrl, getServerManageUrl)
 
   // A booking landed here, so tell Meta it was a lead. Standard event name on
   // purpose: it is what the ad account optimises on.
   useEffect(() => {
-    metaTrack('Lead', { content_name: 'ap_portal_demo' })
-  }, [])
+    metaTrack('Lead', { content_name: crm ? 'commercial_process_review' : 'ap_portal_demo' })
+  }, [crm])
 
   return (
     <section className="thanks">
@@ -45,12 +46,14 @@ function Thanks() {
         <p className="thanks__demo-lead">{c.demoLead}</p>
         <a
           className="thanks__demo"
-          href="https://www.linkedin.com/company/anytrail"
-          onClick={() => track('demo_cta_click', { location: 'thanks', lang, dest: 'linkedin' })}
+          href={crm ? ROUTES[lang].demo : 'https://www.linkedin.com/company/anytrail'}
+          onClick={() =>
+            track('demo_cta_click', { location: 'thanks', lang, dest: crm ? 'demo' : 'linkedin', product })
+          }
         >
           {c.demoCta}
         </a>
-        <a className="thanks__back" href={LANG_PATH[lang]}>
+        <a className="thanks__back" href={productRoute(lang, page, 'home')}>
           {c.back}
         </a>
       </div>

@@ -1,24 +1,32 @@
 import './Footer.css'
 import { useLanguage } from '../i18n/useLanguage'
-import { ROUTES, CLUSTER_PAGES } from '../i18n/copy'
+import { ROUTES, CLUSTER_PAGES, productRoute } from '../i18n/copy'
 
 function Footer() {
-  const { lang, page, copy } = useLanguage()
+  const { lang, page, product, copy } = useLanguage()
 
-  // Content pages are linked from every page on the site, including each
-  // other. A page reachable from one place only is a page Google treats as an
-  // afterthought.
-  const isPortalPage = ['home', 'schedule', 'thanks', 'privacy'].includes(page)
-  const links = isPortalPage ? [] : CLUSTER_PAGES.filter((p) => p !== page)
+  // The cluster pages are sales-agent reading, so they are linked from the
+  // chooser and every CRM page, including each other. A page reachable from
+  // one place only is a page Google treats as an afterthought. AR pages keep
+  // to their own funnel.
+  const links = product === 'ar' ? [] : CLUSTER_PAGES.filter((p) => p !== page)
+  const tagline = product ? copy.footer.tagline : copy.chooser.footerTagline
 
   return (
     <footer className="footer">
       <div className="footer__inner">
         <span className="footer__logo">anytrail</span>
-        <p className="footer__tagline">{copy.footer.tagline}</p>
-        <a className="footer__demo" href={isPortalPage ? ROUTES[lang].schedule : ROUTES[lang].demo}>
-          {isPortalPage ? copy.navbar.cta : (lang === 'es' ? 'Probar la demo' : 'Try the live demo')}
-        </a>
+        <p className="footer__tagline">{tagline}</p>
+        {product === 'crm' && (
+          <a className="footer__demo" href={ROUTES[lang].demo}>
+            {copy.thanks.demoCta}
+          </a>
+        )}
+        {product === 'ar' && (
+          <a className="footer__demo" href={productRoute(lang, page, 'schedule')}>
+            {copy.navbar.cta}
+          </a>
+        )}
 
         {links.length > 0 && (
           <nav className="footer__links" aria-label={copy.footer.linksLabel}>

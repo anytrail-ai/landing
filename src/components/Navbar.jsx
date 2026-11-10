@@ -6,7 +6,7 @@ import { LANGS, LANG_PATH, ROUTES } from '../i18n/copy'
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
-  const { lang, page, copy } = useLanguage()
+  const { lang, page, product, copy } = useLanguage()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50)
@@ -53,9 +53,12 @@ function Navbar() {
             ))}
           </nav>
 
-          <CtaLink className="navbar__cta" location="navbar">
-            {copy.navbar.cta}
-          </CtaLink>
+          {/* The chooser has no product to book yet; its cards are the CTAs. */}
+          {product && (
+            <CtaLink className="navbar__cta" location="navbar">
+              {copy.navbar.cta}
+            </CtaLink>
+          )}
         </div>
       </div>
     </header>

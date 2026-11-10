@@ -1,4 +1,4 @@
-import { ROUTES } from '../i18n/copy'
+import { productRoute } from '../i18n/copy'
 import { track } from '../analytics'
 import { useLanguage } from '../i18n/useLanguage'
 
@@ -13,13 +13,13 @@ import { useLanguage } from '../i18n/useLanguage'
 // The event name stays `demo_cta_click` deliberately: renaming it would break
 // the historical series. `dest` records where it goes now.
 function CtaLink({ location, className, children }) {
-  const { lang } = useLanguage()
+  const { lang, page, product } = useLanguage()
 
   return (
     <a
       className={className}
-      href={ROUTES[lang].schedule}
-      onClick={() => track('demo_cta_click', { location, lang, dest: 'schedule' })}
+      href={productRoute(lang, page, 'schedule')}
+      onClick={() => track('demo_cta_click', { location, lang, dest: 'schedule', product })}
     >
       {children}
     </a>

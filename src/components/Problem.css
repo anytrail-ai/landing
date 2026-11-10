@@ -86,6 +86,10 @@
   border-bottom: 1px solid var(--band-rule);
 }
 
+.ledger--caught .ledger__row {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 8fr) minmax(0, 3fr);
+}
+
 .ledger__no {
   font-family: var(--mono);
   font-size: 12px;

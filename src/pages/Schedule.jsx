@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useLanguage } from '../i18n/useLanguage'
 import { track } from '../analytics'
-import { ROUTES } from '../i18n/copy'
+import { productRoute } from '../i18n/copy'
 import { bookSlot, cancelBooking, moveBooking, openSlots, viewBooking } from './scheduleApi'
 import SlotPicker from './SlotPicker'
 import {
@@ -44,7 +44,7 @@ function reveal(el) {
 }
 
 function Schedule() {
-  const { lang, copy } = useLanguage()
+  const { lang, page, product, copy } = useLanguage()
   const c = copy.schedule
   const locale = lang === 'es' ? 'es-MX' : 'en-US'
 
@@ -147,7 +147,7 @@ function Schedule() {
     e.preventDefault()
     setBusy(true)
     setError(null)
-    track('schedule_submit', { lang })
+    track('schedule_submit', { lang, product })
     try {
       const result = await bookSlot({ ...form, slotStartUtc: picked, lang })
       // The manage link is the visitor's only proof of ownership, and it
@@ -160,7 +160,7 @@ function Schedule() {
       } catch {
         // Best-effort only.
       }
-      window.location.href = ROUTES[lang].thanks
+      window.location.href = productRoute(lang, page, 'thanks')
     } catch (err) {
       track('schedule_error', { step: 'book', code: err.message })
       setError(c.errors[err.message] ?? c.errors.generic)

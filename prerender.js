@@ -26,9 +26,8 @@ const OG_IMAGE_H = 1024
 const { render } = await import(
   pathToFileURL(path.join(ROOT, 'dist-ssr', 'entry-server.js')).href
 )
-const { COPY, LANGS, ROUTES, NOINDEX_PAGES, CLUSTER_PAGES } = await import(
-  './src/i18n/copy.js'
-)
+const { COPY, LANGS, ROUTES, NOINDEX_PAGES, CLUSTER_PAGES, metaFor, copyFor } =
+  await import('./src/i18n/copy.js')
 const esc = (s) =>
   String(s)
     .replace(/&/g, '&amp;')
@@ -41,12 +40,8 @@ const urlFor = (lang, page) => {
   return route === '/' ? `${SITE}/` : `${SITE}${route}`
 }
 
-// Home uses the top-level meta block; other pages carry their own.
-const metaFor = (lang, page) =>
-  page === 'home' ? COPY[lang].meta : COPY[lang][page].meta
-
 function jsonLd(lang) {
-  const { description } = COPY[lang].meta
+  const { description } = COPY[lang].chooser.meta
   const graph = [
     {
       '@type': 'Organization',
@@ -187,20 +182,27 @@ console.log('wrote robots.txt')
 // JavaScript. Semrush Site Audit flags its absence (issue 137).
 const llms = `# Anytrail
 
-> ${COPY.en.meta.description}
+> ${COPY.en.chooser.meta.description}
 
-Anytrail is building a product for B2B accounts receivable and finance teams
-that manage invoices across their customers' accounts payable portals.
-The product direction covers customer portal requirements, invoice rejections,
-payment terms, payment runs and follow-ups. It is in early development.
-The early-access demo is a 30-minute discussion of the team's workflow,
-product direction, portal coverage and fit.
+Anytrail builds two products for industrial companies and distributors.
+
+- Sales agent and WhatsApp CRM: an AI sales agent that works demand in both
+  directions. Outbound, it surfaces accounts that match what the company sells
+  and opens the conversation on WhatsApp, email, or LinkedIn; inbound, it
+  answers every inquiry the moment it lands. Either way it diagnoses the
+  application, collects the technical details needed to quote, follows up, and
+  hands qualified opportunities to the sales team.
+- Customer AP portal workflow (in early development): for B2B accounts
+  receivable and finance teams that manage invoices across their customers'
+  accounts payable portals. It covers portal requirements, invoice rejections,
+  payment terms, payment runs and follow-ups.
 
 ## Pages
 
-${LANGS.map(
-  (l) =>
-    `- [${l === 'en' ? 'Home (English)' : 'Inicio (Español)'}](${urlFor(l, 'home')}): ${COPY[l].meta.description}`,
+${LANGS.flatMap((l) =>
+  ['home', 'crmHome', 'arHome'].map(
+    (page) => `- [${metaFor(l, page).title}](${urlFor(l, page)}): ${metaFor(l, page).description}`,
+  ),
 ).join('\n')}
 
 ## Reading
@@ -208,13 +210,15 @@ ${LANGS.map(
 ${LANGS.flatMap((l) =>
   CLUSTER_PAGES.map(
     (page) =>
-      `- [${COPY[l][page].navLabel}](${urlFor(l, page)}): ${COPY[l][page].meta.description}`,
+      `- [${copyFor(l, page)[page].navLabel}](${urlFor(l, page)}): ${metaFor(l, page).description}`,
   ),
 ).join('\n')}
 
 ## Contact
 
-- Book an early-access demo: ${urlFor('en', 'schedule')}
+- Sales agent: book a commercial process review: ${urlFor('en', 'crmSchedule')}
+- Sales agent: try the live demo: ${urlFor('en', 'demo')}
+- AP portal workflow: book an early-access demo: ${urlFor('en', 'schedule')}
 `
 await fs.writeFile(path.join(DIST, 'llms.txt'), llms)
 console.log('wrote llms.txt')

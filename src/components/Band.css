@@ -12,6 +12,11 @@
   color: var(--band-fg);
 }
 
+/* anchored bands stop clear of the fixed navbar */
+.band[id] {
+  scroll-margin-top: 64px;
+}
+
 .band--ink {
   --band-bg: var(--ink-band);
   --band-fg: #fefdf6;

@@ -146,6 +146,133 @@
   outline-offset: 3px;
 }
 
+/* Over a dark hero tone on the platform home, before the bar turns solid. */
+.navbar--onDark .navbar__logo-mark {
+  filter: invert(1);
+}
+
+.navbar--onDark .navbar__logo-text,
+.navbar--onDark .navbar__lang-btn--active,
+.navbar--onDark .navbar__lang-btn:hover {
+  color: #fefdf6;
+}
+
+.navbar--onDark .navbar__lang-btn {
+  color: rgba(254, 253, 246, 0.6);
+}
+
+.navbar--onDark .navbar__cta {
+  color: var(--text-strong);
+  background-color: #ffffff;
+}
+
+.navbar--onDark .navbar__cta:hover {
+  background-color: var(--surface-muted);
+}
+
+.navbar--onDark .navbar__logo:focus-visible,
+.navbar--onDark .navbar__lang-btn:focus-visible,
+.navbar--onDark .navbar__cta:focus-visible {
+  outline-color: #ffffff;
+}
+
+/* ---- platform home variants (see platform/heroTone.js) ---- */
+
+/* Section links centred in the bar: equal columns either side keep them on
+   the page's centre line whatever the logo and button widths are. */
+@media (min-width: 821px) {
+  .navbar--links .navbar__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+
+  .navbar--links .navbar__logo {
+    justify-self: start;
+    margin-right: 0;
+  }
+
+  .navbar--links .navbar__actions {
+    justify-self: end;
+  }
+}
+
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 6px;
+  /* the button's size, so the bar reads as one row of type */
+  font-size: 15px;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--text-strong);
+  transition: color 0.2s ease-out;
+}
+
+.navbar__link:hover {
+  color: var(--accent);
+}
+
+.navbar__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.navbar--onDark .navbar__link {
+  color: #fefdf6;
+}
+
+.navbar--onDark .navbar__link:hover {
+  color: rgba(254, 253, 246, 0.74);
+}
+
+.navbar--onDark .navbar__link:focus-visible {
+  outline-color: #ffffff;
+}
+
+/* A solid moss bar, at rest and scrolled. */
+.navbar--moss,
+.navbar--moss.navbar--scrolled {
+  background-color: var(--accent);
+  border-bottom-color: transparent;
+}
+
+/* A rounded bar floating inset from the top edge. The strip itself goes
+   clear; the inner row becomes the object. */
+.navbar--pill,
+.navbar--pill.navbar--scrolled {
+  top: 12px;
+  background-color: transparent;
+  border-bottom-color: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.navbar--pill .navbar__inner {
+  max-width: min(920px, calc(100% - 72px));
+  height: 56px;
+  padding: 0 8px 0 20px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background-color: rgba(254, 253, 246, 0.82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+  transition: box-shadow 0.3s ease-out;
+}
+
+.navbar--pill.navbar--scrolled .navbar__inner {
+  box-shadow: 0 8px 24px -16px rgba(17, 24, 39, 0.25);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .navbar,
   .navbar__lang-btn,
@@ -155,6 +282,17 @@
 }
 
 @media (max-width: 820px) {
+  /* no room for section links beside the logo, toggle and button */
+  .navbar__links {
+    display: none;
+  }
+
+  .navbar--pill .navbar__inner {
+    max-width: calc(100% - 48px);
+    height: 52px;
+    padding: 0 6px 0 16px;
+  }
+
   .navbar__inner {
     height: 60px;
     padding: 0 16px;

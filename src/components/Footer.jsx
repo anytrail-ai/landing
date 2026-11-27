@@ -6,11 +6,11 @@ function Footer() {
   const { lang, page, product, copy } = useLanguage()
 
   // The cluster pages are sales-agent reading, so they are linked from the
-  // chooser and every CRM page, including each other. A page reachable from
+  // platform home and every CRM page, including each other. A page reachable from
   // one place only is a page Google treats as an afterthought. AR pages keep
   // to their own funnel.
   const links = product === 'ar' ? [] : CLUSTER_PAGES.filter((p) => p !== page)
-  const tagline = product ? copy.footer.tagline : copy.chooser.footerTagline
+  const tagline = product ? copy.footer.tagline : copy.platform.footerTagline
 
   return (
     <footer className="footer">
@@ -29,7 +29,7 @@ function Footer() {
         )}
 
         {links.length > 0 && (
-          <nav className="footer__links" aria-label={copy.footer.linksLabel}>
+          <nav id="resources" className="footer__links" aria-label={copy.footer.linksLabel}>
             <h2 className="footer__links-label">{copy.footer.linksLabel}</h2>
             <ul className="footer__links-list">
               {links.map((p) => (
@@ -39,6 +39,18 @@ function Footer() {
               ))}
             </ul>
           </nav>
+        )}
+
+        {/* The home navbar has no language toggle, so the switch lives here.
+            A real link: each language is its own indexable URL. */}
+        {!product && (
+          <a
+            className="footer__privacy"
+            href={ROUTES[lang === 'en' ? 'es' : 'en'][page]}
+            hrefLang={lang === 'en' ? 'es' : 'en'}
+          >
+            {copy.platform.otherLanguage}
+          </a>
         )}
 
         <a className="footer__privacy" href={ROUTES[lang].privacy}>

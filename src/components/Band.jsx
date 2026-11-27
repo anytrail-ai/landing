@@ -3,9 +3,9 @@ import './Band.css'
 // Homepage section. `tone` switches the whole band between paper, ink, and
 // moss so the page changes gear as it scrolls instead of repeating one cream
 // block. Content pages keep using Section.
-function Band({ tone = 'paper', label, title, intro, className = '', children }) {
+function Band({ tone = 'paper', label, title, intro, className = '', id, children }) {
   return (
-    <section className={`band band--${tone} ${className}`.trim()}>
+    <section id={id} className={`band band--${tone} ${className}`.trim()}>
       <div className="band__inner">
         {(label || title) && (
           <header className="band__head">

@@ -1,6 +1,7 @@
 import Band from '../Band'
-import { Check } from 'lucide-react'
+import { ArrowRight, Check } from 'lucide-react'
 import { useLanguage } from '../../i18n/useLanguage'
+import { ROUTES } from '../../i18n/copy'
 
 // "ERP and rollout": two paragraphs, then three cards, each with a small
 // drawing above its text. The drawings loop quietly on their own (CSS only)
@@ -69,7 +70,7 @@ function StepsDiagram({ steps }) {
 }
 
 function Rollout() {
-  const { copy } = useLanguage()
+  const { copy, lang } = useLanguage()
   const c = copy.platform.rollout
   const [erp, perms, live] = c.cards
 
@@ -79,6 +80,10 @@ function Rollout() {
         {c.paragraphs.map((p) => (
           <p key={p}>{p}</p>
         ))}
+        <a className="mods__link roll__link" href={ROUTES[lang].integrations}>
+          {c.link}
+          <ArrowRight size={14} aria-hidden="true" />
+        </a>
       </div>
 
       <ul className="roll__cards">

@@ -2,6 +2,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import Platform from './pages/Platform'
+import Integrations from './pages/Integrations'
 import Thanks from './pages/Thanks'
 import Demo from './pages/Demo'
 import InboundDemo from './pages/InboundDemo'
@@ -21,6 +22,7 @@ import './App.css'
 // they are registered as thunks rather than as separate page modules.
 const PAGES = {
   home: Platform,
+  integrations: Integrations,
   arHome: Home,
   crmHome: Home,
   crmSchedule: Schedule,

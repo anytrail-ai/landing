@@ -2312,6 +2312,12 @@
   margin-top: -32px;
 }
 
+/* under the first paragraph, in its column */
+.roll__link {
+  grid-column: 1;
+  justify-self: start;
+}
+
 .roll__intro p {
   margin: 0;
   font-size: 17px;

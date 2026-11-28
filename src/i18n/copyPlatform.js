@@ -428,7 +428,8 @@ export const PLATFORM_COPY = {
         'Anytrail connects to the ERP you already run, whether that is one or several. We bring the data together so your team can work across branches and companies, and your ERP stays the system of record.',
         'We do the implementation ourselves: the connections, the data load and the rollout. You work with the same people from the first call to the day your team is using it.',
       ],
-      erps: ['SAP', 'Odoo', 'Microsip', 'Your ERP'],
+      link: 'Explore integrations',
+      erps: ['Odoo', 'Microsip', 'SAI', 'Your ERP'],
       permissions: {
         title: 'Agent permissions',
         alone: 'On its own',
@@ -850,7 +851,8 @@ export const PLATFORM_COPY = {
         'Anytrail se conecta al ERP que ya usas, sea uno o varios. Reunimos los datos para que tu equipo trabaje entre sucursales y empresas, y tu ERP sigue siendo el sistema de registro.',
         'La implementación la hacemos nosotros: las conexiones, la carga de datos y la puesta en marcha. Trabajas con las mismas personas desde la primera llamada hasta el día en que tu equipo ya lo usa.',
       ],
-      erps: ['SAP', 'Odoo', 'Microsip', 'Tu ERP'],
+      link: 'Ver integraciones',
+      erps: ['Odoo', 'Microsip', 'SAI', 'Tu ERP'],
       permissions: {
         title: 'Permisos de los agentes',
         alone: 'Solo',

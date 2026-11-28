@@ -98,9 +98,30 @@
   transform: none;
 }
 
-/* The modules heading: lead-in on one line, the phrase on the next. */
+/* The modules heading sits at the content's left edge, label above it, with
+   the changing phrase on the same line where it fits. */
+.mods .band__head {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.mods .band__label {
+  margin: 0;
+}
+
 .mods .band__title {
   max-width: none;
+  font-size: clamp(32px, 4.2vw, 56px);
+  line-height: 1.08;
+}
+
+.mods .rot {
+  display: inline-grid;
+  vertical-align: top;
+}
+
+.mods .band__intro {
+  max-width: 620px;
 }
 
 .phero .hero__subtitle {
@@ -1246,60 +1267,6 @@
 .mods__stage {
   position: sticky;
   top: 96px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 460px;
-  padding: 24px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: var(--surface-muted);
-}
-
-.mods__stage-name {
-  margin: 0;
-  font-family: var(--mono);
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-}
-
-/* on the stage the demo is set a size up: it is the thing being watched */
-.mods__stage .mdemo {
-  flex: 1;
-  padding: 20px 20px 44px;
-}
-
-.mods__stage .mdemo__lines {
-  gap: 10px;
-}
-
-.mods__stage .mdemo__line {
-  font-size: 15px;
-  line-height: 22px;
-}
-
-.mods__stage .mdemo__line--in,
-.mods__stage .mdemo__line--flag,
-.mods__stage .mdemo__line--bars {
-  padding: 10px 12px;
-  border-radius: 8px;
-}
-
-.mods__stage .mdemo__line--out {
-  padding: 10px 14px;
-}
-
-.mods__stage .mdemo__line--stamp {
-  padding: 6px 12px;
-  font-size: 13px;
-  line-height: 18px;
-}
-
-.mods__stage .mdemo__bars {
-  height: 120px;
 }
 
 .mods__inline {
@@ -1307,166 +1274,314 @@
   align-self: stretch;
 }
 
-/* ---------- module demos ---------- */
+/* ---------- module scenes (ModuleScene.jsx) ----------
+   A tinted stage holding one small product screen, with step pills under
+   it. The screen is drawn in the app's own surfaces: white panel, warm
+   hairlines, moss for what the agent did. */
 
-.mdemo {
-  position: relative;
-  align-self: stretch;
+.scene {
   margin: 0;
-  padding: 12px 12px 36px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}
-
-.mdemo__lines {
-  margin: 0;
-  padding: 0;
-  list-style: none;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
+  gap: 16px;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-muted);
 }
 
-.mdemo__line {
+/* tall enough for the longest step, so the pills never move */
+.scene__screen {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
   gap: 12px;
+  min-height: 356px;
+}
+
+.scene__source {
+  margin: 0;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
   font-size: 13px;
   line-height: 18px;
   color: var(--text-strong);
 }
 
-.mdemo__text {
-  min-width: 0;
+.scene__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
 }
 
-.mdemo__value {
-  margin-left: auto;
+.scene__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.scene__head {
+  margin: 0 0 4px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.scene__head span:last-child {
   flex: none;
-  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--text-muted);
 }
 
-/* something arriving: a ruled row, the full width of the sheet */
-.mdemo__line--in,
-.mdemo__line--flag,
-.mdemo__line--bars {
-  align-self: stretch;
-  padding: 6px 8px;
+.scene__rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scene__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.scene__row-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.scene__row-name {
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+.scene__row-sub {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
+}
+
+.scene__value {
+  flex: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--text-strong);
+}
+
+/* status chips, in the app's own tones */
+.scene__tag {
+  flex: none;
+  padding: 2px 8px;
   border: 1px solid var(--border);
   border-radius: 6px;
-}
-
-/* the problem: same row, dashed and quiet, so the fix reads against it */
-.mdemo__line--flag {
-  border-style: dashed;
   background: var(--surface-muted);
-  color: var(--text-muted);
-}
-
-/* what the agent does: the one voice that carries colour */
-.mdemo__line--out {
-  padding: 6px 10px;
-  border-radius: 12px;
-  background: var(--accent-soft);
-}
-
-.mdemo__line--out .mdemo__value {
-  color: var(--text-strong);
-  font-weight: 600;
-}
-
-.mdemo__line--stamp {
-  align-items: center;
-  gap: 6px;
-  margin-top: 2px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--accent-soft);
   font-size: 12px;
   line-height: 16px;
   font-weight: 500;
+  white-space: nowrap;
+  color: var(--text-strong);
+}
+
+.scene__tag--new,
+.scene__tag--good {
+  border-color: transparent;
+  background: var(--accent-soft);
   color: var(--accent);
 }
 
-.mdemo__line--bars {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
+.scene__tag--warn {
+  border-color: #fcd34d;
+  background: #fffbeb;
+  color: #78350f;
 }
 
-.mdemo__bars {
+.scene__tag--bad {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+.scene__bars {
   display: flex;
   align-items: flex-end;
-  gap: 6px;
-  height: 56px;
+  gap: 10px;
+  height: 180px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 
-.mdemo__bars span {
+.scene__bars span {
   flex: 1;
   height: var(--h);
-  border-radius: 3px 3px 0 0;
+  border-radius: 4px 4px 0 0;
   background: var(--border);
   transform-origin: bottom;
 }
 
-.mdemo__bars .is-low {
-  background: var(--text-faint);
+.scene__bars .is-low {
+  background: #fca5a5;
 }
 
-.mdemo__replay {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  font: inherit;
-  font-size: 11px;
-  line-height: 14px;
-  color: var(--text-faint);
-  cursor: pointer;
-  transition: background-color 0.2s ease-out, color 0.2s ease-out;
-}
-
-.mdemo__replay:hover {
-  background: var(--surface-muted);
+/* the agent's voice */
+.scene__note {
+  margin: 8px 0 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  font-size: 14px;
+  line-height: 20px;
   color: var(--text-strong);
 }
 
-.mdemo__replay:focus-visible {
+.scene__note svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--accent);
+}
+
+.scene__stamp {
+  margin: 8px 0 0;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+/* step pills */
+.scene__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.scene__step {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+.scene__step:hover {
+  color: var(--text-strong);
+}
+
+.scene__step-num {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.scene__step.is-active {
+  border-color: var(--text-strong);
+  color: var(--text-strong);
+}
+
+.scene__step.is-active .scene__step-num {
+  background: var(--text-strong);
+  color: #ffffff;
+}
+
+/* a hairline under the active pill fills over the step's time */
+.scene__step.is-timed::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  animation: scene-timer 4.2s linear both;
+}
+
+.scene__step:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* A demo plays when it mounts, which is when its module is chosen: the
-   lines arrive one at a time, slowly enough to read as a sequence. The
-   first module is selected from the start, so its demo waits for the
-   section to scroll into view (`.is-in`, armed only with JS running).
-   Without JS the lines are simply there. */
-.js-reveal .mods__split:not(.is-in) .mdemo__line {
-  opacity: 0;
+/* A step's screen arrives piece by piece: where it came from, the panel,
+   then each row, then what the agent says about it. */
+.scene__source,
+.scene__panel,
+.scene__row,
+.scene__note,
+.scene__stamp {
+  animation: platform-arrive 0.4s ease-out both;
+  animation-delay: calc(var(--i) * 0.16s);
 }
 
-.mods__split.is-in .mdemo__line {
-  animation: platform-arrive 0.45s ease-out both;
-  animation-delay: calc(0.2s + var(--i) * 0.55s);
+.scene__bars span {
+  animation: scene-grow 0.45s ease-out both;
+  animation-delay: calc(0.35s + var(--j) * 0.12s);
 }
 
-.mods__split.is-in .mdemo__bars span {
-  animation: mdemo-grow 0.4s ease-out both;
-  animation-delay: calc(0.4s + var(--j) * 0.12s);
-}
-
-@keyframes mdemo-grow {
+@keyframes scene-grow {
   from {
     transform: scaleY(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes scene-timer {
+  from {
+    transform: scaleX(0);
   }
   to {
     transform: none;
@@ -1476,27 +1591,23 @@
 /* ---------- motion and breakpoints ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .mods__split.is-in .mdemo__line,
-  .mods__split.is-in .mdemo__bars span {
+  .scene__source,
+  .scene__panel,
+  .scene__row,
+  .scene__note,
+  .scene__stamp,
+  .scene__bars span {
     animation: none;
   }
 
-  .js-reveal .mods__split:not(.is-in) .mdemo__line {
-    opacity: 1;
-  }
-
   .mods__title,
-  .rot__phrase {
+  .rot__phrase,
+  .scene__step {
     transition: none;
-  }
-
-  /* nothing to replay when nothing plays */
-  .mdemo__replay {
-    display: none;
   }
 }
 
-/* One column: the stage goes away and the demo sits under its module. */
+/* One column: the stage goes away and the scene sits under its module. */
 @media (max-width: 900px) {
   .mods__split {
     grid-template-columns: minmax(0, 1fr);
@@ -1508,5 +1619,17 @@
 
   .mods__inline {
     display: block;
+  }
+
+  .scene {
+    padding: 16px;
+  }
+
+  .scene__panel {
+    padding: 16px;
+  }
+
+  .scene__bars {
+    height: 140px;
   }
 }

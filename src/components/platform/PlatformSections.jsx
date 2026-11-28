@@ -4,15 +4,15 @@ import Band from '../Band'
 import { useLanguage } from '../../i18n/useLanguage'
 import { ROUTES } from '../../i18n/copy'
 import { track } from '../../analytics'
-import ModuleDemo from './ModuleDemo'
+import ModuleScene from './ModuleScene'
 import Phrases from './Phrases'
 import { MODULE_ICONS } from './moduleIcons'
 
 // Modules on the left, the selected one's demo on the right. The left column
 // is a vertical tab list; every module's description stays in the markup
 // (hidden by CSS unless selected), so the prerendered page carries all nine.
-// The demo is keyed by module, so choosing one mounts it and its lines
-// arrive from the start. On narrow screens the right column goes away and
+// The scene is keyed by module, so choosing one mounts it and it plays from
+// its first step. On narrow screens the right column goes away and
 // the demo sits under the selected module instead.
 export function Modules() {
   const { copy, lang } = useLanguage()
@@ -37,7 +37,7 @@ export function Modules() {
       intro={c.intro}
       className="mods"
     >
-      <div className="mods__split" id="modules" data-reveal>
+      <div className="mods__split" id="modules">
         <div className="mods__list" role="tablist" aria-orientation="vertical">
           {c.items.map((m) => {
             const Icon = MODULE_ICONS[m.id]
@@ -71,7 +71,7 @@ export function Modules() {
                   {/* narrow screens only: the demo under its module */}
                   {on && (
                     <div className="mods__inline">
-                      <ModuleDemo key={m.id} demo={m.demo} replayLabel={c.replayDemo} />
+                      <ModuleScene key={m.id} scene={m.scene} stepsLabel={c.stepsLabel} />
                     </div>
                   )}
                 </div>
@@ -86,8 +86,7 @@ export function Modules() {
           role="tabpanel"
           aria-labelledby={`mods-tab-${current.id}`}
         >
-          <p className="mods__stage-name">{current.name}</p>
-          <ModuleDemo key={current.id} demo={current.demo} replayLabel={c.replayDemo} />
+          <ModuleScene key={current.id} scene={current.scene} stepsLabel={c.stepsLabel} />
         </div>
       </div>
     </Band>

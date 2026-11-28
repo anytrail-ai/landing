@@ -1,9 +1,6 @@
 // Copy for the platform home page at / and /es: one page for the whole
 // product, with the CRM (/crm) and AP + AR (/ar) sites behind it.
 //
-// Each module's `demo` is the small animated sequence in its cell: `in` is
-// something arriving, `flag` the problem, `out` what the agent does about it,
-// `stamp` the confirmed result, `bars` a stock level running down.
 // Module `page` values are keys of ROUTES; a module without one has no
 // "explore" link yet. `early: true` shows the early-access chip.
 export const PLATFORM_COPY = {
@@ -11,7 +8,7 @@ export const PLATFORM_COPY = {
     meta: {
       title: 'Anytrail | The AI Platform for Distributors, From Quote to Cash',
       description:
-        'Anytrail is one platform on top of your ERP for distributors and industrial suppliers: CRM, quote and order entry, product data, pricing, inventory, and accounts payable and receivable, with AI agents doing the routine work.',
+        'Anytrail is one platform on top of your ERP for distributors and industrial suppliers: CRM, sourcing, inventory and accounts receivable, with AI agents doing the routine work.',
       ogLocale: 'en_US',
     },
     navCta: 'Book a call',
@@ -142,153 +139,199 @@ export const PLATFORM_COPY = {
       label: 'Platform',
       // The heading is `titleLead` plus one of `titlePhrases`, taking turns.
       titleLead: 'One platform to',
-      titlePhrases: ['grow your business', 'protect your margins', 'cut operating costs'],
+      titlePhrases: ['win the next order', 'keep the right stock', 'get paid on time'],
       intro:
         'Bring your data together once, and agents can work across all of it. Begin with one module and add the rest when you need them.',
       early: 'Early access',
-      replayDemo: "Replay",
       explore: 'Explore',
+      stepsLabel: 'Steps',
+      // Each module's `scene` is the stepped demo on the right: three states
+      // of a small product screen. A step has a `label` (its pill), an
+      // optional `source` line above the panel (where the work came from),
+      // the panel's `title` and `meta`, then any of: `rows` (name, optional
+      // `sub`, `tag` with a `tone` of new | warn | bad | good, and `value`),
+      // `levels` (a stock chart), a `note` in the agent's voice, a `stamp`.
       items: [
         {
           id: 'crm',
-          demo: {
-            ariaLabel: "The agent ranks three accounts and marks which one to call first, with the reason.",
-            lines: [
-              {"kind": "in", "text": "Norte Hydraulics", "value": "9 wks"},
-              {"kind": "in", "text": "Bajío Packaging", "value": "3 opens"},
-              {"kind": "in", "text": "Valle Process", "value": "new stock"},
-              {"kind": "out", "text": "Call Norte first: three weeks late on a six-week reorder."},
-              {"kind": "stamp", "text": "Brief ready"},
-            ],
-          },
           name: 'CRM',
           title: 'A CRM that tells reps who to call, and why.',
-          body: 'Accounts are ranked from real order history and open conversations. Reps get a brief before the call and a drafted follow-up after it, across WhatsApp, email and phone.',
+          body: 'Every inquiry is answered and qualified as it lands, on WhatsApp and email. Reps open the day to a ranked list, a brief for each account and a drafted quote or follow-up.',
           page: 'crmHome',
-        },
-        {
-          id: 'quotes',
-          demo: {
-            ariaLabel: "An emailed RFQ with 14 lines becomes a drafted quote waiting for approval.",
-            lines: [
-              {"kind": "in", "text": "Email · RFQ_Alba.pdf", "value": "14 lines"},
-              {"kind": "out", "text": "Read 14 lines, matched 13 to your catalog."},
-              {"kind": "flag", "text": "Line 9: no match", "value": "2 alternatives"},
-              {"kind": "stamp", "text": "Q-2291 drafted for approval"},
+          scene: {
+            ariaLabel:
+              'Three steps: a new WhatsApp inquiry arrives, the agent qualifies it, and it appears at the top of the rep’s day with a quote drafted.',
+            steps: [
+              {
+                label: 'Inquiry arrives',
+                source: 'WhatsApp · 10:02',
+                title: 'Inbox',
+                meta: '3 unread',
+                rows: [
+                  { name: 'Andrew Tanner', sub: 'Can you do 40 units of the A25?', tag: 'New', tone: 'new' },
+                  { name: 'Patricia Vance', sub: 'Perfect, send me the payment details' },
+                  { name: 'Ryan Castillo', sub: 'Two stores in Hialeah' },
+                ],
+              },
+              {
+                label: 'Agent qualifies',
+                source: 'Andrew Tanner · Phone Lab Miami',
+                title: 'What the agent found out',
+                meta: 'Buying intent 86',
+                rows: [
+                  { name: 'Product', value: 'Nova A25 256 GB' },
+                  { name: 'Quantity', value: '40 units' },
+                  { name: 'Needed by', value: 'Friday' },
+                ],
+                note: 'Three questions asked, three answered. Ready to quote.',
+              },
+              {
+                label: 'Rep’s next step',
+                source: 'Derek Lawson · today',
+                title: 'Work these first',
+                meta: '$21,410 open',
+                rows: [
+                  { name: 'Andrew Tanner', tag: 'Quote pending', tone: 'warn', value: '$7,960' },
+                  { name: 'Patricia Vance', tag: 'Reply to customer', tone: 'bad', value: '$9,350' },
+                  { name: 'Rodney Galloway', tag: 'Follow-up 2 of 4', value: '$4,100' },
+                ],
+                stamp: 'Quote drafted for Andrew',
+              },
             ],
           },
-          name: 'Quote and order entry',
-          title: 'Emailed RFQs and POs become drafts, not typing.',
-          body: 'The agent reads the attachment, matches each line to your catalog, and prepares the quote or order for a person to approve.',
-          page: 'rfqAutomation',
-        },
-        {
-          id: 'pim',
-          demo: {
-            ariaLabel: "A messy product entry becomes one clean record published to the ERP and the store.",
-            lines: [
-              {"kind": "flag", "text": "hose 2in blk 40m ??", "value": "no category"},
-              {"kind": "out", "text": "Name: Hydraulic hose, 2 in, black"},
-              {"kind": "out", "text": "Cross-ref: 3 vendor part numbers"},
-              {"kind": "stamp", "text": "Published to ERP and store"},
-            ],
-          },
-          name: 'Product data',
-          title: 'One clean record per product.',
-          body: 'Specs, cross-references, images and categories live in one place and publish to your ERP and your storefront.',
-        },
-        {
-          id: 'ecommerce',
-          demo: {
-            ariaLabel: "An out-of-stock item in the cart is replaced with an in-stock alternative and a suggested add-on.",
-            lines: [
-              {"kind": "in", "text": "Cart · Seal kit SK-40", "value": "qty 6"},
-              {"kind": "flag", "text": "Out of stock", "value": "3 weeks"},
-              {"kind": "out", "text": "SK-42 fits the same pump. In stock today."},
-              {"kind": "stamp", "text": "Often bought with: O-ring set"},
-            ],
-          },
-          name: 'eCommerce',
-          title: 'A storefront that knows what is in stock.',
-          body: 'When an item is out, buyers see alternatives you can ship today, and the add-ons that usually go with what is in the cart.',
-        },
-        {
-          id: 'orders',
-          demo: {
-            ariaLabel: "An order with three lines is split across the branches that can fill each one.",
-            lines: [
-              {"kind": "in", "text": "Order 5531", "value": "3 lines"},
-              {"kind": "out", "text": "Line 1 → Monterrey", "value": "in stock"},
-              {"kind": "out", "text": "Line 2 → Monterrey", "value": "in stock"},
-              {"kind": "out", "text": "Line 3 → Querétaro", "value": "ships Thu"},
-              {"kind": "stamp", "text": "Written to the ERP"},
-            ],
-          },
-          name: 'Order management',
-          title: 'Each line goes to the branch that can fill it.',
-          body: 'Orders are split and routed by stock, location and promise date, then written back to the ERP.',
         },
         {
           id: 'sourcing',
-          demo: {
-            ariaLabel: "An item not in the catalog gets three vendor options and the best one is picked.",
-            lines: [
-              {"kind": "flag", "text": "Requested: gear pump GP-7", "value": "not stocked"},
-              {"kind": "in", "text": "Vendor A", "value": "$412 · 12 days"},
-              {"kind": "in", "text": "Vendor B", "value": "$398 · 5 days"},
-              {"kind": "out", "text": "Vendor B: lower price, a week sooner."},
-              {"kind": "stamp", "text": "Option sent to the rep"},
-            ],
-          },
           name: 'Sourcing',
           title: 'An answer for the item you do not carry.',
-          body: 'The agent checks your vendors and partners for a match, with price and lead time, before the customer asks someone else.',
-        },
-        {
-          id: 'pricing',
-          demo: {
-            ariaLabel: "A quote line priced below the margin floor is flagged and a price is recommended.",
-            lines: [
-              {"kind": "in", "text": "Q-2279 · line 2", "value": "$41.20"},
-              {"kind": "flag", "text": "Below margin floor", "value": "−4%"},
-              {"kind": "out", "text": "Recommended for this customer", "value": "$44.80"},
-              {"kind": "stamp", "text": "Rule check passed"},
+          body: 'When a customer asks for something outside your catalog, the agent checks your vendors and partners for a match, with price and lead time, before the customer asks someone else.',
+          scene: {
+            ariaLabel:
+              'Three steps: a customer asks for a part that is not stocked, the agent collects three vendor options, and a priced answer is ready for the rep to approve.',
+            steps: [
+              {
+                label: 'Not in your catalog',
+                source: 'Email · Grupo Alba',
+                title: 'Requested',
+                meta: '1 line',
+                rows: [
+                  { name: 'Gear pump GP-7', sub: 'Quantity 4 · needed this month', tag: 'No match', tone: 'bad' },
+                ],
+              },
+              {
+                label: 'Vendors checked',
+                source: '3 vendors answered',
+                title: 'Options found',
+                meta: 'Per unit',
+                rows: [
+                  { name: 'Vendor A', sub: '12 days', value: '$412' },
+                  { name: 'Vendor B', sub: '5 days', tag: 'Best', tone: 'good', value: '$398' },
+                  { name: 'Vendor C', sub: '3 days', value: '$430' },
+                ],
+              },
+              {
+                label: 'Answer ready',
+                source: 'Reply to Grupo Alba',
+                title: '4 × Gear pump GP-7',
+                meta: 'Delivered in 5 days',
+                rows: [
+                  { name: 'Cost', value: '$1,592' },
+                  { name: 'Your price', sub: '20% margin', value: '$1,990' },
+                ],
+                note: 'We can supply the four pumps for $1,990, delivered in five days.',
+                stamp: 'Waiting for the rep to approve',
+              },
             ],
           },
-          name: 'Pricing',
-          title: 'A price for this customer and this part.',
-          body: 'Recommendations come from contract terms, cost and past deals. Quotes that break a pricing rule are flagged before they are sent.',
         },
         {
           id: 'inventory',
-          demo: {
-            ariaLabel: "Stock for one item runs down week by week and a reorder is proposed before it runs out.",
-            lines: [
-              {"kind": "bars", "text": "Hose 2 in · Monterrey", "levels": [100, 82, 61, 43, 24, 9]},
-              {"kind": "out", "text": "Runs out in about 9 days at this pace."},
-              {"kind": "stamp", "text": "Reorder 240 m by the 12th"},
-            ],
-          },
           name: 'Inventory',
           title: 'Reorder before the shelf is empty.',
-          body: 'Demand is forecast per item and branch, and replenishment is proposed with the reasoning shown.',
+          body: 'Demand is forecast per item and branch from your order history, and replenishment is proposed with the reasoning shown.',
+          scene: {
+            ariaLabel:
+              'Three steps: stock for one item is running down, the agent forecasts when it runs out, and a reorder is proposed.',
+            steps: [
+              {
+                label: 'Stock running down',
+                source: 'Monterrey branch',
+                title: 'Hydraulic hose, 2 in',
+                meta: '86 m on hand',
+                levels: [100, 82, 61, 43, 24, 9],
+              },
+              {
+                label: 'Demand forecast',
+                source: 'From 14 months of orders',
+                title: 'Next 30 days',
+                meta: 'Hose, 2 in',
+                rows: [
+                  { name: 'Expected demand', value: '310 m' },
+                  { name: 'Already promised', value: '120 m' },
+                  { name: 'Vendor lead time', value: '9 days' },
+                ],
+                note: 'At this pace the shelf is empty in about nine days.',
+              },
+              {
+                label: 'Reorder proposed',
+                source: 'Purchase order draft',
+                title: 'Reorder now',
+                meta: 'Arrives the 12th',
+                rows: [
+                  { name: 'Hydraulic hose, 2 in', sub: 'Mangueras del Norte', value: '240 m' },
+                ],
+                stamp: 'Purchase order drafted',
+              },
+            ],
+          },
         },
         {
           id: 'ar',
-          demo: {
-            ariaLabel: "A rejected invoice is fixed and resubmitted, and its payment date is known.",
-            lines: [
-              {"kind": "in", "text": "INV-8812 submitted to portal", "value": "$9,720"},
-              {"kind": "flag", "text": "Rejected: PO number missing"},
-              {"kind": "out", "text": "Found the PO in the order email. Resubmitted."},
-              {"kind": "stamp", "text": "Approved · pays on the 15th"},
-            ],
-          },
-          name: 'AP + AR',
+          name: 'Accounts receivable',
           title: 'From shipped to paid, with nothing stuck in a portal.',
-          body: 'Track customer AP portal requirements, rejected invoices, missing documents and payment dates on the receivable side, and match and schedule supplier invoices on the payable side.',
+          body: 'Track customer AP portal requirements, rejected invoices, missing documents and payment dates, so every blocked invoice has an owner and a next step.',
           page: 'arHome',
           early: true,
+          scene: {
+            ariaLabel:
+              'Three steps: three open invoices with one rejected, the agent finds the missing purchase order and resubmits, and the invoice is approved with a payment date.',
+            steps: [
+              {
+                label: 'Invoices at risk',
+                source: 'Receivables · this week',
+                title: 'Open invoices',
+                meta: '$20,120',
+                rows: [
+                  { name: 'INV-8812', sub: 'Norte Hydraulics', tag: 'Rejected', tone: 'bad', value: '$9,720' },
+                  { name: 'INV-8774', sub: 'Grupo Alba', tag: '12 days late', tone: 'warn', value: '$6,300' },
+                  { name: 'INV-8790', sub: 'Valle Process', tag: 'Approved', tone: 'good', value: '$4,100' },
+                ],
+              },
+              {
+                label: 'Blocker found',
+                source: 'INV-8812 · customer portal',
+                title: 'Why it was rejected',
+                meta: 'Norte Hydraulics',
+                rows: [
+                  { name: 'Reason', value: 'PO number missing' },
+                  { name: 'Found', value: 'PO 44817, in the order email' },
+                  { name: 'Action', value: 'Resubmitted with the PO' },
+                ],
+                note: 'The PO was in the original order email. Resubmitted to the portal.',
+              },
+              {
+                label: 'Payment date known',
+                source: 'Receivables · updated',
+                title: 'Open invoices',
+                meta: '$20,120',
+                rows: [
+                  { name: 'INV-8812', sub: 'Pays on the 15th', tag: 'Approved', tone: 'good', value: '$9,720' },
+                  { name: 'INV-8774', sub: 'Reminder sent today', tag: 'Chasing', tone: 'warn', value: '$6,300' },
+                ],
+                stamp: '1 blocker cleared',
+              },
+            ],
+          },
         },
       ],
     },
@@ -298,7 +341,7 @@ export const PLATFORM_COPY = {
     meta: {
       title: 'Anytrail | La Plataforma de IA para Distribuidores, de la Cotización al Cobro',
       description:
-        'Anytrail es una sola plataforma sobre tu ERP para distribuidores y proveedores industriales: CRM, captura de cotizaciones y pedidos, datos de producto, precios, inventario y cuentas por pagar y por cobrar, con agentes de IA que hacen el trabajo rutinario.',
+        'Anytrail es una sola plataforma sobre tu ERP para distribuidores y proveedores industriales: CRM, abastecimiento, inventario y cuentas por cobrar, con agentes de IA que hacen el trabajo rutinario.',
       ogLocale: 'es_ES',
     },
     navCta: 'Agenda una llamada',
@@ -415,153 +458,193 @@ export const PLATFORM_COPY = {
     modules: {
       label: 'Plataforma',
       titleLead: 'Una plataforma para',
-      titlePhrases: ['hacer crecer tu negocio', 'proteger tus márgenes', 'reducir costos de operación'],
+      titlePhrases: ['ganar el siguiente pedido', 'tener el inventario correcto', 'cobrar a tiempo'],
       intro:
         'Reúne tus datos una sola vez y los agentes pueden trabajar sobre todos. Empieza con un módulo y agrega los demás cuando los necesites.',
       early: 'Acceso anticipado',
-      replayDemo: "Repetir",
       explore: 'Conocer',
+      stepsLabel: 'Pasos',
       items: [
         {
           id: 'crm',
-          demo: {
-            ariaLabel: "El agente ordena tres cuentas y marca a cuál llamar primero, con la razón.",
-            lines: [
-              {"kind": "in", "text": "Norte Hydraulics", "value": "9 sem"},
-              {"kind": "in", "text": "Bajío Packaging", "value": "3 vistas"},
-              {"kind": "in", "text": "Valle Process", "value": "ya hay stock"},
-              {"kind": "out", "text": "Llama primero a Norte: tres semanas de retraso en una recompra de seis."},
-              {"kind": "stamp", "text": "Resumen listo"},
-            ],
-          },
           name: 'CRM',
           title: 'Un CRM que le dice al vendedor a quién llamar y por qué.',
-          body: 'Las cuentas se ordenan con el historial real de pedidos y las conversaciones abiertas. El vendedor recibe un resumen antes de la llamada y un seguimiento redactado después, en WhatsApp, correo y teléfono.',
+          body: 'Cada consulta se responde y se califica en cuanto llega, por WhatsApp y correo. El vendedor empieza el día con una lista ordenada, un resumen de cada cuenta y una cotización o un seguimiento ya redactado.',
           page: 'crmHome',
-        },
-        {
-          id: 'quotes',
-          demo: {
-            ariaLabel: "Una solicitud de cotización por correo con 14 partidas se vuelve una cotización en borrador que espera aprobación.",
-            lines: [
-              {"kind": "in", "text": "Correo · RFQ_Alba.pdf", "value": "14 partidas"},
-              {"kind": "out", "text": "Leí 14 partidas y empaté 13 con tu catálogo."},
-              {"kind": "flag", "text": "Partida 9: sin equivalente", "value": "2 alternativas"},
-              {"kind": "stamp", "text": "Q-2291 en borrador para aprobar"},
+          scene: {
+            ariaLabel:
+              'Tres pasos: llega una consulta nueva por WhatsApp, el agente la califica y aparece al inicio del día del vendedor con una cotización en borrador.',
+            steps: [
+              {
+                label: 'Llega la consulta',
+                source: 'WhatsApp · 10:02',
+                title: 'Bandeja',
+                meta: '3 sin leer',
+                rows: [
+                  { name: 'Andrés Tamez', sub: '¿Me surten 40 piezas del A25?', tag: 'Nuevo', tone: 'new' },
+                  { name: 'Patricia Villarreal', sub: 'Perfecto, mándame datos para el pago' },
+                  { name: 'Raúl Castillo', sub: 'Dos tiendas en Guadalupe' },
+                ],
+              },
+              {
+                label: 'El agente califica',
+                source: 'Andrés Tamez · Phone Lab Monterrey',
+                title: 'Lo que averiguó el agente',
+                meta: 'Intención de compra 86',
+                rows: [
+                  { name: 'Producto', value: 'Nova A25 256 GB' },
+                  { name: 'Cantidad', value: '40 piezas' },
+                  { name: 'Lo necesita', value: 'El viernes' },
+                ],
+                note: 'Tres preguntas hechas, tres respondidas. Listo para cotizar.',
+              },
+              {
+                label: 'Siguiente paso',
+                source: 'Diego Ramírez · hoy',
+                title: 'Atiende estos primero',
+                meta: '$428,200 abiertos',
+                rows: [
+                  { name: 'Andrés Tamez', tag: 'Cotización pendiente', tone: 'warn', value: '$159,200' },
+                  { name: 'Patricia Villarreal', tag: 'Responder al cliente', tone: 'bad', value: '$187,000' },
+                  { name: 'Rodolfo Garza', tag: 'Seguimiento 2 de 4', value: '$82,000' },
+                ],
+                stamp: 'Cotización en borrador para Andrés',
+              },
             ],
           },
-          name: 'Cotizaciones y pedidos',
-          title: 'Las solicitudes y órdenes de compra llegan como borrador, no como captura.',
-          body: 'El agente lee el adjunto, empata cada partida con tu catálogo y deja la cotización o el pedido listo para que una persona lo apruebe.',
-          page: 'rfqAutomation',
-        },
-        {
-          id: 'pim',
-          demo: {
-            ariaLabel: "Un registro de producto desordenado se vuelve una ficha limpia publicada en el ERP y la tienda.",
-            lines: [
-              {"kind": "flag", "text": "manguera 2in neg 40m ??", "value": "sin categoría"},
-              {"kind": "out", "text": "Nombre: Manguera hidráulica, 2 in, negra"},
-              {"kind": "out", "text": "Equivalencias: 3 números de parte"},
-              {"kind": "stamp", "text": "Publicado en ERP y tienda"},
-            ],
-          },
-          name: 'Datos de producto',
-          title: 'Una sola ficha limpia por producto.',
-          body: 'Especificaciones, equivalencias, imágenes y categorías viven en un lugar y se publican a tu ERP y a tu tienda en línea.',
-        },
-        {
-          id: 'ecommerce',
-          demo: {
-            ariaLabel: "Un artículo agotado en el carrito se sustituye por una alternativa en existencia y un complemento sugerido.",
-            lines: [
-              {"kind": "in", "text": "Carrito · Kit de sellos SK-40", "value": "cant. 6"},
-              {"kind": "flag", "text": "Agotado", "value": "3 semanas"},
-              {"kind": "out", "text": "El SK-42 sirve para la misma bomba. Hay existencia hoy."},
-              {"kind": "stamp", "text": "Suele llevarse con: juego de O-rings"},
-            ],
-          },
-          name: 'Comercio en línea',
-          title: 'Una tienda que sabe qué hay en existencia.',
-          body: 'Si un artículo está agotado, el comprador ve alternativas que puedes surtir hoy y los complementos que suelen ir con lo que lleva en el carrito.',
-        },
-        {
-          id: 'orders',
-          demo: {
-            ariaLabel: "Un pedido de tres partidas se reparte entre las sucursales que pueden surtir cada una.",
-            lines: [
-              {"kind": "in", "text": "Pedido 5531", "value": "3 partidas"},
-              {"kind": "out", "text": "Partida 1 → Monterrey", "value": "en existencia"},
-              {"kind": "out", "text": "Partida 2 → Monterrey", "value": "en existencia"},
-              {"kind": "out", "text": "Partida 3 → Querétaro", "value": "sale el jueves"},
-              {"kind": "stamp", "text": "Registrado en el ERP"},
-            ],
-          },
-          name: 'Gestión de pedidos',
-          title: 'Cada partida va a la sucursal que puede surtirla.',
-          body: 'Los pedidos se dividen y se asignan por existencia, ubicación y fecha promesa, y se registran de vuelta en el ERP.',
         },
         {
           id: 'sourcing',
-          demo: {
-            ariaLabel: "Un artículo fuera de catálogo recibe tres opciones de proveedor y se elige la mejor.",
-            lines: [
-              {"kind": "flag", "text": "Piden: bomba de engranes GP-7", "value": "no se maneja"},
-              {"kind": "in", "text": "Proveedor A", "value": "$412 · 12 días"},
-              {"kind": "in", "text": "Proveedor B", "value": "$398 · 5 días"},
-              {"kind": "out", "text": "Proveedor B: mejor precio y una semana antes."},
-              {"kind": "stamp", "text": "Opción enviada al vendedor"},
-            ],
-          },
           name: 'Abastecimiento',
           title: 'Una respuesta para lo que no manejas.',
-          body: 'El agente busca una opción con tus proveedores y aliados, con precio y tiempo de entrega, antes de que el cliente le pregunte a alguien más.',
-        },
-        {
-          id: 'pricing',
-          demo: {
-            ariaLabel: "Una partida cotizada por debajo del margen mínimo se marca y se recomienda un precio.",
-            lines: [
-              {"kind": "in", "text": "Q-2279 · partida 2", "value": "$41.20"},
-              {"kind": "flag", "text": "Debajo del margen mínimo", "value": "−4%"},
-              {"kind": "out", "text": "Recomendado para este cliente", "value": "$44.80"},
-              {"kind": "stamp", "text": "Regla de precios cumplida"},
+          body: 'Cuando un cliente pide algo fuera de tu catálogo, el agente busca una opción con tus proveedores y aliados, con precio y tiempo de entrega, antes de que el cliente le pregunte a alguien más.',
+          scene: {
+            ariaLabel:
+              'Tres pasos: un cliente pide una pieza que no se maneja, el agente reúne tres opciones de proveedor y deja una respuesta con precio lista para que el vendedor la apruebe.',
+            steps: [
+              {
+                label: 'Fuera de catálogo',
+                source: 'Correo · Grupo Alba',
+                title: 'Lo que piden',
+                meta: '1 partida',
+                rows: [
+                  { name: 'Bomba de engranes GP-7', sub: 'Cantidad 4 · para este mes', tag: 'Sin equivalente', tone: 'bad' },
+                ],
+              },
+              {
+                label: 'Proveedores consultados',
+                source: 'Respondieron 3 proveedores',
+                title: 'Opciones encontradas',
+                meta: 'Por pieza',
+                rows: [
+                  { name: 'Proveedor A', sub: '12 días', value: '$8,240' },
+                  { name: 'Proveedor B', sub: '5 días', tag: 'La mejor', tone: 'good', value: '$7,960' },
+                  { name: 'Proveedor C', sub: '3 días', value: '$8,600' },
+                ],
+              },
+              {
+                label: 'Respuesta lista',
+                source: 'Respuesta a Grupo Alba',
+                title: '4 × Bomba de engranes GP-7',
+                meta: 'Entrega en 5 días',
+                rows: [
+                  { name: 'Costo', value: '$31,840' },
+                  { name: 'Tu precio', sub: '20% de margen', value: '$39,800' },
+                ],
+                note: 'Podemos surtir las cuatro bombas en $39,800, con entrega en cinco días.',
+                stamp: 'Espera la aprobación del vendedor',
+              },
             ],
           },
-          name: 'Precios',
-          title: 'Un precio para este cliente y esta pieza.',
-          body: 'Las recomendaciones salen de las condiciones del contrato, el costo y las ventas anteriores. Una cotización que rompe una regla de precios se marca antes de enviarse.',
         },
         {
           id: 'inventory',
-          demo: {
-            ariaLabel: "La existencia de un artículo baja semana a semana y se propone el resurtido antes de que se agote.",
-            lines: [
-              {"kind": "bars", "text": "Manguera 2 in · Monterrey", "levels": [100, 82, 61, 43, 24, 9]},
-              {"kind": "out", "text": "Se agota en unos 9 días a este ritmo."},
-              {"kind": "stamp", "text": "Resurtir 240 m antes del día 12"},
-            ],
-          },
           name: 'Inventario',
           title: 'Resurte antes de que el anaquel se vacíe.',
-          body: 'La demanda se pronostica por artículo y sucursal, y el resurtido se propone con su razón a la vista.',
+          body: 'La demanda se pronostica por artículo y sucursal con tu historial de pedidos, y el resurtido se propone con su razón a la vista.',
+          scene: {
+            ariaLabel:
+              'Tres pasos: la existencia de un artículo va bajando, el agente pronostica cuándo se agota y propone el resurtido.',
+            steps: [
+              {
+                label: 'La existencia baja',
+                source: 'Sucursal Monterrey',
+                title: 'Manguera hidráulica, 2 in',
+                meta: '86 m en existencia',
+                levels: [100, 82, 61, 43, 24, 9],
+              },
+              {
+                label: 'Pronóstico de demanda',
+                source: 'Con 14 meses de pedidos',
+                title: 'Próximos 30 días',
+                meta: 'Manguera, 2 in',
+                rows: [
+                  { name: 'Demanda esperada', value: '310 m' },
+                  { name: 'Ya comprometido', value: '120 m' },
+                  { name: 'Entrega del proveedor', value: '9 días' },
+                ],
+                note: 'A este ritmo el anaquel se vacía en unos nueve días.',
+              },
+              {
+                label: 'Resurtido propuesto',
+                source: 'Orden de compra en borrador',
+                title: 'Resurtir ahora',
+                meta: 'Llega el día 12',
+                rows: [
+                  { name: 'Manguera hidráulica, 2 in', sub: 'Mangueras del Norte', value: '240 m' },
+                ],
+                stamp: 'Orden de compra en borrador',
+              },
+            ],
+          },
         },
         {
           id: 'ar',
-          demo: {
-            ariaLabel: "Una factura rechazada se corrige y se reenvía, y se conoce su fecha de pago.",
-            lines: [
-              {"kind": "in", "text": "INV-8812 enviada al portal", "value": "$9,720"},
-              {"kind": "flag", "text": "Rechazada: falta el número de OC"},
-              {"kind": "out", "text": "Encontré la OC en el correo del pedido. Reenviada."},
-              {"kind": "stamp", "text": "Aprobada · se paga el día 15"},
-            ],
-          },
-          name: 'CxP + CxC',
+          name: 'Cuentas por cobrar',
           title: 'De embarcado a cobrado, sin nada atorado en un portal.',
-          body: 'Del lado de cobranza, da seguimiento a los requisitos de los portales de cuentas por pagar de tus clientes, las facturas rechazadas, los documentos faltantes y las fechas de pago. Del lado de pagos, empata y programa las facturas de proveedores.',
+          body: 'Da seguimiento a los requisitos de los portales de tus clientes, las facturas rechazadas, los documentos faltantes y las fechas de pago, para que cada factura bloqueada tenga responsable y siguiente paso.',
           page: 'arHome',
           early: true,
+          scene: {
+            ariaLabel:
+              'Tres pasos: tres facturas abiertas con una rechazada, el agente encuentra la orden de compra faltante y la reenvía, y la factura queda aprobada con fecha de pago.',
+            steps: [
+              {
+                label: 'Facturas en riesgo',
+                source: 'Cobranza · esta semana',
+                title: 'Facturas abiertas',
+                meta: '$402,400',
+                rows: [
+                  { name: 'INV-8812', sub: 'Norte Hydraulics', tag: 'Rechazada', tone: 'bad', value: '$194,400' },
+                  { name: 'INV-8774', sub: 'Grupo Alba', tag: '12 días vencida', tone: 'warn', value: '$126,000' },
+                  { name: 'INV-8790', sub: 'Valle Process', tag: 'Aprobada', tone: 'good', value: '$82,000' },
+                ],
+              },
+              {
+                label: 'Bloqueo encontrado',
+                source: 'INV-8812 · portal del cliente',
+                title: 'Por qué la rechazaron',
+                meta: 'Norte Hydraulics',
+                rows: [
+                  { name: 'Motivo', value: 'Falta el número de OC' },
+                  { name: 'Encontrado', value: 'OC 44817, en el correo del pedido' },
+                  { name: 'Acción', value: 'Reenviada con la OC' },
+                ],
+                note: 'La OC estaba en el correo del pedido original. Reenviada al portal.',
+              },
+              {
+                label: 'Fecha de pago',
+                source: 'Cobranza · actualizado',
+                title: 'Facturas abiertas',
+                meta: '$402,400',
+                rows: [
+                  { name: 'INV-8812', sub: 'Se paga el día 15', tag: 'Aprobada', tone: 'good', value: '$194,400' },
+                  { name: 'INV-8774', sub: 'Recordatorio enviado hoy', tag: 'En gestión', tone: 'warn', value: '$126,000' },
+                ],
+                stamp: '1 bloqueo resuelto',
+              },
+            ],
+          },
         },
       ],
     },

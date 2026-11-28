@@ -89,3 +89,27 @@
   color: var(--text-strong);
   text-decoration: underline;
 }
+
+/* The platform home's footer: one line across the page's own width. */
+.footer--line {
+  padding: 32px 24px;
+}
+
+.footer--line .footer__inner {
+  max-width: var(--band-max);
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+
+.footer--line .footer__privacy {
+  margin-top: 0;
+}
+
+@media (max-width: 820px) {
+  .footer--line {
+    padding: 24px 16px;
+  }
+}

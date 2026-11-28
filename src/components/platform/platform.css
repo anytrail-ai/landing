@@ -98,9 +98,30 @@
   transform: none;
 }
 
-/* The modules heading: lead-in on one line, the phrase on the next. */
+/* The modules heading sits at the content's left edge, label above it, with
+   the changing phrase on the same line where it fits. */
+.mods .band__head {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.mods .band__label {
+  margin: 0;
+}
+
 .mods .band__title {
   max-width: none;
+  font-size: clamp(32px, 4.2vw, 56px);
+  line-height: 1.08;
+}
+
+.mods .rot {
+  display: inline-grid;
+  vertical-align: top;
+}
+
+.mods .band__intro {
+  max-width: 620px;
 }
 
 .phero .hero__subtitle {
@@ -1121,35 +1142,40 @@
   }
 }
 
-/* ---------- modules: an accordion, one open at a time ---------- */
+/* ---------- modules: list on the left, the selected one's demo on the right ---------- */
+
+.mods__split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+  align-items: start;
+  /* the hero's and navbar's links land here, clear of the fixed navbar */
+  scroll-margin-top: 96px;
+}
 
 .mods__list {
   border-bottom: 1px solid var(--band-rule);
-  /* the hero's and navbar's links land here, clear of the fixed navbar */
-  scroll-margin-top: 96px;
 }
 
 .mods__item {
   border-top: 1px solid var(--band-rule);
 }
 
-.mods__summary {
-  position: relative;
-  display: grid;
-  /* the same columns as the panel below, so title and body share an edge */
-  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
-  gap: 24px;
-  align-items: center;
-  padding: 22px 44px 22px 0;
+.mods__tab {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: inherit;
   cursor: pointer;
-  list-style: none;
 }
 
-.mods__summary::-webkit-details-marker {
-  display: none;
-}
-
-.mods__summary:focus-visible {
+.mods__tab:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -1179,54 +1205,43 @@
 
 .mods__title {
   font-family: var(--display);
-  font-size: clamp(20px, 2.2vw, 28px);
-  line-height: 1.2;
+  font-size: 20px;
+  line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--band-muted);
   transition: color 0.2s ease-out;
 }
 
-.mods__summary:hover .mods__title,
-.mods__item[open] .mods__title,
-.mods__item[open] .mods__name {
+.mods__tab:hover .mods__title,
+.mods__item.is-active .mods__title {
   color: var(--band-fg);
 }
 
-.mods__toggle {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  margin-top: -10px;
-  color: var(--band-faint);
-  transition: transform 0.2s ease-out;
+/* the selected module carries the green rule and opens its description */
+.mods__item.is-active {
+  border-top-color: var(--accent);
+  box-shadow: inset 0 1px 0 var(--accent);
 }
 
-.mods__item[open] .mods__toggle {
-  transform: rotate(45deg);
+.mods__item.is-active .mods__name {
+  color: var(--accent);
 }
 
-/* the open module: what it does on the left, the demo playing on the right */
-.mods__panel {
-  display: grid;
-  /* first column is exactly the summary's label column (a quarter of the
-     row less its one gap), so the body starts under the title */
-  grid-template-columns: calc((100% - 24px) / 4) minmax(0, 4fr) minmax(0, 5fr);
-  gap: 24px;
-  align-items: start;
-  padding: 4px 44px 40px 0;
-}
-
-.mods__text {
-  grid-column: 2;
-  display: flex;
+.mods__more {
+  display: none;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
+  gap: 14px;
+  padding: 0 0 20px;
+}
+
+.mods__item.is-active .mods__more {
+  display: flex;
 }
 
 .mods__body {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.6;
   color: var(--band-muted);
 }
@@ -1248,213 +1263,748 @@
   text-decoration-color: currentColor;
 }
 
-/* ---------- module demos ---------- */
-
-.mdemo {
-  position: relative;
-  align-self: stretch;
-  margin: 0;
-  padding: 12px 12px 36px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+/* The stage: stays in view while the list beside it scrolls past. */
+.mods__stage {
+  position: sticky;
+  top: 96px;
 }
 
-.mdemo__lines {
+.mods__inline {
+  display: none;
+  align-self: stretch;
+}
+
+/* ---------- module scenes ----------
+   ModuleScene.jsx is the frame (stage, step pills); SceneViews.jsx draws the
+   screens, which use the `scn` classes below. The screens are in the app's
+   own surfaces: white cards, warm hairlines, moss for what the agent did,
+   and the app's amber and red for status. */
+
+.scene {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-muted);
+}
+
+/* tall enough for every beat of every scene, so the pills never move */
+.scene__screen {
+  min-height: 344px;
+}
+
+/* step pills */
+.scene__steps {
   margin: 0;
   padding: 0;
   list-style: none;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-.mdemo__line {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--text-strong);
-}
-
-.mdemo__text {
-  min-width: 0;
-}
-
-.mdemo__value {
-  margin-left: auto;
-  flex: none;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
-}
-
-/* something arriving: a ruled row, the full width of the sheet */
-.mdemo__line--in,
-.mdemo__line--flag,
-.mdemo__line--bars {
-  align-self: stretch;
-  padding: 6px 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-}
-
-/* the problem: same row, dashed and quiet, so the fix reads against it */
-.mdemo__line--flag {
-  border-style: dashed;
-  background: var(--surface-muted);
-  color: var(--text-muted);
-}
-
-/* what the agent does: the one voice that carries colour */
-.mdemo__line--out {
-  padding: 6px 10px;
-  border-radius: 12px;
-  background: var(--accent-soft);
-}
-
-.mdemo__line--out .mdemo__value {
-  color: var(--text-strong);
-  font-weight: 600;
-}
-
-.mdemo__line--stamp {
-  align-items: center;
-  gap: 6px;
-  margin-top: 2px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 500;
-  color: var(--accent);
-}
-
-.mdemo__line--bars {
-  flex-direction: column;
-  align-items: stretch;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
-.mdemo__bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  height: 56px;
-}
-
-.mdemo__bars span {
-  flex: 1;
-  height: var(--h);
-  border-radius: 3px 3px 0 0;
-  background: var(--border);
-  transform-origin: bottom;
-}
-
-.mdemo__bars .is-low {
-  background: var(--text-faint);
-}
-
-.mdemo__replay {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
+.scene__step {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border: 0;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 14px 0 6px;
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: transparent;
+  background: var(--surface);
   font: inherit;
-  font-size: 11px;
-  line-height: 14px;
-  color: var(--text-faint);
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text-muted);
   cursor: pointer;
-  transition: background-color 0.2s ease-out, color 0.2s ease-out;
+  transition:
+    color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    background-color 0.2s ease-out;
 }
 
-.mdemo__replay:hover {
-  background: var(--surface-muted);
+.scene__step:hover {
   color: var(--text-strong);
 }
 
-.mdemo__replay:focus-visible {
+.scene__step-num {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  transition:
+    background-color 0.2s ease-out,
+    color 0.2s ease-out;
+}
+
+.scene__step.is-active {
+  border-color: var(--text-strong);
+  background: var(--text-strong);
+  color: #ffffff;
+}
+
+.scene__step.is-active .scene__step-num {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.scene__step.is-done {
+  color: var(--text-strong);
+}
+
+.scene__step.is-done .scene__step-num {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.scene__step:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* A demo plays when its module opens: showing the panel starts the
-   animations, so the lines arrive one at a time, slowly enough to read as a
-   sequence. The first module is open from the start, so its demo waits for
-   the list to scroll into view (`.is-in`, armed only with JS running).
-   Without JS the lines are simply there. */
-.js-reveal .mods__list:not(.is-in) .mdemo__line {
+/* ----- the screens ----- */
+
+.scn {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-strong);
+}
+
+/* Reset the text elements a screen is built from. `:where` keeps this at
+   the weight of one class, so the component rules below, which set their own
+   padding, win. (Written as `.scn p` it outranked them and stripped the
+   padding from every bubble, note and boxed line.) */
+.scn :where(p, dl, dd, ul, ol) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* the work on the left, what the agent does about it on the right; the
+   right card sits a little lower and floats, so it reads as arriving on top */
+.scn--split {
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 10fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.scn__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+/* The right-hand card is there from the start, waiting: faint, flat, its
+   contents still placeholders. At its beat it comes forward. */
+.scn__card--lift {
+  margin-top: 28px;
+  opacity: 0.5;
+  transition:
+    opacity 0.35s ease-out,
+    box-shadow 0.35s ease-out,
+    transform 0.35s ease-out;
+}
+
+.scn__card--lift.is-on {
+  opacity: 1;
+  box-shadow: 0 16px 32px -20px rgba(17, 24, 39, 0.28);
+  transform: translateY(-4px);
+}
+
+/* placeholders in a waiting card hold still */
+.scn__card--lift:not(.is-on) .scn__sk {
+  animation: none;
+}
+
+/* Anything that arrives at a beat: out of sight until `is-on`. */
+.scn__b {
   opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.35s ease-out;
 }
 
-.mods__list.is-in .mods__item[open] .mdemo__line {
-  animation: platform-arrive 0.45s ease-out both;
-  animation-delay: calc(0.2s + var(--i) * 0.55s);
+.scn__b.is-on {
+  opacity: 1;
+  transform: none;
 }
 
-.mods__list.is-in .mods__item[open] .mdemo__bars span {
-  animation: mdemo-grow 0.4s ease-out both;
-  animation-delay: calc(0.4s + var(--j) * 0.12s);
+.scn__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-@keyframes mdemo-grow {
+.scn__head-main,
+.scn__line-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.scn__head-main strong,
+.scn__line-main strong {
+  font-weight: 600;
+}
+
+.scn__head-main > span,
+.scn__line-main > span {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+.scn__avatar {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.scn__thumb {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* a photo that has not been looked up yet */
+.scn__thumb--sk {
+  border-color: transparent;
+  background: #ece8da;
+}
+
+/* status chips: a change of status re-mounts the chip, so it pops */
+.scn__tag {
+  flex: none;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-muted);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text-muted);
+  animation: scn-pop 0.3s ease-out both;
+}
+
+.scn__tag--good {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.scn__tag--warn {
+  border-color: #fcd34d;
+  background: #fffbeb;
+  color: #78350f;
+}
+
+.scn__tag--bad {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+/* a value before its beat: a grey bar with a slow shimmer */
+.scn__sk {
+  display: inline-block;
+  max-width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  vertical-align: middle;
+  background: linear-gradient(90deg, #ece8da 25%, #f6f4ea 50%, #ece8da 75%);
+  background-size: 200% 100%;
+  animation: scn-shimmer 1.2s linear infinite;
+}
+
+.scn__val {
+  animation: scn-fade 0.3s ease-out both;
+}
+
+.scn__amount {
+  flex: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.scn__amount--lg {
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.scn__count {
+  font-variant-numeric: tabular-nums;
+}
+
+/* rows: a list the agent works down */
+.scn__row,
+.scn__line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* rows run edge to edge of their card, so a highlight is a clean band */
+.scn__row {
+  margin: 0 -16px;
+  padding: 8px 16px;
+  transition:
+    background-color 0.25s ease-out,
+    opacity 0.25s ease-out,
+    box-shadow 0.25s ease-out;
+}
+
+.scn__rows > .scn__row + .scn__row {
+  border-top: 1px solid var(--border);
+}
+
+/* the row being read right now */
+.scn__row.is-scan {
+  background: var(--surface-muted);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* the row that was chosen */
+.scn__row.is-pick {
+  background: var(--accent-soft);
+}
+
+.scn__row.is-dim {
+  opacity: 0.45;
+}
+
+.scn__line--boxed {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition:
+    border-color 0.3s ease-out,
+    background-color 0.3s ease-out;
+}
+
+.scn__line--boxed.is-flag {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+/* a further piece of the same card that opens later */
+.scn__slot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.scn__slot .scn__line {
+  align-self: stretch;
+}
+
+/* a button that is about to be pressed, and the stamp it becomes */
+.scn__btn,
+.scn__stamp {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 12.8px;
+  line-height: 1;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.scn__btn {
+  background: #000000;
+  color: #ffffff;
+  animation: scn-pop 0.3s ease-out both;
+}
+
+.scn__stamp {
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  animation: scn-press 0.4s ease-out both;
+}
+
+/* the agent's voice */
+.scn__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.scn__note svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+/* CRM: the conversation */
+.scn__thread {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 190px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--page-bg);
+}
+
+.scn__msg {
+  max-width: 88%;
+  padding: 7px 11px;
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  background: var(--surface-muted);
+  font-size: 13px;
+  line-height: 18px;
+  box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.05);
+}
+
+.scn__msg--in {
+  align-self: flex-start;
+}
+
+.scn__msg--out {
+  align-self: flex-end;
+  border-radius: 14px;
+  border-bottom-right-radius: 4px;
+  background: var(--accent-soft);
+}
+
+/* a bubble that has not arrived yet takes no room, so the thread grows */
+.scn__msg.scn__b:not(.is-on) {
+  display: none;
+}
+
+.scn__msg.scn__b.is-on {
+  animation: platform-arrive 0.35s ease-out both;
+}
+
+.scn__by {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--accent);
+}
+
+.scn__typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 11px 12px;
+  animation: platform-arrive 0.25s ease-out both;
+}
+
+.scn__typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: scn-dot 0.9s ease-in-out infinite;
+}
+
+.scn__typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.scn__typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* CRM: what the agent learned */
+.scn__fields {
+  display: flex;
+  flex-direction: column;
+}
+
+.scn__fields > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.scn__fields dt {
+  color: var(--text-muted);
+}
+
+.scn__fields dd {
+  font-weight: 500;
+  text-align: right;
+}
+
+.scn__meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+.scn__meter-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-muted);
+  overflow: hidden;
+}
+
+.scn__meter-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  transition: width 0.7s ease-out;
+}
+
+.scn__meter .scn__count {
+  min-width: 2ch;
+  font-weight: 600;
+  text-align: right;
+  color: var(--accent);
+}
+
+/* Sourcing: the customer's words */
+.scn__quoteblock {
+  padding-left: 10px;
+  border-left: 2px solid var(--border);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
+}
+
+/* Inventory: the forecast and the order share one card */
+.scn__swap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: scn-fade 0.35s ease-out both;
+}
+
+.scn__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 128px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.scn__bars span {
+  flex: 1;
+  height: var(--h);
+  border-radius: 4px 4px 0 0;
+  background: var(--border);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.5s ease-out;
+  transition-delay: calc(var(--j) * 0.12s);
+}
+
+.scn__bars.is-on span {
+  transform: none;
+}
+
+.scn__bars .is-low {
+  background: #fca5a5;
+}
+
+.scn__total {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-weight: 600;
+}
+
+/* Accounts receivable: what happened to the invoice, in order */
+.scn__trail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 14px;
+  border-left: 1px solid var(--border);
+}
+
+.scn__trail li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.scn__trail li::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+
+.scn__trail .is-bad::before {
+  background: #dc2626;
+}
+
+.scn__trail .is-good::before {
+  background: var(--accent);
+}
+
+.scn__trail strong {
+  font-weight: 600;
+}
+
+.scn__trail li > span {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+@keyframes scn-pop {
   from {
-    transform: scaleY(0);
+    opacity: 0;
+    transform: scale(0.85);
   }
   to {
+    opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes scn-press {
+  0% {
+    transform: scale(0.92);
+  }
+  60% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes scn-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scn-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes scn-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
   }
 }
 
 /* ---------- motion and breakpoints ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .mods__list.is-in .mods__item[open] .mdemo__line,
-  .mods__list.is-in .mods__item[open] .mdemo__bars span {
-    animation: none;
-  }
-
-  .js-reveal .mods__list:not(.is-in) .mdemo__line {
-    opacity: 1;
+  .scn *,
+  .scn__b {
+    animation: none !important;
+    transition: none !important;
   }
 
   .mods__title,
-  .mods__toggle {
-    transition: none;
-  }
-
-  /* nothing to replay when nothing plays */
-  .mdemo__replay {
-    display: none;
-  }
-
-  .rot__phrase {
+  .rot__phrase,
+  .scene__step,
+  .scene__step-num {
     transition: none;
   }
 }
 
-
-@media (max-width: 820px) {
-  .mods__summary {
+/* One column: the stage goes away and the scene sits under its module. */
+@media (max-width: 900px) {
+  .mods__split {
     grid-template-columns: minmax(0, 1fr);
-    gap: 6px;
-    padding: 18px 36px 18px 0;
   }
 
-  .mods__panel {
-    grid-template-columns: minmax(0, 1fr);
-    padding: 4px 0 28px;
+  .mods__stage {
+    display: none;
   }
 
-  .mods__text {
-    grid-column: 1;
+  .mods__inline {
+    display: block;
+  }
+
+  .scene {
+    padding: 14px;
+  }
+}
+
+/* Too narrow for two cards side by side: stack them. The screen's height
+   then changes between beats, so it is no longer held fixed. */
+@media (max-width: 560px) {
+  .scn--split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .scn__card--lift {
+    margin-top: 0;
+  }
+
+  .scene__screen {
+    min-height: 0;
   }
 }

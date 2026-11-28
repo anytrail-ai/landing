@@ -17,10 +17,10 @@ export const PLATFORM_COPY = {
     navLinksLabel: 'Sections',
     navLinks: [
       { href: '#modules', label: 'Platform' },
-      { href: '#resources', label: 'Resources' },
     ],
-    otherLanguage: 'Español',
-    footerTagline: 'One platform for distributors, from the first quote to the paid invoice. © 2026 Anytrail',
+    // The home page's whole footer: this line and the privacy link.
+    footerLine: '© 2026 anytrail.ai, AI software for wholesale distributors',
+    footerPrivacy: 'Privacy Policy',
     hero: {
       // The headline is `lead` plus one of `phrases`, which take turns.
       lead: 'For distributors, AI that',
@@ -150,8 +150,9 @@ export const PLATFORM_COPY = {
       // view shows (SceneViews.jsx draws it, sceneBeats.js times it). All of
       // it is invented sample data. The four product photos in
       // public/products are from Unsplash (Unsplash licence): hose by
-      // @tatiana19, bearing by @photosbyfrk, valve by @guilleb, gloves by
-      // @slrncl.
+      // @justusmenke, bearing by @glencarrie, fitting by @vl_cherkasenko,
+      // hard hat by @richard_he, valve by @guilleb. Company, vendor and
+      // place names are per language: US ones in English, Mexican in Spanish.
       items: [
         {
           id: 'crm',
@@ -198,7 +199,7 @@ export const PLATFORM_COPY = {
             ariaLabel: 'A customer emails asking for a valve that is not in the catalog. The agent asks three vendors, who answer one by one, and picks the best. A priced reply is drafted, approved and sent.',
             steps: ['Not in your catalog', 'Vendors checked', 'Answer sent'],
             t: {
-              from: 'Grupo Alba',
+              from: 'Harlow Industrial',
               fromSub: 'Email · 9:41',
               ask: '“Do you carry 2 in balancing valves? We need six this month.”',
               img: '/products/valve.jpg',
@@ -213,16 +214,16 @@ export const PLATFORM_COPY = {
               vendorsDone: '3 of 3 answered',
               best: 'Best',
               vendors: [
-                { name: 'Válvulas Noreste', lead: '12 days', cost: '$172' },
-                { name: 'Hidro Partes', lead: '5 days', cost: '$165', best: true },
+                { name: 'Gulf Valve Co.', lead: '12 days', cost: '$172' },
+                { name: 'HydroParts Supply', lead: '5 days', cost: '$165', best: true },
                 { name: 'Flow Supply Co.', lead: '3 days', cost: '$189' },
               ],
-              note: 'Hidro Partes is cheapest and arrives inside the month.',
+              note: 'HydroParts Supply is cheapest and arrives inside the month.',
               replyTitle: 'Reply drafted',
               replySub: '6 valves · 5 days · 23% margin',
               replyTotal: '$1,290',
               approve: 'Approve & send',
-              sent: 'Sent to Grupo Alba',
+              sent: 'Sent to Harlow Industrial',
             },
           },
         },
@@ -235,7 +236,7 @@ export const PLATFORM_COPY = {
             ariaLabel: 'The agent checks four stocked items one by one and finds the hydraulic hose has nine days left. It shows the hose running down week by week, then drafts a purchase order for the hose and the bearings, totalling $5,556, which is approved and sent.',
             steps: ['What is running low', 'Why it runs out', 'Reorder sent'],
             t: {
-              listTitle: 'Monterrey branch',
+              listTitle: 'Dallas branch',
               listBusy: 'Checking 1,240 items',
               listDone: '2 need action',
               checking: 'Checking',
@@ -243,28 +244,28 @@ export const PLATFORM_COPY = {
                 {
                   img: '/products/hose.jpg',
                   name: 'Hydraulic hose, 2 in',
-                  sub: '86 m on hand',
+                  sub: '280 ft on hand',
                   tag: '9 days left',
                   tone: 'bad',
                 },
                 {
                   img: '/products/bearing.jpg',
-                  name: 'Tapered bearing 30205',
+                  name: 'Ball bearing 6204',
                   sub: '42 on hand',
                   tag: '3 weeks left',
                   tone: 'warn',
                 },
                 {
-                  img: '/products/valve.jpg',
-                  name: 'Balancing valve, 1 in',
-                  sub: '18 on hand',
+                  img: '/products/fitting.jpg',
+                  name: 'Brass fitting, 1/2 in',
+                  sub: '380 on hand',
                   tag: 'Covered',
                   tone: 'good',
                 },
                 {
-                  img: '/products/gloves.jpg',
-                  name: 'Leather work gloves, L',
-                  sub: '210 pairs on hand',
+                  img: '/products/hardhat.jpg',
+                  name: 'Hard hat, yellow',
+                  sub: '64 on hand',
                   tag: 'Covered',
                   tone: 'good',
                 },
@@ -278,13 +279,13 @@ export const PLATFORM_COPY = {
                 {
                   img: '/products/hose.jpg',
                   name: 'Hydraulic hose, 2 in',
-                  sub: '240 m · Mangueras del Norte',
+                  sub: '800 ft · Lone Star Hose',
                   amount: 4416,
                 },
                 {
                   img: '/products/bearing.jpg',
-                  name: 'Tapered bearing 30205',
-                  sub: '60 units · Rodamientos MX',
+                  name: 'Ball bearing 6204',
+                  sub: '60 units · Midwest Bearing',
                   amount: 1140,
                 },
               ],
@@ -312,21 +313,21 @@ export const PLATFORM_COPY = {
               invoices: [
                 {
                   id: 'INV-8812',
-                  customer: 'Norte Hydraulics',
+                  customer: 'Summit Hydraulics',
                   tag: 'Rejected',
                   tone: 'bad',
                   amount: '$9,720',
                 },
                 {
                   id: 'INV-8774',
-                  customer: 'Grupo Alba',
+                  customer: 'Harlow Industrial',
                   tag: '12 days late',
                   tone: 'warn',
                   amount: '$6,300',
                 },
                 {
                   id: 'INV-8790',
-                  customer: 'Valle Process',
+                  customer: 'Cedar Process',
                   tag: 'Approved',
                   tone: 'good',
                   amount: '$4,100',
@@ -363,10 +364,9 @@ export const PLATFORM_COPY = {
     navLinksLabel: 'Secciones',
     navLinks: [
       { href: '#modules', label: 'Plataforma' },
-      { href: '#resources', label: 'Recursos' },
     ],
-    otherLanguage: 'English',
-    footerTagline: 'Una plataforma para distribuidores, de la primera cotización a la factura cobrada. © 2026 Anytrail',
+    footerLine: '© 2026 anytrail.ai, software de IA para distribuidores mayoristas',
+    footerPrivacy: 'Política de privacidad',
     hero: {
       lead: 'Para distribuidores, IA que',
       phrases: [
@@ -542,7 +542,7 @@ export const PLATFORM_COPY = {
               vendors: [
                 { name: 'Válvulas Noreste', lead: '12 días', cost: '$3,440' },
                 { name: 'Hidro Partes', lead: '5 días', cost: '$3,300', best: true },
-                { name: 'Flow Supply Co.', lead: '3 días', cost: '$3,780' },
+                { name: 'Suministros Flujo', lead: '3 días', cost: '$3,780' },
               ],
               note: 'Hidro Partes es la más barata y llega dentro del mes.',
               replyTitle: 'Respuesta redactada',
@@ -569,29 +569,29 @@ export const PLATFORM_COPY = {
               items: [
                 {
                   img: '/products/hose.jpg',
-                  name: 'Manguera hidráulica, 2 in',
+                  name: 'Manguera hidráulica 2 in',
                   sub: '86 m en existencia',
-                  tag: 'Quedan 9 días',
+                  tag: '9 días',
                   tone: 'bad',
                 },
                 {
                   img: '/products/bearing.jpg',
-                  name: 'Rodamiento cónico 30205',
+                  name: 'Rodamiento 6204',
                   sub: '42 en existencia',
-                  tag: 'Quedan 3 semanas',
+                  tag: '3 semanas',
                   tone: 'warn',
                 },
                 {
-                  img: '/products/valve.jpg',
-                  name: 'Válvula de balanceo, 1 in',
-                  sub: '18 en existencia',
+                  img: '/products/fitting.jpg',
+                  name: 'Conector de latón 1/2',
+                  sub: '380 en existencia',
                   tag: 'Cubierto',
                   tone: 'good',
                 },
                 {
-                  img: '/products/gloves.jpg',
-                  name: 'Guantes de carnaza, G',
-                  sub: '210 pares en existencia',
+                  img: '/products/hardhat.jpg',
+                  name: 'Casco de seguridad',
+                  sub: '64 en existencia',
                   tag: 'Cubierto',
                   tone: 'good',
                 },
@@ -604,14 +604,14 @@ export const PLATFORM_COPY = {
               order: [
                 {
                   img: '/products/hose.jpg',
-                  name: 'Manguera hidráulica, 2 in',
-                  sub: '240 m · Mangueras del Norte',
+                  name: 'Manguera hidráulica 2 in',
+                  sub: '240 m · Mangueras Norte',
                   amount: 88320,
                 },
                 {
                   img: '/products/bearing.jpg',
-                  name: 'Rodamiento cónico 30205',
-                  sub: '60 piezas · Rodamientos MX',
+                  name: 'Rodamiento 6204',
+                  sub: '60 pzas · Rodamientos MX',
                   amount: 22800,
                 },
               ],
@@ -639,7 +639,7 @@ export const PLATFORM_COPY = {
               invoices: [
                 {
                   id: 'INV-8812',
-                  customer: 'Norte Hydraulics',
+                  customer: 'Hidráulica del Norte',
                   tag: 'Rechazada',
                   tone: 'bad',
                   amount: '$194,400',
@@ -653,7 +653,7 @@ export const PLATFORM_COPY = {
                 },
                 {
                   id: 'INV-8790',
-                  customer: 'Valle Process',
+                  customer: 'Procesos del Valle',
                   tag: 'Aprobada',
                   tone: 'good',
                   amount: '$82,000',

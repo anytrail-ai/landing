@@ -400,6 +400,61 @@ export const PLATFORM_COPY = {
           caption: 'Nothing is migrated. Anytrail reads from what you run and writes back to it.',
         },
       ],
+      // Under the stack: the two ways to put the platform to work.
+      more: {
+        title: 'Ask Anytrail when you need a hand. Give the agents the repeat work.',
+        items: [
+          {
+            name: 'Ask Anytrail',
+            lead: 'Help while you work.',
+            body: 'Ask what changed on an account before a call, have a quote drafted from a conversation, or get a reply written, at your desk or on your phone.',
+          },
+          {
+            name: 'Agents',
+            lead: 'Work that runs without being asked.',
+            body: 'The day’s follow-ups, ready before your team logs in. A quote that has gone quiet, chased. An invoice past its terms, reminded.',
+          },
+        ],
+      },
+    },
+    // "ERP and rollout". `erps` are the names on the first card's drawing,
+    // `permissions` the second card's panel (`alone: true` puts that row on
+    // "On its own"), `steps` the third card's three stops. `cards` are the
+    // three titles and bodies, in the same order.
+    rollout: {
+      label: 'ERP and rollout',
+      title: 'Keep your ERP. We do the connecting.',
+      paragraphs: [
+        'Anytrail connects to the ERP you already run, whether that is one or several. We bring the data together so your team can work across branches and companies, and your ERP stays the system of record.',
+        'We do the implementation ourselves: the connections, the data load and the rollout. You work with the same people from the first call to the day your team is using it.',
+      ],
+      link: 'Explore integrations',
+      erps: ['Odoo', 'Microsip', 'SAI', 'Your ERP'],
+      permissions: {
+        title: 'Agent permissions',
+        alone: 'On its own',
+        ask: 'Ask first',
+        rows: [
+          { name: 'Draft quotes', alone: true },
+          { name: 'Send follow-ups', alone: true },
+          { name: 'Email customers', alone: false },
+        ],
+      },
+      steps: ['Connect', 'One record', 'Live'],
+      cards: [
+        {
+          title: 'Works with the ERP you run',
+          body: 'Anytrail connects to your ERP and the tools around it. Keep what already works for you.',
+        },
+        {
+          title: 'Agents work inside your rules',
+          body: 'You decide what each agent may do on its own and what needs your approval, and you can change it whenever you like.',
+        },
+        {
+          title: 'Live in weeks',
+          body: 'Our own team does the setup, and stays with yours until it is part of the working day.',
+        },
+      ],
     },
   },
 
@@ -771,6 +826,56 @@ export const PLATFORM_COPY = {
             { name: 'Portales de clientes', sub: 'Estatus de facturas y fechas de pago', tag: 'Sincronizado', tone: 'good' },
           ],
           caption: 'No se migra nada. Anytrail lee de lo que ya usas y escribe de vuelta.',
+        },
+      ],
+      more: {
+        title: 'Pregúntale a Anytrail cuando necesites una mano. Deja a los agentes el trabajo repetitivo.',
+        items: [
+          {
+            name: 'Pregúntale a Anytrail',
+            lead: 'Ayuda mientras trabajas.',
+            body: 'Pregunta qué cambió en una cuenta antes de llamar, pide una cotización a partir de una conversación o que te redacte una respuesta, en tu escritorio o en tu celular.',
+          },
+          {
+            name: 'Agentes',
+            lead: 'Trabajo que corre sin que lo pidas.',
+            body: 'Los seguimientos del día, listos antes de que tu equipo entre. Una cotización que se quedó sin respuesta, con seguimiento. Una factura vencida, con recordatorio.',
+          },
+        ],
+      },
+    },
+    rollout: {
+      label: 'ERP e implementación',
+      title: 'Conserva tu ERP. La conexión la hacemos nosotros.',
+      paragraphs: [
+        'Anytrail se conecta al ERP que ya usas, sea uno o varios. Reunimos los datos para que tu equipo trabaje entre sucursales y empresas, y tu ERP sigue siendo el sistema de registro.',
+        'La implementación la hacemos nosotros: las conexiones, la carga de datos y la puesta en marcha. Trabajas con las mismas personas desde la primera llamada hasta el día en que tu equipo ya lo usa.',
+      ],
+      link: 'Ver integraciones',
+      erps: ['Odoo', 'Microsip', 'SAI', 'Tu ERP'],
+      permissions: {
+        title: 'Permisos de los agentes',
+        alone: 'Solo',
+        ask: 'Pregunta',
+        rows: [
+          { name: 'Redactar cotizaciones', alone: true },
+          { name: 'Enviar seguimientos', alone: true },
+          { name: 'Escribir a clientes', alone: false },
+        ],
+      },
+      steps: ['Conectar', 'Un registro', 'En operación'],
+      cards: [
+        {
+          title: 'Funciona con el ERP que usas',
+          body: 'Anytrail se conecta a tu ERP y a las herramientas que lo rodean. Conserva lo que ya te funciona.',
+        },
+        {
+          title: 'Los agentes trabajan con tus reglas',
+          body: 'Tú decides qué puede hacer cada agente solo y qué necesita tu aprobación, y lo puedes cambiar cuando quieras.',
+        },
+        {
+          title: 'En operación en semanas',
+          body: 'Nuestro equipo hace la puesta en marcha y se queda con el tuyo hasta que sea parte del día a día.',
         },
       ],
     },

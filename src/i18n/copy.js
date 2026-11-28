@@ -1,5 +1,6 @@
 import { CRM_COPY } from './copyCrm.js'
 import { PLATFORM_COPY } from './copyPlatform.js'
+import { INTEGRATIONS_COPY } from './copyIntegrations.js'
 
 // All landing-page copy in both languages. One object per section.
 // The top-level section blocks are the AR (customer AP portal) product; the
@@ -2001,6 +2002,7 @@ export const ROUTES = {
     // Platform home. Each product behind it has its own home, booking page
     // and thank-you page so a CTA never sends a visitor into the other funnel.
     home: '/',
+    integrations: '/integrations',
     arHome: '/ar',
     crmHome: '/crm',
     crmSchedule: '/crm/schedule',
@@ -2027,6 +2029,7 @@ export const ROUTES = {
   },
   es: {
     home: '/es',
+    integrations: '/es/integraciones',
     arHome: '/es/ar',
     crmHome: '/es/crm',
     crmSchedule: '/es/crm/agenda',
@@ -2088,8 +2091,11 @@ const CRM_PAGES = [
   'whatsappGuide', 'metaGuide',
 ]
 
+// Pages of the platform as a whole, not of one product.
+const PLATFORM_PAGES = ['home', 'integrations']
+
 export function productFor(page) {
-  if (page === 'home') return null
+  if (PLATFORM_PAGES.includes(page)) return null
   return CRM_PAGES.includes(page) ? 'crm' : 'ar'
 }
 
@@ -2113,7 +2119,7 @@ export function copyFor(lang, page) {
   const base = productFor(page) === 'crm'
     ? { ...COPY[lang], ...CRM_COPY[lang] }
     : COPY[lang]
-  return { ...base, platform: PLATFORM_COPY[lang] }
+  return { ...base, platform: PLATFORM_COPY[lang], integrations: INTEGRATIONS_COPY[lang] }
 }
 
 // <head> metadata for a page. Product homes use the top-level meta block;

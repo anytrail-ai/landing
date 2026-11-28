@@ -101,18 +101,21 @@
 /* The modules heading sits at the content's left edge, label above it, with
    the changing phrase on the same line where it fits. */
 .mods .band__head,
-.lay .band__head {
+.lay .band__head,
+.roll .band__head {
   grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
 
 .mods .band__label,
-.lay .band__label {
+.lay .band__label,
+.roll .band__label {
   margin: 0;
 }
 
 .mods .band__title,
-.lay .band__title {
+.lay .band__title,
+.roll .band__title {
   max-width: none;
   font-size: clamp(32px, 4.2vw, 56px);
   line-height: 1.08;
@@ -2239,6 +2242,407 @@
   color: var(--text-muted);
 }
 
+/* under the stack: ask Anytrail, or give the work to agents */
+.lay__more {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.lay__more-title {
+  margin: 0;
+  max-width: 28ch;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--band-fg);
+}
+
+.lay__duo {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.lay__duo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 32px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.lay__duo-card h4 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--band-fg);
+}
+
+.lay__duo-card p {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--band-muted);
+}
+
+.lay__duo-card strong {
+  font-weight: 600;
+  color: var(--band-fg);
+}
+
+/* ---------- ERP and rollout (Rollout.jsx) ---------- */
+
+.roll__intro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px 48px;
+  /* the heading already says it; pull the paragraphs up under it */
+  margin-top: -32px;
+}
+
+/* under the first paragraph, in its column */
+.roll__link {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.roll__intro p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--band-muted);
+}
+
+.roll__cards {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.roll__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 32px 32px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-muted);
+}
+
+.roll__card h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--band-fg);
+}
+
+.roll__card > p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--band-muted);
+}
+
+/* every drawing sits in the same box, so the three titles line up */
+.roll__art {
+  height: 148px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+/* 1. ERPs into one point: each wire's dashes run towards the hub */
+.roll__erp {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
+.roll__wire {
+  fill: none;
+  stroke: var(--text-faint);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 5;
+  animation: roll-flow 1.4s linear infinite;
+  animation-delay: var(--d);
+}
+
+@keyframes roll-flow {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+.roll__chip {
+  fill: var(--surface);
+  stroke: var(--border);
+}
+
+.roll__chip-text {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--text-strong);
+}
+
+.roll__hub {
+  fill: var(--text-strong);
+}
+
+.roll__hub-core {
+  fill: #8fd0ab;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: roll-beat 1.4s ease-in-out infinite;
+}
+
+@keyframes roll-beat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+/* 2. agent permissions: a small panel of switches */
+.roll__perms {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.roll__perms-title {
+  margin: 0 0 2px;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+.roll__perm {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+.roll__switch {
+  flex: none;
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+}
+
+.roll__opt {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+/* the chosen side: moss for "on its own", ink for "ask first" */
+.roll__switch[data-on='alone'] .roll__opt--alone {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.roll__switch[data-on='ask'] .roll__opt--ask {
+  background: var(--text-strong);
+  color: #ffffff;
+}
+
+/* the last row changes its mind, back and forth */
+.roll__perm.is-flipping .roll__opt--ask {
+  animation: roll-ask 6s steps(1) infinite;
+}
+
+.roll__perm.is-flipping .roll__opt--alone {
+  animation: roll-alone 6s steps(1) infinite;
+}
+
+@keyframes roll-ask {
+  0%,
+  100% {
+    background: var(--text-strong);
+    color: #ffffff;
+  }
+  50% {
+    background: transparent;
+    color: var(--text-muted);
+  }
+}
+
+@keyframes roll-alone {
+  0%,
+  100% {
+    background: transparent;
+    color: var(--text-muted);
+  }
+  50% {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+}
+
+/* 3. three stops on a line, reached one after another */
+.roll__steps {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+/* the track, and the moss line that runs along it */
+.roll__steps::before,
+.roll__steps::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--border);
+}
+
+.roll__steps::after {
+  background: var(--accent);
+  transform-origin: left;
+  animation: roll-run 6s ease-in-out infinite;
+}
+
+@keyframes roll-run {
+  0% {
+    transform: scaleX(0);
+  }
+  45%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.roll__steps li {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.roll__steps li:nth-child(2) {
+  align-items: center;
+}
+
+.roll__steps li:nth-child(3) {
+  align-items: flex-end;
+}
+
+.roll__stop {
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface-muted);
+  color: #ffffff;
+}
+
+/* Each stop turns moss as the line reaches it and goes back with the line
+   at the start of the next loop. The line takes 45% of the loop to cross,
+   so the stops light at 2%, 23% and 45%. */
+.roll__steps li:nth-child(1) .roll__stop {
+  animation: roll-stop-1 6s linear infinite;
+}
+
+.roll__steps li:nth-child(2) .roll__stop {
+  animation: roll-stop-2 6s linear infinite;
+}
+
+.roll__steps li:nth-child(3) .roll__stop {
+  animation: roll-stop-3 6s linear infinite;
+}
+
+@keyframes roll-stop-1 {
+  0%,
+  1% {
+    border-color: var(--border);
+    background: var(--surface-muted);
+  }
+  3%,
+  100% {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+}
+
+@keyframes roll-stop-2 {
+  0%,
+  21% {
+    border-color: var(--border);
+    background: var(--surface-muted);
+  }
+  24%,
+  100% {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+}
+
+@keyframes roll-stop-3 {
+  0%,
+  43% {
+    border-color: var(--border);
+    background: var(--surface-muted);
+  }
+  46%,
+  100% {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+}
+
 /* ---------- motion and breakpoints ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -2264,6 +2668,21 @@
 
   .lay__node-ring {
     animation: none;
+  }
+
+  /* rollout drawings hold still, shown finished */
+  .roll__wire,
+  .roll__hub-core,
+  .roll__perm.is-flipping .roll__opt--ask,
+  .roll__perm.is-flipping .roll__opt--alone,
+  .roll__steps::after,
+  .roll__steps li:nth-child(n) .roll__stop {
+    animation: none;
+  }
+
+  .roll__steps li:nth-child(n) .roll__stop {
+    border-color: var(--accent);
+    background: var(--accent);
   }
 
   .lay__card,
@@ -2349,5 +2768,31 @@
 
   .lay__card {
     min-height: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .lay__duo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lay__duo-card {
+    padding: 20px;
+  }
+}
+
+/* ERP and rollout, narrow: paragraphs then cards, one column. */
+@media (max-width: 900px) {
+  .roll__intro,
+  .roll__cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .roll__intro {
+    margin-top: -16px;
+  }
+
+  .roll__card {
+    padding: 20px;
   }
 }

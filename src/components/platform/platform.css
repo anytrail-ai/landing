@@ -2034,14 +2034,21 @@
   overflow: visible;
 }
 
-.lay__thread {
+/* the dashed lines that run through the three plates */
+.lay__thread,
+.lay__thread line {
   stroke: var(--text-faint);
   stroke-width: 1;
   stroke-dasharray: 3 4;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
-/* a dot travelling one gap between plates: in, along, out */
+/* the ends drawn over a plate: lighter on the selected (dark) one */
+.lay__thread--on.is-active {
+  stroke: #8fd0ab;
+}
+
+/* a dot travelling one stretch of a line: in, along, out */
 .lay__dot {
   fill: var(--accent);
   opacity: 0;
@@ -2054,15 +2061,52 @@
     opacity: 0;
     transform: translateY(0);
   }
-  15% {
+  12% {
     opacity: 1;
   }
-  85% {
+  88% {
     opacity: 1;
   }
   100% {
     opacity: 0;
     transform: translateY(var(--dy));
+  }
+}
+
+/* the agents: a ring at the top of each line that pulses as a dot lands */
+.lay__node-ring {
+  fill: var(--surface);
+  stroke: var(--text-faint);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lay-land 2.4s ease-out infinite;
+  animation-delay: var(--d);
+}
+
+.lay__node-core {
+  fill: var(--accent);
+}
+
+.lay__node.is-active .lay__node-ring {
+  fill: var(--text-strong);
+  stroke: #8fd0ab;
+}
+
+.lay__node.is-active .lay__node-core {
+  fill: #8fd0ab;
+}
+
+@keyframes lay-land {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  8% {
+    transform: scale(1.35);
+  }
+  30% {
+    transform: scale(1);
   }
 }
 
@@ -2118,37 +2162,46 @@
   transition: fill 0.3s ease-out;
 }
 
-.lay__plate {
-  transition: transform 0.3s ease-out;
-}
-
-/* the layer being shown lifts and turns ink, its marks moss */
-.lay__plate.is-active {
-  transform: translateY(-6px);
-}
-
-.lay__plate.is-active .lay__plate-top {
+/* the layer being shown turns ink, and what is on it moss */
+.lay__layer.is-active .lay__plate-top {
   fill: var(--text-strong);
   stroke: var(--text-strong);
 }
 
-.lay__plate.is-active .lay__plate-side {
+.lay__layer.is-active .lay__plate-side {
   fill: #000000;
   stroke: #000000;
 }
 
-.lay__mark {
-  fill: none;
+/* what sits on a plate: record tiles, databases, servers */
+.lay__mark,
+.lay__mark path,
+.lay__mark rect,
+.lay__mark ellipse {
+  fill: var(--surface);
   stroke: var(--text-faint);
   stroke-width: 1.5;
+  stroke-linejoin: round;
   transition:
     stroke 0.3s ease-out,
     fill 0.3s ease-out;
 }
 
-.lay__plate.is-active ~ .lay__mark {
+.lay__led {
+  fill: var(--accent);
+  stroke: none;
+}
+
+.lay__layer.is-active .lay__mark,
+.lay__layer.is-active .lay__mark path,
+.lay__layer.is-active .lay__mark rect,
+.lay__layer.is-active .lay__mark ellipse {
   stroke: #8fd0ab;
-  fill: rgba(143, 208, 171, 0.18);
+  fill: #1f2937;
+}
+
+.lay__layer.is-active .lay__led {
+  fill: #8fd0ab;
 }
 
 /* what the layer looks like in the product */
@@ -2200,11 +2253,17 @@
   .scene__step,
   .scene__step-num,
   .lay__tab,
-  .lay__plate,
   .lay__plate-top,
   .lay__plate-side,
-  .lay__mark {
+  .lay__mark,
+  .lay__mark path,
+  .lay__mark rect,
+  .lay__mark ellipse {
     transition: none;
+  }
+
+  .lay__node-ring {
+    animation: none;
   }
 
   .lay__card,

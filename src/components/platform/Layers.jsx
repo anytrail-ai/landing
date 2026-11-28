@@ -6,28 +6,69 @@ import { track } from '../../analytics'
 
 const TIER_MS = 5000
 
-// Where the plates sit in the drawing, and the dots that travel the dashed
-// lines between them. A line is only visible in the gap between one plate's
-// underside and the next plate's top, so each dot is given that gap: where
-// it starts (`y`), how far it goes (`dy`, negative is upwards) and when
-// (`d`, seconds into the loop). Data goes up the outer lines, from your
-// systems to the record to the agents; what the agents do comes back down
-// the middle one.
+// The drawing, in its own coordinates. Three plates stacked top to bottom,
+// and three dashed lines running through them. Each line starts at one of
+// the systems on the bottom plate, passes through the record in the middle
+// and ends at one of the agents on the top plate, so the picture reads as
+// data going from a system to an agent.
 const PLATE_Y = [58, 174, 290]
-const DOTS = [
-  { x: 50, y: 276, dy: -78, d: 0 },
-  { x: 50, y: 160, dy: -78, d: 1.2 },
-  { x: 170, y: 276, dy: -78, d: 0.8 },
-  { x: 170, y: 160, dy: -78, d: 2 },
-  { x: 110, y: 106, dy: 30, d: 0.4 },
-  { x: 110, y: 222, dy: 30, d: 1.6 },
+
+// One line per column. `node` is the agent's circle on the top plate and
+// `sys` the top of the system's icon on the bottom plate. The other numbers
+// are where the line meets each plate: a line is hidden while it is behind
+// a plate, so it is drawn in pieces.
+const LINES = [
+  { x: 76, node: 62, topUnder: 92.5, midTop: 149.5, midUnder: 208.5, botEdge: 265.5, sys: 281 },
+  { x: 110, node: 50, topUnder: 106, midTop: 136, midUnder: 222, botEdge: 252, sys: 271 },
+  { x: 144, node: 62, topUnder: 92.5, midTop: 149.5, midUnder: 208.5, botEdge: 265.5, sys: 281 },
 ]
+
+// The dots that travel the lines: where each starts (`y`), how far it goes
+// (`dy`, negative is upwards) and when (`d`, seconds into the loop). On the
+// outer lines data goes up, from a system to the record and from the record
+// to an agent. On the middle line what the agent does comes back down.
+const NODE_R = 6
+const DOTS = LINES.flatMap((line, k) =>
+  k === 1
+    ? [
+        { x: line.x, y: line.node + NODE_R, dy: line.midTop - line.node - NODE_R, d: 0.4 },
+        { x: line.x, y: line.midUnder, dy: line.sys - line.midUnder, d: 1.6 },
+      ]
+    : [
+        { x: line.x, y: line.sys, dy: line.midUnder - line.sys, d: k * 0.4 },
+        { x: line.x, y: line.midTop, dy: line.node + NODE_R - line.midTop, d: 1.2 + k * 0.4 },
+      ],
+)
+
+// A database: a short cylinder with one band. Drawn around (0, 0).
+function Database() {
+  return (
+    <g className="lay__mark">
+      <path d="M-9 -6 v12 a9 3.5 0 0 0 18 0 v-12" />
+      <ellipse cx="0" cy="-6" rx="9" ry="3.5" />
+      <path d="M-9 0 a9 3.5 0 0 0 18 0" />
+    </g>
+  )
+}
+
+// A server: two stacked units, each with a status light.
+function Server() {
+  return (
+    <g className="lay__mark">
+      <rect x="-11" y="-10" width="22" height="9" rx="2" />
+      <rect x="-11" y="1" width="22" height="9" rx="2" />
+      <circle className="lay__led" cx="-6" cy="-5.5" r="1.2" />
+      <circle className="lay__led" cx="-6" cy="5.5" r="1.2" />
+      <path d="M-1 -5.5 h8 M-1 5.5 h8" />
+    </g>
+  )
+}
 
 // One plate of the stack: a flat diamond with a little thickness under it.
 // Drawn around (0, 0); the caller moves it into place.
-function Plate({ active }) {
+function Plate() {
   return (
-    <g className={`lay__plate${active ? ' is-active' : ''}`}>
+    <g className="lay__plate">
       <path className="lay__plate-side" d="M-96 0 L0 38 L96 0 L96 10 L0 48 L-96 10 Z" />
       <path className="lay__plate-top" d="M-96 0 L0 -38 L96 0 L0 38 Z" />
     </g>
@@ -93,9 +134,87 @@ function Layers() {
 
           {/* three plates, with the dashed lines that tie them together */}
           <svg className="lay__stack" viewBox="0 0 220 348" aria-hidden="true">
-            {[-60, 0, 60].map((x) => (
-              <line key={x} className="lay__thread" x1={110 + x} y1="58" x2={110 + x} y2="290" />
+            {/* the parts of each line that show between the plates */}
+            {LINES.map((l) => (
+              <g key={l.x} className="lay__thread">
+                <line x1={l.x} y1={l.topUnder} x2={l.x} y2={l.midTop} />
+                <line x1={l.x} y1={l.midUnder} x2={l.x} y2={l.botEdge} />
+              </g>
             ))}
+
+            {c.tiers.map((t, i) => (
+              <g
+                key={t.id}
+                className={`lay__layer${i === active ? ' is-active' : ''}`}
+                transform={`translate(110 ${PLATE_Y[i]})`}
+              >
+                <Plate />
+                {/* the record in the middle: a grid of tiles */}
+                {i === 1 &&
+                  [
+                    [-22, 0],
+                    [0, -10],
+                    [22, 0],
+                    [0, 10],
+                  ].map(([x, y]) => (
+                    <path
+                      key={`${x}${y}`}
+                      className="lay__mark"
+                      d={`M${x - 16} ${y} L${x} ${y - 7} L${x + 16} ${y} L${x} ${y + 7} Z`}
+                    />
+                  ))}
+                {/* your systems: a database, a server, a database */}
+                {i === 2 && (
+                  <>
+                    <g transform="translate(-34 2)">
+                      <Database />
+                    </g>
+                    <g transform="translate(0 -8)">
+                      <Server />
+                    </g>
+                    <g transform="translate(34 2)">
+                      <Database />
+                    </g>
+                  </>
+                )}
+              </g>
+            ))}
+
+            {/* the ends of each line, drawn over the plates they land on: up
+                to its agent on the top plate, down to its system on the
+                bottom one */}
+            {LINES.map((l) => (
+              <g key={l.x}>
+                <line
+                  className={`lay__thread lay__thread--on${active === 0 ? ' is-active' : ''}`}
+                  x1={l.x}
+                  y1={l.node + NODE_R}
+                  x2={l.x}
+                  y2={l.topUnder}
+                />
+                <line
+                  className={`lay__thread lay__thread--on${active === 2 ? ' is-active' : ''}`}
+                  x1={l.x}
+                  y1={l.botEdge}
+                  x2={l.x}
+                  y2={l.sys}
+                />
+              </g>
+            ))}
+
+            {/* the agents: one circle at the top of each line. Each pulses as
+                its line's dot arrives. */}
+            {LINES.map((l, k) => (
+              <g
+                key={l.x}
+                className={`lay__node${active === 0 ? ' is-active' : ''}`}
+                style={{ '--d': `${k === 1 ? 0.4 : 1.2 + k * 0.4}s` }}
+              >
+                <circle className="lay__node-ring" cx={l.x} cy={l.node} r={NODE_R} />
+                <circle className="lay__node-core" cx={l.x} cy={l.node} r="2" />
+              </g>
+            ))}
+
             {DOTS.map((dot) => (
               <circle
                 key={`${dot.x}-${dot.y}`}
@@ -114,38 +233,10 @@ function Layers() {
               <line key={y} className="lay__tie" x1="-14" y1={y} x2="10" y2={y} />
             ))}
             <g key={active} className="lay__link">
-              <line x1="208" y1={PLATE_Y[active] - 6} x2="560" y2={PLATE_Y[active] - 6} />
-              <circle cx="208" cy={PLATE_Y[active] - 6} r="3" />
-              <circle className="lay__link-dot" cx="208" cy={PLATE_Y[active] - 6} r="2.5" />
+              <line x1="208" y1={PLATE_Y[active]} x2="560" y2={PLATE_Y[active]} />
+              <circle cx="208" cy={PLATE_Y[active]} r="3" />
+              <circle className="lay__link-dot" cx="208" cy={PLATE_Y[active]} r="2.5" />
             </g>
-
-            {c.tiers.map((t, i) => (
-              <g key={t.id} transform={`translate(110 ${PLATE_Y[i]})`}>
-                <Plate active={i === active} />
-                {/* a few marks on each plate: agents, a grid of records, systems */}
-                {i === 0 &&
-                  [-34, 0, 34].map((x) => (
-                    <circle key={x} className="lay__mark" cx={x} cy={x === 0 ? -8 : 4} r="6" />
-                  ))}
-                {i === 1 &&
-                  [
-                    [-22, 0],
-                    [0, -10],
-                    [22, 0],
-                    [0, 10],
-                  ].map(([x, y]) => (
-                    <path
-                      key={`${x}${y}`}
-                      className="lay__mark"
-                      d={`M${x - 16} ${y} L${x} ${y - 7} L${x + 16} ${y} L${x} ${y + 7} Z`}
-                    />
-                  ))}
-                {i === 2 &&
-                  [-36, 0, 36].map((x) => (
-                    <rect key={x} className="lay__mark" x={x - 9} y="-9" width="18" height="14" rx="3" />
-                  ))}
-              </g>
-            ))}
           </svg>
         </div>
 

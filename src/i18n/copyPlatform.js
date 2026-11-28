@@ -6,7 +6,7 @@
 export const PLATFORM_COPY = {
   en: {
     meta: {
-      title: 'Anytrail | The AI Platform for Distributors, From Quote to Cash',
+      title: 'Anytrail - AI for wholesalers',
       description:
         'Anytrail is one platform on top of your ERP for distributors and industrial suppliers: CRM, sourcing, inventory and accounts receivable, with AI agents doing the routine work.',
       ogLocale: 'en_US',
@@ -355,7 +355,7 @@ export const PLATFORM_COPY = {
 
   es: {
     meta: {
-      title: 'Anytrail | La Plataforma de IA para Distribuidores, de la Cotización al Cobro',
+      title: 'Anytrail - IA para mayoristas',
       description:
         'Anytrail es una sola plataforma sobre tu ERP para distribuidores y proveedores industriales: CRM, abastecimiento, inventario y cuentas por cobrar, con agentes de IA que hacen el trabajo rutinario.',
       ogLocale: 'es_ES',

@@ -1,7 +1,7 @@
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
-import Chooser from './pages/Chooser'
+import Platform from './pages/Platform'
 import Thanks from './pages/Thanks'
 import Demo from './pages/Demo'
 import InboundDemo from './pages/InboundDemo'
@@ -20,7 +20,7 @@ import './App.css'
 // Cluster pages are all the same component reading a different copy block, so
 // they are registered as thunks rather than as separate page modules.
 const PAGES = {
-  home: Chooser,
+  home: Platform,
   arHome: Home,
   crmHome: Home,
   crmSchedule: Schedule,
@@ -49,7 +49,7 @@ const PAGES = {
 const FULLSCREEN_PAGES = ['siniestrosDemo', 'celdasDemo', 'grubpakDemo']
 
 function App({ lang = 'en', page = 'home' }) {
-  const Page = PAGES[page] ?? Chooser
+  const Page = PAGES[page] ?? Platform
 
   if (FULLSCREEN_PAGES.includes(page)) {
     return (

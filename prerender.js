@@ -26,7 +26,7 @@ const OG_IMAGE_H = 1024
 const { render } = await import(
   pathToFileURL(path.join(ROOT, 'dist-ssr', 'entry-server.js')).href
 )
-const { COPY, LANGS, ROUTES, NOINDEX_PAGES, CLUSTER_PAGES, metaFor, copyFor } =
+const { LANGS, ROUTES, NOINDEX_PAGES, CLUSTER_PAGES, metaFor, copyFor } =
   await import('./src/i18n/copy.js')
 const esc = (s) =>
   String(s)
@@ -41,7 +41,7 @@ const urlFor = (lang, page) => {
 }
 
 function jsonLd(lang) {
-  const { description } = COPY[lang].chooser.meta
+  const { description } = metaFor(lang, 'home')
   const graph = [
     {
       '@type': 'Organization',
@@ -182,9 +182,9 @@ console.log('wrote robots.txt')
 // JavaScript. Semrush Site Audit flags its absence (issue 137).
 const llms = `# Anytrail
 
-> ${COPY.en.chooser.meta.description}
+> ${metaFor('en', 'home').description}
 
-Anytrail builds two products for industrial companies and distributors.
+Anytrail is one platform for industrial companies and distributors, from the first quote to the paid invoice. Two parts of it have their own sites.
 
 - Sales agent and WhatsApp CRM: an AI sales agent that works demand in both
   directions. Outbound, it surfaces accounts that match what the company sells

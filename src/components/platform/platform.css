@@ -1,0 +1,1460 @@
+/* Platform home (/ and /es). Sections sit in Band, so colours come from the
+   --band-* variables and work on paper, ink and moss alike. */
+
+/* ---------- hero ---------- */
+
+/* The hero is its own band of colour. Each tone sets the same handful of
+   variables; heroTone.js picks which one ships. */
+.phero {
+  --ph-bg: var(--accent-soft);
+  --ph-fg: var(--text-strong);
+  --ph-muted: #4b5563;
+  --ph-phrase: var(--accent);
+  --ph-btn-bg: var(--btn-bg);
+  --ph-btn-fg: var(--btn-text);
+  --ph-btn-hover: var(--btn-bg-hover);
+  --ph-ring: var(--accent);
+
+  /* The next band brings its own top padding; adding the hero's on top of
+     it doubled the gap under the workspace. */
+  padding-bottom: 0;
+  background: var(--ph-bg);
+}
+
+/* A coloured hero tone needs its own floor under the workspace. */
+.phero--soft,
+.phero--tint,
+.phero--moss {
+  padding-bottom: 96px;
+}
+
+.phero--tint {
+  --ph-bg: var(--surface-muted);
+}
+
+.phero--cream {
+  --ph-bg: var(--page-bg);
+  --ph-muted: var(--text-muted);
+}
+
+/* On moss the lead-in steps back and the phrase takes full cream. */
+.phero--moss {
+  --ph-bg: var(--accent);
+  --ph-fg: rgba(254, 253, 246, 0.78);
+  --ph-muted: rgba(254, 253, 246, 0.9);
+  --ph-phrase: #fefdf6;
+  --ph-btn-bg: #ffffff;
+  --ph-btn-fg: var(--text-strong);
+  --ph-btn-hover: var(--surface-muted);
+  --ph-ring: #ffffff;
+}
+
+/* Headline, one sentence, two actions: centred, and nothing else. */
+.phero__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
+}
+
+.phero .hero__title {
+  max-width: none;
+  font-weight: 700;
+  font-size: clamp(36px, 5.4vw, 76px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: wrap;
+  color: var(--ph-fg);
+}
+
+.phero {
+  --rot-color: var(--ph-phrase);
+}
+
+.phero .rot {
+  justify-items: center;
+}
+
+/* Rotating phrases (Phrases.jsx). All phrases share one grid cell: the
+   tallest sets the height. The phrase is what the platform does, which is
+   the one thing in a heading allowed colour. */
+.rot {
+  display: grid;
+}
+
+.rot__phrase {
+  grid-area: 1 / 1;
+  color: var(--rot-color, var(--accent));
+  opacity: 0;
+  transform: translateY(0.25em);
+  transition:
+    opacity 0.45s ease-out,
+    transform 0.45s ease-out;
+}
+
+.rot__phrase--active {
+  opacity: 1;
+  transform: none;
+}
+
+/* The modules heading: lead-in on one line, the phrase on the next. */
+.mods .band__title {
+  max-width: none;
+}
+
+.phero .hero__subtitle {
+  max-width: 620px;
+  color: var(--ph-muted);
+}
+
+.phero .hero__actions {
+  justify-content: center;
+}
+
+.phero .hero__cta {
+  color: var(--ph-btn-fg);
+  background-color: var(--ph-btn-bg);
+}
+
+.phero .hero__cta:hover {
+  background-color: var(--ph-btn-hover);
+}
+
+.phero__secondary {
+  padding-bottom: 2px;
+  border-bottom: 1px solid currentColor;
+  font-size: 15px;
+  color: var(--ph-muted);
+  text-decoration: none;
+  transition: color 0.2s ease-out;
+}
+
+.phero__secondary:hover {
+  color: var(--ph-phrase);
+}
+
+.phero .hero__cta:focus-visible,
+.phero__secondary:focus-visible {
+  outline: 2px solid var(--ph-ring);
+  outline-offset: 3px;
+}
+
+.mods__link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------- app mockup ----------
+   The Anytrail app, redrawn. Values are the app's own (lead-crm/web
+   index.css and the components named in WorkspaceMockup.jsx): cream page,
+   white surfaces, #e7e2d1 borders, black primary buttons, 8px radius. The
+   amber, red, emerald and blue chips are the app's status colours, which is
+   why they appear here and nowhere else on the site. */
+
+.app {
+  --app-border: #e7e2d1;
+  --app-sand: #f6f4ea;
+  --app-muted: #6b7280;
+
+  display: grid;
+  grid-template-columns: 184px minmax(0, 1fr);
+  /* one row exactly the frame's height, so a screen can never push past it */
+  grid-template-rows: minmax(0, 1fr);
+  height: 640px;
+  overflow: hidden;
+  background: var(--page-bg);
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
+  text-align: left;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-strong);
+}
+
+.app p {
+  margin: 0;
+}
+
+.appfig {
+  margin: 64px 0 0;
+}
+
+/* sidebar: the platform's modules, CRM's two screens nested under it */
+.app__side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  padding: 16px 8px 12px;
+  background: #ffffff;
+  border-right: 1px solid var(--app-border);
+}
+
+.app__logo {
+  height: 22px;
+  width: auto;
+  margin: 0 8px;
+  align-self: flex-start;
+}
+
+.app__mods,
+.app__screens {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.app__mods {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app__mod,
+.app__screen-link {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  color: var(--app-muted);
+  cursor: pointer;
+  transition: background-color 0.2s ease-out, color 0.2s ease-out;
+}
+
+.app__mod {
+  min-height: 32px;
+  padding: 0 8px;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.app__mod svg {
+  flex: none;
+}
+
+.app__mod:hover,
+.app__screen-link:hover {
+  background: var(--app-sand);
+  color: var(--text-strong);
+}
+
+.app__mod.is-active {
+  background: var(--app-sand);
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+/* CRM's screens hang off a hairline under it */
+.app__screens {
+  margin: 2px 0 4px 15px;
+  padding-left: 8px;
+  border-left: 1px solid var(--app-border);
+}
+
+.app__screen-link {
+  min-height: 28px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.app__screen-link.is-active {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.app__mod:focus-visible,
+.app__screen-link:focus-visible,
+.app__gate-cta:focus-visible,
+.app__gate-back:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.app__avatar {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--app-sand);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.app p.app__me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin: auto 0 0;
+  padding: 8px 8px 0;
+  border-top: 1px solid var(--app-border);
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.app__me img {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--app-border);
+  object-fit: cover;
+}
+
+.app__me span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app__avatar--sm {
+  width: 32px;
+  height: 32px;
+}
+
+.app__avatar--lg {
+  width: 56px;
+  height: 56px;
+  font-size: 16px;
+}
+
+.app__main,
+.app__screen {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+.app__main {
+  position: relative;
+}
+
+/* The floater for a module that is not drawn: the CRM screen steps back
+   behind it and the card asks for the call. */
+.app__screen {
+  transition: filter 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.app__screen.is-behind {
+  filter: blur(3px);
+  opacity: 0.45;
+}
+
+.app__gate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.app__gate-card {
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+  border: 1px solid var(--app-border);
+  border-radius: 16px;
+  background: #ffffff;
+  /* the one thing in the frame that floats */
+  box-shadow: 0 24px 48px -24px rgba(17, 24, 39, 0.35);
+  animation: platform-arrive 0.3s ease-out both;
+}
+
+.app__gate-title {
+  font-family: var(--display);
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.app__gate-body {
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--app-muted);
+}
+
+.app__gate-body:first-of-type {
+  color: var(--text-strong);
+}
+
+.app__gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin-top: 8px;
+}
+
+.app__gate-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: #000000;
+  font-size: 15px;
+  line-height: 1;
+  text-decoration: none;
+  color: #ffffff;
+  transition: background-color 0.2s ease-out;
+}
+
+.app__gate-cta:hover {
+  background: var(--btn-bg-hover);
+}
+
+.app__gate-back {
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--app-muted);
+  cursor: pointer;
+}
+
+.app__gate-back:hover {
+  color: var(--text-strong);
+}
+
+.app__sub {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--app-muted);
+}
+
+/* Button (ui/button.tsx, size sm): spans, since nothing here is a control */
+.app__btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid #000000;
+  border-radius: 6px;
+  background: #000000;
+  font-size: 12.8px;
+  line-height: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  color: #ffffff;
+}
+
+.app__btn--outline {
+  border-color: var(--app-border);
+  background: var(--page-bg);
+  color: var(--text-strong);
+}
+
+/* pipeline: Deals.tsx, PipelineTab, PipelineCard */
+.app__page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  padding: 20px 24px;
+}
+
+.app__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.app__h1 {
+  font-family: var(--display);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+}
+
+.app__tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app__tabs span {
+  margin-bottom: -1px;
+  padding: 8px 12px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  color: var(--app-muted);
+}
+
+.app__tabs .is-active {
+  border-bottom-color: #000000;
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+.app__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.app__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.app__chip--won {
+  border-color: #a7f3d0;
+  background: #ecfdf5;
+  color: #064e3b;
+}
+
+.app__health {
+  font-size: 12px;
+  color: var(--app-muted);
+}
+
+.app__board {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.app__col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.app__col-head {
+  display: flex;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.app__col-head span {
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--app-muted);
+}
+
+.app__card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.app__card-name {
+  font-weight: 500;
+}
+
+.app__card-meta,
+.app__card-line {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--app-muted);
+}
+
+.app__card-line {
+  color: var(--text-strong);
+}
+
+.app__card-note {
+  padding: 4px 8px;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  background: rgba(246, 244, 234, 0.4);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.app__owed {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  background: var(--app-sand);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.app__owed--amber {
+  border-color: #fcd34d;
+  background: #fffbeb;
+  color: #78350f;
+}
+
+.app__owed--red {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+/* inbox: Inbox.tsx, ConversationRow, MessageThread, BotRecommendationCard */
+.app__inbox {
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr) 216px;
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.app__list,
+.app__panel {
+  min-width: 0;
+  background: #ffffff;
+}
+
+.app__list {
+  border-right: 1px solid var(--app-border);
+}
+
+.app__list-head,
+.app__thread-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app__list-head img {
+  height: 20px;
+  width: auto;
+}
+
+.app__search {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--app-border);
+}
+
+.app__search span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  background: var(--page-bg);
+  white-space: nowrap;
+  overflow: hidden;
+  color: var(--app-muted);
+}
+
+.app__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-left: 2px solid transparent;
+}
+
+.app__row.is-active {
+  border-left-color: var(--accent);
+  background: var(--app-sand);
+}
+
+.app__row.is-active .app__avatar {
+  background: #ffffff;
+}
+
+.app__row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.app__row-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.app__row-name > span:first-of-type {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app__row-name svg {
+  flex: none;
+  color: var(--app-muted);
+}
+
+.app__intent {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(47, 111, 79, 0.1);
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.app__intent svg {
+  color: inherit;
+}
+
+.app__row-preview {
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--app-muted);
+}
+
+.app__row-preview.is-unread {
+  font-weight: 500;
+  color: var(--text-strong);
+}
+
+.app__unread {
+  flex: none;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  font-size: 11px;
+  line-height: 20px;
+  font-weight: 500;
+  text-align: center;
+  color: #ffffff;
+}
+
+.app__thread {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.app__thread-head {
+  flex: none;
+  background: #ffffff;
+}
+
+.app__messages {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 20px;
+  overflow: hidden;
+}
+
+.app__day {
+  text-align: center;
+}
+
+.app__day span {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--app-sand);
+  font-size: 11px;
+  color: var(--app-muted);
+}
+
+.app__msg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 75%;
+}
+
+.app__msg--out {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.app__bubble {
+  padding: 8px 12px;
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  background: var(--app-sand);
+  box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.05);
+}
+
+.app__msg--out .app__bubble,
+.app__bubble--draft {
+  border-radius: 14px;
+  border-bottom-right-radius: 4px;
+  background: var(--accent-soft);
+}
+
+.app__bubble--draft {
+  border: 1px dashed rgba(47, 111, 79, 0.5);
+  box-shadow: none;
+}
+
+.app__msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--app-muted);
+}
+
+.app__read {
+  color: var(--accent);
+}
+
+.app__rec {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid rgba(47, 111, 79, 0.4);
+  border-radius: 8px;
+  background: rgba(246, 244, 234, 0.4);
+}
+
+.app__rec-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.app__rec-title svg {
+  color: var(--accent);
+}
+
+.app__draft-label {
+  align-self: flex-end;
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--app-muted);
+}
+
+.app__rec .app__bubble--draft {
+  align-self: flex-end;
+  max-width: 85%;
+}
+
+.app__rec-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.app__composer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--app-border);
+  background: #ffffff;
+  color: var(--app-muted);
+}
+
+.app__composer-input {
+  flex: 1;
+  height: 36px;
+  border: 1px solid var(--app-border);
+  border-radius: 14px;
+}
+
+.app__send {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #000000;
+  color: #ffffff;
+}
+
+.app__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 20px;
+  border-left: 1px solid var(--app-border);
+}
+
+.app__panel-name {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+.app__panel-label {
+  align-self: stretch;
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  color: var(--app-muted);
+}
+
+.app__signals {
+  align-self: stretch;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.app__signals li {
+  padding-left: 12px;
+  position: relative;
+}
+
+.app__signals li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.app__select,
+.app__quote {
+  align-self: stretch;
+  margin-top: 4px;
+  padding: 8px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+}
+
+.app__quote {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cards and messages arrive in order when a screen opens. */
+.app__card,
+.app__msg,
+.app__rec {
+  animation: platform-arrive 0.45s ease-out both;
+  animation-delay: calc(var(--i) * 0.14s);
+}
+
+.app__msg,
+.app__rec {
+  animation-delay: calc(0.2s + var(--i) * 0.5s);
+}
+
+@keyframes platform-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app__card,
+  .app__msg,
+  .app__rec,
+  .app__gate-card {
+    animation: none;
+  }
+
+  .app__screen {
+    transition: none;
+  }
+}
+
+/* Narrower than the app's own breakpoints: drop the contact panel first,
+   then the conversation list, and let the board scroll sideways. */
+@media (max-width: 1080px) {
+  .app__inbox {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+
+  .app__panel {
+    display: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .appfig {
+    margin-top: 48px;
+  }
+
+  /* the sidebar becomes a strip of modules across the top */
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 600px;
+  }
+
+  .app__side {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--app-border);
+  }
+
+  .app__logo,
+  .app p.app__me {
+    display: none;
+  }
+
+  .app__mods {
+    flex-direction: row;
+    gap: 4px;
+  }
+
+  .app__mods > li {
+    display: flex;
+    flex: none;
+    gap: 4px;
+  }
+
+  .app__mod,
+  .app__screen-link {
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .app__screens {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    border-left: 0;
+  }
+
+  .app__screen-link {
+    min-height: 32px;
+  }
+
+  .app__inbox {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app__list {
+    display: none;
+  }
+
+  .app__page {
+    padding: 16px;
+  }
+
+  .app__health {
+    display: none;
+  }
+
+  .app__tabs,
+  .app__board {
+    overflow-x: auto;
+  }
+
+  .app__board {
+    grid-template-columns: repeat(4, 220px);
+  }
+
+  .app__messages {
+    padding: 12px;
+  }
+
+  .app__msg {
+    max-width: 88%;
+  }
+}
+
+/* ---------- modules: an accordion, one open at a time ---------- */
+
+.mods__list {
+  border-bottom: 1px solid var(--band-rule);
+  /* the hero's and navbar's links land here, clear of the fixed navbar */
+  scroll-margin-top: 96px;
+}
+
+.mods__item {
+  border-top: 1px solid var(--band-rule);
+}
+
+.mods__summary {
+  position: relative;
+  display: grid;
+  /* the same columns as the panel below, so title and body share an edge */
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  gap: 24px;
+  align-items: center;
+  padding: 22px 44px 22px 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.mods__summary::-webkit-details-marker {
+  display: none;
+}
+
+.mods__summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.mods__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--band-faint);
+}
+
+.mods__early {
+  padding: 2px 8px;
+  border: 1px solid var(--band-rule);
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--band-muted);
+}
+
+.mods__title {
+  font-family: var(--display);
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--band-muted);
+  transition: color 0.2s ease-out;
+}
+
+.mods__summary:hover .mods__title,
+.mods__item[open] .mods__title,
+.mods__item[open] .mods__name {
+  color: var(--band-fg);
+}
+
+.mods__toggle {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  margin-top: -10px;
+  color: var(--band-faint);
+  transition: transform 0.2s ease-out;
+}
+
+.mods__item[open] .mods__toggle {
+  transform: rotate(45deg);
+}
+
+/* the open module: what it does on the left, the demo playing on the right */
+.mods__panel {
+  display: grid;
+  /* first column is exactly the summary's label column (a quarter of the
+     row less its one gap), so the body starts under the title */
+  grid-template-columns: calc((100% - 24px) / 4) minmax(0, 4fr) minmax(0, 5fr);
+  gap: 24px;
+  align-items: start;
+  padding: 4px 44px 40px 0;
+}
+
+.mods__text {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.mods__body {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--band-muted);
+}
+
+.mods__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--band-fg);
+  text-decoration: underline;
+  text-decoration-color: var(--band-rule);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 0.2s ease-out;
+}
+
+.mods__link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ---------- module demos ---------- */
+
+.mdemo {
+  position: relative;
+  align-self: stretch;
+  margin: 0;
+  padding: 12px 12px 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.mdemo__lines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.mdemo__line {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-strong);
+}
+
+.mdemo__text {
+  min-width: 0;
+}
+
+.mdemo__value {
+  margin-left: auto;
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+/* something arriving: a ruled row, the full width of the sheet */
+.mdemo__line--in,
+.mdemo__line--flag,
+.mdemo__line--bars {
+  align-self: stretch;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* the problem: same row, dashed and quiet, so the fix reads against it */
+.mdemo__line--flag {
+  border-style: dashed;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+/* what the agent does: the one voice that carries colour */
+.mdemo__line--out {
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+}
+
+.mdemo__line--out .mdemo__value {
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.mdemo__line--stamp {
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.mdemo__line--bars {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.mdemo__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 56px;
+}
+
+.mdemo__bars span {
+  flex: 1;
+  height: var(--h);
+  border-radius: 3px 3px 0 0;
+  background: var(--border);
+  transform-origin: bottom;
+}
+
+.mdemo__bars .is-low {
+  background: var(--text-faint);
+}
+
+.mdemo__replay {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: background-color 0.2s ease-out, color 0.2s ease-out;
+}
+
+.mdemo__replay:hover {
+  background: var(--surface-muted);
+  color: var(--text-strong);
+}
+
+.mdemo__replay:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* A demo plays when its module opens: showing the panel starts the
+   animations, so the lines arrive one at a time, slowly enough to read as a
+   sequence. The first module is open from the start, so its demo waits for
+   the list to scroll into view (`.is-in`, armed only with JS running).
+   Without JS the lines are simply there. */
+.js-reveal .mods__list:not(.is-in) .mdemo__line {
+  opacity: 0;
+}
+
+.mods__list.is-in .mods__item[open] .mdemo__line {
+  animation: platform-arrive 0.45s ease-out both;
+  animation-delay: calc(0.2s + var(--i) * 0.55s);
+}
+
+.mods__list.is-in .mods__item[open] .mdemo__bars span {
+  animation: mdemo-grow 0.4s ease-out both;
+  animation-delay: calc(0.4s + var(--j) * 0.12s);
+}
+
+@keyframes mdemo-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* ---------- motion and breakpoints ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .mods__list.is-in .mods__item[open] .mdemo__line,
+  .mods__list.is-in .mods__item[open] .mdemo__bars span {
+    animation: none;
+  }
+
+  .js-reveal .mods__list:not(.is-in) .mdemo__line {
+    opacity: 1;
+  }
+
+  .mods__title,
+  .mods__toggle {
+    transition: none;
+  }
+
+  /* nothing to replay when nothing plays */
+  .mdemo__replay {
+    display: none;
+  }
+
+  .rot__phrase {
+    transition: none;
+  }
+}
+
+
+@media (max-width: 820px) {
+  .mods__summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 18px 36px 18px 0;
+  }
+
+  .mods__panel {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 4px 0 28px;
+  }
+
+  .mods__text {
+    grid-column: 1;
+  }
+}

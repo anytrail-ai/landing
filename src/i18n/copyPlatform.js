@@ -17,6 +17,7 @@ export const PLATFORM_COPY = {
     navLinksLabel: 'Sections',
     navLinks: [
       { href: '#modules', label: 'Platform' },
+      { href: '#how', label: 'How it works' },
     ],
     // The home page's whole footer: this line and the privacy link.
     footerLine: '© 2026 anytrail.ai, AI software for wholesale distributors',
@@ -350,6 +351,56 @@ export const PLATFORM_COPY = {
         },
       ],
     },
+    // "How it works": three layers, top to bottom. Each tier's `rows` are
+    // what that layer looks like in the product (sample data); `tone` is the
+    // chip colour (good | warn | plain).
+    layers: {
+      label: 'How it works',
+      title: 'Agents on top. Your systems underneath. One record in between.',
+      intro:
+        'Anytrail pulls customers, products, prices, orders and invoices out of your ERP and the tools around it into one record. The agents work from that record, so what they answer, suggest and do is based on your business, in the modules you turn on.',
+      tiers: [
+        {
+          id: 'agents',
+          name: 'Agents',
+          title: 'Agents at work',
+          sub: 'Each one has a single job and its own permissions',
+          rows: [
+            { name: 'Inbound agent', sub: 'Answering 3 conversations', tag: 'Runs on its own', tone: 'good' },
+            { name: 'Quoting agent', sub: '2 quotes drafted', tag: 'Asks first', tone: 'warn' },
+            { name: 'Reorder agent', sub: 'Checks stock every morning', tag: 'Asks first', tone: 'warn' },
+            { name: 'Collections agent', sub: '1 reminder sent today', tag: 'Runs on its own', tone: 'good' },
+          ],
+          caption: 'You decide, agent by agent, what goes out on its own and what waits for a person.',
+        },
+        {
+          id: 'record',
+          name: 'One record',
+          title: 'Harlow Industrial',
+          sub: 'One customer, seen by every module',
+          rows: [
+            { name: 'CRM', sub: 'Asked for six valves on Tuesday', value: 'Open' },
+            { name: 'Sourcing', sub: 'Three vendor options, best at 5 days', value: '$1,290' },
+            { name: 'Inventory', sub: 'Buys hose every six weeks', value: '280 ft' },
+            { name: 'Accounts receivable', sub: 'INV-8774, 12 days late', value: '$6,300' },
+          ],
+          caption: 'What sales learns is already there when the order ships and the invoice goes out.',
+        },
+        {
+          id: 'systems',
+          name: 'Your systems',
+          title: 'Connected systems',
+          sub: 'The ERP stays the system of record',
+          rows: [
+            { name: 'ERP', sub: '4,210 customers · 12,400 products', tag: 'Synced', tone: 'good' },
+            { name: 'WhatsApp and email', sub: 'Every conversation, attached to its customer', tag: 'Synced', tone: 'good' },
+            { name: 'Storefront', sub: 'Orders and stock', tag: 'Synced', tone: 'good' },
+            { name: 'Customer portals', sub: 'Invoice status and payment dates', tag: 'Synced', tone: 'good' },
+          ],
+          caption: 'Nothing is migrated. Anytrail reads from what you run and writes back to it.',
+        },
+      ],
+    },
   },
 
   es: {
@@ -363,6 +414,7 @@ export const PLATFORM_COPY = {
     navLinksLabel: 'Secciones',
     navLinks: [
       { href: '#modules', label: 'Plataforma' },
+      { href: '#how', label: 'Cómo funciona' },
     ],
     footerLine: '© 2026 anytrail.ai, software de IA para distribuidores mayoristas',
     footerPrivacy: 'Política de privacidad',
@@ -672,6 +724,53 @@ export const PLATFORM_COPY = {
               cleared: 'Bloqueo resuelto',
             },
           },
+        },
+      ],
+    },
+    layers: {
+      label: 'Cómo funciona',
+      title: 'Agentes arriba. Tus sistemas abajo. Un solo registro en medio.',
+      intro:
+        'Anytrail toma clientes, productos, precios, pedidos y facturas de tu ERP y de las herramientas que lo rodean y los reúne en un solo registro. Los agentes trabajan sobre ese registro, así que lo que responden, sugieren y hacen parte de tu negocio, en los módulos que enciendas.',
+      tiers: [
+        {
+          id: 'agents',
+          name: 'Agentes',
+          title: 'Agentes trabajando',
+          sub: 'Cada uno con un solo trabajo y sus propios permisos',
+          rows: [
+            { name: 'Agente de entrada', sub: 'Atiende 3 conversaciones', tag: 'Trabaja solo', tone: 'good' },
+            { name: 'Agente de cotización', sub: '2 cotizaciones en borrador', tag: 'Pregunta antes', tone: 'warn' },
+            { name: 'Agente de resurtido', sub: 'Revisa existencias cada mañana', tag: 'Pregunta antes', tone: 'warn' },
+            { name: 'Agente de cobranza', sub: '1 recordatorio enviado hoy', tag: 'Trabaja solo', tone: 'good' },
+          ],
+          caption: 'Tú decides, agente por agente, qué sale solo y qué espera a una persona.',
+        },
+        {
+          id: 'record',
+          name: 'Un registro',
+          title: 'Grupo Alba',
+          sub: 'Un cliente, visto por todos los módulos',
+          rows: [
+            { name: 'CRM', sub: 'Pidió seis válvulas el martes', value: 'Abierto' },
+            { name: 'Abastecimiento', sub: 'Tres opciones, la mejor en 5 días', value: '$25,800' },
+            { name: 'Inventario', sub: 'Compra manguera cada seis semanas', value: '86 m' },
+            { name: 'Cuentas por cobrar', sub: 'INV-8774, 12 días vencida', value: '$126,000' },
+          ],
+          caption: 'Lo que aprende ventas ya está ahí cuando sale el pedido y cuando sale la factura.',
+        },
+        {
+          id: 'systems',
+          name: 'Tus sistemas',
+          title: 'Sistemas conectados',
+          sub: 'El ERP sigue siendo el sistema de registro',
+          rows: [
+            { name: 'ERP', sub: '4,210 clientes · 12,400 productos', tag: 'Sincronizado', tone: 'good' },
+            { name: 'WhatsApp y correo', sub: 'Cada conversación, ligada a su cliente', tag: 'Sincronizado', tone: 'good' },
+            { name: 'Tienda en línea', sub: 'Pedidos y existencias', tag: 'Sincronizado', tone: 'good' },
+            { name: 'Portales de clientes', sub: 'Estatus de facturas y fechas de pago', tag: 'Sincronizado', tone: 'good' },
+          ],
+          caption: 'No se migra nada. Anytrail lee de lo que ya usas y escribe de vuelta.',
         },
       ],
     },

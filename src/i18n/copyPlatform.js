@@ -301,7 +301,6 @@ export const PLATFORM_COPY = {
           title: 'From shipped to paid, with nothing stuck in a portal.',
           body: 'Track customer AP portal requirements, rejected invoices, missing documents and payment dates, so every blocked invoice has an owner and a next step.',
           page: 'arHome',
-          early: true,
           scene: {
             ariaLabel: 'Three open invoices, one rejected by the customer portal. The agent finds the missing purchase order number in the original order email and resubmits. The invoice is approved with a payment date, and the amount at risk drops from $16,020 to $6,300.',
             steps: ['Invoices at risk', 'Blocker found', 'Payment date known'],
@@ -627,7 +626,6 @@ export const PLATFORM_COPY = {
           title: 'De embarcado a cobrado, sin nada atorado en un portal.',
           body: 'Da seguimiento a los requisitos de los portales de tus clientes, las facturas rechazadas, los documentos faltantes y las fechas de pago, para que cada factura bloqueada tenga responsable y siguiente paso.',
           page: 'arHome',
-          early: true,
           scene: {
             ariaLabel: 'Tres facturas abiertas, una rechazada por el portal del cliente. El agente encuentra el número de orden de compra faltante en el correo del pedido original y la reenvía. La factura queda aprobada con fecha de pago y el monto en riesgo baja de $320,400 a $126,000.',
             steps: ['Facturas en riesgo', 'Bloqueo encontrado', 'Fecha de pago'],

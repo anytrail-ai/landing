@@ -1379,11 +1379,11 @@
   color: var(--text-strong);
 }
 
-.scn p,
-.scn dl,
-.scn dd,
-.scn ul,
-.scn ol {
+/* Reset the text elements a screen is built from. `:where` keeps this at
+   the weight of one class, so the component rules below, which set their own
+   padding, win. (Written as `.scn p` it outranked them and stripped the
+   padding from every bubble, note and boxed line.) */
+.scn :where(p, dl, dd, ul, ol) {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1409,9 +1409,26 @@
   background: var(--surface);
 }
 
+/* The right-hand card is there from the start, waiting: faint, flat, its
+   contents still placeholders. At its beat it comes forward. */
 .scn__card--lift {
   margin-top: 28px;
+  opacity: 0.5;
+  transition:
+    opacity 0.35s ease-out,
+    box-shadow 0.35s ease-out,
+    transform 0.35s ease-out;
+}
+
+.scn__card--lift.is-on {
+  opacity: 1;
   box-shadow: 0 16px 32px -20px rgba(17, 24, 39, 0.28);
+  transform: translateY(-4px);
+}
+
+/* placeholders in a waiting card hold still */
+.scn__card--lift:not(.is-on) .scn__sk {
+  animation: none;
 }
 
 /* Anything that arrives at a beat: out of sight until `is-on`. */
@@ -1473,6 +1490,12 @@
   border: 1px solid var(--border);
   border-radius: 8px;
   object-fit: cover;
+}
+
+/* a photo that has not been looked up yet */
+.scn__thumb--sk {
+  border-color: transparent;
+  background: #ece8da;
 }
 
 /* status chips: a change of status re-mounts the chip, so it pops */
@@ -1875,7 +1898,7 @@
   font-weight: 600;
 }
 
-.scn__trail span {
+.scn__trail li > span {
   font-size: 12px;
   line-height: 16px;
   color: var(--text-muted);

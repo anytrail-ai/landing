@@ -129,7 +129,7 @@ export function CrmScene({ beat, t }) {
         </div>
       </div>
 
-      <div className={cls('scn__card scn__card--lift scn__b', on(4) && 'is-on')}>
+      <div className={cls('scn__card scn__card--lift', on(4) && 'is-on')}>
         <p className="scn__head">
           <span className="scn__head-main">
             <strong>{t.leadTitle}</strong>
@@ -197,6 +197,7 @@ export function SourcingScene({ beat, t }) {
             <strong>{t.from}</strong>
             <span>{t.fromSub}</span>
           </span>
+          <Tag tone={status[0]}>{status[1]}</Tag>
         </p>
         <p className="scn__quoteblock">{t.ask}</p>
         <p className={cls('scn__line scn__line--boxed', !on(1) && 'is-flag')}>
@@ -205,7 +206,6 @@ export function SourcingScene({ beat, t }) {
             <strong>{t.item}</strong>
             <span>{t.itemSub}</span>
           </span>
-          <Tag tone={status[0]}>{status[1]}</Tag>
         </p>
         <div className={cls('scn__slot scn__b', on(7) && 'is-on')}>
           <p className="scn__line">
@@ -219,7 +219,7 @@ export function SourcingScene({ beat, t }) {
         </div>
       </div>
 
-      <div className={cls('scn__card scn__card--lift scn__b', on(2) && 'is-on')}>
+      <div className={cls('scn__card scn__card--lift', on(2) && 'is-on')}>
         <p className="scn__head">
           <span className="scn__head-main">
             <strong>{t.vendorsTitle}</strong>
@@ -295,7 +295,7 @@ export function InventoryScene({ beat, t }) {
         </ul>
       </div>
 
-      <div className={cls('scn__card scn__card--lift scn__b', on(5) && 'is-on')}>
+      <div className={cls('scn__card scn__card--lift', on(5) && 'is-on')}>
         {ordering ? (
           <div key="order" className="scn__swap">
             <p className="scn__head">
@@ -328,9 +328,17 @@ export function InventoryScene({ beat, t }) {
         ) : (
           <div key="forecast" className="scn__swap">
             <p className="scn__head">
-              <img className="scn__thumb" src={t.items[0].img} alt="" width="240" height="240" />
+              {on(5) ? (
+                <img className="scn__thumb" src={t.items[0].img} alt="" width="240" height="240" />
+              ) : (
+                <span className="scn__thumb scn__thumb--sk" />
+              )}
               <span className="scn__head-main">
-                <strong>{t.items[0].name}</strong>
+                <strong>
+                  <Fill on={on(5)} width={120}>
+                    {t.items[0].name}
+                  </Fill>
+                </strong>
                 <span>{t.forecastSub}</span>
               </span>
             </p>
@@ -390,7 +398,7 @@ export function ArScene({ beat, t }) {
         </ul>
       </div>
 
-      <div className={cls('scn__card scn__card--lift scn__b', on(2) && 'is-on')}>
+      <div className={cls('scn__card scn__card--lift', on(2) && 'is-on')}>
         <p className="scn__head">
           <span className="scn__head-main">
             <strong>{t.portalTitle}</strong>
@@ -398,21 +406,41 @@ export function ArScene({ beat, t }) {
           </span>
         </p>
         <ol className="scn__trail">
-          <li className={cls('scn__b', on(2) && 'is-on', 'is-bad')}>
-            <strong>{t.reason}</strong>
-            <span>{t.reasonSub}</span>
+          <li className={on(2) ? 'is-bad' : undefined}>
+            <strong>
+              <Fill on={on(2)} width={64}>
+                {t.reason}
+              </Fill>
+            </strong>
+            <span>
+              <Fill on={on(2)} width={110}>
+                {t.reasonSub}
+              </Fill>
+            </span>
           </li>
-          <li className={cls('scn__b', on(3) && 'is-on')}>
-            <strong>{t.search}</strong>
+          <li>
+            <strong>
+              <Fill on={on(3)} width={150}>
+                {t.search}
+              </Fill>
+            </strong>
             <span>
               <Fill on={on(4)} width={130}>
                 {t.found}
               </Fill>
             </span>
           </li>
-          <li className={cls('scn__b', on(5) && 'is-on', 'is-good')}>
-            <strong>{t.resubmitted}</strong>
-            <span>{t.resubmittedSub}</span>
+          <li className={on(5) ? 'is-good' : undefined}>
+            <strong>
+              <Fill on={on(5)} width={84}>
+                {t.resubmitted}
+              </Fill>
+            </strong>
+            <span>
+              <Fill on={on(5)} width={120}>
+                {t.resubmittedSub}
+              </Fill>
+            </span>
           </li>
         </ol>
         <Press shown={on(6)} pressed label="" done={t.cleared} />

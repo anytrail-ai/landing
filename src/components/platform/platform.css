@@ -1274,233 +1274,26 @@
   align-self: stretch;
 }
 
-/* ---------- module scenes (ModuleScene.jsx) ----------
-   A tinted stage holding one small product screen, with step pills under
-   it. The screen is drawn in the app's own surfaces: white panel, warm
-   hairlines, moss for what the agent did. */
+/* ---------- module scenes ----------
+   ModuleScene.jsx is the frame (stage, step pills); SceneViews.jsx draws the
+   screens, which use the `scn` classes below. The screens are in the app's
+   own surfaces: white cards, warm hairlines, moss for what the agent did,
+   and the app's amber and red for status. */
 
 .scene {
   margin: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 28px;
+  padding: 24px;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--surface-muted);
 }
 
-/* tall enough for the longest step, so the pills never move */
+/* tall enough for every beat of every scene, so the pills never move */
 .scene__screen {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-height: 404px;
-}
-
-.scene__source {
-  margin: 0;
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--surface);
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--text-strong);
-}
-
-.scene__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.scene__panel {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 20px 24px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-}
-
-.scene__head {
-  margin: 0 0 4px;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  color: var(--text-strong);
-}
-
-/* a product photo: what ties a row to a real thing on a shelf */
-.scene__thumb {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-.scene__head {
-  align-items: center;
-}
-
-.scene__head .scene__thumb + span {
-  margin-right: auto;
-}
-
-.scene__head span:last-child {
-  flex: none;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-muted);
-}
-
-.scene__rows {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.scene__row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  border-top: 1px solid var(--border);
-  font-size: 15px;
-  line-height: 22px;
-}
-
-.scene__row-main {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.scene__row-name {
-  font-weight: 500;
-  color: var(--text-strong);
-}
-
-.scene__row-sub {
-  font-size: 13px;
-  line-height: 18px;
-  color: var(--text-muted);
-}
-
-.scene__value {
-  flex: none;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  color: var(--text-strong);
-}
-
-/* status chips, in the app's own tones */
-.scene__tag {
-  flex: none;
-  padding: 2px 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--surface-muted);
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 500;
-  white-space: nowrap;
-  color: var(--text-strong);
-}
-
-.scene__tag--new,
-.scene__tag--good {
-  border-color: transparent;
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.scene__tag--warn {
-  border-color: #fcd34d;
-  background: #fffbeb;
-  color: #78350f;
-}
-
-.scene__tag--bad {
-  border-color: #fca5a5;
-  background: #fef2f2;
-  color: #7f1d1d;
-}
-
-.scene__bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  height: 132px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-
-/* a chart alone in its panel can stand taller */
-.scene__bars:last-child {
-  height: 200px;
-}
-
-.scene__bars span {
-  flex: 1;
-  height: var(--h);
-  border-radius: 4px 4px 0 0;
-  background: var(--border);
-  transform-origin: bottom;
-}
-
-.scene__bars .is-low {
-  background: #fca5a5;
-}
-
-/* the agent's voice */
-.scene__note {
-  margin: 8px 0 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  background: var(--accent-soft);
-  font-size: 14px;
-  line-height: 20px;
-  color: var(--text-strong);
-}
-
-.scene__note svg {
-  flex: none;
-  margin-top: 3px;
-  color: var(--accent);
-}
-
-.scene__stamp {
-  margin: 8px 0 0;
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  border-radius: 999px;
-  background: var(--accent-soft);
-  font-size: 13px;
-  line-height: 18px;
-  font-weight: 500;
-  color: var(--accent);
+  min-height: 344px;
 }
 
 /* step pills */
@@ -1514,8 +1307,6 @@
 }
 
 .scene__step {
-  position: relative;
-  overflow: hidden;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -1530,7 +1321,10 @@
   white-space: nowrap;
   color: var(--text-muted);
   cursor: pointer;
-  transition: color 0.2s ease-out, border-color 0.2s ease-out;
+  transition:
+    color 0.2s ease-out,
+    border-color 0.2s ease-out,
+    background-color 0.2s ease-out;
 }
 
 .scene__step:hover {
@@ -1547,29 +1341,29 @@
   font-family: var(--mono);
   font-size: 11px;
   color: var(--text-muted);
+  transition:
+    background-color 0.2s ease-out,
+    color 0.2s ease-out;
 }
 
 .scene__step.is-active {
   border-color: var(--text-strong);
-  color: var(--text-strong);
-}
-
-.scene__step.is-active .scene__step-num {
   background: var(--text-strong);
   color: #ffffff;
 }
 
-/* a hairline under the active pill fills over the step's time */
-.scene__step.is-timed::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 2px;
-  width: 100%;
-  background: var(--accent);
-  transform-origin: left;
-  animation: scene-timer 4.2s linear both;
+.scene__step.is-active .scene__step-num {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.scene__step.is-done {
+  color: var(--text-strong);
+}
+
+.scene__step.is-done .scene__step-num {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .scene__step:focus-visible {
@@ -1577,55 +1371,582 @@
   outline-offset: 2px;
 }
 
-/* A step's screen arrives piece by piece: where it came from, the panel,
-   then each row, then what the agent says about it. */
-.scene__source,
-.scene__panel,
-.scene__row,
-.scene__note,
-.scene__stamp {
-  animation: platform-arrive 0.4s ease-out both;
-  animation-delay: calc(var(--i) * 0.16s);
+/* ----- the screens ----- */
+
+.scn {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--text-strong);
 }
 
-.scene__bars span {
-  animation: scene-grow 0.45s ease-out both;
-  animation-delay: calc(0.35s + var(--j) * 0.12s);
+.scn p,
+.scn dl,
+.scn dd,
+.scn ul,
+.scn ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-@keyframes scene-grow {
+/* the work on the left, what the agent does about it on the right; the
+   right card sits a little lower and floats, so it reads as arriving on top */
+.scn--split {
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 10fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.scn__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.scn__card--lift {
+  margin-top: 28px;
+  box-shadow: 0 16px 32px -20px rgba(17, 24, 39, 0.28);
+}
+
+/* Anything that arrives at a beat: out of sight until `is-on`. */
+.scn__b {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.35s ease-out;
+}
+
+.scn__b.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.scn__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scn__head-main,
+.scn__line-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.scn__head-main strong,
+.scn__line-main strong {
+  font-weight: 600;
+}
+
+.scn__head-main > span,
+.scn__line-main > span {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+.scn__avatar {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.scn__thumb {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* status chips: a change of status re-mounts the chip, so it pops */
+.scn__tag {
+  flex: none;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-muted);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text-muted);
+  animation: scn-pop 0.3s ease-out both;
+}
+
+.scn__tag--good {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.scn__tag--warn {
+  border-color: #fcd34d;
+  background: #fffbeb;
+  color: #78350f;
+}
+
+.scn__tag--bad {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #7f1d1d;
+}
+
+/* a value before its beat: a grey bar with a slow shimmer */
+.scn__sk {
+  display: inline-block;
+  max-width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  vertical-align: middle;
+  background: linear-gradient(90deg, #ece8da 25%, #f6f4ea 50%, #ece8da 75%);
+  background-size: 200% 100%;
+  animation: scn-shimmer 1.2s linear infinite;
+}
+
+.scn__val {
+  animation: scn-fade 0.3s ease-out both;
+}
+
+.scn__amount {
+  flex: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.scn__amount--lg {
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.scn__count {
+  font-variant-numeric: tabular-nums;
+}
+
+/* rows: a list the agent works down */
+.scn__row,
+.scn__line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* rows run edge to edge of their card, so a highlight is a clean band */
+.scn__row {
+  margin: 0 -16px;
+  padding: 8px 16px;
+  transition:
+    background-color 0.25s ease-out,
+    opacity 0.25s ease-out,
+    box-shadow 0.25s ease-out;
+}
+
+.scn__rows > .scn__row + .scn__row {
+  border-top: 1px solid var(--border);
+}
+
+/* the row being read right now */
+.scn__row.is-scan {
+  background: var(--surface-muted);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* the row that was chosen */
+.scn__row.is-pick {
+  background: var(--accent-soft);
+}
+
+.scn__row.is-dim {
+  opacity: 0.45;
+}
+
+.scn__line--boxed {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition:
+    border-color 0.3s ease-out,
+    background-color 0.3s ease-out;
+}
+
+.scn__line--boxed.is-flag {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+/* a further piece of the same card that opens later */
+.scn__slot {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.scn__slot .scn__line {
+  align-self: stretch;
+}
+
+/* a button that is about to be pressed, and the stamp it becomes */
+.scn__btn,
+.scn__stamp {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 12.8px;
+  line-height: 1;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.scn__btn {
+  background: #000000;
+  color: #ffffff;
+  animation: scn-pop 0.3s ease-out both;
+}
+
+.scn__stamp {
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  animation: scn-press 0.4s ease-out both;
+}
+
+/* the agent's voice */
+.scn__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.scn__note svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+/* CRM: the conversation */
+.scn__thread {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 190px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--page-bg);
+}
+
+.scn__msg {
+  max-width: 88%;
+  padding: 7px 11px;
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  background: var(--surface-muted);
+  font-size: 13px;
+  line-height: 18px;
+  box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.05);
+}
+
+.scn__msg--in {
+  align-self: flex-start;
+}
+
+.scn__msg--out {
+  align-self: flex-end;
+  border-radius: 14px;
+  border-bottom-right-radius: 4px;
+  background: var(--accent-soft);
+}
+
+/* a bubble that has not arrived yet takes no room, so the thread grows */
+.scn__msg.scn__b:not(.is-on) {
+  display: none;
+}
+
+.scn__msg.scn__b.is-on {
+  animation: platform-arrive 0.35s ease-out both;
+}
+
+.scn__by {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--accent);
+}
+
+.scn__typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 11px 12px;
+  animation: platform-arrive 0.25s ease-out both;
+}
+
+.scn__typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: scn-dot 0.9s ease-in-out infinite;
+}
+
+.scn__typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.scn__typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* CRM: what the agent learned */
+.scn__fields {
+  display: flex;
+  flex-direction: column;
+}
+
+.scn__fields > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.scn__fields dt {
+  color: var(--text-muted);
+}
+
+.scn__fields dd {
+  font-weight: 500;
+  text-align: right;
+}
+
+.scn__meter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+.scn__meter-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-muted);
+  overflow: hidden;
+}
+
+.scn__meter-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  transition: width 0.7s ease-out;
+}
+
+.scn__meter .scn__count {
+  min-width: 2ch;
+  font-weight: 600;
+  text-align: right;
+  color: var(--accent);
+}
+
+/* Sourcing: the customer's words */
+.scn__quoteblock {
+  padding-left: 10px;
+  border-left: 2px solid var(--border);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
+}
+
+/* Inventory: the forecast and the order share one card */
+.scn__swap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: scn-fade 0.35s ease-out both;
+}
+
+.scn__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 128px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.scn__bars span {
+  flex: 1;
+  height: var(--h);
+  border-radius: 4px 4px 0 0;
+  background: var(--border);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.5s ease-out;
+  transition-delay: calc(var(--j) * 0.12s);
+}
+
+.scn__bars.is-on span {
+  transform: none;
+}
+
+.scn__bars .is-low {
+  background: #fca5a5;
+}
+
+.scn__total {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-weight: 600;
+}
+
+/* Accounts receivable: what happened to the invoice, in order */
+.scn__trail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 14px;
+  border-left: 1px solid var(--border);
+}
+
+.scn__trail li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.scn__trail li::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+
+.scn__trail .is-bad::before {
+  background: #dc2626;
+}
+
+.scn__trail .is-good::before {
+  background: var(--accent);
+}
+
+.scn__trail strong {
+  font-weight: 600;
+}
+
+.scn__trail span {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+@keyframes scn-pop {
   from {
-    transform: scaleY(0);
+    opacity: 0;
+    transform: scale(0.85);
   }
   to {
+    opacity: 1;
     transform: none;
   }
 }
 
-@keyframes scene-timer {
+@keyframes scn-press {
+  0% {
+    transform: scale(0.92);
+  }
+  60% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes scn-fade {
   from {
-    transform: scaleX(0);
+    opacity: 0;
   }
   to {
-    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes scn-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes scn-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
   }
 }
 
 /* ---------- motion and breakpoints ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .scene__source,
-  .scene__panel,
-  .scene__row,
-  .scene__note,
-  .scene__stamp,
-  .scene__bars span {
-    animation: none;
+  .scn *,
+  .scn__b {
+    animation: none !important;
+    transition: none !important;
   }
 
   .mods__title,
   .rot__phrase,
-  .scene__step {
+  .scene__step,
+  .scene__step-num {
     transition: none;
   }
 }
@@ -1645,16 +1966,19 @@
   }
 
   .scene {
-    padding: 16px;
+    padding: 14px;
+  }
+}
+
+/* Too narrow for two cards side by side: stack them. The screen's height
+   then changes between beats, so it is no longer held fixed. */
+@media (max-width: 560px) {
+  .scn--split {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .scene__panel {
-    padding: 16px;
-  }
-
-  .scene__bars,
-  .scene__bars:last-child {
-    height: 120px;
+  .scn__card--lift {
+    margin-top: 0;
   }
 
   .scene__screen {

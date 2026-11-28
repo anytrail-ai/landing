@@ -1,125 +1,87 @@
-import { useEffect, useRef, useState } from 'react'
-import { Check, Sparkles } from 'lucide-react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { Check } from 'lucide-react'
+import { SCENE_BEATS } from './sceneBeats'
+import { ArScene, CrmScene, InventoryScene, SourcingScene } from './SceneViews'
 
-const STEP_MS = 4200
+const VIEWS = { crm: CrmScene, sourcing: SourcingScene, inventory: InventoryScene, ar: ArScene }
 
-// A module's demo: one small product screen moving through three states.
-// Each step swaps the whole screen (re-keyed, so its rows arrive again), and
-// the pills underneath say where in the story it is. Steps advance on their
-// own while the scene is on screen and loop; a pill jumps to its step. With
-// reduced motion nothing advances by itself and the pills do all the moving.
-function ModuleScene({ scene, stepsLabel }) {
-  const [step, setStep] = useState(0)
-  // bumped when the scene scrolls into view, so step one plays then
-  const [seen, setSeen] = useState(0)
+// A module's demo: one small product screen that changes in beats, with
+// three step pills underneath saying where in the story it is. This is the
+// frame around a scene: it owns the beat, advances it while the scene is on
+// screen, loops, and lets a pill jump to its step. The screen itself is
+// drawn by the module's view in SceneViews.jsx from the beat alone.
+//
+// With reduced motion nothing advances by itself: each pill shows its
+// step's finished state.
+const REDUCED = '(prefers-reduced-motion: reduce)'
+const subscribeReduced = (notify) => {
+  const mq = window.matchMedia(REDUCED)
+  mq.addEventListener('change', notify)
+  return () => mq.removeEventListener('change', notify)
+}
+const readReduced = () => window.matchMedia(REDUCED).matches
+
+function ModuleScene({ id, scene, stepsLabel }) {
+  const { beats, steps } = SCENE_BEATS[id]
+  const View = VIEWS[id]
+  const last = beats.length - 1
+  // false while prerendering and hydrating, then the visitor's setting
+  const still = useSyncExternalStore(subscribeReduced, readReduced, () => false)
+  const [playBeat, setPlayBeat] = useState(0)
+  // with reduced motion: the beat a pill last asked for, else the finished scene
+  const [stillBeat, setStillBeat] = useState(null)
   const [playing, setPlaying] = useState(false)
   const ref = useRef(null)
-  const count = scene.steps.length
-  const current = scene.steps[step]
+  const beat = still ? (stillBeat ?? last) : playBeat
 
   useEffect(() => {
     const el = ref.current
-    if (!el || typeof IntersectionObserver === 'undefined') return undefined
-    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (!el || still || typeof IntersectionObserver === 'undefined') return undefined
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) setSeen((n) => n + 1)
-        setPlaying(entry.isIntersecting && !still)
+        // start from the top each time it comes back into view
+        if (entry.isIntersecting) setPlayBeat(0)
+        setPlaying(entry.isIntersecting)
       },
       { threshold: 0.35 },
     )
     io.observe(el)
     return () => io.disconnect()
-  }, [])
+  }, [still])
 
-  // One timer per step: restarting it on every change is what makes a
-  // clicked pill get its full time.
+  // One timer per beat, restarted whenever the beat changes, so a jump gets
+  // its beat's full time.
   useEffect(() => {
-    if (!playing) return undefined
-    const id = setTimeout(() => setStep((s) => (s + 1) % count), STEP_MS)
-    return () => clearTimeout(id)
-  }, [playing, step, count])
+    if (!playing || still) return undefined
+    const timer = setTimeout(
+      () => setPlayBeat((b) => (b === last ? 0 : b + 1)),
+      beats[playBeat],
+    )
+    return () => clearTimeout(timer)
+  }, [playing, still, playBeat, beats, last])
+
+  // the step a beat belongs to: the last one that has started
+  const step = steps.reduce((found, start, i) => (beat >= start ? i : found), 0)
+  // where a step ends, for the reduced-motion jump
+  const endOf = (i) => (i === steps.length - 1 ? last : steps[i + 1] - 1)
 
   return (
     <figure className="scene" ref={ref} aria-label={scene.ariaLabel}>
-      <div className="scene__screen" key={`${step}-${seen > 1 ? 1 : seen}`} aria-hidden="true">
-        {current.source && (
-          <p className="scene__source" style={{ '--i': 0 }}>
-            <span className="scene__dot" />
-            {current.source}
-          </p>
-        )}
-        <div className="scene__panel" style={{ '--i': 1 }}>
-          <p className="scene__head">
-            {current.photo && (
-              <img className="scene__thumb" src={current.photo} alt="" width="240" height="240" />
-            )}
-            <span>{current.title}</span>
-            <span>{current.meta}</span>
-          </p>
-
-          {current.levels && (
-            <div className="scene__bars">
-              {current.levels.map((level, j) => (
-                <span
-                  key={j}
-                  className={level < 30 ? 'is-low' : undefined}
-                  style={{ '--h': `${level}%`, '--j': j }}
-                />
-              ))}
-            </div>
-          )}
-
-          {current.rows && (
-            <ul className="scene__rows">
-              {current.rows.map((row, i) => (
-                <li key={row.name} className="scene__row" style={{ '--i': i + 2 }}>
-                  {row.img && (
-                    <img className="scene__thumb" src={row.img} alt="" width="240" height="240" />
-                  )}
-                  <span className="scene__row-main">
-                    <span className="scene__row-name">{row.name}</span>
-                    {row.sub && <span className="scene__row-sub">{row.sub}</span>}
-                  </span>
-                  {row.tag && (
-                    <span className={`scene__tag scene__tag--${row.tone ?? 'plain'}`}>
-                      {row.tag}
-                    </span>
-                  )}
-                  {row.value && <span className="scene__value">{row.value}</span>}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          {current.note && (
-            <p className="scene__note" style={{ '--i': (current.rows?.length ?? 1) + 2 }}>
-              <Sparkles size={14} />
-              {current.note}
-            </p>
-          )}
-          {current.stamp && (
-            <p className="scene__stamp" style={{ '--i': (current.rows?.length ?? 1) + 3 }}>
-              <Check size={12} />
-              {current.stamp}
-            </p>
-          )}
-        </div>
+      <div className="scene__screen" aria-hidden="true">
+        <View beat={beat} t={scene.t} />
       </div>
 
       <ol className="scene__steps" aria-label={stepsLabel}>
-        {scene.steps.map((s, i) => (
-          <li key={s.label}>
+        {scene.steps.map((label, i) => (
+          <li key={label}>
             <button
               type="button"
-              className={`scene__step${i === step ? ' is-active' : ''}${
-                i === step && playing ? ' is-timed' : ''
-              }`}
+              className={`scene__step${i === step ? ' is-active' : ''}${i < step ? ' is-done' : ''}`}
               aria-current={i === step ? 'step' : undefined}
-              onClick={() => setStep(i)}
+              onClick={() => (still ? setStillBeat(endOf(i)) : setPlayBeat(steps[i]))}
             >
-              <span className="scene__step-num">{i + 1}</span>
-              {s.label}
+              <span className="scene__step-num">{i < step ? <Check size={12} /> : i + 1}</span>
+              {label}
             </button>
           </li>
         ))}

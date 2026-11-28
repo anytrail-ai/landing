@@ -71,7 +71,7 @@ export function Modules() {
                   {/* narrow screens only: the demo under its module */}
                   {on && (
                     <div className="mods__inline">
-                      <ModuleScene key={m.id} scene={m.scene} stepsLabel={c.stepsLabel} />
+                      <ModuleScene key={m.id} id={m.id} scene={m.scene} stepsLabel={c.stepsLabel} />
                     </div>
                   )}
                 </div>
@@ -86,7 +86,12 @@ export function Modules() {
           role="tabpanel"
           aria-labelledby={`mods-tab-${current.id}`}
         >
-          <ModuleScene key={current.id} scene={current.scene} stepsLabel={c.stepsLabel} />
+          <ModuleScene
+            key={current.id}
+            id={current.id}
+            scene={current.scene}
+            stepsLabel={c.stepsLabel}
+          />
         </div>
       </div>
     </Band>

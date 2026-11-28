@@ -275,6 +275,21 @@ function Layers() {
           </div>
         </div>
       </div>
+
+      {/* the two ways to put it to work: ask, or let it run */}
+      <div className="lay__more">
+        <h3 className="lay__more-title">{c.more.title}</h3>
+        <ul className="lay__duo">
+          {c.more.items.map((item) => (
+            <li key={item.name} className="lay__duo-card" data-reveal>
+              <h4>{item.name}</h4>
+              <p>
+                <strong>{item.lead}</strong> {item.body}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </Band>
   )
 }

@@ -400,6 +400,22 @@ export const PLATFORM_COPY = {
           caption: 'Nothing is migrated. Anytrail reads from what you run and writes back to it.',
         },
       ],
+      // Under the stack: the two ways to put the platform to work.
+      more: {
+        title: 'Ask Anytrail when you need a hand. Give the agents the repeat work.',
+        items: [
+          {
+            name: 'Ask Anytrail',
+            lead: 'Help while you work.',
+            body: 'Ask what changed on an account before a call, have a quote drafted from a conversation, or get a reply written, at your desk or on your phone.',
+          },
+          {
+            name: 'Agents',
+            lead: 'Work that runs without being asked.',
+            body: 'The day’s follow-ups, ready before your team logs in. A quote that has gone quiet, chased. An invoice past its terms, reminded.',
+          },
+        ],
+      },
     },
   },
 
@@ -773,6 +789,21 @@ export const PLATFORM_COPY = {
           caption: 'No se migra nada. Anytrail lee de lo que ya usas y escribe de vuelta.',
         },
       ],
+      more: {
+        title: 'Pregúntale a Anytrail cuando necesites una mano. Deja a los agentes el trabajo repetitivo.',
+        items: [
+          {
+            name: 'Pregúntale a Anytrail',
+            lead: 'Ayuda mientras trabajas.',
+            body: 'Pregunta qué cambió en una cuenta antes de llamar, pide una cotización a partir de una conversación o que te redacte una respuesta, en tu escritorio o en tu celular.',
+          },
+          {
+            name: 'Agentes',
+            lead: 'Trabajo que corre sin que lo pidas.',
+            body: 'Los seguimientos del día, listos antes de que tu equipo entre. Una cotización que se quedó sin respuesta, con seguimiento. Una factura vencida, con recordatorio.',
+          },
+        ],
+      },
     },
   },
 }

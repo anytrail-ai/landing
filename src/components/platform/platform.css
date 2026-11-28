@@ -2239,6 +2239,66 @@
   color: var(--text-muted);
 }
 
+/* under the stack: ask Anytrail, or give the work to agents */
+.lay__more {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.lay__more-title {
+  margin: 0;
+  max-width: 28ch;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(24px, 2.6vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--band-fg);
+}
+
+.lay__duo {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.lay__duo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 32px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.lay__duo-card h4 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--band-fg);
+}
+
+.lay__duo-card p {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--band-muted);
+}
+
+.lay__duo-card strong {
+  font-weight: 600;
+  color: var(--band-fg);
+}
+
 /* ---------- motion and breakpoints ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -2349,5 +2409,15 @@
 
   .lay__card {
     min-height: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .lay__duo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lay__duo-card {
+    padding: 20px;
   }
 }

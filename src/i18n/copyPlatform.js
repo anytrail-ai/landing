@@ -151,6 +151,11 @@ export const PLATFORM_COPY = {
       // the panel's `title` and `meta`, then any of: `rows` (name, optional
       // `sub`, `tag` with a `tone` of new | warn | bad | good, and `value`),
       // `levels` (a stock chart), a `note` in the agent's voice, a `stamp`.
+      // A row may carry `img` (a product thumbnail) and a step `photo` (a
+      // thumbnail beside its title). The four product photos in
+      // public/products are from Unsplash (Unsplash licence): hose by
+      // @tatiana19, bearing by @photosbyfrk, valve by @guilleb, gloves by
+      // @slrncl.
       items: [
         {
           id: 'crm',
@@ -251,36 +256,41 @@ export const PLATFORM_COPY = {
           body: 'Demand is forecast per item and branch from your order history, and replenishment is proposed with the reasoning shown.',
           scene: {
             ariaLabel:
-              'Three steps: stock for one item is running down, the agent forecasts when it runs out, and a reorder is proposed.',
+              'Three steps: four stocked items with photos, one of them about to run out; the forecast for that item; and a purchase order drafted for the two items that need it.',
             steps: [
               {
-                label: 'Stock running down',
-                source: 'Monterrey branch',
-                title: 'Hydraulic hose, 2 in',
-                meta: '86 m on hand',
-                levels: [100, 82, 61, 43, 24, 9],
+                label: 'What is running low',
+                source: 'Monterrey branch · 1,240 items',
+                title: 'Watch list',
+                meta: '2 need action',
+                rows: [
+                  { img: '/products/hose.jpg', name: 'Hydraulic hose, 2 in', sub: '86 m on hand', tag: '9 days left', tone: 'bad' },
+                  { img: '/products/bearing.jpg', name: 'Tapered bearing 30205', sub: '42 on hand', tag: '3 weeks left', tone: 'warn' },
+                  { img: '/products/valve.jpg', name: 'Balancing valve, 1 in', sub: '18 on hand', tag: 'Covered', tone: 'good' },
+                  { img: '/products/gloves.jpg', name: 'Leather work gloves, L', sub: '210 pairs on hand', tag: 'Covered', tone: 'good' },
+                ],
               },
               {
-                label: 'Demand forecast',
-                source: 'From 14 months of orders',
-                title: 'Next 30 days',
-                meta: 'Hose, 2 in',
-                rows: [
-                  { name: 'Expected demand', value: '310 m' },
-                  { name: 'Already promised', value: '120 m' },
-                  { name: 'Vendor lead time', value: '9 days' },
-                ],
-                note: 'At this pace the shelf is empty in about nine days.',
+                label: 'Why it runs out',
+                source: 'Forecast from 14 months of orders',
+                photo: '/products/hose.jpg',
+                title: 'Hydraulic hose, 2 in',
+                meta: 'Stock by week',
+                levels: [100, 82, 61, 43, 24, 9],
+                rows: [{ name: 'Expected demand, next 30 days', value: '310 m' }],
+                note: 'At this pace the shelf is empty in about nine days. The vendor needs nine to deliver.',
               },
               {
                 label: 'Reorder proposed',
                 source: 'Purchase order draft',
-                title: 'Reorder now',
+                title: 'Order today',
                 meta: 'Arrives the 12th',
                 rows: [
-                  { name: 'Hydraulic hose, 2 in', sub: 'Mangueras del Norte', value: '240 m' },
+                  { img: '/products/hose.jpg', name: 'Hydraulic hose, 2 in', sub: '240 m · Mangueras del Norte', value: '$4,416' },
+                  { img: '/products/bearing.jpg', name: 'Tapered bearing 30205', sub: '60 units · Rodamientos MX', value: '$1,140' },
+                  { name: 'Total', value: '$5,556' },
                 ],
-                stamp: 'Purchase order drafted',
+                stamp: 'Ready for your approval',
               },
             ],
           },
@@ -564,36 +574,41 @@ export const PLATFORM_COPY = {
           body: 'La demanda se pronostica por artículo y sucursal con tu historial de pedidos, y el resurtido se propone con su razón a la vista.',
           scene: {
             ariaLabel:
-              'Tres pasos: la existencia de un artículo va bajando, el agente pronostica cuándo se agota y propone el resurtido.',
+              'Tres pasos: cuatro artículos de inventario con foto, uno a punto de agotarse; el pronóstico de ese artículo; y una orden de compra en borrador para los dos que lo necesitan.',
             steps: [
               {
-                label: 'La existencia baja',
-                source: 'Sucursal Monterrey',
-                title: 'Manguera hidráulica, 2 in',
-                meta: '86 m en existencia',
-                levels: [100, 82, 61, 43, 24, 9],
+                label: 'Qué se está acabando',
+                source: 'Sucursal Monterrey · 1,240 artículos',
+                title: 'Lista de vigilancia',
+                meta: '2 requieren acción',
+                rows: [
+                  { img: '/products/hose.jpg', name: 'Manguera hidráulica, 2 in', sub: '86 m en existencia', tag: 'Quedan 9 días', tone: 'bad' },
+                  { img: '/products/bearing.jpg', name: 'Rodamiento cónico 30205', sub: '42 en existencia', tag: 'Quedan 3 semanas', tone: 'warn' },
+                  { img: '/products/valve.jpg', name: 'Válvula de balanceo, 1 in', sub: '18 en existencia', tag: 'Cubierto', tone: 'good' },
+                  { img: '/products/gloves.jpg', name: 'Guantes de carnaza, G', sub: '210 pares en existencia', tag: 'Cubierto', tone: 'good' },
+                ],
               },
               {
-                label: 'Pronóstico de demanda',
-                source: 'Con 14 meses de pedidos',
-                title: 'Próximos 30 días',
-                meta: 'Manguera, 2 in',
-                rows: [
-                  { name: 'Demanda esperada', value: '310 m' },
-                  { name: 'Ya comprometido', value: '120 m' },
-                  { name: 'Entrega del proveedor', value: '9 días' },
-                ],
-                note: 'A este ritmo el anaquel se vacía en unos nueve días.',
+                label: 'Por qué se agota',
+                source: 'Pronóstico con 14 meses de pedidos',
+                photo: '/products/hose.jpg',
+                title: 'Manguera hidráulica, 2 in',
+                meta: 'Existencia por semana',
+                levels: [100, 82, 61, 43, 24, 9],
+                rows: [{ name: 'Demanda esperada, próximos 30 días', value: '310 m' }],
+                note: 'A este ritmo el anaquel se vacía en unos nueve días. El proveedor tarda nueve en entregar.',
               },
               {
                 label: 'Resurtido propuesto',
                 source: 'Orden de compra en borrador',
-                title: 'Resurtir ahora',
+                title: 'Pedir hoy',
                 meta: 'Llega el día 12',
                 rows: [
-                  { name: 'Manguera hidráulica, 2 in', sub: 'Mangueras del Norte', value: '240 m' },
+                  { img: '/products/hose.jpg', name: 'Manguera hidráulica, 2 in', sub: '240 m · Mangueras del Norte', value: '$88,320' },
+                  { img: '/products/bearing.jpg', name: 'Rodamiento cónico 30205', sub: '60 piezas · Rodamientos MX', value: '$22,800' },
+                  { name: 'Total', value: '$111,120' },
                 ],
-                stamp: 'Orden de compra en borrador',
+                stamp: 'Lista para tu aprobación',
               },
             ],
           },

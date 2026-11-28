@@ -51,6 +51,9 @@ function ModuleScene({ scene, stepsLabel }) {
         )}
         <div className="scene__panel" style={{ '--i': 1 }}>
           <p className="scene__head">
+            {current.photo && (
+              <img className="scene__thumb" src={current.photo} alt="" width="240" height="240" />
+            )}
             <span>{current.title}</span>
             <span>{current.meta}</span>
           </p>
@@ -71,6 +74,9 @@ function ModuleScene({ scene, stepsLabel }) {
             <ul className="scene__rows">
               {current.rows.map((row, i) => (
                 <li key={row.name} className="scene__row" style={{ '--i': i + 2 }}>
+                  {row.img && (
+                    <img className="scene__thumb" src={row.img} alt="" width="240" height="240" />
+                  )}
                   <span className="scene__row-main">
                     <span className="scene__row-name">{row.name}</span>
                     {row.sub && <span className="scene__row-sub">{row.sub}</span>}

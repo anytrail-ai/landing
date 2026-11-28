@@ -2041,6 +2041,69 @@
   opacity: 0.6;
 }
 
+/* a dot travelling one gap between plates: in, along, out */
+.lay__dot {
+  fill: var(--accent);
+  opacity: 0;
+  animation: lay-travel 2.4s linear infinite;
+  animation-delay: var(--d);
+}
+
+@keyframes lay-travel {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(var(--dy));
+  }
+}
+
+.lay__tie {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+/* the selected plate's line to its card */
+.lay__link line {
+  stroke: var(--text-strong);
+  stroke-width: 1;
+}
+
+.lay__link circle {
+  fill: var(--text-strong);
+}
+
+.lay__link .lay__link-dot {
+  fill: #8fd0ab;
+  animation: lay-send 1.8s ease-in-out infinite;
+}
+
+.lay__link {
+  animation: scn-fade 0.3s ease-out both;
+}
+
+@keyframes lay-send {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(120px);
+  }
+}
+
 .lay__plate-top {
   fill: var(--surface);
   stroke: var(--border);
@@ -2090,6 +2153,9 @@
 
 /* what the layer looks like in the product */
 .lay__panel {
+  /* above the drawing, so the link line disappears under the card */
+  position: relative;
+  z-index: 1;
   min-width: 0;
 }
 
@@ -2142,8 +2208,17 @@
   }
 
   .lay__card,
-  .lay__row {
+  .lay__row,
+  .lay__link,
+  .lay__link .lay__link-dot {
     animation: none;
+  }
+
+  /* no travelling dots: the dashed lines alone say the layers are joined */
+  .lay__dot,
+  .lay__link .lay__link-dot {
+    animation: none;
+    opacity: 0;
   }
 }
 
@@ -2205,6 +2280,12 @@
   .lay__stack {
     max-width: 180px;
     margin: 0 auto;
+  }
+
+  /* the card is below the stack here, not beside it */
+  .lay__link,
+  .lay__tie {
+    display: none;
   }
 
   .lay__card {

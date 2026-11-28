@@ -6,6 +6,23 @@ import { track } from '../../analytics'
 
 const TIER_MS = 5000
 
+// Where the plates sit in the drawing, and the dots that travel the dashed
+// lines between them. A line is only visible in the gap between one plate's
+// underside and the next plate's top, so each dot is given that gap: where
+// it starts (`y`), how far it goes (`dy`, negative is upwards) and when
+// (`d`, seconds into the loop). Data goes up the outer lines, from your
+// systems to the record to the agents; what the agents do comes back down
+// the middle one.
+const PLATE_Y = [58, 174, 290]
+const DOTS = [
+  { x: 50, y: 276, dy: -78, d: 0 },
+  { x: 50, y: 160, dy: -78, d: 1.2 },
+  { x: 170, y: 276, dy: -78, d: 0.8 },
+  { x: 170, y: 160, dy: -78, d: 2 },
+  { x: 110, y: 106, dy: 30, d: 0.4 },
+  { x: 110, y: 222, dy: 30, d: 1.6 },
+]
+
 // One plate of the stack: a flat diamond with a little thickness under it.
 // Drawn around (0, 0); the caller moves it into place.
 function Plate({ active }) {
@@ -79,8 +96,31 @@ function Layers() {
             {[-60, 0, 60].map((x) => (
               <line key={x} className="lay__thread" x1={110 + x} y1="58" x2={110 + x} y2="290" />
             ))}
+            {DOTS.map((dot) => (
+              <circle
+                key={`${dot.x}-${dot.y}`}
+                className="lay__dot"
+                cx={dot.x}
+                cy={dot.y}
+                r="2.5"
+                style={{ '--dy': `${dot.dy}px`, '--d': `${dot.d}s` }}
+              />
+            ))}
+
+            {/* each name is tied to its plate; the selected plate is also tied
+                to the card beside it, with a dot running along the line. The
+                line runs on under the card, which covers its far end. */}
+            {PLATE_Y.map((y) => (
+              <line key={y} className="lay__tie" x1="-14" y1={y} x2="10" y2={y} />
+            ))}
+            <g key={active} className="lay__link">
+              <line x1="208" y1={PLATE_Y[active] - 6} x2="560" y2={PLATE_Y[active] - 6} />
+              <circle cx="208" cy={PLATE_Y[active] - 6} r="3" />
+              <circle className="lay__link-dot" cx="208" cy={PLATE_Y[active] - 6} r="2.5" />
+            </g>
+
             {c.tiers.map((t, i) => (
-              <g key={t.id} transform={`translate(110 ${58 + i * 116})`}>
+              <g key={t.id} transform={`translate(110 ${PLATE_Y[i]})`}>
                 <Plate active={i === active} />
                 {/* a few marks on each plate: agents, a grid of records, systems */}
                 {i === 0 &&
